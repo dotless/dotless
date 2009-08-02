@@ -1,0 +1,253 @@
+<<Grammar Name="C_KernighanRitchie2"  
+          encoding_class="ascii" 
+	  host_language="C#3.0"
+	  reference="The C Programming Language, Kernighan&Ritchie, second edition"
+	  comment="usage:input must be preprocessed source, remaining preprocessor directives are skipped by this grammar"
+	  comment="showcases:demonstrates usage of parametrized peg rules and the case where correct parsing needs scoped "
+	  comment="symbol table handling during parsing (in 'C' a typedef_name must be disambiguated from an "
+          comment="identifier by a lookup in the symbol tables (one for each block))"
+>>
+{
+            #region data members
+            int  struct_level;
+            int  par_list_level;
+            bool is_defined_type_spec;
+            bool is_in_typedef_definition;
+
+            string defined_typedef_name;
+            string declarator_ident;
+            System.Collections.Generic.List<System.Collections.Generic.HashSet<string>> typedefNames; 
+            #endregion data members
+            #region semantic functions
+            bool typedef_name_lookup_()	
+            {
+                 if( is_defined_type_spec) return false; 
+                 else return isTypedefName(defined_typedef_name);
+            }
+            bool check_typedef_declarator_()
+            {
+               if( is_in_typedef_definition && par_list_level==0 && struct_level==0 ) insertTypedefName( declarator_ident );
+               return true;
+            }
+            bool enter_scope_()  { pushScope(); return true; }
+            bool leave_scope_() { popScope();  return true; }
+            bool enter_params_(){++par_list_level;return true;}
+            bool leave_params_(){--par_list_level;return true;}
+            bool enter_struct_(){++struct_level;return true;}
+            bool leave_struct_(){--struct_level;return true;}
+            bool set_in_typedef_(){is_in_typedef_definition=true;return true;}
+            bool set_not_in_typedef_(){is_in_typedef_definition=false;return true;}
+            bool set_type_specifier_defined_() {is_defined_type_spec= true; return true;}
+            bool init_declaration_specifiers_(){is_defined_type_spec=false;return true;}
+            bool init_()
+            {
+                is_defined_type_spec=false;
+                is_in_typedef_definition= false;
+                par_list_level=0;
+                struct_level= 0;
+                typedefNames= null;
+                pushScope();
+                return true;
+            }
+            #endregion  semantic functions
+            void insertTypedefName(string ident)
+            {
+                   typedefNames[typedefNames.Count-1].Add(ident);
+            }
+            bool isTypedefName(string defined_typedef_name)
+            {
+                 for(int i= typedefNames.Count;i>0;--i)
+                 {
+                     if( typedefNames[i-1].Contains(defined_typedef_name) ) return true;
+                 }
+                 return false;
+            }
+            void pushScope()
+            {
+                if( typedefNames==null ) typedefNames= new System.Collections.Generic.List<System.Collections.Generic.HashSet<string>>();
+                typedefNames.Add(new System.Collections.Generic.HashSet<string>());
+            }
+            void popScope()
+            {
+                if (typedefNames != null) typedefNames.RemoveAt(typedefNames.Count - 1);
+            }
+}
+
+//declarations
+[1]^^translation_unit:	init_ S @(external_declaration+) (!./FATAL<"illegal code before end of C file">);
+[2]^external_declaration: function_definition / declaration ;
+[3]^^function_definition:declaration_specifiers? declarator 
+			declaration* compound_statement;
+[4]^^declaration:	set_not_in_typedef_ declaration_specifiers list<init_declarator,','>? @';' S;
+[5]^^declaration_specifiers: 			
+                        init_declaration_specifiers_
+			((storage_class_specifier / 
+			type_specifier set_type_specifier_defined_ /
+			type_qualifier )S)+;
+[6]^^storage_class_specifier:
+			('auto'/'register'/'static'/'extern') B / 'typedef' B set_in_typedef_;
+[7]^^type_specifier:	^'void' B / ^'char' B / ^'short' B / ^'int' B / ^'long' B / 
+			^'float' B / ^'double' B / ^'signed' B / ^'unsigned' B /
+			struct_or_union_specifier / enum_specifier / typedef_name ;
+[8]^^type_qualifier:	('const'/'volatile') B;
+[9]^^struct_or_union_specifier:
+			struct_or_union B S (identifier S member_block? / member_block);
+[900]member_block:      '{' enter_struct_  S @(struct_declaration+)  leave_struct_ @'}' S;
+[10]^^struct_or_union:	'struct' / 'union';
+[11]^init_declarator:	declarator ('=' S @initializer)?;
+[12]^^struct_declaration:
+                        specifier_qualifier_list list<struct_declarator,','> @';' S;
+[13]^^specifier_qualifier_list:
+			(type_specifier S / type_qualifier S)+;
+[14]^^struct_declarator:	declarator (':' S @constant_expression )? /
+			':' S @constant_expression;
+[15]^^enum_specifier:	'enum' B S  (identifier S enum_block? / enum_block);
+[150]enum_block:        '{' S enumerator (',' S enumerator)* ','? S @'}' S;
+[16]^^enumerator:	identifier S ('=' S @constant_expression)?;
+[17]^^declarator:	pointer? direct_declarator;
+[18]^^direct_declarator:(identifier:declarator_ident check_typedef_declarator_ S / '(' S @declarator @')' S)
+			(^'[' S constant_expression? @']' S/
+			 '(' S parameter_type_list @')' S/
+			 '(' S list<identifier,','>? @')' S
+			)*;
+[19]^^pointer:		('*' S (type_qualifier S)* )+;
+[20]^^parameter_type_list: enter_params_ (parameter_type_list_impl / leave_params_ !.) leave_params_;
+[200]parameter_type_list_impl:
+			parameter_declaration S (',' S parameter_declaration S)* (',' S @'...' S)? ;
+[21]^^parameter_declaration:	
+			declaration_specifiers 
+			(declarator/abstract_declarator?);
+[22]^^initializer:	assignment_expression / 
+			'{' S initializer (',' S initializer)* ','? S @'}' S;
+[23]^^type_name:	specifier_qualifier_list abstract_declarator?;
+[24]^^abstract_declarator:key_detail<pointer,direct_abstract_declarator>;
+[25]^^direct_abstract_declarator:
+			key_detail<'(' S abstract_declarator @')',
+				   (^'['S constant_expression? @']' S / '('S parameter_type_list? @')' S)+
+				  >; 	
+[26]^^typedef_name:	identifier:defined_typedef_name   typedef_name_lookup_ ;
+
+//statements
+[27]^statement:	labeled_statement /
+			compound_statement /
+			selection_statement /
+			iteration_statement /
+			jump_statement /
+			expression_statement;
+[28]^^labeled_statement:identifier S ':' S statement /
+			^'case' B S @constant_expression ':' S @statement/
+			^'default'  S @':' S @statement ;
+[29]^^expression_statement: expression @';' S /  ';' S ;
+[30]^^compound_statement:'{' enter_scope_ S declaration* statement*  leave_scope_ @'}' S;
+[31]^^selection_statement:^'if' S '(' S expression ')' S statement 
+			(^'else' B S @statement)? /
+			^'switch' B S @'(' S @expression @')' S statement;
+[32]^^jump_statement:	^'goto' B S @identifier S ';' S /
+			^'continue'  S @';' S /
+			^'break' S @';' S /
+			^'return' B S expression? @';' S;
+
+								
+//expressions
+[33]^expression: 	list<assignment_expression,','>;
+[34]^assignment_expression: 
+			!parenthized_type_name 
+                         unary_expression assignment_operator S @assignment_expression /
+			conditional_expression;
+[35]^assignment_operator:'='!'=' / ('*=' / '/=' / '%=' / '+=' / '-=' / '<<=' /
+			'>>=' / '&=' / '^=' / '|=');
+[36]^conditional_expression: 
+			logical_or_expression 
+			(^'?' S @expression @(^':') S @conditional_expression)?;
+[37]^logical_or_expression: 	
+			binary<logical_and_expression,^'||'>;
+[38]^logical_and_expression:	
+			binary<inclusive_or_expression,^'&&'>;
+[39]^inclusive_or_expression: 
+			binary<exclusive_or_expression,^'|'>;
+[40]^exclusive_or_expression:
+			binary<and_expression,^'^'>;
+[41]^and_expression: 	binary<equality_expression,^'&'>;
+[42]^equality_expression:binary<relational_expression,^('=='/'!=')>;
+[43]^relational_expression:
+			binary<shift_expression,^('<='/'>='/'<'/'>')>;
+[44]^shift_expression:	binary<additive_expression,^('<<'/'>>')>;
+[45]^additive_expression:binary<multiplicative_expression,^('+'/'-')>;
+[46]^multiplicative_expression:
+			binary<cast_expression,^('*'/'/'/'%')>;
+[47]^cast_expression:	parenthized_type_name  S @cast_expression / unary_expression ;
+[470]parenthized_type_name:
+                        '(' S type_name @')';
+[48]^unary_expression:	postfix_expression 	/
+			^'++' S @unary_expression /
+			^'--' S @unary_expression /
+			unary_operator S @cast_expression /
+			^'sizeof' S '(' S type_name S @')' S / 
+			^'sizeof' B S @unary_expression;
+			
+[49]^unary_operator:	'&'/'*'/'+'/'-'/'~'/'!';
+[50]^postfix_expression:primary_expression 
+		(
+			(^'[' S expression @']'  /
+			call  /
+			^'.' S @identifier /
+			^'->' S @identifier /
+			^'++'  /
+			^'--' 
+			) S
+		)*;
+[500]^call:             '(' S list<assignment_expression,','> @')' ;			
+[51]^primary_expression: (identifier / 
+			 constant / 
+			 string / 
+			 '(' S expression @')') S;
+[52]constant:		integer_constant /
+			character_constant /
+			floating_constant /
+			enumeration_constant;
+[53]^identifier:	!(keyword B) [A-Za-z_][A-Za-z_0-9]*;
+[54]keyword:		'auto' / 'register' /'static' /'extern' /'typedef' /
+			'void' / 'char' / 'short' / 'int' / 'long' / 
+			'float' / 'double' / 'signed' / 'unsigned'/
+			'const'/'volatile'/ 'struct' / 'union'/
+			'enum'/ 'case'/'default'/
+			'if'/'else'/ 'switch'/'goto'/
+			'continue'/'break'/'return'/
+			'sizeof'/ 'while' / 'do' / 'for';
+
+[55]^iteration_statement:^'while' S @'(' S expression S @')' S @statement/
+			^'do' B S @statement @'while' S @'(' S expression @')' S @';' S/
+			^'for' S @'(' S for_init_expression? @';' S for_condition? @';' S for_incr? @')' S statement;
+[550]^^for_init_expression:expression;
+[551]^^for_condition:    expression;
+[552]^^for_incr:         expression;
+[56]S:			(c_comment / c_preprocessing_directive / [ \r\n\v\t])*;
+[57]c_comment:		'/*'  ( (!'*/' .)*  '*/' / FATAL<"comment not closed before end of file"> );  
+[58]^constant_expression:conditional_expression;
+[59]^string:		l?["](escape_sequence/chars)*["];
+[60]^integer_constant: 	(hexadecimal_constant / decimal_int)(l u/l u/ u l / u / l)? B ;
+[61]^character_constant:  l?['] (escape_sequence/char) ['];
+[62]^floating_constant:	(decimal_int exponent / decimal_int '.' fraction?)(l f/l f/ f l / f / l);
+[63]^enumeration_constant:identifier;
+[64]^exponent:		[eE][+-]?[0-9]+;
+[65]^escape_sequence:	'\\' ([0-7]{1,3} / ['"?\\abfnrtv] / 'x' [0-9a-fA-F]+);
+[66]^chars:		[#x20#x21#x23-#x7F]+;	
+[67]^char:		[#x20-#x26#x28-#x7F];
+//generic rules
+[70]list<operand,separator>:	
+			binary<operand,separator>;
+[80]binary<operand,operator>:
+			operand S (operator S @operand S)* ;
+[100]key_detail<key,detail>:
+			key S detail? / detail;
+
+[160]c_preprocessing_directive: '#' ('\\' '\r'?'\n'  /  !'\n' . )*;
+[161]B: 	       ![A-Za-z_0-9];
+[162]^decimal_int:	[0-9]+;
+[163]^^fraction:	decimal_int exponent? / exponent;
+[164]^l:		[lL];
+[165]^u:		[uU];
+[166]^f:		[fF];	
+[167]^hexadecimal_constant:('0x'/'0X')[0-9a-fA-F]+;
+                        
+<</Grammar>>

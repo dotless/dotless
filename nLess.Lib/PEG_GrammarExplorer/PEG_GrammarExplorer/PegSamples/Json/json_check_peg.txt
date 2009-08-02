@@ -1,0 +1,27 @@
+<<Grammar Name="json_check" 
+	  encoding_class="unicode"  encoding_detection="FirstCharIsAscii"
+	  reference="www.ietf.org/rfc/rfc4627.txt">>
+[1]json_text:		S top_element expect_file_end			;
+[2]expect_file_end:	!./ WARNING<"non-json stuff before end of file">;
+[3]top_element:		object / array  /
+			FATAL<"json file must start with '{' or '['">	;
+[4]object:  		'{' S (&'}'/members)  @'}' S			;
+[5]members: 		pair S (',' S pair S)*				;	
+[6]pair:		@string S @':' S value				;
+[7]array:  		'[' S (&']'/elements)  @']' S			;
+[8]elements: 		value S (','S  value S)*			;
+[9]value:    		@(string / number / object / 
+				array / 'true' / 'false' / 'null')	;
+[10]string:	 	'"' char* @'"'					;
+[11]char:  		escape / !(["\\]/control_chars)unicode_char	;
+[12]escape:		'\\' ( ["\\/bfnrt] / 
+			'u' ([0-9A-Fa-f]{4}/FATAL<"4 hex digits expected">)/
+			     FATAL<"illegal escape">);
+[13]number:		'-'? int frac? exp?				;
+[14]int:		'0'/ [1-9][0-9]*				;
+[15]frac:		'.' [0-9]+					;
+[16]exp:		[eE] [-+] [0-9]+				;
+[17]control_chars:	[#x0-#x1F]					;
+[18]unicode_char:	[#x0-#xFFFF]					;
+[19]S:  		[ \t\r\n]*					;
+<</Grammar>>

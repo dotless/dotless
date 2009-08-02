@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C# Express 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PEG Explorer", "PEG Explorer\PEG Explorer.csproj", "{C1DDE212-68D9-4CD2-9B44-FDE1D44AFD26}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PEG Base", "PegBase\PEG Base.csproj", "{9913580D-1543-40D5-B463-14C95BF3120C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PEG Samples", "PegSamples\PEG Samples.csproj", "{FDED1663-CDEA-44B1-8589-8338D6B68656}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample PEG Console Parser", "Sample PEG Console Parser\PEG Console Parser\Sample PEG Console Parser.csproj", "{00DB7DAB-192C-4189-9723-898DBE61A276}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C1DDE212-68D9-4CD2-9B44-FDE1D44AFD26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1DDE212-68D9-4CD2-9B44-FDE1D44AFD26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1DDE212-68D9-4CD2-9B44-FDE1D44AFD26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1DDE212-68D9-4CD2-9B44-FDE1D44AFD26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9913580D-1543-40D5-B463-14C95BF3120C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9913580D-1543-40D5-B463-14C95BF3120C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9913580D-1543-40D5-B463-14C95BF3120C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9913580D-1543-40D5-B463-14C95BF3120C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDED1663-CDEA-44B1-8589-8338D6B68656}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDED1663-CDEA-44B1-8589-8338D6B68656}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDED1663-CDEA-44B1-8589-8338D6B68656}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDED1663-CDEA-44B1-8589-8338D6B68656}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00DB7DAB-192C-4189-9723-898DBE61A276}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00DB7DAB-192C-4189-9723-898DBE61A276}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00DB7DAB-192C-4189-9723-898DBE61A276}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00DB7DAB-192C-4189-9723-898DBE61A276}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

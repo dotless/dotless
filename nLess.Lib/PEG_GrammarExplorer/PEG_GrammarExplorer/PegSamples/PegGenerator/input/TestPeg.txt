@@ -1,0 +1,14 @@
+<<Grammar Name="TestPeg">>
+[1] Test1: [["':({}}];
+[2] Test2: '\'[":({}]}';
+[3] Test3: '\'["}';
+[4] Test4: (((Test1)))Test2;
+[5] Test5: #x25#b11#30;
+[10]name_list: list<name,','>;
+[11]list<operand,separator>:	
+			binary<operand,separator>;
+[12]binary<operand,operator>:
+			operand S (operator S @operand S)* ;
+[13]name: [A-Za-z_][A-Za-z_0-9]*;
+[14]S:    [ \r\t\v\n]*;
+<</Grammar>>

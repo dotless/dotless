@@ -1,0 +1,15 @@
+<<Grammar Name="calc0_tree">>
+[1]^^Calc:  ((^'print' / Assign / Sum) 
+            ([\r\n]/!./FATAL<"end of line expected">)
+            [ \r\n\t\v]* )+ 
+            (!./FATAL<"not recognized">); 
+[2]^Assign:S ident S '=' S Sum;           
+[3]^Sum:   Prod  (^[+-] S @Prod)*;
+[4]^Prod:  Value (^[*/] S @Value)*;  
+[5] Value: (Number/'('S Sum @')'S/Call/ident) S;
+[6]^Call:   ident S '(' @Sum @')' S;
+[7]^Number:[0-9]+ ('.' [0-9]+)?([eE][+-][0-9]+)?;
+[8]^ident: [A-Za-z_][A-Za-z_0-9]*;
+[9] S:	    [ \t\v]*;
+<</Grammar>>
+

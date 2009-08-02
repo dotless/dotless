@@ -1,0 +1,9 @@
+SCC = This is a Source Code Control file
+
+[PEG Explorer Solution.sln]
+SCC_Aux_Path = "\\pcibdatsrv\ibaa Daten\Daten\INFOBRAIN\Visual SourceSafe"
+SCC_Project_Name = "$/IB/PEG Explorer Solution", EJODAAAA
+
+[PEG_GrammarExplorer.sln]
+SCC_Aux_Path = "\\pcibdatsrv\ibaa Daten\Daten\INFOBRAIN\Visual SourceSafe"
+SCC_Project_Name = "$/IB/PEG_GrammarExplorer", EJODAAAA
