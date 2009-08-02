@@ -51,6 +51,9 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Unit\engine\Literals\ColorFixture.cs" />
+    <Compile Include="Unit\engine\Literals\FontFamilyFixtures.cs" />
+    <Compile Include="Unit\engine\Literals\StringFixture.cs" />
+    <Compile Include="Unit\engine\Literals\NumberFixtures.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\nless.Core\nless.Core.csproj">

@@ -90,5 +90,15 @@ namespace nLess.Test.Unit.engine.Literals
             Assert.AreEqual(200, color.G);
             Assert.AreEqual(255, color.B);
         }
+
+        [Test]
+        public void CanRetrieveColorHex()
+        {
+            var color = new Color(255, 255, 255);
+            Assert.AreEqual("#FFFFFF", color.ToCss());
+
+            color = new Color(0, 0, 0);
+            Assert.AreEqual("#000000", color.ToCss());
+        }
     }
 }
