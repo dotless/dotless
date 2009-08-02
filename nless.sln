@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nless.Core", "nless.Core\nless.Core.csproj", "{D7A24E58-68D0-4B10-A324-EA33C822FA56}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D7A24E58-68D0-4B10-A324-EA33C822FA56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7A24E58-68D0-4B10-A324-EA33C822FA56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7A24E58-68D0-4B10-A324-EA33C822FA56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7A24E58-68D0-4B10-A324-EA33C822FA56}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
