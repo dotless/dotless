@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace nless.Core.engine.nodes
+namespace nless.Core.engine
 {
     public class Selectors : Dictionary<string, Func<Selector>> 
     {
@@ -16,14 +16,13 @@ namespace nless.Core.engine.nodes
         }
     }
 
-
     public class Selector : Entity
     {
-        private static readonly Selectors _selectors = new Selectors();
+        private static readonly Selectors Selectors = new Selectors();
 
         public static Selector Get(string key)
         {
-            return _selectors[key].Invoke();
+            return Selectors[key].Invoke();
         }
     }
 

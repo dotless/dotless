@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Evaluator, Version=1.0.3505.38368, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\nLess.Lib\Evaluator.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework, Version=2.5.1.9189, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\nLess.Lib\NUnit\nunit.framework.dll</HintPath>
@@ -54,6 +58,8 @@
     <Compile Include="Unit\engine\Literals\FontFamilyFixtures.cs" />
     <Compile Include="Unit\engine\Literals\StringFixture.cs" />
     <Compile Include="Unit\engine\Literals\NumberFixtures.cs" />
+    <Compile Include="Unit\engine\PropertyFixture.cs" />
+    <Compile Include="Unit\utils\CsCodeDomFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\nless.Core\nless.Core.csproj">

@@ -1,5 +1,5 @@
-﻿using NUnit.Framework;
-using String=nless.Core.engine.nodes.Literals.String;
+﻿using nless.Core.engine;
+using NUnit.Framework;
 
 namespace nLess.Test.Unit.engine.Literals
 {

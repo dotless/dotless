@@ -1,9 +1,14 @@
-﻿namespace nless.Core.engine.nodes.Literals
+﻿namespace nless.Core.engine
 {
     public class Number : Literal
     {
         //Have to wrap float instead of extending
         new internal float Value { get; set; }
+
+        public Number(float value)
+        {
+            Value = value;
+        }
 
         public Number(string unit, float value)
         {
@@ -14,6 +19,15 @@
         public override string ToString()
         {
             return string.Format("{0}{1}", Value, Unit);
+        }
+
+        public override string ToCSharp()
+        {
+            return Value.ToString();
+        }
+        public override string ToCss()
+        {
+            return string.Format("{0}{1}", Value, Unit ?? "");
         }
       //TODO: Dont get this
       //def to_css

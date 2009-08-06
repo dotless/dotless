@@ -47,13 +47,16 @@
   <ItemGroup>
     <Compile Include="engine\nodes\Element.cs" />
     <Compile Include="engine\nodes\Entity.cs" />
+    <Compile Include="engine\nodes\Expression.cs" />
     <Compile Include="engine\nodes\Literal.cs" />
     <Compile Include="engine\nodes\Literals\Color.cs" />
     <Compile Include="engine\nodes\Literals\Font.cs" />
     <Compile Include="engine\nodes\Literals\Number.cs" />
     <Compile Include="engine\nodes\Literals\String.cs" />
+    <Compile Include="engine\nodes\Property.cs" />
     <Compile Include="engine\nodes\Selector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="utils\CSEval.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

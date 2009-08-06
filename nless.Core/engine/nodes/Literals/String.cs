@@ -1,4 +1,4 @@
-﻿namespace nless.Core.engine.nodes.Literals
+﻿namespace nless.Core.engine
 {
     public class String : Literal
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace nless.Core.engine.nodes.Literals
+namespace nless.Core.engine
 {
     public class Color : Literal
     {
@@ -11,12 +11,12 @@ namespace nless.Core.engine.nodes.Literals
         public int B { get; set; }
         public int A { get; set; }
 
-        public Color(object r, object g, object b)
+        public Color(int r, int g, int b)
             : this(r, g, b, 1)
         {
         }
 
-        public Color(object r, object g, object b, int a)
+        public Color(int r, int g, int b, int a)
         {
             R = Normailze(Convert.ToInt16(r));
             G = Normailze(Convert.ToInt16(g));
@@ -116,6 +116,10 @@ namespace nless.Core.engine.nodes.Literals
         public override string ToCss()
         {
             return ToString();
+        }
+        public override string ToCSharp()
+        {
+            return string.Format("new Color({0},{1},{2},{3})", R, G, B, A);
         }
         public override string Inspect()
         {

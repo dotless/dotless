@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace nless.Core.engine.nodes
+﻿namespace nless.Core.engine
 {
     public class Literal : Entity
     {
@@ -11,17 +6,19 @@ namespace nless.Core.engine.nodes
         {
         }
 
-        internal string Value { get; set; }
+        public Literal(string value) : base(value)
+        {
+        }
+
+        public Literal(string value, INode parent) : base(value, parent)
+        {
+        }
+
         public string Unit { get; set; }
 
         public override string ToString()
         {
             return Value;
-        }
-
-        public Literal(string value)
-        {
-            Value = value;
         }
     }
 }

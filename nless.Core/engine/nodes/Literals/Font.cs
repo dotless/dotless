@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Linq;
 
-namespace nless.Core.engine.nodes.Literals
+namespace nless.Core.engine
 {
     public class Font : Literal
     {
