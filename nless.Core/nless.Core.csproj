@@ -55,6 +55,7 @@
     <Compile Include="engine\nodes\Literals\String.cs" />
     <Compile Include="engine\nodes\Property.cs" />
     <Compile Include="engine\nodes\Selector.cs" />
+    <Compile Include="engine\nodes\Variable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="utils\CSEval.cs" />
   </ItemGroup>

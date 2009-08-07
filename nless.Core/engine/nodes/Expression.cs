@@ -12,9 +12,13 @@ namespace nless.Core.engine
         public INode Parent { get; set; }
         public string ToCss()
         {
-            return "";
+            var sb = new StringBuilder();
+            foreach (var node in this)
+            {
+                sb.AppendFormat(" {0} ", node.ToCss());
+            }
+            return sb.ToString();
         }
-
         public string ToCSharp()
         {
             var sb = new StringBuilder();
@@ -74,8 +78,7 @@ namespace nless.Core.engine
         {
             if(this.Count() > 2 || !Terminal)
             {
-                for (var i=0; i<Count; i++)
-                {
+                for (var i=0; i<Count; i++){
                     this[i] = this[i] is IEvaluatable ? ((IEvaluatable)this[i]).Evaluate() : this[i];
                 }
                 var result = Operators.Count() == 0 ? this : CsEval.Eval(ToCSharp());
@@ -91,7 +94,7 @@ namespace nless.Core.engine
                                      ? ((Expression)result).First()
                                      : (Expression)result;
                 else returnNode = entity is Number && unit.Count() > 0
-                                     ? (INode)Activator.CreateInstance(entity.GetType(), result, unit.First())  
+                                     ? (INode)Activator.CreateInstance(entity.GetType(), unit.First(), result)  
                                      : (INode)Activator.CreateInstance(entity.GetType(), result);
                 return returnNode;
             }

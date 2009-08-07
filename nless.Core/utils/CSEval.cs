@@ -13,7 +13,6 @@ namespace nless.Core.utils
             var cp = new CompilerParameters();
             cp.ReferencedAssemblies.Add("system.dll");
             cp.ReferencedAssemblies.Add("nless.Core.dll");
-
             cp.GenerateExecutable = false;
             cp.GenerateInMemory = true;
 

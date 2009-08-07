@@ -7,7 +7,7 @@ namespace nless.Core.engine
     {
         public string Key { get; set; }
         new public Expression Value { get; set; }
-        private bool _eval = false;
+        protected bool _eval = false;
         private bool Empty
         {
             get
@@ -36,6 +36,7 @@ namespace nless.Core.engine
             }
             Value = new Expression(value, this);
             _eval = false;
+            Parent = parent;
         }
 
         public void Add(INode token)
@@ -68,7 +69,7 @@ namespace nless.Core.engine
         //end
 
         //TODO: This is wrong, but god knows what this should be
-        public INode Evaluate()
+        public virtual INode Evaluate()
         {
             return Value.Evaluate();
         }

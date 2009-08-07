@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using System.Linq;
+
+#endregion
 
 namespace nless.Core.engine
 {
@@ -9,24 +13,46 @@ namespace nless.Core.engine
         string ToCss();
         string ToCSharp();
     }
+
     public class Entity : INode
     {
-
-        public INode Parent { get; set; }
-        public string Value { get; set;}
-
         protected Entity()
         {
         }
+
         public Entity(string value)
-            : this(value,null)
-        { 
+            : this(value, null)
+        {
         }
+
         public Entity(string value, INode parent)
         {
             Value = value;
             Parent = parent;
         }
+
+        public string Value { get; set; }
+
+        public INode Last
+        {
+            get { return Path(null).Last(); }
+        }
+
+        #region INode Members
+
+        public INode Parent { get; set; }
+
+        public virtual string ToCss()
+        {
+            return Value;
+        }
+
+        public virtual string ToCSharp()
+        {
+            return Value;
+        }
+
+        #endregion
 
         /// <summary>
         /// Returns the path from any given node, to the root
@@ -36,8 +62,8 @@ namespace nless.Core.engine
         public IList<INode> Path(INode node)
         {
             var path = new List<INode>();
-            if(node==null) node = this;
-            while(node!=null)
+            if (node == null) node = this;
+            while (node != null)
             {
                 path.Add(node);
                 node = node.Parent;
@@ -45,26 +71,9 @@ namespace nless.Core.engine
             return path;
         }
 
-        public INode Last
-        {
-            get
-            {
-                return Path(null).Last();
-            }
-        }
-
         public virtual string Inspect()
         {
-            return Value.ToString();
-        }
-
-        public virtual string ToCss()
-        {
-            return Value.ToString();
-        }
-        public virtual string ToCSharp()
-        {
-            return Value.ToString();
+            return Value;
         }
     }
 

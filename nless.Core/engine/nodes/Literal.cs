@@ -2,6 +2,8 @@
 {
     public class Literal : Entity
     {
+        public string Unit { get; set; }
+
         protected Literal()
         {
         }
@@ -13,8 +15,6 @@
         public Literal(string value, INode parent) : base(value, parent)
         {
         }
-
-        public string Unit { get; set; }
 
         public override string ToString()
         {
