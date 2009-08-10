@@ -54,12 +54,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Unit\engine\ElementFixtures.cs" />
     <Compile Include="Unit\engine\Literals\ColorFixture.cs" />
     <Compile Include="Unit\engine\Literals\FontFamilyFixtures.cs" />
     <Compile Include="Unit\engine\Literals\StringFixture.cs" />
     <Compile Include="Unit\engine\Literals\NumberFixtures.cs" />
     <Compile Include="Unit\engine\PropertyFixture.cs" />
     <Compile Include="Unit\utils\CsCodeDomFixture.cs" />
+    <Compile Include="Unit\utils\RegexExtentionsFixtures.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\nless.Core\nless.Core.csproj">

@@ -16,6 +16,7 @@ namespace nLess.Test.Unit.engine
             prop.Add(new Operator("*"));
             prop.Add(new Number(20));
             var newColor = prop.Evaluate();
+            Console.WriteLine(newColor.ToString());
             Assert.AreEqual(newColor.GetType(), typeof(Color));
             Console.WriteLine(prop.ToCss());
         }

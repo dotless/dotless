@@ -12,6 +12,7 @@ namespace nless.Core.engine
         INode Parent { get; set; }
         string ToCss();
         string ToCSharp();
+        IList<INode> Path(INode node);
     }
 
     public class Entity : INode
@@ -70,7 +71,10 @@ namespace nless.Core.engine
             }
             return path;
         }
-
+        public IList<INode> Path()
+        {
+            return Path(this);
+        }
         public virtual string Inspect()
         {
             return Value;

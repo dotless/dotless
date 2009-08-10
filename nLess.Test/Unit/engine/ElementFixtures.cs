@@ -1,0 +1,82 @@
+﻿using System;
+using nless.Core.engine;
+using NUnit.Framework;
+using System.Collections.Generic;
+
+namespace nLess.Test.Unit.engine
+{
+    [TestFixture]
+    public class ElementFixture
+    {
+        [Test]
+        public void CanInstansiateElement()
+        {
+            var element = new Element("El");
+            Assert.AreEqual(element.Name, "El");
+            element = new Element("El", ">");
+            Assert.AreEqual(element.Name, "El");
+            Assert.That(element.Selector is Child);
+        }
+        [Test]
+        public void CanAddSubElements()
+        {
+            var e2 = new Element("E2");
+            var element = new Element("El");
+            element.Add(e2);
+            Assert.That(element.Elements.Contains(e2));
+        }
+
+        [Test]
+        public void CanRetrieveElementPath()
+        {
+            var e2 = new Element("E2");
+            var e3 = new Element("E3");
+            var element = new Element("El");
+            element.Add(e2);
+            e2.Add(e3);
+            Assert.That(e3.Path().Contains(element));
+        }
+
+        [Test]
+        public void CanRetrieveNearestElement()
+        {
+            var root = new Element();
+            var e2 = new Element("E2");
+            var e3 = new Element("#yahoo");
+            var e1 = new Element(".hello");
+            root.Add(e1);
+            root.Add(new Variable("@RootVariable", new Color(1, 1, 1)));
+            e1.Add(e2);
+            e2.Add(e3);
+            e2.Add(new Variable("@Variable", new Color(1, 1, 1)));
+            e2.Add(new Variable("@NumVariable", new Number(10)));
+            var nearestEl = e3.Nearest("@Variable");
+            Assert.AreEqual(nearestEl.ToString(), "@Variable");
+
+            //TODO: Remove this nonsense it isnt a test its just to see ToCSS output 
+            var nodes = new List<INode>
+                            {
+                                new Variable("@Variable", new Color(1, 1, 1)),
+                                new Operator("+"),
+                                new Number(2)
+                            };
+            e1.Add(new Property("color", nodes));
+            var nodesb = new List<INode>
+                            {
+                                new Number("px", 4),
+                                new Operator("*"),
+                                new Variable("@NumVariable")
+                            };
+            e2.Add(new Property("padding", nodesb));
+
+            var nodesc = new List<INode>
+                            {
+                                new Variable("@RootVariable", new Color(1, 1, 1)),
+                                new Operator("+"),
+                                new Variable("@Variable", new Color(1, 1, 1))
+                            };
+            e3.Add(new Property("background-color", nodesc));
+            Console.WriteLine(root.Group().ToCss());
+        }
+    }
+}

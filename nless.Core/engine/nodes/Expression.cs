@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,7 +27,21 @@ namespace nless.Core.engine
             }
             return sb.ToString();
         }
-
+        public IList<INode> Path(INode node)
+        {
+            var path = new List<INode>();
+            if (node == null) node = this;
+            while (node != null)
+            {
+                path.Add(node);
+                node = node.Parent;
+            }
+            return path;
+        }
+        public IList<INode> Path()
+        {
+            return Path(this);
+        }
         public Expression(IEnumerable<INode> arr) : this(arr, null)
         {
         }
@@ -37,11 +50,9 @@ namespace nless.Core.engine
             AddRange(arr); //NOTE: This may not be correct approach 
             Parent = parent;
         }
-
         public bool Terminal {
             get { return Expressions.Count() == 0; }
         }
-
         public IList<Expression> Expressions
         {
             get
