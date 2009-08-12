@@ -38,7 +38,7 @@ namespace nless.Core.engine
     {
         public override string ToCss()
         {
-            return string.Format(" {0} ", this);
+            return string.Format(" > ");
         }
     }
 
@@ -46,7 +46,7 @@ namespace nless.Core.engine
     {
         public override string ToCss()
         {
-            return string.Format(" {0} ", this);
+            return string.Format(" + ");
         }
     }
 
@@ -54,7 +54,7 @@ namespace nless.Core.engine
     {
         public override string ToCss()
         {
-            return ToString();
+            return ":";
         }
     }
 
@@ -62,7 +62,7 @@ namespace nless.Core.engine
     {
         public override string ToCss()
         {
-            return ToString();
+            return "::";
         }
     }
 }

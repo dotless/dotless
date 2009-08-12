@@ -117,16 +117,18 @@ namespace nless.Core.engine
             }
         }
 
-      // def [] key
-      //  case key
-      //    when Entity
-      //      @rules.find {|i| i.eql? key }
-      //    when ::String
-      //      @rules.find {|i| i.to_s == key }
-      //    else raise ArgumentError
-      //  end
-      //end
-
+        public INode Get(string key)
+        {
+            return Rules.Where(r => r.ToString() == key).FirstOrDefault();
+        }
+        public INode Get(INode key)
+        {
+            return Rules.Where(r => r.Equals(key)).FirstOrDefault();
+        }
+        public T GetAs<T>(INode key)
+        {
+            return (T)Rules.Where(r => r.Equals(key)).FirstOrDefault();
+        }
         #region INode Members
 
         public INode Parent { get; set; }
@@ -201,22 +203,31 @@ namespace nless.Core.engine
             foreach(var prop in Properties){
                 properties.AppendLine(string.Format("  {0}", prop.ToCss()));
             }
-            var pathList = path.Where(e => e!= string.Empty).ToList();
-            pathList.AddRange(Set.Select(s => s.Name));
-
+            var setContent = GetElementContent(path);
             var ruleset = properties.Length != 0 ?
-                              (string.Join(",", pathList.Distinct().ToArray()) +
+                              (setContent + 
                               string.Format("{{{0}}}\n", properties)).Substring(2)
                               : "";
             return ruleset + GetChildCss(path);
         }
 
-        private string GetChildCss(IList<string> path)
+        private string GetElementContent(IEnumerable<string> path)
+        {
+            var pathList = path.Where(e => e != string.Empty).ToList().Distinct().ToArray();
+            var setList = Set.Select(s=> s.Name).Distinct()
+                .Where(r => !pathList.Contains(r)).Distinct().ToArray();
+         
+            //N.B. Im sure this isnt right but im doing it this way after fucking around with IRB and getting simmilar results as this would cause
+            var elementContent = string.Join(" ", pathList) + string.Join("", setList.Select(s => string.Format(",{0}", s)).ToArray());
+            return elementContent;
+        }
+
+        private string GetChildCss(IEnumerable<string> path)
         {
             var css = new StringBuilder();
             foreach(var element in Elements)
             {
-                css.Append(element.ToCss(path));
+                css.Append(element.ToCss(new List<string>(path)));
             }
             return css.ToString();
         }
@@ -252,14 +263,16 @@ namespace nless.Core.engine
 
             foreach (var element in Elements){
                 var e = stack.First();
-                stack.Pop();
+                
                 if(!matched) result.Add(e);
                 matched = true;
 
                 if (stack.Count() > 1){
-                    foreach (var ee in stack){
-                        if (ee.IsEquiv(e) && e.Elements.Count > 0){
-                            Set.Add(ee);
+                    for (var i = 1; i < stack.Count; i++ ){
+                        var ee = stack.ToArray()[i];
+                        if (ee.IsEquiv(e) && e.Elements.Count == 0){
+                            GetAs<Element>(e).Set.Add(ee);
+                            //Set.Add(ee);
                             stack.Pop();
                         }
                         else{
@@ -271,8 +284,10 @@ namespace nless.Core.engine
                 }
             }
             var grpEls = Elements.Where(e => !result.Contains(e)).ToList();
-            foreach (var gpEl in grpEls)
-                Rules.Remove(gpEl);
+            if (grpEls.Count > 0){
+                foreach (var gpEl in grpEls)
+                    Rules.Remove(gpEl);
+            }
             return this;
         }
 

@@ -41,10 +41,14 @@ namespace nLess.Test.Unit.engine
         public void CanRetrieveNearestElement()
         {
             var root = new Element();
-            var e2 = new Element("E2");
+            var e2 = new Element("E2", ">");
             var e3 = new Element("#yahoo");
             var e1 = new Element(".hello");
+            var e1_sibling = new Element(".goodbye");
+            var e1_siblingb = new Element(".helloAgain");
             root.Add(e1);
+            root.Add(e1_sibling);
+            root.Add(e1_siblingb);
             root.Add(new Variable("@RootVariable", new Color(1, 1, 1)));
             e1.Add(e2);
             e2.Add(e3);
@@ -61,12 +65,17 @@ namespace nLess.Test.Unit.engine
                                 new Number(2)
                             };
             e1.Add(new Property("color", nodes));
+            e1_sibling.Add(new Property("color", nodes));
+            e1_siblingb.Add(new Property("color", nodes));
             var nodesb = new List<INode>
                             {
                                 new Number("px", 4),
                                 new Operator("*"),
                                 new Variable("@NumVariable")
                             };
+
+
+
             e2.Add(new Property("padding", nodesb));
 
             var nodesc = new List<INode>
