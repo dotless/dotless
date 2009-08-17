@@ -1,0 +1,13 @@
+﻿@forty : 20 * 2;
+@black : #FFFFFF;
+
+.main
+{
+    background-color: @black;
+    height: @forty * 3;
+    
+    .sub
+    {
+        background: @black - 20;
+    }
+}

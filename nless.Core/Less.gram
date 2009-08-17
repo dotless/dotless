@@ -1,0 +1,33 @@
+﻿<<Grammar Name="nLess">>
+
+//******************************************** Less
+^^Parse:  (comment/declaration)*;
+^^comment: ws '/*' (!'*/' . )* '*/' ws / ws '//' (![\n] .)* [\n] ws;
+^^declaration:  ws (ident / variable)  s ':' s expressions  s (';'/ ws &'}') ws  ;
+^^ident: ('*'/'-'/[-a-z0-9_]+);
+^^variable: '@' [-a-zA-Z0-9_]+; 
+^^expressions: expression (operator expression)+ / expression (WS expression)* / [-a-zA-Z0-9_%*/.&=:,#+? \[\]()]+;
+^^expression: '(' s expressions s ')' / entity ;
+^^operator: S [-+*/] S / [-+*/] ;
+
+//******************************************** Entity
+^^entity :  fonts / keyword  / variable / literal ; //accessor & function missing
+^^fonts : font (s ',' s font)+  ;
+^^font: [a-zA-Z] [-a-zA-Z0-9]* ;
+^^literal: color / (dimension / [-a-z]+) '/' dimension / number unit / string ;
+^^keyword: [-a-zA-Z]+ !ns;
+^^string: ['] (!['] . )* ['];
+^^dimension: number unit;
+^^number: '-'? [0-9]* '.' [0-9]+ / '-'? [0-9]+;
+^^unit: ('px'/'em'/'pc'/'%'/'ex'/'s'/'pt'/'cm'/'mm')?;
+^^color: '#' rgb;
+^^rgb:(hex hex)(hex hex)(hex hex);
+^^hex: [a-fA-F0-9];
+
+//******************************************** Common
+WS: [ \r\n]+;
+ws: [ \r\n]*;
+s:  [ ]*;
+S:  [ ]+;
+ns: ![ ;\n] .;
+<</Grammar>>

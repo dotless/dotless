@@ -11,6 +11,11 @@ namespace nless.Core.engine
     {
         public INode _eval { get; set; }
 
+        public Property(string key)
+            : this(key, new List<INode>(), null)
+        {
+        }
+
         public Property(string key, INode value)
             : this(key, value, null)
         {

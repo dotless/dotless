@@ -1,0 +1,28 @@
+﻿<<Grammar Name="nLess">>
+Top{
+  nless.Core.engine.Element root;
+  bool INIT() { root = new nless.Core.engine.Element() ; return true; }
+  bool SETENV() { nless.Core.parser.ParserWrapper.Env = root ; return true; }
+}
+Parse:  INIT primary SETENV ;
+primary: (comment/declaration)*;
+comment: ws '/*' (!'*/' . )* '*/' ws / ws '//' (![\n] .)* [\n] ws;
+declaration
+{
+	string name;
+	bool BUILD() 
+		{ 
+			root.Add(new nless.Core.engine.Property(name));
+			return true; 
+		}
+}:  ws (ident / variable):name  BUILD s ':' s expressions  s (';'/ ws &'}') ws  ;
+ident: ('*'/'-'/[-a-z0-9_]+);
+variable: '@' [-a-zA-Z0-9_]+; 
+expressions: expression (operator expression)* / expression (WS expression)* / [-a-zA-Z0-9_%*/.&=:,#+? \[\]()]+;
+expression: '(' s expressions s ')' ;
+operator: S [-+*/] S / [-+*/];
+WS: [ \r\n]+;
+ws: [ \r\n]*;
+s:  [ ]*;
+S:  [ ]+;
+<</Grammar>>
