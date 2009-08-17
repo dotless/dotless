@@ -1,7 +1,8 @@
 ﻿<<Grammar Name="nLess">>
 
 //******************************************** Less
-^^Parse:  (comment/declaration)*;
+Parse:  primary;
+^^primary: (comment/ ruleset /declaration)*;
 ^^comment: ws '/*' (!'*/' . )* '*/' ws / ws '//' (![\n] .)* [\n] ws;
 ^^declaration:  ws (ident / variable)  s ':' s expressions  s (';'/ ws &'}') ws  ;
 ^^ident: ('*'/'-'/[-a-z0-9_]+);
@@ -9,6 +10,19 @@
 ^^expressions: expression (operator expression)+ / expression (WS expression)* / [-a-zA-Z0-9_%*/.&=:,#+? \[\]()]+;
 ^^expression: '(' s expressions s ')' / entity ;
 ^^operator: S [-+*/] S / [-+*/] ;
+^^ruleset : selectors [{] ws primary ws [}] ws /  ws selectors ';' ws;
+^^selectors :  ws selector (s ',' ws selector)* ws ;
+^^selector : (s select element s)+ arguments? ;
+^^arguments : '(' s argument s (',' s argument s)* ')';
+^^argument : color / number unit / string / [a-zA-Z]+ '=' dimension / [-a-zA-Z0-9_%$/.&=:;#+?]+ / function / keyword (S keyword)*;
+^^element : (class_id / tag / ident) attribute* ('(' ident? attribute* ')')? / attribute+ / '@media' / '@font-face';
+^^class_id : tag? (class / id)+;
+^^attribute :  '[' tag ([|~*$^]? '=') (tag / string) ']' / '[' (tag / string) ']';
+^^class:  '.' [_a-zA-Z] [-a-zA-Z0-9_]*;
+^^id: '#' [_a-zA-Z] [-a-zA-Z0-9_]*;
+^^tag : [a-zA-Z] [-a-zA-Z]* [0-9]? / '*';
+^^select : (s [+>~] s / '::' / s ':' / S)?;
+^^function: ([-a-zA-Z_]+) arguments ;
 
 //******************************************** Entity
 ^^entity :  fonts / keyword  / variable / literal ; //accessor & function missing
@@ -16,7 +30,7 @@
 ^^font: [a-zA-Z] [-a-zA-Z0-9]* ;
 ^^literal: color / (dimension / [-a-z]+) '/' dimension / number unit / string ;
 ^^keyword: [-a-zA-Z]+ !ns;
-^^string: ['] (!['] . )* ['];
+^^string: ['] (!['] . )* ['] / ["] (!["] . )* ["] ;
 ^^dimension: number unit;
 ^^number: '-'? [0-9]* '.' [0-9]+ / '-'? [0-9]+;
 ^^unit: ('px'/'em'/'pc'/'%'/'ex'/'s'/'pt'/'cm'/'mm')?;

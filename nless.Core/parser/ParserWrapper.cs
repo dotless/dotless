@@ -32,10 +32,11 @@ namespace nless.Core.parser
             {
                 Console.WriteLine("SUCCESS: Json Parser matched input file");
                 var root = parser.GetRoot();
-                var walker = new TreeWalker(root, src);
-                var nLessRoot = walker.Walk();
-                Console.WriteLine(nLessRoot.ToCss());
+                //var walker = new TreeWalker(root, src);
+                //var nLessRoot = walker.Walk();
+                //Console.WriteLine(nLessRoot.ToCss());
 
+                var tw = new StreamWriter(File.OpenWrite("out.txt"));
 
                 var tprint = new TreePrint(Console.Out, src, 60, new NodePrinter(parser).GetNodeName, false);
                 tprint.PrintTree(parser.GetRoot(), 0, 0);
