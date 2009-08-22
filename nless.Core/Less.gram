@@ -1,26 +1,32 @@
 ﻿<<Grammar Name="nLess">>
 
 //******************************************** Less
-Parse:  primary;
-^^primary: (comment/ ruleset /declaration)*;
+^Parse:  primary;
+^^primary: (comment/ declaration/ ruleset)*;
 ^^comment: ws '/*' (!'*/' . )* '*/' ws / ws '//' (![\n] .)* [\n] ws;
-^^declaration:  ws (ident / variable)  s ':' s expressions  s (';'/ ws &'}') ws  ;
+^^declaration:  standard_declaration / catchall_declaration ;
+^^standard_declaration: ws (ident / variable)  s ':' s expressions  s (';'/ ws &'}') ws ;
+^^catchall_declaration:  ws ident s ':' s ';' ws ;
 ^^ident: ('*'/'-'/[-a-z0-9_]+);
 ^^variable: '@' [-a-zA-Z0-9_]+; 
-^^expressions: expression (operator expression)+ / expression (WS expression)* / [-a-zA-Z0-9_%*/.&=:,#+? \[\]()]+;
-^^expression: '(' s expressions s ')' / entity ;
+^^expressions: operation_expressions / space_delimited_expressions / [-a-zA-Z0-9_%*/.&=:,#+? \[\]()]+;
+^^operation_expressions:  expression (operator expression)+;
+^^space_delimited_expressions: expression (WS expression)*;
+^expression: '(' s expressions s ')' / entity ;
 ^^operator: S [-+*/] S / [-+*/] ;
-^^ruleset : selectors [{] ws primary ws [}] ws /  ws selectors ';' ws;
+^^ruleset : standard_ruleset / mixin_ruleset;
+^^standard_ruleset: ws selectors [{] ws primary ws [}] ws;
+^^mixin_ruleset :  ws selectors ';' ws; 
 ^^selectors :  ws selector (s ',' ws selector)* ws ;
 ^^selector : (s select element s)+ arguments? ;
 ^^arguments : '(' s argument s (',' s argument s)* ')';
 ^^argument : color / number unit / string / [a-zA-Z]+ '=' dimension / [-a-zA-Z0-9_%$/.&=:;#+?]+ / function / keyword (S keyword)*;
-^^element : (class_id / tag / ident) attribute* ('(' ident? attribute* ')')? / attribute+ / '@media' / '@font-face';
-^^class_id : tag? (class / id)+;
-^^attribute :  '[' tag ([|~*$^]? '=') (tag / string) ']' / '[' (tag / string) ']';
-^^class:  '.' [_a-zA-Z] [-a-zA-Z0-9_]*;
-^^id: '#' [_a-zA-Z] [-a-zA-Z0-9_]*;
-^^tag : [a-zA-Z] [-a-zA-Z]* [0-9]? / '*';
+^element : (class_id / tag / ident) attribute* ('(' ident? attribute* ')')? / attribute+ / '@media' / '@font-face';
+^class_id : tag? (class / id)+;
+^attribute :  '[' tag ([|~*$^]? '=') (tag / string) ']' / '[' (tag / string) ']';
+^class:  '.' [_a-zA-Z] [-a-zA-Z0-9_]*;
+^id: '#' [_a-zA-Z] [-a-zA-Z0-9_]*;
+^tag : [a-zA-Z] [-a-zA-Z]* [0-9]? / '*';
 ^^select : (s [+>~] s / '::' / s ':' / S)?;
 ^^function: ([-a-zA-Z_]+) arguments ;
 
@@ -31,7 +37,7 @@ Parse:  primary;
 ^^literal: color / (dimension / [-a-z]+) '/' dimension / number unit / string ;
 ^^keyword: [-a-zA-Z]+ !ns;
 ^^string: ['] (!['] . )* ['] / ["] (!["] . )* ["] ;
-^^dimension: number unit;
+^^dimension: number WS unit;
 ^^number: '-'? [0-9]* '.' [0-9]+ / '-'? [0-9]+;
 ^^unit: ('px'/'em'/'pc'/'%'/'ex'/'s'/'pt'/'cm'/'mm')?;
 ^^color: '#' rgb;

@@ -28,7 +28,20 @@ namespace nless.Core.engine
         public List<Element> Set { get; set; }
         public string Name { get; set; }
         public Selector Selector { get; set; }
-
+        public Element Last
+        {
+            get
+            {
+                return Elements.LastOrDefault();
+            }
+        }
+       public Element First
+        {
+            get
+            {
+                return Elements.FirstOrDefault();
+            }
+        }
         public bool IsTag
         {
             get { return !IsId || !IsClass || !IsUniversal; }
