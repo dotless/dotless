@@ -1,4 +1,4 @@
-/* created on 22/08/2009 00:47:25 from peg generator V1.0 using '' as input*/
+/* created on 23/08/2009 12:25:00 from peg generator V1.0 using '' as input*/
 
 using Peg.Base;
 using System;
@@ -173,10 +173,10 @@ namespace nLess
                      expression()
                   && OptRepeat(()=> And(()=>    WS() && expression() ) ) ) );
 		}
-        public bool expression()    /*^expression: '(' s expressions s ')' / entity ;*/
+        public bool expression()    /*^^expression: '(' s expressions s ')' / entity ;*/
         {
 
-           return TreeAST((int)EnLess.expression,()=>
+           return TreeNT((int)EnLess.expression,()=>
                   
                      And(()=>    
                          Char('(')
@@ -462,14 +462,24 @@ namespace nLess
            return TreeNT((int)EnLess.color,()=>
                 And(()=>    Char('#') && rgb() ) );
 		}
-        public bool rgb()    /*^^rgb:(hex hex)(hex hex)(hex hex);*/
+   class _rgb{
+   	internal string r,g,b;
+       internal _rgb(nLess grammarClass){ parent_ = grammarClass; }
+       nLess parent_;
+       }
+        public bool rgb()    /*^^rgb
+{
+	string r,g,b;
+}:(hex hex):r (hex hex):g (hex hex):b ;*/
         {
+
+             var _sem= new _rgb(this);
 
            return TreeNT((int)EnLess.rgb,()=>
                 And(()=>  
-                     And(()=>    hex() && hex() )
-                  && And(()=>    hex() && hex() )
-                  && And(()=>    hex() && hex() ) ) );
+                     Into(()=> And(()=>    hex() && hex() ),out _sem.r)
+                  && Into(()=> And(()=>    hex() && hex() ),out _sem.g)
+                  && Into(()=> And(()=>    hex() && hex() ),out _sem.b) ) );
 		}
         public bool hex()    /*^^hex: [a-fA-F0-9];
 

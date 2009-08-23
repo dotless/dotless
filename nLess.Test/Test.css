@@ -1,9 +1,14 @@
-﻿p, a > .test, td
+﻿@std_pad: 10px;
+
+a
 {
-    border:solid 2px red;
+    padding: @std_pad;
+    @inner_pad: 100px;
+    
     .inner
     {
-        padding:5px + 10;
+        @std_pad: 50px; //Inner variable scoping //
+        padding: @std_pad + 10;
+        margin: @inner_pad;
     }
-    padding:5px;
 }

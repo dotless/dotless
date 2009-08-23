@@ -12,7 +12,7 @@
 ^^expressions: operation_expressions / space_delimited_expressions / [-a-zA-Z0-9_%*/.&=:,#+? \[\]()]+;
 ^^operation_expressions:  expression (operator expression)+;
 ^^space_delimited_expressions: expression (WS expression)*;
-^expression: '(' s expressions s ')' / entity ;
+^^expression: '(' s expressions s ')' / entity ;
 ^^operator: S [-+*/] S / [-+*/] ;
 ^^ruleset : standard_ruleset / mixin_ruleset;
 ^^standard_ruleset: ws selectors [{] ws primary ws [}] ws;

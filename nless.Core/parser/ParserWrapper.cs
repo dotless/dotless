@@ -107,11 +107,17 @@ namespace nless.Core.parser
              {
                  node = node.child_;
                  var name = node.GetAsString(Src).Replace(" ", "");
-                 var property = new Property(name);
-                 var experssions = Expressions(node.next_, element);
-                 foreach(var expression in experssions)
-                     property.Add(expression);
-                 element.Add(property);
+
+                 if (name.Substring(0, 1) == "@")
+                 {
+                     var property = new Variable(name, Expressions(node.next_, element));
+                     element.Add(property);
+                 }
+                 else
+                 {
+                     var property = new Property(name, Expressions(node.next_, element));
+                     element.Add(property);
+                 }
              }
              else if(node.id_.ToEnLess() == EnLess.catchall_declaration)
              {
@@ -119,79 +125,120 @@ namespace nless.Core.parser
                 //TODO: Should I be doing something here?
              }
 
-            /*
-           (name.text_value =~ /^@/ ? 
-            Node::Variable : Node::Property).new(name.text_value, expressions.build(env), env)
-           */
         }
 
         private IList<INode> Expressions(PegNode node, Element element)
         {
-            var lessNodes = new List<INode>();
             node = node.child_; // Expression
-            while (node != null){
-                switch (node.id_.ToEnLess())
-                {
-                    case EnLess.operation_expressions:
-                        foreach(var exprNode in Expression(node.child_, element))
-                            lessNodes.Add(exprNode);
-                        node = node.next_;
-                        while (node!=null)
-                        {
-                            if (node.id_.ToEnLess() == EnLess.@operator)
-                                lessNodes.Add(new Operator(node.GetAsString(Src)));
-                            else if (node.id_.ToEnLess() == EnLess.expressions)
-                                Expressions(node, element);
-                            node = node.next_;
-                        }
-                        break;
-                    case EnLess.space_delimited_expressions:
-
-                        break;
-                }
-                node = node.next_;
-            }
-            
-            return lessNodes;
-        }
-
-        private IList<INode> Expression(PegNode node, Element element)
-        {
-            var expression = new List<INode>();
-            while (node != null)
-            {
-                switch (node.id_.ToEnLess())
-                {
-                    case EnLess.expressions:
-                        expression.AddRange(Expressions(node.child_, element));
-                        break;
-                    case EnLess.entity:
-                        expression.Add(new Expression(Entity(node.child_, element)));
-                        break;
-                }
-                node = node.next_;
-            }
-            return expression;
-        }
-
-        private IList<INode> Entity(PegNode node, Element element)
-        {
-            var nodes = new List<INode>();
-            if (node.id_.ToEnLess()==EnLess.literal) node = node.child_;
             switch (node.id_.ToEnLess())
             {
+                case EnLess.operation_expressions:
+                    return OperationExpressions(node.child_, element);
+                    break;
+                case EnLess.space_delimited_expressions:
+                    return SpaceDelimitedExpressions(node.child_, element);
+                    break;
+            }
+            return new List<INode>();
+        }
+
+        //expression tail:(operator expression)+ 
+        private IList<INode> OperationExpressions(PegNode node, Element element)
+        {
+            var lessNodes = new List<INode>();
+            lessNodes.Add(Expression(node.child_, element)); //First expression
+            node = node.next_;
+            
+            //Tail
+            while(node!=null){
+                switch (node.id_.ToEnLess())
+                {
+                    case EnLess.@operator:
+                        lessNodes.Add(new Operator(node.GetAsString(Src)));
+                        break;
+                    case EnLess.expression:
+                        lessNodes.Add(Expression(node.child_, element)); ;
+                        break;
+                }
+                node = node.next_;
+            }
+
+            return lessNodes;
+        }
+        //expression (WS expression)*;
+        private IList<INode> SpaceDelimitedExpressions(PegNode node, Element element)
+        {
+            var lessNodes = new List<INode>();
+            lessNodes.Add(Expression(node.child_, element)); //First expression
+            node = node.next_;
+            
+            //Tail
+            while(node!=null){
+                switch (node.id_.ToEnLess())
+                {
+                    case EnLess.expression:
+                        lessNodes.Add(Expression(node.child_, element)); ;
+                        break;
+                }
+                node = node.next_;
+            }
+
+            return lessNodes;
+        }
+        private INode Expression(PegNode node, Element element)
+        {
+            switch (node.id_.ToEnLess())
+            {
+                case EnLess.expressions:
+                    return new Expression(Expressions(node, element));
+                    break;
+                case EnLess.entity:
+                    return Entity(node.child_, element);
+                    break;
+            }
+            throw new ParsingException("Expression should either be child expressions or an entity");
+        }
+        //fonts / keyword  / variable / literal ;
+        private INode Entity(PegNode node, Element element)
+        {
+            var nodes = new List<INode>();
+            switch (node.id_.ToEnLess())
+            {
+                case EnLess.literal:
+                    return Entity(node.child_, element);
+                    break;
                 case EnLess.number:
-                    var val = float.Parse(node.GetAsString(Src));
-                    var unit = "";
-                    node = node.next_;
-                    if (node != null && node.id_.ToEnLess() == EnLess.unit) unit = node.GetAsString(Src);
-                    nodes.Add(new Number(unit, val));
+                    return Number(node, element);
                     break;
                 case EnLess.color:
+                    return Color(node, element);
+                    break;
+                case EnLess.variable:
+                    return Variable(node, element);
                     break;
             }
 
-            return nodes;
+            return new Anonymous(node.GetAsString(Src));
+        }
+
+        private INode Number(PegNode node, Element element)
+        {
+            var val = float.Parse(node.GetAsString(Src));
+            var unit = "";
+            node = node.next_;
+            if (node != null && node.id_.ToEnLess() == EnLess.unit) unit = node.GetAsString(Src);
+            return new Number(unit, val);
+        }
+
+        private INode Color(PegNode node, Element element)
+        {
+            int r=0, g=0, b=0;
+            return new Color(r, g, b);
+        }
+
+        private INode Variable(PegNode node, Element element)
+        {
+            return new Variable(node.GetAsString(Src));
         }
 
         //ruleset: selectors [{] ws prsimary ws [}] ws /  ws selectors ';' ws;
