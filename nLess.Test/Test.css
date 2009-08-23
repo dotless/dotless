@@ -1,14 +1,10 @@
-﻿@std_pad: 10px;
-
-a
+﻿.span-2
 {
-    padding: @std_pad;
-    @inner_pad: 100px;
-    
-    .inner
-    {
-        @std_pad: 50px; //Inner variable scoping //
-        padding: @std_pad + 10;
-        margin: @inner_pad;
-    }
+    margin-left:1ex;
+}
+
+
+.left-section
+{
+    .span-2;
 }

@@ -41,8 +41,9 @@
 ^^number: '-'? [0-9]* '.' [0-9]+ / '-'? [0-9]+;
 ^^unit: ('px'/'em'/'pc'/'%'/'ex'/'s'/'pt'/'cm'/'mm')?;
 ^^color: '#' rgb;
-^^rgb:(hex hex)(hex hex)(hex hex);
-^^hex: [a-fA-F0-9];
+^rgb:(rgb_node)(rgb_node)(rgb_node);
+^rgb_node : hex hex;
+hex: [a-fA-F0-9];
 
 //******************************************** Common
 WS: [ \r\n]+;

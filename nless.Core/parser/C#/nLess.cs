@@ -1,4 +1,4 @@
-/* created on 23/08/2009 12:25:00 from peg generator V1.0 using '' as input*/
+/* created on 23/08/2009 13:28:07 from peg generator V1.0 using '' as input*/
 
 using Peg.Base;
 using System;
@@ -15,7 +15,8 @@ namespace nLess
                    class_id= 22, attribute= 23, @class= 24, id= 25, tag= 26, select= 27, 
                    function= 28, entity= 29, fonts= 30, font= 31, literal= 32, keyword= 33, 
                    @string= 34, dimension= 35, number= 36, unit= 37, color= 38, 
-                   rgb= 39, hex= 40, WS= 41, ws= 42, s= 43, S= 44, ns= 45};
+                   rgb= 39, rgb_node= 40, hex= 41, WS= 42, ws= 43, s= 44, S= 45, 
+                   ns= 46};
       class nLess : PegCharParser 
       {
         
@@ -462,32 +463,24 @@ namespace nLess
            return TreeNT((int)EnLess.color,()=>
                 And(()=>    Char('#') && rgb() ) );
 		}
-   class _rgb{
-   	internal string r,g,b;
-       internal _rgb(nLess grammarClass){ parent_ = grammarClass; }
-       nLess parent_;
-       }
-        public bool rgb()    /*^^rgb
-{
-	string r,g,b;
-}:(hex hex):r (hex hex):g (hex hex):b ;*/
+        public bool rgb()    /*^rgb:(rgb_node)(rgb_node)(rgb_node);*/
         {
 
-             var _sem= new _rgb(this);
-
-           return TreeNT((int)EnLess.rgb,()=>
-                And(()=>  
-                     Into(()=> And(()=>    hex() && hex() ),out _sem.r)
-                  && Into(()=> And(()=>    hex() && hex() ),out _sem.g)
-                  && Into(()=> And(()=>    hex() && hex() ),out _sem.b) ) );
+           return TreeAST((int)EnLess.rgb,()=>
+                And(()=>    rgb_node() && rgb_node() && rgb_node() ) );
 		}
-        public bool hex()    /*^^hex: [a-fA-F0-9];
+        public bool rgb_node()    /*^rgb_node : hex hex;*/
+        {
+
+           return TreeAST((int)EnLess.rgb_node,()=>
+                And(()=>    hex() && hex() ) );
+		}
+        public bool hex()    /*hex: [a-fA-F0-9];
 
 //******************************************** Common*/
         {
 
-           return TreeNT((int)EnLess.hex,()=>
-                In('a','f', 'A','F', '0','9') );
+           return In('a','f', 'A','F', '0','9');
 		}
         public bool WS()    /*WS: [ \r\n]+;*/
         {

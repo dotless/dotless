@@ -94,6 +94,16 @@ namespace nless.Core.engine
             get { return Rules.Count() == 0; }
         }
 
+
+        public Element GetRoot()
+        {
+            var els = this;
+            while(!els.IsRoot)
+            {
+                els = (Element)els.Parent;
+            }
+            return els;
+        }
         public IList<Property> Identifiers
         {
             get
@@ -132,15 +142,26 @@ namespace nless.Core.engine
 
         public INode Get(string key)
         {
-            return Rules.Where(r => r.ToString() == key).FirstOrDefault();
+            var rules = All().SelectMany(e => e.Rules);
+            foreach(var rule in rules){
+                if (rule.ToString() == key)
+                    return rule;
+            }
+            return null;
         }
+         //@rules.find {|i| i.eql? key 
+
         public INode Get(INode key)
         {
             return Rules.Where(r => r.Equals(key)).FirstOrDefault();
         }
+        public T GetAs<T>(string key)
+        {
+            return (T)Get(key);
+        }
         public T GetAs<T>(INode key)
         {
-            return (T)Rules.Where(r => r.Equals(key)).FirstOrDefault();
+            return (T)Get(key);
         }
         #region INode Members
 
@@ -167,23 +188,16 @@ namespace nless.Core.engine
         }
         #endregion
 
-
-        //TODO: Dont understand why this is called each and not Leafs or what rge &blk all about
-        //TODO: This isnt working, I need to determine wtf is supposed to happen
-        public IEnumerable<ElementPath> Each(Stack<INode> path)
+        public IList<Element> All()
         {
+            var path = new List<Element>();
+            if(!path.Contains(this)) path.Add(this);
             foreach(var element in Elements)
             {
-                path.Push(element);
-                if(element.IsLeaf) yield return new ElementPath(element, path);
-                element.Each(path);
-                path.Pop();
+                path.Add(element);
+                path.AddRange(element.All());
             }
-        }
-
-        public IEnumerable<ElementPath> Each()
-        {
-            return Each(new Stack<INode>());
+            return path;
         }
 
         public struct ElementPath
@@ -245,27 +259,6 @@ namespace nless.Core.engine
             return css.ToString();
         }
 
-
-        //def to_css path = []
-      //  path << @selector.to_css << name unless root?
-
-      //  content = properties.map do |i|
-      //    ' ' * 2 + i.to_css
-      //  end.compact.reject(&:empty?) * "\n"
-
-      //  content = content.include?("\n") ?
-      //    "\n#{content}\n" : " #{content.strip} "
-      //  ruleset = !content.strip.empty??
-      //    "#{[path.reject(&:empty?).join.strip,
-      //    *@set.map(&:name)].uniq * ', '} {#{content}}\n" : ""
-
-      //  css = ruleset + elements.map do |i|
-      //    i.to_css(path)
-      //  end.reject(&:empty?).join
-      //  path.pop; path.pop
-      //  css
-      //end
-
         public Element Group()
         {
             var matched = false;
@@ -303,33 +296,6 @@ namespace nless.Core.engine
             }
             return this;
         }
-
-        //# Group similar rulesets together
-        //# This is horrible, horrible code,
-        //# but it'll have to do until I find
-        //# a proper way to do it.
-        //def group
-        //  matched = false
-        //  stack, result = elements.dup, []                #CO: dup seems to reverse as well as clone
-        //  return self unless elements.size > 1
-
-        //  elements.each do
-        //    e = stack.first                               #CO: First of ones removed
-        //    result << e unless matched                    #CO: Add to result if all elements aren't matched
-
-        //    matched = stack[1..-1].each do |ee|           #CO: get from 1 > end (so every element except the first 
-        //      if e.equiv? ee and e.elements.size == 0     #CO: if css matches and there are no other ELEMENTS below it (other elements below will group later on it)
-        //        self[e].set << ee                         #CO: 
-        //        stack.shift                               #CO: Removes first element of array
-        //      else
-        //        stack.shift                               #CO: Removes first element of array
-        //        break false                               #CO: break loop and return false to matched (else all elements matched)
-        //      end
-        //    end if stack.size > 1                         #CO: Only do if there are items in stack to match against
-        //  end
-        //  @rules -= (elements - result)                   
-        //  self
-        //end
   
         private bool IsEquiv(Element other)
         {
@@ -339,6 +305,24 @@ namespace nless.Core.engine
                     .Where(@t => @t.a.ToCss() != @t.b.ToCss())
                     .Select(@t => @t.a);
             return equiv && differentToCss.Count() == 0;
+        }
+
+        internal Element Descend(Selector selector, Element element)
+        {
+            Selector s = null;
+            if (selector is Child)
+            {
+                s = GetAs<Element>(element.Name).Selector;
+                if (s is Child || s is Descendant) return GetAs<Element>(element.Name);
+            }
+            else if(selector is Descendant)
+                return GetAs<Element>(element.Name);
+            else
+            {
+                s = GetAs<Element>(element.Name).Selector;
+                if (s.GetType() == selector.GetType()) return GetAs<Element>(element.Name);
+            }
+            return null;
         }
 
         public INode Nearest(string ident)
@@ -356,6 +340,10 @@ namespace nless.Core.engine
         public T NearestAs<T>(string ident)
         {
             return (T) Nearest(ident);
+        }
+        public override string ToString()
+        {
+            return IsRoot ? "*" : Name;
         }
 
 /*      def nearest ident
