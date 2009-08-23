@@ -1,10 +1,4 @@
-﻿.span-2
-{
-    margin-left:1ex;
+﻿#shorthands {
+  border: 1px solid #000000;
 }
 
-
-.left-section
-{
-    .span-2;
-}

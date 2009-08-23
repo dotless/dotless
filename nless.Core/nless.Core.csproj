@@ -56,6 +56,7 @@
     <Compile Include="engine\nodes\Literal.cs" />
     <Compile Include="engine\nodes\Literals\Color.cs" />
     <Compile Include="engine\nodes\Literals\Font.cs" />
+    <Compile Include="engine\nodes\Literals\Function.cs" />
     <Compile Include="engine\nodes\Literals\Number.cs" />
     <Compile Include="engine\nodes\Literals\String.cs" />
     <Compile Include="engine\nodes\Property.cs" />

@@ -81,7 +81,7 @@ namespace nless.Core.engine
         }
     }
 
-    public class Anonymous : Entity
+    public class Anonymous : Literal
     {
         protected Anonymous()
         {

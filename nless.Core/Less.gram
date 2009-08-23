@@ -11,7 +11,8 @@
 ^^variable: '@' [-a-zA-Z0-9_]+; 
 ^^expressions: operation_expressions / space_delimited_expressions / [-a-zA-Z0-9_%*/.&=:,#+? \[\]()]+;
 ^^operation_expressions:  expression (operator expression)+;
-^^space_delimited_expressions: expression (WS expression)*;
+^^space_delimited_expressions: expression (WS expression)* important? ;
+^^ important:      s '!' s 'important' ;
 ^^expression: '(' s expressions s ')' / entity ;
 ^^operator: S [-+*/] S / [-+*/] ;
 ^^ruleset : standard_ruleset / mixin_ruleset;
@@ -28,10 +29,11 @@
 ^id: '#' [_a-zA-Z] [-a-zA-Z0-9_]*;
 ^tag : [a-zA-Z] [-a-zA-Z]* [0-9]? / '*';
 ^^select : (s [+>~] s / '::' / s ':' / S)?;
-^^function: ([-a-zA-Z_]+) arguments ;
+^^function: function_name arguments ;
+^^function_name: [-a-zA-Z_]+;
 
 //******************************************** Entity
-^^entity :  fonts / keyword  / variable / literal ; //accessor & function missing
+^^entity :  function / fonts / keyword  / variable / literal ; //accessor missing
 ^^fonts : font (s ',' s font)+  ;
 ^^font: [a-zA-Z] [-a-zA-Z0-9]* ;
 ^^literal: color / (dimension / [-a-z]+) '/' dimension / number unit / string ;

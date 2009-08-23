@@ -1,4 +1,4 @@
-/* created on 23/08/2009 13:28:07 from peg generator V1.0 using '' as input*/
+/* created on 23/08/2009 20:09:13 from peg generator V1.0 using '' as input*/
 
 using Peg.Base;
 using System;
@@ -9,14 +9,14 @@ namespace nLess
       
       enum EnLess{Parse= 1, primary= 2, comment= 3, declaration= 4, standard_declaration= 5, 
                    catchall_declaration= 6, ident= 7, variable= 8, expressions= 9, 
-                   operation_expressions= 10, space_delimited_expressions= 11, expression= 12, 
-                   @operator= 13, ruleset= 14, standard_ruleset= 15, mixin_ruleset= 16, 
-                   selectors= 17, selector= 18, arguments= 19, argument= 20, element= 21, 
-                   class_id= 22, attribute= 23, @class= 24, id= 25, tag= 26, select= 27, 
-                   function= 28, entity= 29, fonts= 30, font= 31, literal= 32, keyword= 33, 
-                   @string= 34, dimension= 35, number= 36, unit= 37, color= 38, 
-                   rgb= 39, rgb_node= 40, hex= 41, WS= 42, ws= 43, s= 44, S= 45, 
-                   ns= 46};
+                   operation_expressions= 10, space_delimited_expressions= 11, important= 12, 
+                   expression= 13, @operator= 14, ruleset= 15, standard_ruleset= 16, 
+                   mixin_ruleset= 17, selectors= 18, selector= 19, arguments= 20, 
+                   argument= 21, element= 22, class_id= 23, attribute= 24, @class= 25, 
+                   id= 26, tag= 27, select= 28, function= 29, function_name= 30, 
+                   entity= 31, fonts= 32, font= 33, literal= 34, keyword= 35, @string= 36, 
+                   dimension= 37, number= 38, unit= 39, color= 40, rgb= 41, rgb_node= 42, 
+                   hex= 43, WS= 44, ws= 45, s= 46, S= 47, ns= 48};
       class nLess : PegCharParser 
       {
         
@@ -166,13 +166,20 @@ namespace nLess
                   && PlusRepeat(()=>    
                       And(()=>    @operator() && expression() ) ) ) );
 		}
-        public bool space_delimited_expressions()    /*^^space_delimited_expressions: expression (WS expression)*;*/
+        public bool space_delimited_expressions()    /*^^space_delimited_expressions: expression (WS expression)* important? ;*/
         {
 
            return TreeNT((int)EnLess.space_delimited_expressions,()=>
                 And(()=>  
                      expression()
-                  && OptRepeat(()=> And(()=>    WS() && expression() ) ) ) );
+                  && OptRepeat(()=> And(()=>    WS() && expression() ) )
+                  && Option(()=> important() ) ) );
+		}
+        public bool important()    /*^^ important:      s '!' s 'important' ;*/
+        {
+
+           return TreeNT((int)EnLess.important,()=>
+                And(()=>    s() && Char('!') && s() && Char("important") ) );
 		}
         public bool expression()    /*^^expression: '(' s expressions s ')' / entity ;*/
         {
@@ -358,21 +365,30 @@ namespace nLess
                       || And(()=>    s() && Char(':') )
                       || S() ) );
 		}
-        public bool function()    /*^^function: ([-a-zA-Z_]+) arguments ;
+        public bool function()    /*^^function: function_name arguments ;*/
+        {
+
+           return TreeNT((int)EnLess.function,()=>
+                And(()=>    function_name() && arguments() ) );
+		}
+        public bool function_name()    /*^^function_name: [-a-zA-Z_]+;
 
 //******************************************** Entity*/
         {
 
-           return TreeNT((int)EnLess.function,()=>
-                And(()=>  
-                     PlusRepeat(()=> (In('a','z', 'A','Z')||OneOf("-_")) )
-                  && arguments() ) );
+           return TreeNT((int)EnLess.function_name,()=>
+                PlusRepeat(()=> (In('a','z', 'A','Z')||OneOf("-_")) ) );
 		}
-        public bool entity()    /*^^entity :  fonts / keyword  / variable / literal ; //accessor & function missing*/
+        public bool entity()    /*^^entity :  function / fonts / keyword  / variable / literal ; //accessor missing*/
         {
 
            return TreeNT((int)EnLess.entity,()=>
-                    fonts() || keyword() || variable() || literal() );
+                  
+                     function()
+                  || fonts()
+                  || keyword()
+                  || variable()
+                  || literal() );
 		}
         public bool fonts()    /*^^fonts : font (s ',' s font)+  ;*/
         {

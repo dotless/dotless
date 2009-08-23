@@ -7,7 +7,9 @@ using System.IO;
 using System.Linq;
 using nLess;
 using nless.Core.engine;
+using nless.Core.engine.nodes.Literals;
 using Peg.Base;
+using String=nless.Core.engine.String;
 
 #endregion
 
@@ -169,11 +171,10 @@ namespace nless.Core.parser
             return lessNodes;
         }
 
-        //expression (WS expression)*;
+        //expression (WS expression)* important?;
         private IList<INode> SpaceDelimitedExpressions(PegNode node, Element element)
         {
-            var lessNodes = new List<INode>();
-            lessNodes.Add(Expression(node.child_, element)); //First expression
+            var lessNodes = new List<INode> {Expression(node.child_, element)};
             node = node.next_;
 
             //Tail
@@ -182,8 +183,10 @@ namespace nless.Core.parser
                 switch (node.id_.ToEnLess())
                 {
                     case EnLess.expression:
-                        lessNodes.Add(Expression(node.child_, element));
-                        ;
+                        lessNodes.Add(Expression(node.child_, element));;
+                        break;
+                    case EnLess.important:
+                        lessNodes.Add(Keyword(node, element));
                         break;
                 }
                 node = node.next_;
@@ -206,7 +209,7 @@ namespace nless.Core.parser
             throw new ParsingException("Expression should either be child expressions or an entity");
         }
 
-        //fonts / keyword  / variable / literal ;
+        //function / fonts / keyword  / variable / literal ;
         private INode Entity(PegNode node, Element element)
         {
             var nodes = new List<INode>();
@@ -220,9 +223,50 @@ namespace nless.Core.parser
                     return Color(node, element);
                 case EnLess.variable:
                     return Variable(node, element);
+                case EnLess.fonts:
+                    return Fonts(node.child_, element);
+                case EnLess.keyword:
+                    return Keyword(node, element);
+                case EnLess.function:
+                    return Function(node.child_, element);
             }
 
             return new Anonymous(node.GetAsString(Src));
+        }
+
+        private INode Function(PegNode node, Element element)
+        {
+            var funcName = node.GetAsString(Src);
+            var arguments = Arguments(node.next_, element);
+            return new Function(funcName, arguments);
+        }
+
+        private IList<INode> Arguments(PegNode node, Element element)
+        {
+            var args = new List<INode>();
+            while (node != null)
+            {
+                args.Add(Entity(node, element));
+                node = node.next_;
+            }
+            return args;
+        }
+
+        private INode Keyword(PegNode node, Element element)
+        {
+            return new Keyword(node.GetAsString(Src));
+        }
+
+        private INode Fonts(PegNode node, Element element)
+        {
+            var fonts = new List<Literal>();
+            while (node!=null)
+            {
+                if (node.child_ != null) fonts.Add(new String(node.child_.GetAsString(Src)));
+                else fonts.Add(new Keyword(node.GetAsString(Src)));
+                node = node.next_;
+            }
+            return new FontFamily(fonts.ToArray());
         }
 
         private INode Number(PegNode node, Element element)
