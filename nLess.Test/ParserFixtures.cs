@@ -13,7 +13,7 @@ namespace nLess.Test
         [Test]
         public void Can_Parse()
         {
-            ParserWrapper.Parse(File.ReadAllText(@"D:\Code\nLess\nLess.Test\Test.css"), Console.Out);
+            ParserWrapper.Parse(File.ReadAllText(@"Test.css"), Console.Out);
         }
     }
 }
