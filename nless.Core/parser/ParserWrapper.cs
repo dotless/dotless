@@ -23,8 +23,9 @@ namespace nless.Core.parser
         //Hack until I can work out how to retrieve return from the parser
         public static Element Env { get; set; }
 
-        public static void Parse(string src, TextWriter errorOut)
+        public static INode Parse(string src, TextWriter errorOut)
         {
+            Element nLessRootNode = null;
             var parser = new nLess.nLess(src, errorOut);
             var bMatches = parser.Parse();
 
@@ -40,48 +41,19 @@ namespace nless.Core.parser
                 try
                 {
                     var walker = new TreeWalker(root, src);
-                    var nLessRoot = walker.Walk();
-                    //Console.WriteLine();
-
-                    using(tw)
-                    {
-                        tw.Write(nLessRoot.ToCss());
-                    }
+                    nLessRootNode = walker.Walk();
+                    Console.WriteLine(nLessRootNode.ToCss());
                 }
                 catch (Exception ex)
                 {
-
                     Console.WriteLine(ex);
                 }
-           
 
-                
-
-                //var tprint = new TreePrint(tw, src, 60, new NodePrinter(parser).GetNodeName, false);
-                //tprint.PrintTree(parser.GetRoot(), 0, 0);
+                var tprint = new TreePrint(Console.Out, src, 60, new NodePrinter(parser).GetNodeName, false);
+                tprint.PrintTree(parser.GetRoot(), 0, 0);
             }
-        }
-    }
 
-    internal class NodePrinter
-    {
-        private readonly PegBaseParser parser_;
-
-        internal NodePrinter(PegBaseParser parser)
-        {
-            parser_ = parser;
-        }
-
-        internal string GetNodeName(PegNode n)
-        {
-            return parser_.GetRuleNameFromId(n.id_);
-        }
-    }
-
-    internal class ParsingException : Exception
-    {
-        public ParsingException(string s) : base(s)
-        {
+            return nLessRootNode;
         }
     }
 }

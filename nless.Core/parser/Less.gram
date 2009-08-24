@@ -1,15 +1,15 @@
 ﻿<<Grammar Name="nLess">>
 
 //******************************************** Less
-^Parse:  primary;
-^^primary: (comment/ declaration/ ruleset)*;
+^Parse:  primary / FATAL<"Less files should start with comments, declerations, or rulesets.">;
+^^primary: (comment/ declaration/ ruleset)+ / FATAL<"primary should be comments, declerations, or rulesets.">;
 ^^comment: ws '/*' (!'*/' . )* '*/' ws / ws '//' (![\n] .)* [\n] ws;
 ^^declaration:  standard_declaration / catchall_declaration ;
 ^^standard_declaration: ws (ident / variable)  s ':' s expressions  s (';'/ ws &'}') ws ;
 ^^catchall_declaration:  ws ident s ':' s ';' ws ;
 ^^ident: ('*'/'-'/[-a-z0-9_]+);
 ^^variable: '@' [-a-zA-Z0-9_]+; 
-^^expressions: operation_expressions / space_delimited_expressions / [-a-zA-Z0-9_%*/.&=:,#+? \[\]()]+;
+^^expressions: operation_expressions / space_delimited_expressions / [-a-zA-Z0-9_%*/.&=:,#+? \[\]()]+ ;
 ^^operation_expressions:  expression (operator expression)+;
 ^^space_delimited_expressions: expression (WS expression)* important? ;
 ^^ important:      s '!' s 'important' ;

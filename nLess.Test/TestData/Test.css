@@ -1,0 +1,36 @@
+﻿@corporate-blue: #77a0e0;
+
+.left-float-menu
+{
+   list-style:none;
+   padding:0;
+   margin:0;
+   
+   li
+   {
+      display:inline;
+      float:left;
+      
+       a
+       {
+           display:block;
+       }
+   }
+}
+
+ul.top-menu
+{
+  .left-float-menu;  
+  
+  li
+  {
+    width:200px;
+    background:@corporate-blue url(logo.png);
+  }
+  a
+  {
+      height:50px;
+      width:150px;
+      background-color:@corporate-blue - 20;
+  }
+}

@@ -192,7 +192,24 @@ namespace nless.Core.parser
             var args = new List<INode>();
             while (node != null)
             {
-                args.Add(Entity(node, element));
+                switch (node.id_.ToEnLess())
+                {
+                    case EnLess.color:
+                        args.Add(Color(node, element));
+                        break;
+                    case EnLess.number:
+                        args.Add(Number(node, element));
+                        break;
+                    case EnLess.@string:
+                        args.Add(new String(node.GetAsString(Src)));
+                        break;
+                    case EnLess.keyword:
+                        args.Add(new Keyword(node.GetAsString(Src)));
+                        break;
+                    default:
+                        args.Add(new Anonymous(node.GetAsString(Src)));
+                        break;
+                }
                 node = node.next_;
             }
             return args;

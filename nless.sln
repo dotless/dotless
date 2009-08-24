@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nLess.ParserRunner", "nLess
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nLess.GrammarGen", "nLess.GrammarGen\nLess.GrammarGen.csproj", "{EF6F2A49-2D25-4B72-92FA-ACEB3907C12E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{8C63225A-FFD5-43BC-B18C-A2E27D037D81}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,5 +36,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EF6F2A49-2D25-4B72-92FA-ACEB3907C12E} = {8C63225A-FFD5-43BC-B18C-A2E27D037D81}
+		{08085EA4-23B1-48CA-A3B0-D918A6DF1B74} = {8C63225A-FFD5-43BC-B18C-A2E27D037D81}
 	EndGlobalSection
 EndGlobal

@@ -1,4 +1,4 @@
-/* created on 23/08/2009 20:09:13 from peg generator V1.0 using '' as input*/
+/* created on 24/08/2009 09:39:52 from peg generator V1.0 using '' as input*/
 
 using Peg.Base;
 using System;
@@ -62,17 +62,22 @@ namespace nLess
         } 
         #endregion Overrides
 		#region Grammar Rules
-        public bool Parse()    /*^Parse:  primary;*/
+        public bool Parse()    /*^Parse:  primary / FATAL<"Less files should start with comments, declerations, or rulesets.">;*/
         {
 
-           return TreeAST((int)EnLess.Parse,()=> primary() );
+           return TreeAST((int)EnLess.Parse,()=>
+                  
+                     primary()
+                  || Fatal("Less files should start with comments, declerations, or rulesets.") );
 		}
-        public bool primary()    /*^^primary: (comment/ declaration/ ruleset)*;*/
+        public bool primary()    /*^^primary: (comment/ declaration/ ruleset)+ / FATAL<"primary should be comments, declerations, or rulesets.">;*/
         {
 
            return TreeNT((int)EnLess.primary,()=>
-                OptRepeat(()=>  
-                      comment() || declaration() || ruleset() ) );
+                  
+                     PlusRepeat(()=>    
+                          comment() || declaration() || ruleset() )
+                  || Fatal("primary should be comments, declerations, or rulesets.") );
 		}
         public bool comment()    /*^^comment: ws '/*' (!'* /' . )* '* /' ws / ws '//' (![\n] .)* [\n] ws;*/
         {
@@ -148,7 +153,7 @@ namespace nLess
                   && PlusRepeat(()=>    
                       (In('a','z', 'A','Z', '0','9')||OneOf("-_")) ) ) );
 		}
-        public bool expressions()    /*^^expressions: operation_expressions / space_delimited_expressions / [-a-zA-Z0-9_%* /.&=:,#+? \[\]()]+;*/
+        public bool expressions()    /*^^expressions: operation_expressions / space_delimited_expressions / [-a-zA-Z0-9_%* /.&=:,#+? \[\]()]+ ;*/
         {
 
            return TreeNT((int)EnLess.expressions,()=>
