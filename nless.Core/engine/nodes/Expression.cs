@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using nless.Core.utils;
 
@@ -95,8 +96,8 @@ namespace nless.Core.engine
                 var result = Operators.Count() == 0 ? this : CsEval.Eval(ToCSharp());
                 INode returnNode;
 
-                var unit = Literals.Where(l => l.Unit!=null).Select(l => l.Unit).Distinct().ToArray();
-                if (unit.Count() > 1 && Operators.Count() == 0) throw new MixedUnitsExeption(); //TODO: Work out what is passed to exception
+                var unit = Literals.Where(l => !string.IsNullOrEmpty(l.Unit)).Select(l => l.Unit).Distinct().ToArray();
+                if (unit.Count() > 1 && Operators.Count() != 0) throw new MixedUnitsExeption(); 
                 var entity = Literals.Where(e => unit.Contains(e.Unit)).FirstOrDefault() ?? Entities.First();
 
                 if (result is Entity) returnNode = (INode)result;
@@ -105,10 +106,10 @@ namespace nless.Core.engine
                                      ? ((Expression)result).First()
                                      : (Expression)result;
                 else returnNode = entity is Number && unit.Count() > 0
-                                     ? (INode)Activator.CreateInstance(entity.GetType(), unit.First(), result)  
-                                     : (INode)Activator.CreateInstance(entity.GetType(), result);
+                                     ? (INode)Activator.CreateInstance(entity.GetType(), unit.First(), float.Parse(result.ToString()))
+                                     : (INode)Activator.CreateInstance(entity.GetType(), float.Parse(result.ToString()));
                 return returnNode;
-            }
+            } 
             else if(this.Count() == 1)
             {
                 return this.First();
@@ -142,6 +143,21 @@ namespace nless.Core.engine
 
     public class MixedUnitsExeption : Exception
     {
+        public MixedUnitsExeption()
+        {
+        }
+
+        public MixedUnitsExeption(string message) : base(message)
+        {
+        }
+
+        public MixedUnitsExeption(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
+        protected MixedUnitsExeption(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+        }
     }
 
     public interface IEvaluatable

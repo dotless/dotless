@@ -1,4 +1,4 @@
-/* created on 24/08/2009 09:39:52 from peg generator V1.0 using '' as input*/
+/* created on 26/08/2009 15:53:17 from peg generator V1.0 using '' as input*/
 
 using Peg.Base;
 using System;
@@ -62,22 +62,17 @@ namespace nLess
         } 
         #endregion Overrides
 		#region Grammar Rules
-        public bool Parse()    /*^Parse:  primary / FATAL<"Less files should start with comments, declerations, or rulesets.">;*/
+        public bool Parse()    /*^Parse:  primary ;*/
         {
 
-           return TreeAST((int)EnLess.Parse,()=>
-                  
-                     primary()
-                  || Fatal("Less files should start with comments, declerations, or rulesets.") );
+           return TreeAST((int)EnLess.Parse,()=> primary() );
 		}
-        public bool primary()    /*^^primary: (comment/ declaration/ ruleset)+ / FATAL<"primary should be comments, declerations, or rulesets.">;*/
+        public bool primary()    /*^^primary: (comment/ declaration/ ruleset)* ;*/
         {
 
            return TreeNT((int)EnLess.primary,()=>
-                  
-                     PlusRepeat(()=>    
-                          comment() || declaration() || ruleset() )
-                  || Fatal("primary should be comments, declerations, or rulesets.") );
+                OptRepeat(()=>  
+                      comment() || declaration() || ruleset() ) );
 		}
         public bool comment()    /*^^comment: ws '/*' (!'* /' . )* '* /' ws / ws '//' (![\n] .)* [\n] ws;*/
         {
@@ -135,16 +130,17 @@ namespace nLess
                   && Char(';')
                   && ws() ) );
 		}
-        public bool ident()    /*^^ident: ('*'/'-'/[-a-z0-9_]+);*/
+        public bool ident()    /*^^ident: '*'? '-'? [-_a-zA-Z0-9]+;*/
         {
 
            return TreeNT((int)EnLess.ident,()=>
-                  
-                     Char('*')
-                  || Char('-')
-                  || PlusRepeat(()=> (In('a','z', '0','9')||OneOf("-_")) ) );
+                And(()=>  
+                     Option(()=> Char('*') )
+                  && Option(()=> Char('-') )
+                  && PlusRepeat(()=>    
+                      (In('a','z', 'A','Z', '0','9')||OneOf("-_")) ) ) );
 		}
-        public bool variable()    /*^^variable: '@' [-a-zA-Z0-9_]+;*/
+        public bool variable()    /*^^variable: '@' [-_a-zA-Z0-9]+;*/
         {
 
            return TreeNT((int)EnLess.variable,()=>
@@ -484,11 +480,13 @@ namespace nLess
            return TreeNT((int)EnLess.color,()=>
                 And(()=>    Char('#') && rgb() ) );
 		}
-        public bool rgb()    /*^rgb:(rgb_node)(rgb_node)(rgb_node);*/
+        public bool rgb()    /*^rgb:(rgb_node)(rgb_node)(rgb_node) / hex hex hex ;*/
         {
 
            return TreeAST((int)EnLess.rgb,()=>
-                And(()=>    rgb_node() && rgb_node() && rgb_node() ) );
+                  
+                     And(()=>    rgb_node() && rgb_node() && rgb_node() )
+                  || And(()=>    hex() && hex() && hex() ) );
 		}
         public bool rgb_node()    /*^rgb_node : hex hex;*/
         {
@@ -503,15 +501,15 @@ namespace nLess
 
            return In('a','f', 'A','F', '0','9');
 		}
-        public bool WS()    /*WS: [ \r\n]+;*/
+        public bool WS()    /*WS: [ \r\n\t]+;*/
         {
 
-           return PlusRepeat(()=> OneOf(" \r\n") );
+           return PlusRepeat(()=> OneOf(" \r\n\t") );
 		}
-        public bool ws()    /*ws: [ \r\n]*;*/
+        public bool ws()    /*ws: [ \r\n\t]*;*/
         {
 
-           return OptRepeat(()=> OneOf(" \r\n") );
+           return OptRepeat(()=> OneOf(" \r\n\t") );
 		}
         public bool s()    /*s:  [ ]*;*/
         {

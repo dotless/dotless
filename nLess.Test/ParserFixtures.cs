@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using nless.Core.parser;
+using nless.Core.engine;
 using NUnit.Framework;
 
 namespace nLess.Test
@@ -13,7 +13,8 @@ namespace nLess.Test
         [Test]
         public void Can_Parse()
         {
-            ParserWrapper.Parse(File.ReadAllText(@"TestData/Test.css"), Console.Out);
+            var engine = new Engine(File.ReadAllText(@"TestData/EngineRoom.less"), Console.Out);
+            Console.Write(engine.Parse().Css);
         }
     }
 }

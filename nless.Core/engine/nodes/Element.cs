@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using nless.Core.Exceptions;
 using nless.Core.utils;
 
 namespace nless.Core.engine
@@ -245,7 +245,12 @@ namespace nless.Core.engine
                 .Where(r => !pathList.Contains(r)).Distinct().ToArray();
          
             //N.B. Im sure this isnt right but im doing it this way after fucking around with IRB and getting simmilar results as this would cause
-            var elementContent = string.Join(" ", pathList) + string.Join("", setList.Select(s => string.Format(",{0}", s)).ToArray());
+
+            var selectListStr = string.Join("", setList.Select(s => string.Format(",{0}", s)).ToArray());
+            var pathListStr = new StringBuilder();
+            foreach (var pathListItem in pathList)
+                pathListStr.Append(pathListItem);
+            var elementContent = pathListStr + selectListStr;
             return elementContent;
         }
 

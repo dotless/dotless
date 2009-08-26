@@ -1,6 +1,6 @@
 using System;
 
-namespace nless.Core.engine
+namespace nless.Core.Exceptions
 {
     public class VariableNameException : Exception
     {

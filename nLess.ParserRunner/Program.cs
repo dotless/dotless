@@ -1,6 +1,5 @@
 ﻿using System;
-using System.IO;
-using nless.Core.parser;
+using nless.Core.engine;
 
 namespace nLess.ParserRunner
 {
@@ -8,8 +7,8 @@ namespace nLess.ParserRunner
     {
         static void Main(string[] args)
         {
-            ParserWrapper.Parse(File.ReadAllText(args[0]), Console.Out);
-            Console.ReadLine();
+            var engine = new Engine(args[0], Console.Out);
+            Console.Write(engine.Less);
         }
     }
 }

@@ -5,14 +5,15 @@ using System.Linq;
 using nLess;
 using nless.Core.engine;
 using nless.Core.engine.nodes.Literals;
+using nless.Core.Exceptions;
 using Peg.Base;
 using String=nless.Core.engine.String;
 
 namespace nless.Core.parser
 {
-    public class TreeWalker
+    public class TreeBuilder
     {
-        public TreeWalker(PegNode root, string src)
+        public TreeBuilder(PegNode root, string src)
         {
             Root = root;
             Src = src;
@@ -21,7 +22,7 @@ namespace nless.Core.parser
         public PegNode Root { get; set; }
         public string Src { get; set; }
 
-        public Element Walk()
+        public Element Build()
         {
             var el = new Element("");
             Primary(Root.child_, el);
@@ -32,18 +33,22 @@ namespace nless.Core.parser
         private void Primary(PegNode node, Element element)
         {
             var nextPrimary = node.child_;
-            while (nextPrimary != null)
+            if (nextPrimary == null && node.next_ != null) Primary(node.next_, element);
+            else
             {
-                switch (nextPrimary.id_.ToEnLess())
+                while (nextPrimary != null)
                 {
-                    case EnLess.ruleset:
-                        RuleSet(nextPrimary.child_, element);
-                        break;
-                    case EnLess.declaration:
-                        Declaration(nextPrimary.child_, element);
-                        break;
+                    switch (nextPrimary.id_.ToEnLess())
+                    {
+                        case EnLess.ruleset:
+                            RuleSet(nextPrimary.child_, element);
+                            break;
+                        case EnLess.declaration:
+                            Declaration(nextPrimary.child_, element);
+                            break;
+                    }
+                    nextPrimary = nextPrimary.next_;
                 }
-                nextPrimary = nextPrimary.next_;
             }
         }
 
@@ -279,22 +284,14 @@ namespace nless.Core.parser
             if (node.id_.ToEnLess() == EnLess.standard_ruleset)
             {
                 node = node.child_;
-                var elements = Selectors(node, element, els =>
-                                                            {
-                                                                foreach (var el in els)
-                                                                    element.Add(el);
-                                                                return element.Last;
-                                                            });
+                var elements = Selectors(node, element, els => StandardSelectors(element, els));
                 foreach (var el in elements)
                     Primary(node.next_, el);
             }
             else if (node.id_.ToEnLess() == EnLess.mixin_ruleset)
             {
                 node = node.child_;
-                var elements = Selectors(node, element, els =>
-                                                            {
-                                                                return els.First(); //TODO: This must be wrong
-                                                            });
+                var elements = Selectors(node, element, els => els);
                 foreach (var el in elements){
                     var root = element.GetRoot();
                     var rules = root.Descend(el.Selector, el).Rules;
@@ -302,13 +299,21 @@ namespace nless.Core.parser
                 }
             }
         }
-        private IList<Element> Selectors(PegNode node, Element el, Func<IList<Element>, Element> action)
+        private static IList<Element> StandardSelectors(Element element, IEnumerable<Element> els)
+        {
+            foreach (var el in els){
+                element.Add(el);
+                element = element.Last;
+            }
+            return new List<Element> { element};
+        }
+        private IList<Element> Selectors(PegNode node, Element el, Func<IList<Element>, IList<Element>> action)
         {
             var selector = node.child_;
             var elements = new List<Element>();
             while (selector != null && selector.id_.ToEnLess() == EnLess.selector)
             {
-                elements.Add(action.Invoke(Selector(selector.child_)));
+                elements.AddRange(action.Invoke(Selector(selector.child_)));
                 selector = selector.next_;
             }
             return elements;
