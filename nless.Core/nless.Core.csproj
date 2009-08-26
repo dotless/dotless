@@ -64,7 +64,6 @@
     <Compile Include="engine\nodes\Selector.cs" />
     <Compile Include="engine\nodes\Variable.cs" />
     <Compile Include="exceptions\VariableNameException.cs" />
-    <Compile Include="parser\C#\json_check.cs" />
     <Compile Include="parser\C#\nLess.cs" />
     <Compile Include="parser\NodePrinter.cs" />
     <Compile Include="exceptions\ParsingException.cs" />
