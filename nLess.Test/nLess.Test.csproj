@@ -129,6 +129,7 @@
     <Content Include="Spec\css\strings.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Spec\css\Stylesheet1.css" />
     <Content Include="Spec\css\variables.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

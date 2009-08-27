@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace nLess.Test
 {
 
-    //TODO: This test is nonsense, just a quick  point in time proof
+    //NOTE: This test is nonsense, just a quick  point in time proof
     [TestFixture]
     public class ParserFixtures
     {

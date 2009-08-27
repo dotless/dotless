@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using nless.Core.engine;
+using NUnit.Framework;
 
 namespace nLess.Test.Spec
 {
@@ -17,11 +18,18 @@ namespace nLess.Test.Spec
             return File.ReadAllText(file);
         }
 
-        public static bool ShouldEqual(string filename)
+        public static void ShouldEqual(string filename)
         {
             var less = Lessify(filename);
             Console.WriteLine(less);
-            return less.ShouldEqual(Css(filename));
+            Assert.IsTrue(less.ShouldEqual(Css(filename)));
+        }
+    }
+    internal static class SpecExtensions
+    {
+        public static bool ShouldEqual(this object a, object b)
+        {
+            return a.Equals(b);
         }
     }
 }

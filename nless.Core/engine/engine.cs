@@ -48,7 +48,7 @@ namespace nless.Core.engine
             var rootElement = treeWalker.Build();
             css = rootElement.ToCss();
             var tprint = new TreePrint(Console.Out, less, 60, new NodePrinter(_parser).GetNodeName, false);
-            //tprint.PrintTree(_parser.GetRoot(), 0, 0);
+            tprint.PrintTree(_parser.GetRoot(), 0, 0);
             return this;
         }
     }

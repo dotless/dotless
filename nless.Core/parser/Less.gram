@@ -45,7 +45,7 @@
 ^^color: '#' rgb;
 ^rgb:(rgb_node)(rgb_node)(rgb_node) / hex hex hex ;
 ^rgb_node : hex hex;
-hex: [a-fA-F0-9];
+^hex: [a-fA-F0-9];
 
 //******************************************** Common
 WS: [ \r\n\t]+;

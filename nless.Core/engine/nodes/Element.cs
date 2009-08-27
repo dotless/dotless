@@ -221,37 +221,23 @@ namespace nless.Core.engine
 
         public virtual string ToCss(IList<string> path)
         {
-            if(!IsRoot)
-            {
+            if (!IsRoot){
                 path.Add(Selector.ToCss());
                 path.Add(Name);
             }
-            var properties = new StringBuilder();            
-            foreach(var prop in Properties){
-                properties.AppendLine(string.Format("  {0}", prop.ToCss()));
-            }
-            var setContent = GetElementContent(path);
-            var ruleset = properties.Length != 0 ?
-                              (setContent + 
-                              string.Format("{{{0}}}\n", properties)).Substring(2)
-                              : "";
+            var properties = new StringBuilder();
+            foreach (var prop in Properties) properties.AppendLine(string.Format("  {0}", prop.ToCss()));
+
+            var setArray = Set.Select(s => s.Name).ToArray();
+            var pathContent =  string.Join(string.Empty, path.Where(p => !string.IsNullOrEmpty(p)).ToArray());
+            var setContent = new StringBuilder(pathContent);
+
+            foreach (var setItem in setArray)
+                setContent.Append(setItem);
+
+            var propContent = string.Format("{{\n{0}}}\n", properties);
+            var ruleset = properties.Length != 0 ? (setContent + propContent) : "";
             return ruleset + GetChildCss(path);
-        }
-
-        private string GetElementContent(IEnumerable<string> path)
-        {
-            var pathList = path.Where(e => e != string.Empty).ToList().Distinct().ToArray();
-            var setList = Set.Select(s=> s.Name).Distinct()
-                .Where(r => !pathList.Contains(r)).Distinct().ToArray();
-         
-            //N.B. Im sure this isnt right but im doing it this way after fucking around with IRB and getting simmilar results as this would cause
-
-            var selectListStr = string.Join("", setList.Select(s => string.Format(",{0}", s)).ToArray());
-            var pathListStr = new StringBuilder();
-            foreach (var pathListItem in pathList)
-                pathListStr.Append(pathListItem);
-            var elementContent = pathListStr + selectListStr;
-            return elementContent;
         }
 
         private string GetChildCss(IEnumerable<string> path)
