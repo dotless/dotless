@@ -96,7 +96,12 @@ namespace nless.Core.engine
 
         public override string ToCss()
         {
-            return string.Format("{0}:{1};", Key, Value.Evaluate().ToCss());
+            return string.Format("{0}: {1};", Key, Value.Evaluate().ToCss());
+        }
+
+        public override string ToString()
+        {
+            return Key;
         }
 
         public INode Nearest(string ident)

@@ -34,7 +34,9 @@
 
 //******************************************** Entity
 ^^entity :  function / fonts / accessor / keyword  / variable / literal  ;
-^^accessor: (class_id / tag) '[' (string / variable) ']'; 
+^^accessor: accessor_name '[' accessor_key ']'; 
+^^accessor_name: (class_id / tag) ; 
+^^accessor_key: (string / variable) ; 
 ^^fonts : font (s ',' s font)+  ;
 ^^font: [a-zA-Z] [-a-zA-Z0-9]* ;
 ^^literal: color / (dimension / [-a-z]+) '/' dimension / number unit / string ;

@@ -8,13 +8,14 @@ namespace nLess.Test.Spec
         [Test]
         public void Specs()
         {
-//            SpecHelper.ShouldEqual("accessors");
+              SpecHelper.ShouldEqual("accessors");
 //            SpecHelper.ShouldEqual("big");
-            SpecHelper.ShouldEqual("colors");
+              SpecHelper.ShouldEqual("colors");
 //            SpecHelper.ShouldEqual("comments");
 //            SpecHelper.ShouldEqual("css-3");
-          //  SpecHelper.ShouldEqual("css");
+//            SpecHelper.ShouldEqual("css");
 //            SpecHelper.ShouldEqual("functions");
+//              SpecHelper.ShouldEqual("lazy-eval");
         }
     }
 }

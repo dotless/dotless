@@ -1,25 +1,20 @@
-﻿#shorthands {
-  border: 1px solid #000000;
-  font: 12px + 16px;
-  margin: 1px 0;
-  padding: 0 auto;
-  background: url("http://www.lesscss.org/spec.html") no-repeat 0 4px;
+﻿.magic-box {
+  @trim: orange;
+  content: "gold";
+  width: 60cm;
+  height: 40cm;
+  #lock {
+    color: silver;
+  }
 }
 
-@red: red;
-
-.padded_mixin{
-	padding:20px;
-	display:block;
+#accessors {
+  content: .magic-box['content']; // "gold"
+  width: .magic-box['width']; // 60cm
 }
-#outer_will_be_red a:Hover > p table.innerTable a{
-  background:@red;
-  #inner_will_be_black{
-	  @red: black;
-	  background:@red;
-  }
-  #inner_will_be_red{
-	  background:@red;
-	  .padded_mixin;
-  }
+
+.unlock {
+  .magic-box;
+  color: #lock['color']; // silver
+  border-color: .magic-box[@trim]; // orange
 }

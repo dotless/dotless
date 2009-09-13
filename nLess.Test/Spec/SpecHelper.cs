@@ -22,14 +22,15 @@ namespace nLess.Test.Spec
         {
             var less = Lessify(filename);
             Console.WriteLine(less);
-            Assert.IsTrue(less.ShouldEqual(Css(filename)));
+            var css = Css(filename);
+            less.ShouldEqual(css, string.Format("|{0}| != |{1}|", less, css));
         }
     }
     internal static class SpecExtensions
     {
-        public static bool ShouldEqual(this object a, object b)
+        public static void ShouldEqual(this object a, object b, string assertionFailedMessage)
         {
-            return a.Equals(b);
+            Assert.AreEqual(a, b);
         }
     }
 }

@@ -230,7 +230,7 @@ namespace nless.Core.engine
             foreach (var prop in Properties)
             {
                 if (singular)
-                    properties.Append(string.Format("{0}", prop.ToCss()));
+                    properties.Append(string.Format(" {0} ", prop.ToCss()));
                 else
                     properties.Append(string.Format("\n\t{0}", prop.ToCss()));
             }
@@ -238,13 +238,15 @@ namespace nless.Core.engine
 
             var setArray = Set.Select(s => s.Name).ToArray();
             var pathContent =  string.Join(string.Empty, path.Where(p => !string.IsNullOrEmpty(p)).ToArray());
+            pathContent = pathContent.StartsWith(" ") ? pathContent.Substring(1) : pathContent;
             var setContent = new StringBuilder(pathContent);
+
 
             foreach (var setItem in setArray)
                 setContent.AppendFormat(", {0}", setItem);
 
-            var propContent = string.Format("{{{0}}}", properties);
-            var ruleset = properties.Length != 0 ? (setContent + propContent + "\n") : "";
+            var propContent = string.Format(" {{{0}}}", properties);
+            var ruleset = properties.Length != 0 ? (setContent + propContent + "\r\n") : "";
             return ruleset + GetChildCss(path);
         }
 

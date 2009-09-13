@@ -1,4 +1,4 @@
-/* created on 08/09/2009 23:34:27 from peg generator V1.0 using '' as input*/
+/* created on 14/09/2009 00:11:48 from peg generator V1.0 using '' as input*/
 
 using Peg.Base;
 using System;
@@ -14,10 +14,10 @@ namespace nLess
                    mixin_ruleset= 17, selectors= 18, selector= 19, arguments= 20, 
                    argument= 21, element= 22, class_id= 23, attribute= 24, @class= 25, 
                    id= 26, tag= 27, select= 28, function= 29, function_name= 30, 
-                   entity= 31, accessor= 32, fonts= 33, font= 34, literal= 35, keyword= 36, 
-                   @string= 37, dimension= 38, number= 39, unit= 40, color= 41, 
-                   rgb= 42, rgb_node= 43, hex= 44, WS= 45, ws= 46, s= 47, S= 48, 
-                   ns= 49};
+                   entity= 31, accessor= 32, accessor_name= 33, accessor_key= 34, 
+                   fonts= 35, font= 36, literal= 37, keyword= 38, @string= 39, dimension= 40, 
+                   number= 41, unit= 42, color= 43, rgb= 44, rgb_node= 45, hex= 46, 
+                   WS= 47, ws= 48, s= 49, S= 50, ns= 51};
       class nLess : PegCharParser 
       {
         
@@ -68,12 +68,12 @@ namespace nLess
 
            return TreeAST((int)EnLess.Parse,()=> primary() );
 		}
-        public bool primary()    /*^^primary: (comment/ declaration/ ruleset)* ;*/
+        public bool primary()    /*^^primary: (declaration / ruleset / comment)* ;*/
         {
 
            return TreeNT((int)EnLess.primary,()=>
                 OptRepeat(()=>  
-                      comment() || declaration() || ruleset() ) );
+                      declaration() || ruleset() || comment() ) );
 		}
         public bool comment()    /*^^comment: ws '/*' (!'* /' . )* '* /' ws / ws '//' (![\n] .)* [\n] ws;*/
         {
@@ -393,15 +393,27 @@ namespace nLess
                   || variable()
                   || literal() );
 		}
-        public bool accessor()    /*^^accessor: (class_id / tag) '[' (string / variable) ']';*/
+        public bool accessor()    /*^^accessor: accessor_name '[' accessor_key ']';*/
         {
 
            return TreeNT((int)EnLess.accessor,()=>
                 And(()=>  
-                     (    class_id() || tag())
+                     accessor_name()
                   && Char('[')
-                  && (    @string() || variable())
+                  && accessor_key()
                   && Char(']') ) );
+		}
+        public bool accessor_name()    /*^^accessor_name: (class_id / tag) ;*/
+        {
+
+           return TreeNT((int)EnLess.accessor_name,()=>
+                    class_id() || tag() );
+		}
+        public bool accessor_key()    /*^^accessor_key: (string / variable) ;*/
+        {
+
+           return TreeNT((int)EnLess.accessor_key,()=>
+                    @string() || variable() );
 		}
         public bool fonts()    /*^^fonts : font (s ',' s font)+  ;*/
         {

@@ -175,7 +175,7 @@ namespace nless.Core.parser
                 case EnLess.variable:
                     return Variable(node, element);
                 case EnLess.accessor:
-                    throw new Exception("Got it");
+                    return Accessor(node.child_, element);
                 case EnLess.fonts:
                     return Fonts(node.child_, element);
                 case EnLess.keyword:
@@ -185,6 +185,19 @@ namespace nless.Core.parser
             }
 
             return new Anonymous(node.GetAsString(Src));
+        }
+
+        private INode Accessor(PegNode node, Element element)
+        {
+            var ident = node.GetAsString(Src);
+            var key = node.next_.GetAsString(Src).Replace("'", "");
+            var el = element.NearestAs<Element>(ident);
+            if (el!=null)
+            {
+                var prop = el.Get(key);
+                if (prop != null) return prop;
+            }
+            return new Anonymous("");
         }
 
         private INode Function(PegNode node, Element element)
