@@ -1,4 +1,4 @@
-/* created on 27/08/2009 00:18:24 from peg generator V1.0 using '' as input*/
+/* created on 08/09/2009 23:34:27 from peg generator V1.0 using '' as input*/
 
 using Peg.Base;
 using System;
@@ -14,9 +14,10 @@ namespace nLess
                    mixin_ruleset= 17, selectors= 18, selector= 19, arguments= 20, 
                    argument= 21, element= 22, class_id= 23, attribute= 24, @class= 25, 
                    id= 26, tag= 27, select= 28, function= 29, function_name= 30, 
-                   entity= 31, fonts= 32, font= 33, literal= 34, keyword= 35, @string= 36, 
-                   dimension= 37, number= 38, unit= 39, color= 40, rgb= 41, rgb_node= 42, 
-                   hex= 43, WS= 44, ws= 45, s= 46, S= 47, ns= 48};
+                   entity= 31, accessor= 32, fonts= 33, font= 34, literal= 35, keyword= 36, 
+                   @string= 37, dimension= 38, number= 39, unit= 40, color= 41, 
+                   rgb= 42, rgb_node= 43, hex= 44, WS= 45, ws= 46, s= 47, S= 48, 
+                   ns= 49};
       class nLess : PegCharParser 
       {
         
@@ -176,7 +177,7 @@ namespace nLess
                   && OptRepeat(()=> And(()=>    WS() && expression() ) )
                   && Option(()=> important() ) ) );
 		}
-        public bool important()    /*^^ important:      s '!' s 'important' ;*/
+        public bool important()    /*^^important:      s '!' s 'important' ;*/
         {
 
            return TreeNT((int)EnLess.important,()=>
@@ -280,10 +281,10 @@ namespace nLess
                          keyword()
                       && OptRepeat(()=> And(()=>    S() && keyword() ) ) ) );
 		}
-        public bool element()    /*^element : (class_id / tag / ident) attribute* ('(' ident? attribute* ')')? / attribute+ / '@media' / '@font-face';*/
+        public bool element()    /*^^element : (class_id / tag / ident) attribute* ('(' ident? attribute* ')')? / attribute+ / '@media' / '@font-face';*/
         {
 
-           return TreeAST((int)EnLess.element,()=>
+           return TreeNT((int)EnLess.element,()=>
                   
                      And(()=>    
                          (    class_id() || tag() || ident())
@@ -298,18 +299,18 @@ namespace nLess
                   || Char('@','m','e','d','i','a')
                   || Char("@font-face") );
 		}
-        public bool class_id()    /*^class_id : tag? (class / id)+;*/
+        public bool class_id()    /*^^class_id : tag? (class / id)+;*/
         {
 
-           return TreeAST((int)EnLess.class_id,()=>
+           return TreeNT((int)EnLess.class_id,()=>
                 And(()=>  
                      Option(()=> tag() )
                   && PlusRepeat(()=>     @class() || id() ) ) );
 		}
-        public bool attribute()    /*^attribute :  '[' tag ([|~*$^]? '=') (tag / string) ']' / '[' (tag / string) ']';*/
+        public bool attribute()    /*^^attribute :  '[' tag ([|~*$^]? '=') (tag / string) ']' / '[' (tag / string) ']';*/
         {
 
-           return TreeAST((int)EnLess.attribute,()=>
+           return TreeNT((int)EnLess.attribute,()=>
                   
                      And(()=>    
                          Char('[')
@@ -324,30 +325,30 @@ namespace nLess
                       && (    tag() || @string())
                       && Char(']') ) );
 		}
-        public bool @class()    /*^class:  '.' [_a-zA-Z] [-a-zA-Z0-9_]*;*/
+        public bool @class()    /*^^class:  '.' [_a-zA-Z] [-a-zA-Z0-9_]*;*/
         {
 
-           return TreeAST((int)EnLess.@class,()=>
+           return TreeNT((int)EnLess.@class,()=>
                 And(()=>  
                      Char('.')
                   && (In('a','z', 'A','Z')||OneOf("_"))
                   && OptRepeat(()=>    
                       (In('a','z', 'A','Z', '0','9')||OneOf("-_")) ) ) );
 		}
-        public bool id()    /*^id: '#' [_a-zA-Z] [-a-zA-Z0-9_]*;*/
+        public bool id()    /*^^id: '#' [_a-zA-Z] [-a-zA-Z0-9_]*;*/
         {
 
-           return TreeAST((int)EnLess.id,()=>
+           return TreeNT((int)EnLess.id,()=>
                 And(()=>  
                      Char('#')
                   && (In('a','z', 'A','Z')||OneOf("_"))
                   && OptRepeat(()=>    
                       (In('a','z', 'A','Z', '0','9')||OneOf("-_")) ) ) );
 		}
-        public bool tag()    /*^tag : [a-zA-Z] [-a-zA-Z]* [0-9]? / '*';*/
+        public bool tag()    /*^^tag : [a-zA-Z] [-a-zA-Z]* [0-9]? / '*';*/
         {
 
-           return TreeAST((int)EnLess.tag,()=>
+           return TreeNT((int)EnLess.tag,()=>
                   
                      And(()=>    
                          In('a','z', 'A','Z')
@@ -380,16 +381,27 @@ namespace nLess
            return TreeNT((int)EnLess.function_name,()=>
                 PlusRepeat(()=> (In('a','z', 'A','Z')||OneOf("-_")) ) );
 		}
-        public bool entity()    /*^^entity :  function / fonts / keyword  / variable / literal ; //accessor missing*/
+        public bool entity()    /*^^entity :  function / fonts / accessor / keyword  / variable / literal  ;*/
         {
 
            return TreeNT((int)EnLess.entity,()=>
                   
                      function()
                   || fonts()
+                  || accessor()
                   || keyword()
                   || variable()
                   || literal() );
+		}
+        public bool accessor()    /*^^accessor: (class_id / tag) '[' (string / variable) ']';*/
+        {
+
+           return TreeNT((int)EnLess.accessor,()=>
+                And(()=>  
+                     (    class_id() || tag())
+                  && Char('[')
+                  && (    @string() || variable())
+                  && Char(']') ) );
 		}
         public bool fonts()    /*^^fonts : font (s ',' s font)+  ;*/
         {

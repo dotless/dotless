@@ -1,3 +1,26 @@
-﻿#accessors {
-  content: .magic-box['content'];
+﻿#shorthands {
+  border: 1px solid #000000;
+  font: 12px + 16px;
+  margin: 1px 0;
+  padding: 0 auto;
+  background: url("http://www.lesscss.org/spec.html") no-repeat 0 4px;
+}
+
+@red: red;
+
+.padded_mixin{
+	padding:20px;
+	display:block;
+}
+
+#outer_will_be_red a:Hover > p table.innerTable a{
+  background:@red;
+  #inner_will_be_black{
+	  @red: black;
+	  background:@red;
+  }
+  #inner_will_be_red{
+	  background:@red;
+	  .padded_mixin;
+  }
 }

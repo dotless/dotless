@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using nless.Core.Exceptions;
 using nless.Core.parser;
 using Peg.Base;
@@ -37,18 +34,25 @@ namespace nless.Core.engine
         }
         public Engine Parse()
         {
-            return Parse(true, new Element());
+            return Parse(false);
         }
-        public Engine Parse(bool build, Element env)
+        public Engine Parse(bool showTree)
+        {
+            return Parse(showTree, new Element());
+        }
+        internal Engine Parse(bool showTree, Element env)
         {
             var matches = _parser.Parse();
             if(!matches) throw new ParsingException("FAILURE: Parser did not match input file");
             var pegEl = _parser.GetRoot();
             var treeWalker = new TreeBuilder(pegEl, less);
             var rootElement = treeWalker.Build();
-            css = rootElement.ToCss();
-            var tprint = new TreePrint(Console.Out, less, 60, new NodePrinter(_parser).GetNodeName, false);
-            tprint.PrintTree(_parser.GetRoot(), 0, 0);
+            css = rootElement.Group().ToCss();
+            if (showTree)
+            {
+                var tprint = new TreePrint(Console.Out, less, 60, new NodePrinter(_parser).GetNodeName, false);
+                tprint.PrintTree(_parser.GetRoot(), 0, 0);
+            }
             return this;
         }
     }

@@ -233,7 +233,7 @@ namespace nless.Core.engine
             var setContent = new StringBuilder(pathContent);
 
             foreach (var setItem in setArray)
-                setContent.Append(setItem);
+                setContent.AppendFormat(", {0}", setItem);
 
             var propContent = string.Format("{{\n{0}}}\n", properties);
             var ruleset = properties.Length != 0 ? (setContent + propContent) : "";
