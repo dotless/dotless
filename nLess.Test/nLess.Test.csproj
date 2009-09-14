@@ -137,6 +137,41 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Spec\less\import\import-test-d.css" />
+    <Content Include="TestData\blueprint\ie.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\blueprint\plugins\buttons\icons\cross.png" />
+    <Content Include="TestData\blueprint\plugins\buttons\icons\key.png" />
+    <Content Include="TestData\blueprint\plugins\buttons\icons\tick.png" />
+    <Content Include="TestData\blueprint\plugins\buttons\readme.txt" />
+    <Content Include="TestData\blueprint\plugins\buttons\screen.css" />
+    <Content Include="TestData\blueprint\plugins\fancy-type\readme.txt" />
+    <Content Include="TestData\blueprint\plugins\fancy-type\screen.css" />
+    <Content Include="TestData\blueprint\plugins\link-icons\icons\doc.png" />
+    <Content Include="TestData\blueprint\plugins\link-icons\icons\email.png" />
+    <Content Include="TestData\blueprint\plugins\link-icons\icons\external.png" />
+    <Content Include="TestData\blueprint\plugins\link-icons\icons\feed.png" />
+    <Content Include="TestData\blueprint\plugins\link-icons\icons\im.png" />
+    <Content Include="TestData\blueprint\plugins\link-icons\icons\pdf.png" />
+    <Content Include="TestData\blueprint\plugins\link-icons\icons\visited.png" />
+    <Content Include="TestData\blueprint\plugins\link-icons\icons\xls.png" />
+    <Content Include="TestData\blueprint\plugins\link-icons\readme.txt" />
+    <Content Include="TestData\blueprint\plugins\link-icons\screen.css" />
+    <Content Include="TestData\blueprint\plugins\rtl\readme.txt" />
+    <Content Include="TestData\blueprint\plugins\rtl\screen.css" />
+    <Content Include="TestData\blueprint\print.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\blueprint\screen.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\blueprint\src\forms.css" />
+    <Content Include="TestData\blueprint\src\grid.css" />
+    <Content Include="TestData\blueprint\src\grid.png" />
+    <Content Include="TestData\blueprint\src\ie.css" />
+    <Content Include="TestData\blueprint\src\print.css" />
+    <Content Include="TestData\blueprint\src\reset.css" />
+    <Content Include="TestData\blueprint\src\typography.css" />
     <Content Include="TestData\Test.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -200,6 +235,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Spec\less\whitespace.less">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestData\erimport.less">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="TestData\engineroom.less">

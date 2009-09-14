@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
+using System.IO;
 using nLess;
 using nless.Core.engine;
 using nless.Core.engine.nodes.Literals;
@@ -29,7 +29,7 @@ namespace nless.Core.parser
             return el;
         }
 
-        //(comment/ ruleset /declaration)*
+        //(import / declaration / ruleset / comment)* 
         private void Primary(PegNode node, Element element)
         {
             var nextPrimary = node.child_;
@@ -40,6 +40,9 @@ namespace nless.Core.parser
                 {
                     switch (nextPrimary.id_.ToEnLess())
                     {
+                        case EnLess.import:
+                            Import(nextPrimary.child_, element);
+                            break;
                         case EnLess.ruleset:
                             RuleSet(nextPrimary.child_, element);
                             break;
@@ -50,6 +53,22 @@ namespace nless.Core.parser
                     nextPrimary = nextPrimary.next_;
                 }
             }
+        }
+
+        private void Import(PegNode node, Element element)
+        {
+            var path = node.GetAsString(Src);
+            if(node.child_ != null)
+            {
+                path = node.child_.GetAsString(Src); 
+            }
+            path = path.Replace("\"", "").Replace("'", "");
+           //TODO: Fuck around with pah to make it absolute relative
+           if(File.Exists(path))
+           {
+               var engine = new Engine(File.ReadAllText(path), null);
+               element.Rules.AddRange(engine.Parse().Root.Rules); 
+           }
         }
 
         private void Declaration(PegNode node, Element element)
@@ -194,8 +213,8 @@ namespace nless.Core.parser
             var el = element.NearestAs<Element>(ident);
             if (el!=null)
             {
-                var prop = el.Get(key);
-                if (prop != null) return prop;
+                var prop = el.GetAs<Property>(key);
+                if (((INode)prop) != null) return prop.Value;
             }
             return new Anonymous("");
         }
@@ -269,18 +288,23 @@ namespace nless.Core.parser
         private INode RGB(PegNode node, Element element)
         {
             int R = 0, G = 0, B = 0;
+            string tmp;
+
             var rgbNode = node.child_; //Fisrt node;
             if (rgbNode != null)
             {
-                R = int.Parse(rgbNode.GetAsString(Src), NumberStyles.HexNumber);
+                tmp = rgbNode.GetAsString(Src);
+                R = int.Parse(tmp.Length==1 ? tmp+tmp : tmp, NumberStyles.HexNumber);
                 rgbNode = rgbNode.next_;
                 if (rgbNode != null)
                 {
-                    G = int.Parse(rgbNode.GetAsString(Src), NumberStyles.HexNumber);
+                    tmp = rgbNode.GetAsString(Src);
+                    G = int.Parse(tmp.Length == 1 ? tmp + tmp : tmp, NumberStyles.HexNumber);
                     rgbNode = rgbNode.next_;
                     if (rgbNode != null)
                     {
-                        B = int.Parse(rgbNode.GetAsString(Src), NumberStyles.HexNumber);
+                        tmp = rgbNode.GetAsString(Src);
+                        B = int.Parse(tmp.Length == 1 ? tmp + tmp : tmp, NumberStyles.HexNumber);
                     }
                 }
             }

@@ -2,7 +2,12 @@
 
 //******************************************** Less
 ^Parse:  primary ;
-^^primary: (declaration / ruleset / comment)* ;
+^^primary: (import / declaration / ruleset / comment)* ;
+^^import :  ws '@import'  S import_url medias? s ';' ;
+^^import_url : (string / url) ;
+^^medias : [-a-z]+ (s ',' s [a-z]+)*;
+^url: 'url(' url_path ')';
+^url_path: (string / [-a-zA-Z0-9_%$/.&=:;#+?]+);
 ^^comment: ws '/*' (!'*/' . )* '*/' ws / ws '//' (![\n] .)* [\n] ws;
 ^^declaration:  standard_declaration / catchall_declaration ;
 ^^standard_declaration: ws (ident / variable)  s ':' s expressions  s (';'/ ws &'}') ws ;
@@ -38,10 +43,10 @@
 ^^accessor_name: (class_id / tag) ; 
 ^^accessor_key: (string / variable) ; 
 ^^fonts : font (s ',' s font)+  ;
-^^font: [a-zA-Z] [-a-zA-Z0-9]* ;
+^^font: [a-zA-Z] [-a-zA-Z0-9]* / string  ;
 ^^literal: color / (dimension / [-a-z]+) '/' dimension / number unit / string ;
 ^^keyword: [-a-zA-Z]+ !ns;
-^^string: ['] (!['] . )* ['] / ["] (!["] . )* ["] ;
+^string: ['] (!['] . )* ['] / ["] (!["] . )* ["] ;
 ^^dimension: number WS unit;
 ^^number: '-'? [0-9]* '.' [0-9]+ / '-'? [0-9]+;
 ^^unit: ('px'/'em'/'pc'/'%'/'ex'/'s'/'pt'/'cm'/'mm')?;

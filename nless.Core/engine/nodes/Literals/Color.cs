@@ -73,6 +73,25 @@ namespace nless.Core.engine
             {
                 return colour1.Operate((i, j) => i / j, colour2);
             }
+
+            //Invert it so (2 * color) works as well as (color * 2)
+            public static Color operator -(int colour2, Color colour1)
+            {
+                return colour1.Operate((i, j) => i - j, colour2);
+            }
+            public static Color operator +(int colour2, Color colour1)
+            {
+                return colour1.Operate((i, j) => i + j, colour2);
+            }
+            public static Color operator *(int colour2, Color colour1)
+            {
+                return colour1.Operate((i, j) => i * j, colour2);
+            }
+            public static Color operator /(int colour2, Color colour1)
+            {
+                return colour1.Operate((i, j) => i / j, colour2);
+            }
+
         #endregion
         public Color Operate(Func<int, int, int> action, int other)
         {
@@ -111,7 +130,7 @@ namespace nless.Core.engine
 
         public override string ToString()
         {
-            return A < 1 ? string.Format("rgba({0},{1},{2}, {3})", R, G, B, A) : string.Format("#{0:X2}{1:X2}{2:X2}", R, G, B);
+            return (A < 1 ? string.Format("rgba({0},{1},{2}, {3})", R, G, B, A) : string.Format("#{0:X2}{1:X2}{2:X2}", R, G, B)).ToLower();
         }
         public override string ToCss()
         {
@@ -123,7 +142,7 @@ namespace nless.Core.engine
         }
         public override string Inspect()
         {
-            return A < 1 ? string.Format("rgba({0},{1},{2}, {3})", R, G, B, A) : string.Format("rgb({0},{1},{2})", R, G, B);
+            return (A < 1 ? string.Format("rgba({0},{1},{2}, {3})", R, G, B, A) : string.Format("rgb({0},{1},{2})", R, G, B)).ToLower();
         }
     }
 

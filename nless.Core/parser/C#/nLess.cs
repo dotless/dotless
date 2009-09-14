@@ -1,4 +1,4 @@
-/* created on 14/09/2009 00:11:48 from peg generator V1.0 using '' as input*/
+/* created on 14/09/2009 17:12:51 from peg generator V1.0 using '' as input*/
 
 using Peg.Base;
 using System;
@@ -7,17 +7,18 @@ using System.Text;
 namespace nLess
 {
       
-      enum EnLess{Parse= 1, primary= 2, comment= 3, declaration= 4, standard_declaration= 5, 
-                   catchall_declaration= 6, ident= 7, variable= 8, expressions= 9, 
-                   operation_expressions= 10, space_delimited_expressions= 11, important= 12, 
-                   expression= 13, @operator= 14, ruleset= 15, standard_ruleset= 16, 
-                   mixin_ruleset= 17, selectors= 18, selector= 19, arguments= 20, 
-                   argument= 21, element= 22, class_id= 23, attribute= 24, @class= 25, 
-                   id= 26, tag= 27, select= 28, function= 29, function_name= 30, 
-                   entity= 31, accessor= 32, accessor_name= 33, accessor_key= 34, 
-                   fonts= 35, font= 36, literal= 37, keyword= 38, @string= 39, dimension= 40, 
-                   number= 41, unit= 42, color= 43, rgb= 44, rgb_node= 45, hex= 46, 
-                   WS= 47, ws= 48, s= 49, S= 50, ns= 51};
+      enum EnLess{Parse= 1, primary= 2, import= 3, import_url= 4, medias= 5, url= 6, 
+                   url_path= 7, comment= 8, declaration= 9, standard_declaration= 10, 
+                   catchall_declaration= 11, ident= 12, variable= 13, expressions= 14, 
+                   operation_expressions= 15, space_delimited_expressions= 16, important= 17, 
+                   expression= 18, @operator= 19, ruleset= 20, standard_ruleset= 21, 
+                   mixin_ruleset= 22, selectors= 23, selector= 24, arguments= 25, 
+                   argument= 26, element= 27, class_id= 28, attribute= 29, @class= 30, 
+                   id= 31, tag= 32, select= 33, function= 34, function_name= 35, 
+                   entity= 36, accessor= 37, accessor_name= 38, accessor_key= 39, 
+                   fonts= 40, font= 41, literal= 42, keyword= 43, @string= 44, dimension= 45, 
+                   number= 46, unit= 47, color= 48, rgb= 49, rgb_node= 50, hex= 51, 
+                   WS= 52, ws= 53, s= 54, S= 55, ns= 56};
       class nLess : PegCharParser 
       {
         
@@ -68,12 +69,61 @@ namespace nLess
 
            return TreeAST((int)EnLess.Parse,()=> primary() );
 		}
-        public bool primary()    /*^^primary: (declaration / ruleset / comment)* ;*/
+        public bool primary()    /*^^primary: (import / declaration / ruleset / comment)* ;*/
         {
 
            return TreeNT((int)EnLess.primary,()=>
                 OptRepeat(()=>  
-                      declaration() || ruleset() || comment() ) );
+                      import() || declaration() || ruleset() || comment() ) );
+		}
+        public bool import()    /*^^import :  ws '@import'  S import_url medias? s ';' ;*/
+        {
+
+           return TreeNT((int)EnLess.import,()=>
+                And(()=>  
+                     ws()
+                  && Char('@','i','m','p','o','r','t')
+                  && S()
+                  && import_url()
+                  && Option(()=> medias() )
+                  && s()
+                  && Char(';') ) );
+		}
+        public bool import_url()    /*^^import_url : (string / url) ;*/
+        {
+
+           return TreeNT((int)EnLess.import_url,()=>
+                    @string() || url() );
+		}
+        public bool medias()    /*^^medias : [-a-z]+ (s ',' s [a-z]+)*;*/
+        {
+
+           return TreeNT((int)EnLess.medias,()=>
+                And(()=>  
+                     PlusRepeat(()=> (In('a','z')||OneOf("-")) )
+                  && OptRepeat(()=>    
+                      And(()=>      
+                               s()
+                            && Char(',')
+                            && s()
+                            && PlusRepeat(()=> In('a','z') ) ) ) ) );
+		}
+        public bool url()    /*^url: 'url(' url_path ')';*/
+        {
+
+           return TreeAST((int)EnLess.url,()=>
+                And(()=>  
+                     Char('u','r','l','(')
+                  && url_path()
+                  && Char(')') ) );
+		}
+        public bool url_path()    /*^url_path: (string / [-a-zA-Z0-9_%$/.&=:;#+?]+);*/
+        {
+
+           return TreeAST((int)EnLess.url_path,()=>
+                  
+                     @string()
+                  || PlusRepeat(()=> OneOf(optimizedCharset0) ) );
 		}
         public bool comment()    /*^^comment: ws '/*' (!'* /' . )* '* /' ws / ws '//' (![\n] .)* [\n] ws;*/
         {
@@ -157,7 +207,7 @@ namespace nLess
                   
                      operation_expressions()
                   || space_delimited_expressions()
-                  || PlusRepeat(()=> OneOf(optimizedCharset0) ) );
+                  || PlusRepeat(()=> OneOf(optimizedCharset1) ) );
 		}
         public bool operation_expressions()    /*^^operation_expressions:  expression (operator expression)+;*/
         {
@@ -275,7 +325,7 @@ namespace nLess
                          PlusRepeat(()=> In('a','z', 'A','Z') )
                       && Char('=')
                       && dimension() )
-                  || PlusRepeat(()=> OneOf(optimizedCharset1) )
+                  || PlusRepeat(()=> OneOf(optimizedCharset2) )
                   || function()
                   || And(()=>    
                          keyword()
@@ -424,14 +474,16 @@ namespace nLess
                   && PlusRepeat(()=>    
                       And(()=>    s() && Char(',') && s() && font() ) ) ) );
 		}
-        public bool font()    /*^^font: [a-zA-Z] [-a-zA-Z0-9]* ;*/
+        public bool font()    /*^^font: [a-zA-Z] [-a-zA-Z0-9]* / string  ;*/
         {
 
            return TreeNT((int)EnLess.font,()=>
-                And(()=>  
-                     In('a','z', 'A','Z')
-                  && OptRepeat(()=>    
-                      (In('a','z', 'A','Z', '0','9')||OneOf("-")) ) ) );
+                  
+                     And(()=>    
+                         In('a','z', 'A','Z')
+                      && OptRepeat(()=>      
+                            (In('a','z', 'A','Z', '0','9')||OneOf("-")) ) )
+                  || @string() );
 		}
         public bool literal()    /*^^literal: color / (dimension / [-a-z]+) '/' dimension / number unit / string ;*/
         {
@@ -456,10 +508,10 @@ namespace nLess
                      PlusRepeat(()=> (In('a','z', 'A','Z')||OneOf("-")) )
                   && Not(()=> ns() ) ) );
 		}
-        public bool @string()    /*^^string: ['] (!['] . )* ['] / ["] (!["] . )* ["] ;*/
+        public bool @string()    /*^string: ['] (!['] . )* ['] / ["] (!["] . )* ["] ;*/
         {
 
-           return TreeNT((int)EnLess.@string,()=>
+           return TreeAST((int)EnLess.@string,()=>
                   
                      And(()=>    
                          OneOf("'")
@@ -556,6 +608,7 @@ namespace nLess
         #region Optimization Data 
         internal static OptimizedCharset optimizedCharset0;
         internal static OptimizedCharset optimizedCharset1;
+        internal static OptimizedCharset optimizedCharset2;
         
         internal static OptimizedLiterals optimizedLiterals0;
         
@@ -567,11 +620,23 @@ namespace nLess
                    new OptimizedCharset.Range('A','Z'),
                    new OptimizedCharset.Range('0','9'),
                    };
+               char[] oneOfChars = new char[]    {'-','_','%','$','/'
+                                                  ,'.','&','=',':',';'
+                                                  ,'#','+','?'};
+               optimizedCharset0= new OptimizedCharset(ranges,oneOfChars);
+            }
+            
+            {
+               OptimizedCharset.Range[] ranges = new OptimizedCharset.Range[]
+                  {new OptimizedCharset.Range('a','z'),
+                   new OptimizedCharset.Range('A','Z'),
+                   new OptimizedCharset.Range('0','9'),
+                   };
                char[] oneOfChars = new char[]    {'-','_','%','*','/'
                                                   ,'.','&','=',':',','
                                                   ,'#','+','?',' ','\\'
                                                   ,'[',']','(',')'};
-               optimizedCharset0= new OptimizedCharset(ranges,oneOfChars);
+               optimizedCharset1= new OptimizedCharset(ranges,oneOfChars);
             }
             
             {
@@ -583,7 +648,7 @@ namespace nLess
                char[] oneOfChars = new char[]    {'-','_','%','$','/'
                                                   ,'.','&','=',':',';'
                                                   ,'#','+','?'};
-               optimizedCharset1= new OptimizedCharset(ranges,oneOfChars);
+               optimizedCharset2= new OptimizedCharset(ranges,oneOfChars);
             }
             
             

@@ -25,6 +25,8 @@ namespace nless.Core.engine
                 return less;
             }
         }
+
+        internal Element Root;
         
         public Engine(string less) : this(less, Console.Out){}
         public Engine(string less, TextWriter errorOut)
@@ -46,8 +48,8 @@ namespace nless.Core.engine
             if(!matches) throw new ParsingException("FAILURE: Parser did not match input file");
             var pegEl = _parser.GetRoot();
             var treeWalker = new TreeBuilder(pegEl, less);
-            var rootElement = treeWalker.Build();
-            css = rootElement.Group().ToCss();
+            Root = treeWalker.Build();
+            css = Root.Group().ToCss();
             if (showTree)
             {
                 var tprint = new TreePrint(Console.Out, less, 60, new NodePrinter(_parser).GetNodeName, false);

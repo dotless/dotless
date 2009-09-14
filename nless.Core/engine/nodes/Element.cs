@@ -232,9 +232,9 @@ namespace nless.Core.engine
                 if (singular)
                     properties.Append(string.Format(" {0} ", prop.ToCss()));
                 else
-                    properties.Append(string.Format("\n\t{0}", prop.ToCss()));
+                    properties.Append(string.Format("\r\n  {0}", prop.ToCss()));
             }
-            if (!singular) properties.Append("\n");
+            if (!singular) properties.Append("\r\n");
 
             var setArray = Set.Select(s => s.Name).ToArray();
             var pathContent =  string.Join(string.Empty, path.Where(p => !string.IsNullOrEmpty(p)).ToArray());

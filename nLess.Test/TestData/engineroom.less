@@ -1,20 +1,6 @@
-﻿.magic-box {
-  @trim: orange;
-  content: "gold";
-  width: 60cm;
-  height: 40cm;
-  #lock {
-    color: silver;
-  }
-}
+﻿@import url("TestData/blueprint/screen.css");
 
-#accessors {
-  content: .magic-box['content']; // "gold"
-  width: .magic-box['width']; // 60cm
-}
-
-.unlock {
-  .magic-box;
-  color: #lock['color']; // silver
-  border-color: .magic-box[@trim]; // orange
+.span_test
+{
+	.span-5;
 }
