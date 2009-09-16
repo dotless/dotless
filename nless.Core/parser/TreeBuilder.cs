@@ -118,8 +118,7 @@ namespace nless.Core.parser
         //expression tail:(operator expression)+ 
         private IList<INode> OperationExpressions(PegNode node, Element element)
         {
-            var lessNodes = new List<INode>();
-            lessNodes.Add(Expression(node.child_, element)); //First expression
+            var lessNodes = new List<INode> {Expression(node.child_, element)};
             node = node.next_;
 
             //Tail
@@ -132,7 +131,6 @@ namespace nless.Core.parser
                         break;
                     case EnLess.expression:
                         lessNodes.Add(Expression(node.child_, element));
-                        ;
                         break;
                 }
                 node = node.next_;
@@ -171,10 +169,8 @@ namespace nless.Core.parser
             {
                 case EnLess.expressions:
                     return new Expression(Expressions(node, element));
-                    break;
                 case EnLess.entity:
                     return Entity(node.child_, element);
-                    break;
             }
             throw new ParsingException("Expression should either be child expressions or an entity");
         }
@@ -182,7 +178,6 @@ namespace nless.Core.parser
         //function / fonts / keyword  / variable / literal ;
         private INode Entity(PegNode node, Element element)
         {
-            var nodes = new List<INode>();
             switch (node.id_.ToEnLess())
             {
                 case EnLess.literal:

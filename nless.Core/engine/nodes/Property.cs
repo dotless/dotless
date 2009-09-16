@@ -1,9 +1,4 @@
-﻿#region
-
-using System;
-using System.Collections.Generic;
-
-#endregion
+﻿using System.Collections.Generic;
 
 namespace nless.Core.engine
 {
@@ -63,7 +58,7 @@ namespace nless.Core.engine
 
         public void Add(string token)
         {
-            var node = new Anonymous(token);
+            var node = new Anonymous(token) {Parent = this};
             Add(node);
         }
 
@@ -88,11 +83,6 @@ namespace nless.Core.engine
             _eval = _eval ?? Value.Evaluate();
             return _eval;
         }
-
-        //TODO: Dont understand where parent.Nearest is set?
-        //def nearest node
-        //  parent.nearest node
-        //end
 
         public override string ToCss()
         {

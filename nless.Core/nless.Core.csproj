@@ -50,16 +50,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="engine\engine.cs" />
+    <Compile Include="engine\nodes\Anonymous.cs" />
     <Compile Include="engine\nodes\Element.cs" />
     <Compile Include="engine\nodes\Entity.cs" />
     <Compile Include="engine\nodes\Expression.cs" />
+    <Compile Include="engine\nodes\IEvaluatable.cs" />
     <Compile Include="engine\nodes\INearestResolver.cs" />
+    <Compile Include="engine\nodes\INode.cs" />
     <Compile Include="engine\nodes\Literal.cs" />
     <Compile Include="engine\nodes\Literals\Color.cs" />
     <Compile Include="engine\nodes\Literals\Font.cs" />
     <Compile Include="engine\nodes\Literals\Function.cs" />
     <Compile Include="engine\nodes\Literals\Number.cs" />
     <Compile Include="engine\nodes\Literals\String.cs" />
+    <Compile Include="engine\nodes\MixedUnitsExeption.cs" />
+    <Compile Include="engine\nodes\Operator.cs" />
     <Compile Include="engine\nodes\Property.cs" />
     <Compile Include="engine\nodes\Selector.cs" />
     <Compile Include="engine\nodes\Variable.cs" />

@@ -35,6 +35,12 @@ namespace nless.Core.engine
         {
             return "@" + Key;
         }
+
+        /// <summary>
+        /// Evaluates the variables value i.e. @color: #fff +1;
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>Only evaluates first time, next time will just return last evaluation</remarks>
         public override INode Evaluate()
         {
             if(_declaration)
@@ -45,7 +51,6 @@ namespace nless.Core.engine
                                     .Evaluate();
             return _eval;
         }
-
         public override string  ToCSharp()
         {
             return Evaluate() == null ? "" : Evaluate().ToCSharp(); ;

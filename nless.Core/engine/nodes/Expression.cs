@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
 using nless.Core.utils;
 
@@ -88,6 +87,7 @@ namespace nless.Core.engine
         }
         public INode Evaluate()
         {
+
             if(this.Count() > 2 || !Terminal)
             {
                 for (var i=0; i<Count; i++){
@@ -109,59 +109,8 @@ namespace nless.Core.engine
                                      ? (INode)Activator.CreateInstance(entity.GetType(), unit.First(), float.Parse(result.ToString()))
                                      : (INode)Activator.CreateInstance(entity.GetType(), float.Parse(result.ToString()));
                 return returnNode;
-            } 
-            else if(this.Count() == 1)
-            {
-                return this.First();
             }
-            return this;
+            return this.Count() == 1 ? this.First() : this;
         }
-
-        //  if size > 2 or !terminal?
-        //  # Replace self with an evaluated sub-expression
-        //  replace map {|e| e.respond_to?(:evaluate) ? e.evaluate : e }
-
-        //  unit = literals.map do |node|
-        //    node.unit
-        //  end.compact.uniq.tap do |ary|
-        //    raise MixedUnitsError, self * ' ' if ary.size > 1 && !operators.empty?
-        //  end.join
-          
-        //  entity = literals.find {|e| e.unit == unit } || entities.first
-        //  result = operators.empty?? self : eval(to_ruby.join)
-          
-        //  case result
-        //    when Entity     then result
-        //    when Expression then result.one?? result.first : self.class.new(result)
-        //    else entity.class.new(result, *(unit if entity.class == Node::Number))
-        //  end
-        //elsif size == 1
-        //  first
-        //else
-        //  self
-    }
-
-    public class MixedUnitsExeption : Exception
-    {
-        public MixedUnitsExeption()
-        {
-        }
-
-        public MixedUnitsExeption(string message) : base(message)
-        {
-        }
-
-        public MixedUnitsExeption(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-
-        protected MixedUnitsExeption(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
-    }
-
-    public interface IEvaluatable
-    {
-        INode Evaluate();
     }
 }

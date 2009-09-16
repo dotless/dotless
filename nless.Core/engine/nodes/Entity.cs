@@ -1,47 +1,29 @@
-﻿#region
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-
-#endregion
 
 namespace nless.Core.engine
 {
-    public interface INode
-    {
-        INode Parent { get; set; }
-        string ToCss();
-        string ToCSharp();
-        IList<INode> Path(INode node);
-    }
-
     public class Entity : INode
     {
-        protected Entity()
-        {
+        public string Value { get; set; }
+        public INode Parent { get; set; }
+
+        protected Entity(){
         }
 
         public Entity(string value)
-            : this(value, null)
-        {
+            : this(value, null){
         }
 
-        public Entity(string value, INode parent)
-        {
+        public Entity(string value, INode parent){
             Value = value;
             Parent = parent;
         }
-
-        public string Value { get; set; }
 
         public INode Last
         {
             get { return Path(null).Last(); }
         }
-
-        #region INode Members
-
-        public INode Parent { get; set; }
 
         public virtual string ToCss()
         {
@@ -52,8 +34,6 @@ namespace nless.Core.engine
         {
             return Value;
         }
-
-        #endregion
 
         /// <summary>
         /// Returns the path from any given node, to the root
@@ -71,58 +51,10 @@ namespace nless.Core.engine
             }
             return path;
         }
-        public IList<INode> Path()
-        {
-            return Path(this);
-        }
+        public IList<INode> Path(){ return Path(this); }
         public virtual string Inspect()
         {
             return Value;
-        }
-    }
-
-    public class Anonymous : Literal
-    {
-        protected Anonymous()
-        {
-        }
-
-        public Anonymous(string value) : base(value)
-        {
-        }
-
-        public Anonymous(string value, INode parent) : base(value, parent)
-        {
-        }
-    }
-
-    public class Operator : Entity
-    {
-        protected Operator()
-        {
-        }
-
-        public Operator(string value) : base(value)
-        {
-        }
-
-        public Operator(string value, INode parent) : base(value, parent)
-        {
-        }
-    }
-
-    public class Paren : Entity
-    {
-        protected Paren()
-        {
-        }
-
-        public Paren(string value) : base(value)
-        {
-        }
-
-        public Paren(string value, INode parent) : base(value, parent)
-        {
         }
     }
 }

@@ -1,6 +1,22 @@
-﻿@import url("TestData/blueprint/screen.css");
-
-.span_test
+﻿.variables{
+	@base: 10;
+	@color: #DEF;
+	height:10px;
+}
+.mixin
 {
-	.span-5;
+	content: "mix me in"
+}
+
+.top-level
+{
+	color: .variables[@color] / .variables[@base] * ((1 + 1px)  * 2);
+	height: .variables['height'];
+	
+	.inner-level
+	{
+		@color: #FFF;
+		color: @color;
+		.mixin;
+	}
 }

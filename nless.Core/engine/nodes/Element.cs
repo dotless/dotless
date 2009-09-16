@@ -8,10 +8,17 @@ namespace nless.Core.engine
 {
     public class Element : INode, INearestResolver
     {
+
+        public INode Parent { get; set; }
+        public List<INode> Rules { get; set; }
+        public List<Element> Set { get; set; }
+        public string Name { get; set; }
+        public Selector Selector { get; set; }
+
         public Element(string name, string selector)
         {
             Rules = new List<INode>();
-            Set = new List<Element>();
+            Set = new List<Element>(); 
             Name = name;
             Selector = selector!=null ? Selector.Get(selector) : Selector.Get("");
         }
@@ -23,11 +30,7 @@ namespace nless.Core.engine
         public Element() : this(string.Empty)
         {
         }
-
-        public List<INode> Rules { get; set; }
-        public List<Element> Set { get; set; }
-        public string Name { get; set; }
-        public Selector Selector { get; set; }
+       
         public Element Last
         {
             get
@@ -47,23 +50,12 @@ namespace nless.Core.engine
             get { return !IsId || !IsClass || !IsUniversal; }
         }
 
-      //def << obj
-      //  if obj.kind_of? Node::Entity
-      //    obj.parent = self
-      //    @rules << obj
-      //  else
-      //    raise ArgumentError, "argument can't be a #{obj.class}"
-      //  end
-      //end
         public void Add(INode token)
         {
             token.Parent = this;
             Rules.Add(token);
         }
 
-        //def class?;     name =~ /^\./ end
-        //def id?;        name =~ /^#/  end
-        //def universal?; name == '*'   end
         public bool IsClass
         {
             get { return Name.StartsWith("."); }
@@ -94,16 +86,6 @@ namespace nless.Core.engine
             get { return Rules.Count() == 0; }
         }
 
-
-        public Element GetRoot()
-        {
-            var els = this;
-            while(!els.IsRoot)
-            {
-                els = (Element)els.Parent;
-            }
-            return els;
-        }
         public IList<Property> Identifiers
         {
             get
@@ -140,8 +122,25 @@ namespace nless.Core.engine
             }
         }
 
-        public INode Get(string key)
+        /// <summary>
+        /// Gets the Trees Root Element
+        /// </summary>
+        /// <returns></returns>
+        public Element GetRoot()
         {
+            var els = this;
+            while (!els.IsRoot){
+                els = (Element)els.Parent;
+            }
+            return els;
+        }
+
+        /// <summary>
+        /// Gets a specific node based upon its ToString value
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public INode Get(string key){
             var rules = All().SelectMany(e => e.Rules);
             foreach(var rule in rules){
                 if (rule.ToString() == key)
@@ -149,29 +148,33 @@ namespace nless.Core.engine
             }
             return null;
         }
-         //@rules.find {|i| i.eql? key 
+        public T GetAs<T>(string key) { return (T)Get(key); }
 
-        public INode Get(INode key)
-        {
+        /// <summary>
+        /// Gets a specific node based upon its Equality value
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public INode Get(INode key){
             return Rules.Where(r => r.Equals(key)).FirstOrDefault();
         }
-        public T GetAs<T>(string key)
-        {
-            return (T)Get(key);
-        }
-        public T GetAs<T>(INode key)
-        {
-            return (T)Get(key);
-        }
-        #region INode Members
+        public T GetAs<T>(INode key) { return (T)Get(key); }
 
-        public INode Parent { get; set; }
+        public override string ToString()
+        {
+            return IsRoot ? "*" : Name;
+        }
 
         public virtual string ToCSharp()
         {
             return "";
         }
 
+        /// <summary>
+        /// Path from node up the tree i.e. node-->parent-->parent-->parent-->root
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
         public IList<INode> Path(INode node)
         {
             var path = new List<INode>();
@@ -186,40 +189,37 @@ namespace nless.Core.engine
         {
             return Path(this);
         }
-        #endregion
 
+        /// <summary>
+        /// All Elements down the tree from current one
+        /// </summary>
+        /// <returns></returns>
         public IList<Element> All()
         {
             var path = new List<Element>();
             if(!path.Contains(this)) path.Add(this);
-            foreach(var element in Elements)
-            {
+            foreach(var element in Elements){
                 path.Add(element);
                 path.AddRange(element.All());
             }
             return path;
         }
 
-        public struct ElementPath
-        {
-            public ElementPath(Element element, Stack<INode> path)
-                : this()
-            {
-                Element = element;
-                Path = path;
-            }
-
-            public Element Element { get; set; }
-            public Stack<INode> Path { get; set; }
-        }
-
-
+        /// <summary>
+        /// Main entry point for the CSS conversion from the Tree
+        /// </summary>
+        /// <returns></returns>
         public virtual string ToCss()
         {
             return ToCss(new List<string>());
         }
 
-        public virtual string ToCss(IList<string> path)
+        /// <summary>
+        /// Recursive call appending to the last generated CSS
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        internal string ToCss(ICollection<string> path)
         {
             if (!IsRoot){
                 path.Add(Selector.ToCss());
@@ -227,8 +227,7 @@ namespace nless.Core.engine
             }
             var properties = new StringBuilder();
             var singular = Properties.Count < 2;
-            foreach (var prop in Properties)
-            {
+            foreach (var prop in Properties){
                 if (singular)
                     properties.Append(string.Format(" {0} ", prop.ToCss()));
                 else
@@ -253,13 +252,18 @@ namespace nless.Core.engine
         private string GetChildCss(IEnumerable<string> path)
         {
             var css = new StringBuilder();
-            foreach(var element in Elements)
-            {
+            foreach(var element in Elements){
                 css.Append(element.ToCss(new List<string>(path)));
             }
             return css.ToString();
         }
 
+
+        /// <summary>
+        /// Group together simmilar elements
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>TODO: This code was horrible in the Ruby version and its horrible here. Cant even remember how it works</remarks>
         public Element Group()
         {
             var matched = false;
@@ -279,7 +283,6 @@ namespace nless.Core.engine
                         var ee = stack.ToArray()[i];
                         if (ee.IsEquiv(e) && e.Elements.Count == 0){
                             GetAs<Element>(e).Set.Add(ee);
-                            //Set.Add(ee);
                             stack.Pop();
                         }
                         else{
@@ -297,7 +300,12 @@ namespace nless.Core.engine
             }
             return this;
         }
-  
+        
+        /// <summary>
+        /// Compares two elements 
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
         private bool IsEquiv(Element other)
         {
             var equiv = Rules.Count() == other.Rules.Count();
@@ -308,9 +316,16 @@ namespace nless.Core.engine
             return equiv && differentToCss.Count() == 0;
         }
 
+
+        /// <summary>
+        /// Lol, I dont understand this code
+        /// </summary>
+        /// <param name="selector"></param>
+        /// <param name="element"></param>
+        /// <returns></returns>
         internal Element Descend(Selector selector, Element element)
         {
-            Selector s = null;
+            Selector s;
             if (selector is Child)
             {
                 s = GetAs<Element>(element.Name).Selector;
@@ -326,6 +341,11 @@ namespace nless.Core.engine
             return null;
         }
 
+        /// <summary>
+        /// Nearest node to this element (used for nested variable identification).
+        /// </summary>
+        /// <param name="ident"></param>
+        /// <returns></returns>
         public INode Nearest(string ident)
         {
             INode node = null; 
@@ -337,23 +357,6 @@ namespace nless.Core.engine
             if (node == null)  throw new VariableNameException(ident);
             return node;
         }
-
-        public T NearestAs<T>(string ident)
-        {
-            return (T) Nearest(ident);
-        }
-        public override string ToString()
-        {
-            return IsRoot ? "*" : Name;
-        }
-
-/*      def nearest ident
-        ary = ident =~ /^[.#]/ ? :elements : :variables
-        path.map do |node|
-          node.send(ary).find {|i| i.to_s == ident }
-        end.compact.first.tap do |result|
-          raise VariableNameError, ident unless result
-        end
-      end*/
+        public T NearestAs<T>(string ident) { return (T) Nearest(ident); }
     }
 }
