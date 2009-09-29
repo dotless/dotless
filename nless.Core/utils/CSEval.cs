@@ -1,5 +1,6 @@
 ﻿using System;
 using System.CodeDom.Compiler;
+using System.Reflection;
 using System.Text;
 using Microsoft.CSharp;
 
@@ -11,8 +12,16 @@ namespace nless.Core.utils
         {
             var comp = (new CSharpCodeProvider().CreateCompiler());
             var cp = new CompilerParameters();
-            cp.ReferencedAssemblies.Add("system.dll");
-            cp.ReferencedAssemblies.Add("nless.Core.dll");
+            //cp.ReferencedAssemblies.Add("system.dll");
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies()){
+                try{
+                    var location = assembly.Location;
+                    if (!String.IsNullOrEmpty(location)) cp.ReferencedAssemblies.Add(location);
+                }
+                catch (NotSupportedException){
+                    // this happens for dynamic assemblies, so just ignore it.
+                }
+            }
             cp.GenerateExecutable = false;
             cp.GenerateInMemory = true;
 
@@ -31,12 +40,11 @@ namespace nless.Core.utils
             if (cr.Errors.HasErrors)
             {
                 var error = new StringBuilder();
-                error.Append("Error Compiling Expression: ");
                 foreach (CompilerError err in cr.Errors)
                 {
                     error.AppendFormat("{0}\n", err.ErrorText);
                 }
-                throw new Exception("Error Compiling Expression: " + error);
+                throw new Exception(error.ToString());
             }
 
             var a = cr.CompiledAssembly;

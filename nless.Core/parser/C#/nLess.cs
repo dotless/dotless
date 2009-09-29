@@ -1,4 +1,4 @@
-/* created on 16/09/2009 21:56:46 from peg generator V1.0 using '' as input*/
+/* created on 26/09/2009 23:53:41 from peg generator V1.0 using '' as input*/
 
 using Peg.Base;
 using System;
@@ -76,7 +76,7 @@ namespace nLess
                 OptRepeat(()=>  
                       import() || declaration() || ruleset() || comment() ) );
 		}
-        public bool import()    /*^^import :  ws '@import'  S import_url medias? s ';' ;*/
+        public bool import()    /*^^import :  ws '@import'  S import_url medias? s (';'/FATAL<"Semi colon expected">) ;*/
         {
 
            return TreeNT((int)EnLess.import,()=>
@@ -87,7 +87,7 @@ namespace nLess
                   && import_url()
                   && Option(()=> medias() )
                   && s()
-                  && Char(';') ) );
+                  && (    Char(';') || Fatal("Semi colon expected")) ) );
 		}
         public bool import_url()    /*^^import_url : (string / url) ;*/
         {
@@ -227,7 +227,7 @@ namespace nLess
                   && OptRepeat(()=> And(()=>    WS() && expression() ) )
                   && Option(()=> important() ) ) );
 		}
-        public bool important()    /*^^important:      s '!' s 'important' ;*/
+        public bool important()    /*^^important: s '!' s 'important' ;*/
         {
 
            return TreeNT((int)EnLess.important,()=>

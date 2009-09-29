@@ -39,6 +39,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -63,12 +64,13 @@
     <Compile Include="engine\nodes\Literals\Function.cs" />
     <Compile Include="engine\nodes\Literals\Number.cs" />
     <Compile Include="engine\nodes\Literals\String.cs" />
-    <Compile Include="engine\nodes\MixedUnitsExeption.cs" />
+    <Compile Include="exceptions\MixedUnitsExeption.cs" />
     <Compile Include="engine\nodes\Operator.cs" />
     <Compile Include="engine\nodes\Property.cs" />
     <Compile Include="engine\nodes\Selector.cs" />
     <Compile Include="engine\nodes\Variable.cs" />
     <Compile Include="exceptions\VariableNameException.cs" />
+    <Compile Include="LessCssHttpHandler.cs" />
     <Compile Include="parser\C#\nLess.cs" />
     <Compile Include="parser\NodePrinter.cs" />
     <Compile Include="exceptions\ParsingException.cs" />

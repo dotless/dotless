@@ -3,7 +3,7 @@
 //******************************************** Less
 ^Parse:  primary ;
 ^^primary: (import / declaration / ruleset / comment)* ;
-^^import :  ws '@import'  S import_url medias? s ';' ;
+^^import :  ws '@import'  S import_url medias? s (';'/FATAL<"Semi colon expected">) ;
 ^^import_url : (string / url) ;
 ^^medias : [-a-z]+ (s ',' s [a-z]+)*;
 ^url: 'url(' url_path ')';

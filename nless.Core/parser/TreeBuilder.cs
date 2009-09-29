@@ -13,15 +13,18 @@ namespace nless.Core.parser
 {
     public class TreeBuilder
     {
+        public PegNode Root { get; set; }
+        public string Src { get; set; }
         public TreeBuilder(PegNode root, string src)
         {
             Root = root;
             Src = src;
         }
-
-        public PegNode Root { get; set; }
-        public string Src { get; set; }
-
+        
+        /// <summary>
+        /// Main entry point for the build
+        /// </summary>
+        /// <returns></returns>
         public Element Build()
         {
             var el = new Element("");
@@ -29,7 +32,11 @@ namespace nless.Core.parser
             return el;
         }
 
-        //(import / declaration / ruleset / comment)* 
+        /// <summary>
+        /// primary: (import / declaration / ruleset / comment)* ;
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="element"></param>
         private void Primary(PegNode node, Element element)
         {
             var nextPrimary = node.child_;
@@ -55,6 +62,11 @@ namespace nless.Core.parser
             }
         }
 
+        /// <summary>
+        /// import :  ws '@import'  S import_url medias? s ';' ;
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="element"></param>
         private void Import(PegNode node, Element element)
         {
             var path = node.GetAsString(Src);
@@ -71,6 +83,11 @@ namespace nless.Core.parser
            }
         }
 
+        /// <summary>
+        /// declaration:  standard_declaration / catchall_declaration ;
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="element"></param>
         private void Declaration(PegNode node, Element element)
         {
             if (node.id_.ToEnLess() == EnLess.standard_declaration)
@@ -96,6 +113,12 @@ namespace nless.Core.parser
             }
         }
 
+        /// <summary>
+        /// expressions: operation_expressions / space_delimited_expressions / [-a-zA-Z0-9_%*/.&=:,#+? \[\]()]+ ;
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="element"></param>
+        /// <returns></returns>
         private IList<INode> Expressions(PegNode node, Element element)
         {
             // Expression
@@ -115,7 +138,12 @@ namespace nless.Core.parser
             }
         }
 
-        //expression tail:(operator expression)+ 
+        /// <summary>
+        /// operation_expressions:  expression (operator expression)+;
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="element"></param>
+        /// <returns></returns>
         private IList<INode> OperationExpressions(PegNode node, Element element)
         {
             var lessNodes = new List<INode> {Expression(node.child_, element)};
@@ -139,7 +167,12 @@ namespace nless.Core.parser
             return lessNodes;
         }
 
-        //expression (WS expression)* important?;
+        /// <summary>
+        /// space_delimited_expressions: expression (WS expression)* important? ;
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="element"></param>
+        /// <returns></returns>
         private IList<INode> SpaceDelimitedExpressions(PegNode node, Element element)
         {
             var lessNodes = new List<INode> {Expression(node.child_, element)};
@@ -163,6 +196,12 @@ namespace nless.Core.parser
             return lessNodes;
         }
 
+        /// <summary>
+        /// expression: '(' s expressions s ')' / entity ;
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="element"></param>
+        /// <returns></returns>
         private INode Expression(PegNode node, Element element)
         {
             switch (node.id_.ToEnLess())
@@ -175,7 +214,12 @@ namespace nless.Core.parser
             throw new ParsingException("Expression should either be child expressions or an entity");
         }
 
-        //function / fonts / keyword  / variable / literal ;
+        /// <summary>
+        /// entity :  function / fonts / accessor / keyword  / variable / literal  ;
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="element"></param>
+        /// <returns></returns>
         private INode Entity(PegNode node, Element element)
         {
             switch (node.id_.ToEnLess())
@@ -201,6 +245,12 @@ namespace nless.Core.parser
             return new Anonymous(node.GetAsString(Src));
         }
 
+        /// <summary>
+        /// accessor: accessor_name '[' accessor_key ']'; 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="element"></param>
+        /// <returns></returns>
         private INode Accessor(PegNode node, Element element)
         {
             var ident = node.GetAsString(Src);
@@ -214,6 +264,12 @@ namespace nless.Core.parser
             return new Anonymous("");
         }
 
+        /// <summary>
+        /// function: function_name arguments ;
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="element"></param>
+        /// <returns></returns>
         private INode Function(PegNode node, Element element)
         {
             var funcName = node.GetAsString(Src);
@@ -221,6 +277,12 @@ namespace nless.Core.parser
             return new Function(funcName, arguments);
         }
 
+        /// <summary>
+        /// arguments : '(' s argument s (',' s argument s)* ')';
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="element"></param>
+        /// <returns></returns>
         private IList<INode> Arguments(PegNode node, Element element)
         {
             var args = new List<INode>();
@@ -249,11 +311,23 @@ namespace nless.Core.parser
             return args;
         }
 
+        /// <summary>
+        /// keyword: [-a-zA-Z]+ !ns;
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="element"></param>
+        /// <returns></returns>
         private INode Keyword(PegNode node, Element element)
         {
             return new Keyword(node.GetAsString(Src));
         }
 
+        /// <summary>
+        /// fonts : font (s ',' s font)+  ;
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="element"></param>
+        /// <returns></returns>
         private INode Fonts(PegNode node, Element element)
         {
             var fonts = new List<Literal>();
@@ -266,6 +340,12 @@ namespace nless.Core.parser
             return new FontFamily(fonts.ToArray());
         }
 
+        /// <summary>
+        /// number: '-'? [0-9]* '.' [0-9]+ / '-'? [0-9]+;
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="element"></param>
+        /// <returns></returns>
         private INode Number(PegNode node, Element element)
         {
             var val = float.Parse(node.GetAsString(Src));
@@ -275,11 +355,23 @@ namespace nless.Core.parser
             return new Number(unit, val);
         }
 
+        /// <summary>
+        /// color: '#' rgb;
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="element"></param>
+        /// <returns></returns>
         private INode Color(PegNode node, Element element)
         {
             return RGB(node.child_, element);
         }
 
+        /// <summary>
+        /// rgb:(rgb_node)(rgb_node)(rgb_node) / hex hex hex ;
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="element"></param>
+        /// <returns></returns>
         private INode RGB(PegNode node, Element element)
         {
             int R = 0, G = 0, B = 0;
@@ -306,13 +398,22 @@ namespace nless.Core.parser
             return new Color(R, G, B);
         }
 
-
+        /// <summary>
+        /// variable: '@' [-_a-zA-Z0-9]+; 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="element"></param>
+        /// <returns></returns>
         private INode Variable(PegNode node, Element element)
         {
             return new Variable(node.GetAsString(Src));
         }
 
-        //ruleset: selectors [{] ws prsimary ws [}] ws /  ws selectors ';' ws;
+        /// <summary>
+        /// ruleset: selectors [{] ws prsimary ws [}] ws /  ws selectors ';' ws;
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="element"></param>
         private void RuleSet(PegNode node, Element element)
         {
             if (node.id_.ToEnLess() == EnLess.standard_ruleset)
@@ -333,6 +434,13 @@ namespace nless.Core.parser
                 }
             }
         }
+
+        /// <summary>
+        /// standard_ruleset: ws selectors [{] ws primary ws [}] ws;
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="els"></param>
+        /// <returns></returns>
         private static IList<Element> StandardSelectors(Element element, IEnumerable<Element> els)
         {
             foreach (var el in els){
@@ -341,6 +449,14 @@ namespace nless.Core.parser
             }
             return new List<Element> { element};
         }
+
+        /// <summary>
+        /// selectors :  ws selector (s ',' ws selector)* ws ;
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="el"></param>
+        /// <param name="action"></param>
+        /// <returns></returns>
         private IList<Element> Selectors(PegNode node, Element el, Func<IList<Element>, IList<Element>> action)
         {
             var selector = node.child_;
@@ -353,6 +469,11 @@ namespace nless.Core.parser
             return elements;
         }
 
+        /// <summary>
+        /// selector : (s select element s)+ arguments? ;
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
         private IList<Element> Selector(PegNode node)
         {
             var elements = new List<Element>();
@@ -370,19 +491,6 @@ namespace nless.Core.parser
                 node = node.next_;
             }
             return elements;
-        }
-
-
-        private void spt(PegNode node)
-        {
-            if (node != null)
-            {
-                Console.WriteLine("Node: {0}:{1}", node.id_.ToEnLess(), node.GetAsString(Src));
-                if (node.next_ != null)
-                    Console.WriteLine("Next: {0}:{1}", node.next_.id_.ToEnLess(), node.GetAsString(Src));
-                if (node.child_ != null)
-                    Console.WriteLine("Child: {0}:{1}", node.child_.id_.ToEnLess(), node.GetAsString(Src));
-            }
         }
     }
 }
