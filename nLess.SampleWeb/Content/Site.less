@@ -1,4 +1,6 @@
-﻿.c
+﻿@import '~/Content/Import.less';
+
+.c
 {
 	@blue: #4570b2;
 	@light-blue: #e0eff9;
@@ -6,9 +8,15 @@
 	@black: #222222;
 }
 
+body
+{
+	.import;
+	
+}
+
 #header
 {
-	background-color: .c[@blue];
+	background-color: .vars[@red];
 	height:90px;
 	font-family: Georgia, serif;
 }

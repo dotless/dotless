@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Web;
 using nLess;
 using nless.Core.engine;
 using nless.Core.engine.nodes.Literals;
@@ -70,12 +71,17 @@ namespace nless.Core.parser
         private void Import(PegNode node, Element element)
         {
             var path = node.GetAsString(Src);
-            if(node.child_ != null)
-            {
+            if(node.child_ != null){
                 path = node.child_.GetAsString(Src); 
             }
             path = path.Replace("\"", "").Replace("'", "");
            //TODO: Fuck around with pah to make it absolute relative
+
+            if(HttpContext.Current!=null)
+            {
+                path = HttpContext.Current.Server.MapPath(path);
+            }
+
            if(File.Exists(path))
            {
                var engine = new Engine(File.ReadAllText(path), null);
