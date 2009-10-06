@@ -1,6 +1,9 @@
-h1. nLess Readme
+nLess Readme
+============
 
-h2. Whats this all about?
+Whats this all about?
+========================
+
 
 This is a project to port the hugely useful Less libary to the .NET world. 
 It give variables, nested rules and operators to CSS. 
