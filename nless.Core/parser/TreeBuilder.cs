@@ -354,7 +354,7 @@ namespace nless.Core.parser
         /// <returns></returns>
         private INode Number(PegNode node, Element element)
         {
-            var val = float.Parse(node.GetAsString(Src));
+            var val = float.Parse(node.GetAsString(Src), NumberFormatInfo.InvariantInfo);
             var unit = "";
             node = node.next_;
             if (node != null && node.id_.ToEnLess() == EnLess.unit) unit = node.GetAsString(Src);

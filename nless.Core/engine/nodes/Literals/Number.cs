@@ -1,4 +1,6 @@
-﻿namespace nless.Core.engine
+﻿using System.Globalization;
+
+namespace nless.Core.engine
 {
     public class Number : Literal
     {
@@ -27,7 +29,7 @@
         }
         public override string ToCss()
         {
-            return string.Format("{0}{1}", Value, Unit ?? "");
+            return string.Format("{0}{1}", Value.ToString(NumberFormatInfo.InvariantInfo), Unit ?? "");
         }
       //TODO: Dont get this
       //def to_css
