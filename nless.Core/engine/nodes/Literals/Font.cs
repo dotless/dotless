@@ -37,8 +37,8 @@ namespace nless.Core.engine
         {
             var sb = new StringBuilder();
             foreach (var family in Family)
-                sb.AppendFormat("{0},", family.ToCss());
-            return sb.ToString(0, sb.Length - 1);
+                sb.AppendFormat("{0}, ", family.ToCss());
+            return sb.ToString(0, sb.Length - 2);
         }
     }
 }

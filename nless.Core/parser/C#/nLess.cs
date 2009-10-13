@@ -1,4 +1,4 @@
-/* created on 26/09/2009 23:53:41 from peg generator V1.0 using '' as input*/
+/* created on 13/10/2009 00:12:13 from peg generator V1.0 using '' as input*/
 
 using Peg.Base;
 using System;
@@ -16,9 +16,10 @@ namespace nLess
                    argument= 26, element= 27, class_id= 28, attribute= 29, @class= 30, 
                    id= 31, tag= 32, select= 33, function= 34, function_name= 35, 
                    entity= 36, accessor= 37, accessor_name= 38, accessor_key= 39, 
-                   fonts= 40, font= 41, literal= 42, keyword= 43, @string= 44, dimension= 45, 
-                   number= 46, unit= 47, color= 48, rgb= 49, rgb_node= 50, hex= 51, 
-                   WS= 52, ws= 53, s= 54, S= 55, ns= 56};
+                   fonts= 40, font= 41, literal= 42, dimension_list= 43, keyword= 44, 
+                   @string= 45, dimension= 46, number= 47, unit= 48, color= 49, 
+                   rgb= 50, rgb_node= 51, hex= 52, WS= 53, ws= 54, s= 55, S= 56, 
+                   ns= 57};
       class nLess : PegCharParser 
       {
         
@@ -485,20 +486,26 @@ namespace nLess
                             (In('a','z', 'A','Z', '0','9')||OneOf("-")) ) )
                   || @string() );
 		}
-        public bool literal()    /*^^literal: color / (dimension / [-a-z]+) '/' dimension / number unit / string ;*/
+        public bool literal()    /*^^literal: color / dimension_list / number unit / string ;*/
         {
 
            return TreeNT((int)EnLess.literal,()=>
                   
                      color()
-                  || And(()=>    
-                         (      
-                               dimension()
-                            || PlusRepeat(()=> (In('a','z')||OneOf("-")) ))
-                      && Char('/')
-                      && dimension() )
+                  || dimension_list()
                   || And(()=>    number() && unit() )
                   || @string() );
+		}
+        public bool dimension_list()    /*^^dimension_list:  (dimension / [-a-z]+) '/' dimension;*/
+        {
+
+           return TreeNT((int)EnLess.dimension_list,()=>
+                And(()=>  
+                     (    
+                         dimension()
+                      || PlusRepeat(()=> (In('a','z')||OneOf("-")) ))
+                  && Char('/')
+                  && dimension() ) );
 		}
         public bool keyword()    /*^^keyword: [-a-zA-Z]+ !ns;*/
         {
@@ -524,11 +531,11 @@ namespace nLess
                             And(()=>    Not(()=> OneOf("\"") ) && Any() ) )
                       && OneOf("\"") ) );
 		}
-        public bool dimension()    /*^^dimension: number WS unit;*/
+        public bool dimension()    /*^^dimension: number unit;*/
         {
 
            return TreeNT((int)EnLess.dimension,()=>
-                And(()=>    number() && WS() && unit() ) );
+                And(()=>    number() && unit() ) );
 		}
         public bool number()    /*^^number: '-'? [0-9]* '.' [0-9]+ / '-'? [0-9]+;*/
         {

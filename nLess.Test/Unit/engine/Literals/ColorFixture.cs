@@ -91,7 +91,7 @@ namespace nLess.Test.Unit.engine.Literals
         public void CanRetrieveColorHex()
         {
             var color = new Color(255, 255, 255);
-            Assert.AreEqual("#FFFFFF", color.ToCss());
+            Assert.AreEqual("#ffffff", color.ToCss());
 
             color = new Color(0, 0, 0);
             Assert.AreEqual("#000000", color.ToCss());

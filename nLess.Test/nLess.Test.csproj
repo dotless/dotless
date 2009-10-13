@@ -136,7 +136,9 @@
     <Content Include="Spec\css\whitespace.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Spec\less\import\import-test-d.css" />
+    <Content Include="Spec\less\import\import-test-d.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="Spec\less\accessors.less">
@@ -166,9 +168,15 @@
     <None Include="Spec\less\import.less">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Spec\less\import\import-test-a.less" />
-    <None Include="Spec\less\import\import-test-b.less" />
-    <None Include="Spec\less\import\import-test-c.less" />
+    <None Include="Spec\less\import\import-test-a.less">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Spec\less\import\import-test-b.less">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Spec\less\import\import-test-c.less">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Spec\less\lazy-eval.less">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

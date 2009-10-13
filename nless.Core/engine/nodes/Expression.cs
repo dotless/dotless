@@ -14,9 +14,11 @@ namespace nless.Core.engine
             var sb = new StringBuilder();
             foreach (var node in this)
             {
-                sb.AppendFormat(" {0} ", node.ToCss());
+                sb.AppendFormat("{0} ", node.ToCss());
             }
-            return sb.ToString();
+            //Note: Pointless formatting for SPECS
+            var css = sb.ToString();
+            return css.Substring(0, css.Length-1);
         }
         public string ToCSharp()
         {

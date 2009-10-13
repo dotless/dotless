@@ -193,7 +193,7 @@ namespace nless.Core.parser
                         lessNodes.Add(Expression(node.child_, element));;
                         break;
                     case EnLess.important:
-                        lessNodes.Add(Keyword(node, element));
+                        lessNodes.Add(new Keyword("!important"));
                         break;
                 }
                 node = node.next_;
