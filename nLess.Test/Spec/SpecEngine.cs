@@ -23,7 +23,7 @@ namespace nLess.Test.Spec
         [Test]
         public void Single()
         {
-            SpecHelper.ShouldEqual("import"); //FAIL
+            SpecHelper.ShouldEqual("css"); //FAIL
         }
     }
 }

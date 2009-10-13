@@ -114,7 +114,10 @@ namespace nless.Core.parser
             }
             else if (node.id_.ToEnLess() == EnLess.catchall_declaration)
             {
-                node = node.child_;
+/*                node = node.child_;
+                var name = node.GetAsString(Src).Replace(" ", "");
+                element.Add(new Property(name));*/
+                
                 //TODO: Should I be doing something here?
             }
         }

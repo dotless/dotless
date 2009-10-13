@@ -29,7 +29,9 @@ namespace nless.Core.engine
         }
         public override string ToCss()
         {
-            return string.Format("{0}{1}", Value.ToString(NumberFormatInfo.InvariantInfo), Unit ?? "");
+            var valStr = Value.ToString(NumberFormatInfo.InvariantInfo);
+            //valStr = (valStr.Length > 1 && valStr[0] == '0') ? valStr.Substring(1) : valStr;
+            return string.Format("{0}{1}", valStr, Unit ?? "");
         }
       //TODO: Dont get this
       //def to_css
