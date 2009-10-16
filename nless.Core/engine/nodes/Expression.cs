@@ -11,14 +11,7 @@ namespace nless.Core.engine
         public INode Parent { get; set; }
         public string ToCss()
         {
-            var sb = new StringBuilder();
-            foreach (var node in this)
-            {
-                sb.AppendFormat("{0} ", node.ToCss());
-            }
-            //Note: Pointless formatting for SPECS
-            var css = sb.ToString();
-            return css.Substring(0, css.Length-1);
+            return string.Join(" ", this.Select(x => x.ToCss()).ToArray());
         }
         public string ToCSharp()
         {

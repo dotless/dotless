@@ -27,9 +27,24 @@ namespace nless.Core.engine
         {
             return Value.ToString();
         }
+
+
+        /// <summary>
+        /// Ugly hack to make spec pass.
+        /// </summary>
+        /// <returns></returns>
+        private string FormatValue()
+        {
+            string value = Value.ToString(NumberFormatInfo.InvariantInfo);
+            if (value.StartsWith("0."))
+                value = value.Remove(0, 1);
+            if (value.StartsWith("-0."))
+                value = value.Remove(1, 1);
+            return value;
+        }
         public override string ToCss()
         {
-            return string.Format("{0}{1}", Value.ToString(NumberFormatInfo.InvariantInfo), Unit ?? "");
+            return string.Format("{0}{1}",FormatValue(), Unit ?? "");
         }
       //TODO: Dont get this
       //def to_css
