@@ -27,16 +27,26 @@ namespace nless.Core.engine
         {
             return Value.ToString();
         }
+
+
+        /// <summary>
+        /// Ugly hack to make spec pass.
+        /// </summary>
+        /// <returns></returns>
+        private string FormatValue()
+        {
+            string value = Value.ToString(NumberFormatInfo.InvariantInfo);
+            if (value.StartsWith("0."))
+                value = value.Remove(0, 1);
+            if (value.StartsWith("-0."))
+                value = value.Remove(1, 1);
+            return value;
+        }
         public override string ToCss()
         {
-            var valStr = Value.ToString(NumberFormatInfo.InvariantInfo);
-            //valStr = (valStr.Length > 1 && valStr[0] == '0') ? valStr.Substring(1) : valStr;
-            return string.Format("{0}{1}", valStr, Unit ?? "");
+            return string.Format("{0}{1}",FormatValue(), Unit ?? "");
         }
-      //TODO: Dont get this
-      //def to_css
-      //  "#{(self % 1).zero?? "#{self.to_i}#@unit" : self}"
-      //end
+
 
         #region operator overrides
         public static Number operator +(Number number1, Number number2)

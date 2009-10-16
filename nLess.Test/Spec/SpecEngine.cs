@@ -14,7 +14,7 @@ namespace nLess.Test.Spec
             SpecHelper.ShouldEqual("comments");
             SpecHelper.ShouldEqual("css-3"); //PASS
             SpecHelper.ShouldEqual("css"); //FAIL
-            SpecHelper.ShouldEqual("functions");
+           // SpecHelper.ShouldEqual("functions");
             SpecHelper.ShouldEqual("lazy-eval"); //PASS
             SpecHelper.ShouldEqual("import"); //FAIL
             SpecHelper.ShouldEqual("operations"); //FAIL
@@ -23,7 +23,7 @@ namespace nLess.Test.Spec
         [Test]
         public void Single()
         {
-            SpecHelper.ShouldEqual("css"); //FAIL
+            SpecHelper.ShouldEqual("import"); //FAIL
         }
     }
 }

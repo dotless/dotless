@@ -128,7 +128,6 @@ div.status li {
   height: 50px;
   width: 78px;
   background: url("http://static.csimg.com/v2/img/cs-cta-pricing.png") no-repeat bottom left;
-  margin: ;
 }
 h1 {
   font-size: 153.9%;
@@ -294,8 +293,7 @@ h6 {
   width: 100%;
 }
 #whatsNearbyButton { float: right; }
-#homeNavigation { background: #E9F3CF; }
-#mainNavigation { background: #E9F3CF; }
+#homeNavigation, #mainNavigation { background: #E9F3CF; }
 #homeNavigation {
   color: #5F8134;
   font-size: 93%;
@@ -549,11 +547,11 @@ a#addBusinessButton {
   height: 42px;
   width: 175px;
   text-indent: -9999em;
-  background-position: -0 -28px;
+  background-position: 0 -28px;
   float: left;
 }
-a#addBusinessButton:hover { background-position: -0 -75px; }
-a#addBusinessButton .click { background-position: -0 -123px; }
+a#addBusinessButton:hover { background-position: 0 -75px; }
+a#addBusinessButton.click { background-position: 0 -123px; }
 a#upgradeProfileButton {
   display: block;
   height: 42px;
@@ -563,7 +561,7 @@ a#upgradeProfileButton {
   float: left;
 }
 a#upgradeProfileButton:hover { background-position: -181px -75px; }
-a#upgradeProfileButton .click { background-position: -181px -123px; }
+a#upgradeProfileButton.click { background-position: -181px -123px; }
 #claimBusiness a { font-size: 93%; }
 p.date {
   padding: 0;
@@ -1045,62 +1043,34 @@ button.cs-button-small {
   height: 25px;
   width: 25px;
 }
-.cat-arts-entertainment { background-position: -225px -25px; }
-.cat-1 { background-position: -225px -25px; }
-.cat-automotive { background-position: -100px 0; }
-.cat-2 { background-position: -100px 0; }
-.cat-business-professional-services { background-position: -150px 0; }
-.cat-3 { background-position: -150px 0; }
-.cat-computers-and-internet { background-position: -400px -25px; }
-.cat-4 { background-position: -400px -25px; }
-.cat-contractors-construction-equipment { background-position: -200px 0; }
-.cat-5 { background-position: -200px 0; }
-.cat-education { background-position: -425px -25px; }
-.cat-6 { background-position: -425px -25px; }
-.cat-finance-insurance { background-position: -425px 0; }
-.cat-7 { background-position: -425px 0; }
-.cat-health-medicine { background-position: -175px 0; }
-.cat-8 { background-position: -175px 0; }
-.cat-home-garden { background-position: -200px -25px; }
-.cat-9 { background-position: -200px -25px; }
-.cat-legal { background-position: -450px 0; }
-.cat-10 { background-position: -450px 0; }
-.cat-manufacturing-production-wholesale { background-position: -525px 0; }
-.cat-11 { background-position: -525px 0; }
-.cat-other { background-position: -475px 0; }
-.cat-12 { background-position: -475px 0; }
-.cat-personal-services-care { background-position: -25px 0; }
-.cat-13 { background-position: -25px 0; }
-.cat-pets { background-position: -350px -25px; }
-.cat-14 { background-position: -350px -25px; }
-.cat-real-estate-moving-storage { background-position: -225px 0; }
-.cat-15 { background-position: -225px 0; }
-.cat-religious-organizations { background-position: -500px 0; }
-.cat-16 { background-position: -500px 0; }
-.cat-restaurants-food-beverages { background-position: 0 0; }
-.cat-17 { background-position: 0 0; }
-.cat-retail-shopping { background-position: -75px 0; }
-.cat-18 { background-position: -75px 0; }
-.cat-sports-recreation { background-position: -375px -25px; }
-.cat-19 { background-position: -375px -25px; }
-.cat-telecommunications { background-position: -525px -25px; }
-.cat-20 { background-position: -525px -25px; }
-.cat-travel-transportation { background-position: -500px -25px; }
-.cat-21 { background-position: -500px -25px; }
-.feed-add_photo { background-position: -250px -25px; }
-.feed-1 { background-position: -250px -25px; }
-.feed-new_review { background-position: -300px -25px; }
-.feed-2 { background-position: -300px -25px; }
-.feed-all_star { background-position: -50px -50px; }
-.feed-4 { background-position: -50px -50px; }
-.feed-new_video { background-position: -100px -25px; }
-.feed-5 { background-position: -100px -25px; }
-.feed-profile_update { background-position: -25px -25px; }
-.feed-7 { background-position: -25px -25px; }
-.feed-add_tag { background-position: 0 -25px; }
-.feed-8 { background-position: 0 -25px; }
-.feed-new_vote { background-position: -75px -25px; }
-.feed-11 { background-position: -75px -25px; }
+.cat-arts-entertainment, .cat-1 { background-position: -225px -25px; }
+.cat-automotive, .cat-2 { background-position: -100px 0; }
+.cat-business-professional-services, .cat-3 { background-position: -150px 0; }
+.cat-computers-and-internet, .cat-4 { background-position: -400px -25px; }
+.cat-contractors-construction-equipment, .cat-5 { background-position: -200px 0; }
+.cat-education, .cat-6 { background-position: -425px -25px; }
+.cat-finance-insurance, .cat-7 { background-position: -425px 0; }
+.cat-health-medicine, .cat-8 { background-position: -175px 0; }
+.cat-home-garden, .cat-9 { background-position: -200px -25px; }
+.cat-legal, .cat-10 { background-position: -450px 0; }
+.cat-manufacturing-production-wholesale, .cat-11 { background-position: -525px 0; }
+.cat-other, .cat-12 { background-position: -475px 0; }
+.cat-personal-services-care, .cat-13 { background-position: -25px 0; }
+.cat-pets, .cat-14 { background-position: -350px -25px; }
+.cat-real-estate-moving-storage, .cat-15 { background-position: -225px 0; }
+.cat-religious-organizations, .cat-16 { background-position: -500px 0; }
+.cat-restaurants-food-beverages, .cat-17 { background-position: 0 0; }
+.cat-retail-shopping, .cat-18 { background-position: -75px 0; }
+.cat-sports-recreation, .cat-19 { background-position: -375px -25px; }
+.cat-telecommunications, .cat-20 { background-position: -525px -25px; }
+.cat-travel-transportation, .cat-21 { background-position: -500px -25px; }
+.feed-add_photo, .feed-1 { background-position: -250px -25px; }
+.feed-new_review, .feed-2 { background-position: -300px -25px; }
+.feed-all_star, .feed-4 { background-position: -50px -50px; }
+.feed-new_video, .feed-5 { background-position: -100px -25px; }
+.feed-profile_update, .feed-7 { background-position: -25px -25px; }
+.feed-add_tag, .feed-8 { background-position: 0 -25px; }
+.feed-new_vote, .feed-11 { background-position: -75px -25px; }
 a.video {
   background-image: url("http://static.csimg.com/img/cs-iconSprite.20090316.4.png");
   background-repeat: no-repeat;
@@ -1501,7 +1471,6 @@ ul.blue-separator li.adHover:hover { background: #FFFFFF; }
   margin-top: .5em;
   background: #FFFFFF;
   border: 1px solid #dddddd;
-  text-align: ;
 }
 #tagCloudWrap { margin-top: .5em; }
 #tagCloud ul { margin: 0; }
@@ -1534,8 +1503,7 @@ ul.blue-separator li.adHover:hover { background: #FFFFFF; }
   color: #333333;
   padding: 0 1em;
 }
-#detailsMap { position: relative; }
-#standardMap { position: relative; }
+#detailsMap, #standardMap { position: relative; }
 #bizMap {
   z-index: 1;
   position: relative;
@@ -1553,7 +1521,7 @@ ul.blue-separator li.adHover:hover { background: #FFFFFF; }
   background-color: #333333;
   opacity: .75;
   filter: alpha(opacity=75);
-  -moz-opacity: 0.75;
+  -moz-opacity: .75;
   width: 100%;
   z-index: 9;
   position: relative;
@@ -1837,7 +1805,7 @@ ul.blue-separator li.adHover:hover { background: #FFFFFF; }
   background-color: #1F9EC9;
   opacity: .75;
   filter: alpha(opacity=75);
-  -moz-opacity: 0.75;
+  -moz-opacity: .75;
   width: 425px;
   z-index: 9;
   position: relative;
@@ -1859,8 +1827,7 @@ ul.blue-separator li.adHover:hover { background: #FFFFFF; }
   color: #666666;
   padding: .5em .5em 0 .5em;
 }
-#edit-standardname { width: 600px; }
-#edit-user-name { width: 600px; }
+#edit-standardname, #edit-user-name { width: 600px; }
 #edit-cityname { width: 470px; }
 #standard-submit-button {
   display: block;
@@ -1876,8 +1843,7 @@ ul.blue-separator li.adHover:hover { background: #FFFFFF; }
   width: 500px;
   padding: 0 1em;
 }
-#business-add-form { padding-bottom: 6px; }
-#business-add-standard-form { padding-bottom: 6px; }
+#business-add-form, #business-add-standard-form { padding-bottom: 6px; }
 #eventful-add-event-form { padding-bottom: 6px; }
 #business-add-form label {
   padding-top: 6px;
@@ -1991,8 +1957,7 @@ fieldset {
   padding-top: 3em;
   text-align: center;
 }
-div#corp-pages { padding: .5em; }
-div.corp-pages-menu { padding: .5em; }
+div#corp-pages, div.corp-pages-menu { padding: .5em; }
 #map { background: url("http://static.csimg.com/img/loaders/cs-largeLoader.20081130.1.gif") no-repeat 50% 50%; }
 #gmap-tooltip-map {
   width: 500px;
@@ -2680,8 +2645,7 @@ ul.navList li {
   color: #999999;
 }
 .sort-type { padding: 2px; }
-.sort-text { font-style: italic; }
-.state-select { font-style: italic; }
+.sort-text, .state-select { font-style: italic; }
 .sort-selected {
   text-decoration: none;
   background: #209fca;
@@ -3541,8 +3505,8 @@ ul.clist p.date {
 }
 form #edit-cs-firstname { display: none; }
 form #edit-cs-lastname { display: none; }
-form #edit-cs-firstname .form-text { display: none; }
-form #edit-cs-lastname .form-text { display: none; }
+form #edit-cs-firstname.form-text { display: none; }
+form #edit-cs-lastname.form-text { display: none; }
 #userLogin { color: #666666; }
 #userLogin h3 {
   font-size: 167%;

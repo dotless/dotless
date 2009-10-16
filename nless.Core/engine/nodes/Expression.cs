@@ -11,8 +11,7 @@ namespace nless.Core.engine
         public INode Parent { get; set; }
         public string ToCss()
         {
-            var parts = this.Select(x => x.ToCss()).ToArray();
-            return string.Join(" ", parts);
+            return string.Join(" ", this.Select(x => x.ToCss()).ToArray());
         }
         public string ToCSharp()
         {
