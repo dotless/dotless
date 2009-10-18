@@ -1,7 +1,8 @@
-obj/
-Obj/
-Bin/
-bin/
+[Oo]bj/
+[Bb]in/
+[Rr]elease/
+[Bb]uild/
+AssemblyInfo.cs
 *.suo
 Portal.4.1.resharper
 *.resharper.user

@@ -9,21 +9,23 @@ namespace nLess.Test.Spec
         public void Specs()
         {
             SpecHelper.ShouldEqual("accessors"); //PASS
-            SpecHelper.ShouldEqual("big"); //FAIL
+            SpecHelper.ShouldEqual("big"); //PASS
             SpecHelper.ShouldEqual("colors"); //PASS
-            SpecHelper.ShouldEqual("comments");
+            SpecHelper.ShouldEqual("comments"); //PASS
             SpecHelper.ShouldEqual("css-3"); //PASS
-            SpecHelper.ShouldEqual("css"); //FAIL
-           // SpecHelper.ShouldEqual("functions");
+            SpecHelper.ShouldEqual("css"); //PASS
+            // SpecHelper.ShouldEqual("functions"); //FAIL
+            SpecHelper.ShouldEqual("import"); //PASS
             SpecHelper.ShouldEqual("lazy-eval"); //PASS
-            SpecHelper.ShouldEqual("import"); //FAIL
-            SpecHelper.ShouldEqual("operations"); //FAIL
-        }
-
-        [Test]
-        public void Single()
-        {
-            SpecHelper.ShouldEqual("big"); //FAIL
+            // SpecHelper.ShouldEqual("mixins-args"); //FAIL
+            // SpecHelper.ShouldEqual("mixins"); //FAIL
+            SpecHelper.ShouldEqual("operations"); //PASS
+            SpecHelper.ShouldEqual("rulesets"); //PASS
+            SpecHelper.ShouldEqual("scope"); //PASS
+            //SpecHelper.ShouldEqual("selectors"); //FAIL
+            SpecHelper.ShouldEqual("strings"); //PASS
+            SpecHelper.ShouldEqual("variables"); //PASS
+            // SpecHelper.ShouldEqual("whitespace"); //FAIL
         }
     }
 }
