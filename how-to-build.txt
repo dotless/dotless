@@ -17,3 +17,4 @@ PS> .\psake .\default.ps1 <target>
 Note:
 You may need to execute the following command before being able to execute the script:
 Set-ExecutionPolicy remotesigned
+(Make sure you run this as administrator)
