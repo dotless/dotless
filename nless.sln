@@ -12,9 +12,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nLess.SampleWeb", "nLess.SampleWeb\nLess.SampleWeb.csproj", "{10A490E0-9199-4C12-970F-FAEC765F5967}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6CC48544-7A6A-4EB8-9F2D-B92CFC042E59}"
-	ProjectSection(SolutionItems) = preProject
-		readme.markdown = readme.markdown
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
