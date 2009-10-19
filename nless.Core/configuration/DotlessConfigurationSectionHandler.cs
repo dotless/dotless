@@ -1,5 +1,6 @@
 namespace nless.Core.configuration
 {
+    using System;
     using System.Configuration;
     using System.Xml;
 
@@ -7,8 +8,17 @@ namespace nless.Core.configuration
     {
         public object Create(object parent, object configContext, XmlNode section)
         {
-            var interpreter = new XmlConfigurationInterpreter();
-            DotlessConfiguration configuration = interpreter.Process(section);
+            var configuration = new DotlessConfiguration();    //Default
+            try
+            {
+                var interpreter = new XmlConfigurationInterpreter();
+                configuration = interpreter.Process(section);
+            }
+            catch (Exception)
+            {
+                //TODO: Log the errormessage to somewhere
+            }
+
             return configuration;
         }
     }

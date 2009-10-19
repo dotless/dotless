@@ -36,6 +36,7 @@
       <HintPath>..\nLess.Lib\PegBase.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -50,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="configuration\ConfigurationLoader.cs" />
     <Compile Include="configuration\DotlessConfiguration.cs" />
     <Compile Include="configuration\DotlessConfigurationSectionHandler.cs" />
     <Compile Include="configuration\XmlConfigurationInterpreter.cs" />
