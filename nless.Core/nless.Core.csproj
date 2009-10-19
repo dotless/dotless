@@ -50,6 +50,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="configuration\DotlessConfiguration.cs" />
+    <Compile Include="configuration\DotlessConfigurationSectionHandler.cs" />
+    <Compile Include="configuration\XmlConfigurationInterpreter.cs" />
     <Compile Include="engine\engine.cs" />
     <Compile Include="engine\nodes\Anonymous.cs" />
     <Compile Include="engine\nodes\Element.cs" />
