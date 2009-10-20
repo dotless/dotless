@@ -131,6 +131,14 @@ namespace nLess.Test.Unit.minifier
             Assert.AreEqual("\"#*%:&^,)!.(~*})\"", tree.Expressions.First().Expression.Value);
         }
 
+        [Test]
+        public void CanHandleMinusComposedValues()
+        {
+            var input = "margin: 0 auto -168px;";
+            ITreeNode tree = BuildTree(input);
+            Assert.AreEqual("0 auto -168px", tree.Expressions.First().Expression.Value);
+        }
+
         private ITreeNode BuildTree(string input)
         {
             var tokenizer = new Tokenizer();

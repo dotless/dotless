@@ -16,6 +16,7 @@
 
 namespace nless.Core.minifier
 {
+    using System;
     using System.Text;
 
     public class ExpressionBuilder : IExpressionBuilder
@@ -72,9 +73,15 @@ namespace nless.Core.minifier
                 char c = characters[index];
                 if (c == ' ') continue;
                 
-                return IsOperator(c);
+                return IsOperator(c) && IsFollowedBySpace(index +1, characters);
             }
             return false;
+        }
+
+        private bool IsFollowedBySpace(int index, char[] characters)
+        {
+            if (characters.Length < index) return false;
+            return characters[index] == ' ';
         }
 
         private bool IsOperator(char c)
