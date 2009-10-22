@@ -95,35 +95,54 @@ namespace nLess.Test.Unit.configuration
             Assert.IsInstanceOf(typeof(FileWatcherCacheStrategy), output.CacheConfiguration.CacheStrategy);
         }
 
+        [Test]
         public void CacheStrategyCanBeSetTo_TimeExpiring()
         {
-            var testnode = GetTestNodeWithCache("enabled");
+            var testnode = GetTestNodeWithCacheAndStrategy("time");
             var interpreter = new XmlConfigurationInterpreter();
 
             var output = interpreter.Process(testnode);
 
+            Assert.IsInstanceOf(typeof(TimeExpiringCacheStrategy), output.CacheConfiguration.CacheStrategy);
+        }
 
-            Assert.IsInstanceOf(typeof(FileWatcherCacheStrategy), output.CacheConfiguration.CacheStrategy);
+        [Test]
+        public void CacheExpirationTimeCanBeSet()
+        {
+            var testnode = GetTestNodeWithTimeAndExpiration(100);
+            var interpreter = new XmlConfigurationInterpreter();
+
+            var output = interpreter.Process(testnode);
+
+            Assert.AreEqual(100, output.CacheConfiguration.CacheExpiration);
+        }
+
+        private XmlNode GetTestNodeWithTimeAndExpiration(int expiration)
+        {
+            var xml = String.Format("<dotless cache=\"enabled\" strategy=\"time\" expires=\"{0}\"></dotless>", expiration);
+            return CreateXmlNode(xml);
         }
 
         private XmlNode GetTestNodeWithCache(string cacheEnabled)
         {
             var xml = String.Format("<dotless cache=\"{0}\"></dotless>", cacheEnabled);
-            var document = new XmlDocument();
-            document.Load(new StringReader(xml));
-            return document.DocumentElement;
+            return CreateXmlNode(xml);
         }
-
-
 
         private XmlNode GetTestNodeWithCacheAndStrategy(string cacheStrategy)
         {
-            throw new NotImplementedException();
+            var xml = String.Format("<dotless cache=\"enabled\" strategy=\"{0}\"></dotless>", cacheStrategy);
+            return CreateXmlNode(xml);
         }
 
         private XmlNode GetTestnodeWithoutAttribute()
         {
             var xml = "<dotless></dotless>";
+            return CreateXmlNode(xml);
+        }
+
+        private XmlNode CreateXmlNode(string xml)
+        {
             var document = new XmlDocument();
             document.Load(new StringReader(xml));
             return document.DocumentElement;

@@ -1,5 +1,7 @@
 namespace nless.Core.configuration
 {
+    using System;
+
     public class DotlessConfiguration
     {
         public bool MinifyOutput { get; set; }
@@ -25,6 +27,11 @@ namespace nless.Core.configuration
 
     public class TimeExpiringCacheStrategy : ICacheStrategy
     {
-        
+        private readonly long expiration;
+
+        public TimeExpiringCacheStrategy(long expiration)
+        {
+            this.expiration = expiration;
+        }
     }
 }

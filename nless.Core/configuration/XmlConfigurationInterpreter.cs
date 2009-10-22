@@ -1,9 +1,11 @@
 namespace nless.Core.configuration
 {
+    using System;
     using System.Xml;
 
     public class XmlConfigurationInterpreter
     {
+        private const long ONE_MINUTE = 3600;
         public DotlessConfiguration Process(XmlNode section)
         {
             XmlAttribute attribute = section.Attributes["minifyCss"];
@@ -28,7 +30,33 @@ namespace nless.Core.configuration
             {
                 configuration.CacheEnabled = true;
             }
+            XmlAttribute expiresAttribute = section.Attributes["expires"];
+            if (expiresAttribute != null)
+            {
+                try
+                {
+                    configuration.CacheExpiration = Convert.ToInt64(expiresAttribute.Value);
+                }
+                catch (FormatException)
+                {
+                    configuration.CacheExpiration = ONE_MINUTE;
+                }
+            }
+            XmlAttribute strategyAttribute = section.Attributes["strategy"];
+            if (strategyAttribute != null)
+            {
+                configuration.CacheStrategy = GetStrategy(strategyAttribute.Value, configuration);
+            }
             return configuration;
+        }
+
+        private ICacheStrategy GetStrategy(string strategyName, CacheConfig configuration)
+        {
+            if(strategyName == "filewatcher")
+            {
+                return new FileWatcherCacheStrategy();
+            }
+            return new TimeExpiringCacheStrategy(configuration.CacheExpiration);
         }
     }
 }
