@@ -50,6 +50,77 @@ namespace nLess.Test.Unit.configuration
             Assert.IsFalse(output.MinifyOutput);
         }
 
+        [Test]
+        public void CacheAttributeCanBeOmitted_DisablesCache()
+        {
+            XmlNode testnode = GetTestnodeWithoutAttribute();
+            var interpeter = new XmlConfigurationInterpreter();
+
+            var output = interpeter.Process(testnode);
+
+            Assert.IsFalse(output.CacheConfiguration.CacheEnabled);
+        }
+
+        [Test]
+        public void CacheEnabledSetToFalse_DisablesCache()
+        {
+            XmlNode testnode = GetTestNodeWithCache("disabled");
+            var interpeter = new XmlConfigurationInterpreter();
+
+            var output = interpeter.Process(testnode);
+
+            Assert.IsFalse(output.CacheConfiguration.CacheEnabled);
+        }
+
+        [Test]
+        public void CacheEnabledSetToEnabled_EnablesCache()
+        {
+            var testnode = GetTestNodeWithCache("enabled");
+            var interpeter = new XmlConfigurationInterpreter();
+
+            var output = interpeter.Process(testnode);
+
+            Assert.IsTrue(output.CacheConfiguration.CacheEnabled);
+        }
+
+        [Test]
+        public void DefaultCacheStrategyIsSetToFileWatcher()
+        {
+            var testnode = GetTestNodeWithCache("enabled");
+            var interpreter = new XmlConfigurationInterpreter();
+
+            var output = interpreter.Process(testnode);
+
+
+            Assert.IsInstanceOf(typeof(FileWatcherCacheStrategy), output.CacheConfiguration.CacheStrategy);
+        }
+
+        public void CacheStrategyCanBeSetTo_TimeExpiring()
+        {
+            var testnode = GetTestNodeWithCache("enabled");
+            var interpreter = new XmlConfigurationInterpreter();
+
+            var output = interpreter.Process(testnode);
+
+
+            Assert.IsInstanceOf(typeof(FileWatcherCacheStrategy), output.CacheConfiguration.CacheStrategy);
+        }
+
+        private XmlNode GetTestNodeWithCache(string cacheEnabled)
+        {
+            var xml = String.Format("<dotless cache=\"{0}\"></dotless>", cacheEnabled);
+            var document = new XmlDocument();
+            document.Load(new StringReader(xml));
+            return document.DocumentElement;
+        }
+
+
+
+        private XmlNode GetTestNodeWithCacheAndStrategy(string cacheStrategy)
+        {
+            throw new NotImplementedException();
+        }
+
         private XmlNode GetTestnodeWithoutAttribute()
         {
             var xml = "<dotless></dotless>";
