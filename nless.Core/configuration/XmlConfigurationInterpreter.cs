@@ -20,7 +20,7 @@ namespace nless.Core.configuration
 
         private CacheConfig GetDefaultCacheConfig()
         {
-            return new CacheConfig() {CacheEnabled = false, CacheExpiration = 0, CacheStrategy = new FileWatcherCacheStrategy()};
+            return new CacheConfig() {CacheEnabled = false, CacheExpiration = 0, CacheStragy = "file"};
         }
 
         private CacheConfig ProcessCacheConfiguration(XmlNode section, CacheConfig configuration)
@@ -42,21 +42,19 @@ namespace nless.Core.configuration
                     configuration.CacheExpiration = ONE_MINUTE;
                 }
             }
-            XmlAttribute strategyAttribute = section.Attributes["strategy"];
-            if (strategyAttribute != null)
+            XmlAttribute strategy = section.Attributes["strategy"];
+            if (strategy != null)
             {
-                configuration.CacheStrategy = GetStrategy(strategyAttribute.Value, configuration);
+                configuration.CacheStragy = GetCacheStrategyName(strategy.Value);
             }
             return configuration;
         }
 
-        private ICacheStrategy GetStrategy(string strategyName, CacheConfig configuration)
+        private static string GetCacheStrategyName(string attributeValue)
         {
-            if(strategyName == "filewatcher")
-            {
-                return new FileWatcherCacheStrategy();
-            }
-            return new TimeExpiringCacheStrategy(configuration.CacheExpiration);
+            if (attributeValue == "expiration")
+                return attributeValue;
+            return "file";
         }
     }
 }

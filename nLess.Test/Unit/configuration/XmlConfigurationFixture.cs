@@ -84,29 +84,6 @@ namespace nLess.Test.Unit.configuration
         }
 
         [Test]
-        public void DefaultCacheStrategyIsSetToFileWatcher()
-        {
-            var testnode = GetTestNodeWithCache("enabled");
-            var interpreter = new XmlConfigurationInterpreter();
-
-            var output = interpreter.Process(testnode);
-
-
-            Assert.IsInstanceOf(typeof(FileWatcherCacheStrategy), output.CacheConfiguration.CacheStrategy);
-        }
-
-        [Test]
-        public void CacheStrategyCanBeSetTo_TimeExpiring()
-        {
-            var testnode = GetTestNodeWithCacheAndStrategy("time");
-            var interpreter = new XmlConfigurationInterpreter();
-
-            var output = interpreter.Process(testnode);
-
-            Assert.IsInstanceOf(typeof(TimeExpiringCacheStrategy), output.CacheConfiguration.CacheStrategy);
-        }
-
-        [Test]
         public void CacheExpirationTimeCanBeSet()
         {
             var testnode = GetTestNodeWithTimeAndExpiration(100);
@@ -115,6 +92,39 @@ namespace nLess.Test.Unit.configuration
             var output = interpreter.Process(testnode);
 
             Assert.AreEqual(100, output.CacheConfiguration.CacheExpiration);
+        }
+
+        [Test]
+        public void CacheStrategyIsFileByDefault()
+        {
+            var node = GetTestNodeWithCache("enabled");
+            var interpreter = new XmlConfigurationInterpreter();
+
+            var output = interpreter.Process(node);
+
+            Assert.AreEqual("file", output.CacheConfiguration.CacheStragy);
+        }
+
+        [Test]
+        public void CacheStrategy_CanBeSetToFile()
+        {
+            var node = GetTestNodeWithCacheAndStrategy("file");
+            var interpreter = new XmlConfigurationInterpreter();
+
+            var output = interpreter.Process(node);
+
+            Assert.AreEqual("file", output.CacheConfiguration.CacheStragy);
+        }
+
+        [Test]
+        public void CacheStrategy_CanBeSetToExpiration()
+        {
+            var node = GetTestNodeWithCacheAndStrategy("expiration");
+            var interpreter = new XmlConfigurationInterpreter();
+
+            var output = interpreter.Process(node);
+
+            Assert.AreEqual("expiration", output.CacheConfiguration.CacheStragy);
         }
 
         private XmlNode GetTestNodeWithTimeAndExpiration(int expiration)
