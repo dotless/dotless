@@ -75,7 +75,10 @@
     <Compile Include="engine\nodes\Selector.cs" />
     <Compile Include="engine\nodes\Variable.cs" />
     <Compile Include="exceptions\VariableNameException.cs" />
+    <Compile Include="ILessEngine.cs" />
     <Compile Include="LessCssHttpHandler.cs" />
+    <Compile Include="LessEngine.cs" />
+    <Compile Include="MinifierDecorator.cs" />
     <Compile Include="minifier\CleanedStream.cs" />
     <Compile Include="minifier\ExpressionBuilder.cs" />
     <Compile Include="minifier\IDescriptorBuilder.cs" />
