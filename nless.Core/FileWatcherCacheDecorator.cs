@@ -23,7 +23,9 @@ namespace nless.Core
             }
             string css = engine.TransformToCss(filename);
             cache.Add(filename, css);
-            var watcher = new FileSystemWatcher(filename);
+            var info = new FileInfo(filename);
+            string dir = info.Directory.FullName;
+            var watcher = new FileSystemWatcher(dir, info.Name);
             watcher.Changed += (sender, e) =>
                                    {
                                        cache.Remove(filename);
