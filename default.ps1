@@ -37,6 +37,14 @@ task Init -depends Clean {
 		-product "dotless" `
 		-version $version `
 		-copyright "Copyright © dotless project 2009"
+    Generate-Assembly-Info `
+		-file "$source_dir\dotless.Compiler\Properties\AssemblyInfo.cs" `
+		-title "dotless Compiler $version" `
+		-description "Dynamic CSS for .net" `
+		-company "dotless project" `
+		-product "dotless" `
+		-version $version `
+		-copyright "Copyright © dotless project 2009"
         
     new-item $build_dir -itemType directory
     new-item $release_dir -itemType directory
