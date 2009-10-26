@@ -1,0 +1,19 @@
+dotless usese PSake by James Kovacs to compile.
+PSake is a powershell based build tool and is packed with the source (psake.ps1).
+
+To build simply execute psake.ps1.
+
+Possible build targets:
+* Clean = Removes all build artefacts
+* Build = Builds the main ElmsConnector library
+* Test = Builds testproject and runs Unit tests using NUnit
+* Merge = Merges PegBase assembly into dotless release assembly
+* Release = (Default) Executes Build, Test, Merge and creates a release zip.
+
+To run another build targert simply run:
+PS> .\psake .\default.ps1 <target>
+
+
+Note:
+You may need to execute the following command before being able to execute the script:
+Set-ExecutionPolicy remotesigned
