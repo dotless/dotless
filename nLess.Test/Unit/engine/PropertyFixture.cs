@@ -1,9 +1,8 @@
-﻿using System;
-using NUnit.Framework;
-
-namespace nLess.Test.Unit.engine
+﻿namespace dotless.Test.Unit.engine
 {
-    using dotless.Core.engine;
+    using Core.engine;
+    using System;
+    using NUnit.Framework;
 
     [TestFixture]
     public class PropertyFixture

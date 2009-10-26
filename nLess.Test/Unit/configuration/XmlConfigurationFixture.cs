@@ -1,9 +1,9 @@
-namespace nLess.Test.Unit.configuration
+namespace dotless.Test.Unit.configuration
 {
     using System;
     using System.IO;
     using System.Xml;
-    using dotless.Core.configuration;
+    using Core.configuration;
     using NUnit.Framework;
 
     [TestFixture]

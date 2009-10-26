@@ -1,10 +1,9 @@
-﻿using System;
-using NUnit.Framework;
-
-namespace nLess.Test.Unit.utils
+﻿namespace dotless.Test.Unit.utils
 {
-    using dotless.Core.engine;
-    using dotless.Core.utils;
+    using System;
+    using NUnit.Framework;
+    using Core.engine;
+    using Core.utils;
 
     [TestFixture]
     public class CsCodeDomFixture
@@ -17,10 +16,4 @@ namespace nLess.Test.Unit.utils
             Console.WriteLine(CsEval.Eval(color.ToCSharp()));
         }
     }
-
- 
-
 }
-
-
-

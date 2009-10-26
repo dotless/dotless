@@ -8,8 +8,8 @@
     <ProjectGuid>{D5D40B22-0A71-4D0F-B389-8C31730EE318}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>nLess.Test</RootNamespace>
-    <AssemblyName>nLess.Test</AssemblyName>
+    <RootNamespace>dotless.Test</RootNamespace>
+    <AssemblyName>dotless.Test</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

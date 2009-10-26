@@ -1,10 +1,9 @@
-﻿using System;
-using NUnit.Framework;
-using System.Collections.Generic;
-
-namespace nLess.Test.Unit.engine
+﻿namespace dotless.Test.Unit.engine
 {
-    using dotless.Core.engine;
+    using Core.engine;
+    using System;
+    using NUnit.Framework;
+    using System.Collections.Generic;
 
     [TestFixture]
     public class ElementFixture
@@ -69,22 +68,22 @@ namespace nLess.Test.Unit.engine
             e1_sibling.Add(new Property("color", nodes));
             e1_siblingb.Add(new Property("color", nodes));
             var nodesb = new List<INode>
-                            {
-                                new Number("px", 4),
-                                new Operator("*"),
-                                new Variable("@NumVariable")
-                            };
+                             {
+                                 new Number("px", 4),
+                                 new Operator("*"),
+                                 new Variable("@NumVariable")
+                             };
 
 
 
             e2.Add(new Property("padding", nodesb));
 
             var nodesc = new List<INode>
-                            {
-                                new Variable("@RootVariable", new Color(1, 1, 1)),
-                                new Operator("+"),
-                                new Variable("@Variable", new Color(1, 1, 1))
-                            };
+                             {
+                                 new Variable("@RootVariable", new Color(1, 1, 1)),
+                                 new Operator("+"),
+                                 new Variable("@Variable", new Color(1, 1, 1))
+                             };
             e3.Add(new Property("background-color", nodesc));
             Console.WriteLine(root.Group().ToCss());
         }

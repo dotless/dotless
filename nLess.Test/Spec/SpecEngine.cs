@@ -1,7 +1,8 @@
-﻿using NUnit.Framework;
-
-namespace nLess.Test.Spec
+﻿
+namespace dotless.Test.Spec
 {
+    using NUnit.Framework;
+
     [TestFixture]
     public class SpecEngine
     {

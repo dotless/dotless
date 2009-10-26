@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-namespace nLess.Test.Unit.minifier
+namespace dotless.Test.Unit.minifier
 {
-    using dotless.Core.minifier;
+    using Core.minifier;
     using NUnit.Framework;
 
     [TestFixture]

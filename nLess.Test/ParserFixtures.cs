@@ -1,15 +1,14 @@
-﻿using System;
-using System.IO;
-using NUnit.Framework;
-
-namespace nLess.Test
+﻿namespace dotless.Test
 {
-    using dotless.Core.engine;
+    using Core.engine;
+    using System;
+    using System.IO;
+    using NUnit.Framework;
 
-    //NOTE: This test is nonsense, just a quick  point in time proof
     [TestFixture]
     public class ParserFixtures
     {
+        //NOTE: This test is nonsense, just a quick  point in time proof
         [Test]
         public void Can_Parse()
         {

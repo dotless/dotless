@@ -1,8 +1,7 @@
-﻿using NUnit.Framework;
-
-namespace nLess.Test.Unit.engine.Literals
+﻿namespace dotless.Test.Unit.engine.Literals
 {
-    using dotless.Core.engine;
+    using Core.engine;
+    using NUnit.Framework;
 
     [TestFixture]
     public class StringFixture
@@ -10,8 +9,8 @@ namespace nLess.Test.Unit.engine.Literals
         [Test]
         public void CanRetrieveStringContent()
         {
-           // var str = new String("Trial");
-           // Assert.AreEqual("Trial", str.Content);
+            // var str = new String("Trial");
+            // Assert.AreEqual("Trial", str.Content);
             var str = new String("'Trial'");
             Assert.AreEqual("Trial", str.Content);
         }

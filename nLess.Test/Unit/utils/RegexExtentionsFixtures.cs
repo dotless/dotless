@@ -1,8 +1,7 @@
-﻿using NUnit.Framework;
-
-namespace nLess.Test.Unit.utils
+﻿namespace dotless.Test.Unit.utils
 {
-    using dotless.Core.utils;
+    using Core.utils;
+    using NUnit.Framework;
 
     [TestFixture]
     public class RegexExtentionsFixtures
@@ -10,9 +9,9 @@ namespace nLess.Test.Unit.utils
         [Test]
         public void CanRetrieveIdents()
         {
-           Assert.IsFalse("abcd".IsIdent());
-           Assert.IsTrue(".abcd".IsIdent());
-           Assert.IsTrue("#abcd".IsIdent());
+            Assert.IsFalse("abcd".IsIdent());
+            Assert.IsTrue(".abcd".IsIdent());
+            Assert.IsTrue("#abcd".IsIdent());
         }
     }
 }

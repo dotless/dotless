@@ -1,7 +1,7 @@
-﻿namespace nLess.Test.Spec
+﻿namespace dotless.Test.Spec
 {
     using System.IO;
-    using dotless.Core.engine;
+    using Core.engine;
     using NUnit.Framework;
 
     public class SpecHelper
@@ -25,6 +25,7 @@
             css.ShouldEqual(less, string.Format("|{0}| != |{1}|", less, css));
         }
     }
+
     internal static class SpecExtensions
     {
         public static void ShouldEqual(this string a, string b, string assertionFailedMessage)
