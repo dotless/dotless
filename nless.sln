@@ -5,7 +5,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotless.Core", "nless.Core\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotless.Test", "nLess.Test\dotless.Test.csproj", "{D5D40B22-0A71-4D0F-B389-8C31730EE318}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nLess.GrammarGen", "nLess.GrammarGen\nLess.GrammarGen.csproj", "{EF6F2A49-2D25-4B72-92FA-ACEB3907C12E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotless.GrammarGen", "nLess.GrammarGen\dotless.GrammarGen.csproj", "{EF6F2A49-2D25-4B72-92FA-ACEB3907C12E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{8C63225A-FFD5-43BC-B18C-A2E27D037D81}"
 EndProject

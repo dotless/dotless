@@ -4,7 +4,7 @@ using System.Linq;
 using Peg.Base;
 using Peg.Samples;
 
-namespace nLess.GrammarGen
+namespace dotless.GrammarGen
 {
     class Program
     {
