@@ -14,6 +14,12 @@
             var arguments = new List<string>();
             arguments.AddRange(args);
 
+            if (arguments.Count == 0)
+            {
+                WriteHelp();
+                return;
+            }
+
             DotlessConfiguration configuration;
             try
             {
@@ -51,8 +57,9 @@
 
         private static string GetAssemblyVersion()
         {
-            var attributes = Assembly.GetEntryAssembly().GetCustomAttributes(typeof (AssemblyVersionAttribute), false) as
-                             AssemblyVersionAttribute[];
+            Assembly assembly = typeof(EngineFactory).Assembly;
+            var attributes = assembly.GetCustomAttributes(typeof (AssemblyFileVersionAttribute), true) as
+                             AssemblyFileVersionAttribute[];
             if (attributes != null && attributes.Length == 1)
                 return attributes[0].Version;
             return "v.Unknown";
@@ -61,7 +68,8 @@
         private static void WriteHelp()
         {
             Console.WriteLine("dotless Compiler {0}", GetAssemblyVersion());
-            Console.WriteLine("Compiles .less files to css files.");
+            Console.WriteLine("\tCompiles .less files to css files.");
+            Console.WriteLine();
             Console.WriteLine("Usage: dotless.Compiler.exe [-switches] <inputfile> [outputfile]");
             Console.WriteLine("\tSwitches:");
             Console.WriteLine("\t\t-m --minify - Output CSS will be compressed");
