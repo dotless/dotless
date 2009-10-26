@@ -44,7 +44,7 @@ task Init -depends Clean {
 }
 
 task Build -depends Init {
-    msbuild nless.Core\nless.Core.csproj /p:OutDir=$build_dir /p:Configuration=$config
+    msbuild dotless.Compiler\dotless.Compiler.csproj /p:OutDir=$build_dir /p:Configuration=$config
 }
 
 task Test -depends Build {
@@ -87,6 +87,7 @@ task Release-NoTest -depends Merge {
     & $lib_dir\7zip\7za.exe a $release_dir\dotless-$commit.zip `
     $build_dir\$filename.dll `
     $build_dir\$filename.pdb `
+    $build_dir\dotless.compiler.exe
     #$build_dir\Testresult.xml `
     #license.txt `
     #acknowledgements.txt `
@@ -105,6 +106,7 @@ task Release -depends Test, Merge {
     $build_dir\$filename.dll `
     $build_dir\$filename.pdb `
     $build_dir\Testresult.xml `
+    $build_dir\dotless.compiler.exe
     #license.txt `
     #acknowledgements.txt `
     
