@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Security.Principal;
-using System.Web;
-using System.Web.Mvc;
-using System.Web.Security;
-using System.Web.UI;
-
-namespace nLess.SampleWeb.Controllers
+﻿namespace dotless.SampleWeb.Controllers
 {
+    using System;
+    using System.Globalization;
+    using System.Security.Principal;
+    using System.Web.Mvc;
+    using System.Web.Security;
 
     [HandleError]
     public class AccountController : Controller
@@ -181,9 +176,9 @@ namespace nLess.SampleWeb.Controllers
             if (newPassword == null || newPassword.Length < MembershipService.MinPasswordLength)
             {
                 ModelState.AddModelError("newPassword",
-                    String.Format(CultureInfo.CurrentCulture,
-                         "You must specify a new password of {0} or more characters.",
-                         MembershipService.MinPasswordLength));
+                                         String.Format(CultureInfo.CurrentCulture,
+                                                       "You must specify a new password of {0} or more characters.",
+                                                       MembershipService.MinPasswordLength));
             }
 
             if (!String.Equals(newPassword, confirmPassword, StringComparison.Ordinal))
@@ -225,9 +220,9 @@ namespace nLess.SampleWeb.Controllers
             if (password == null || password.Length < MembershipService.MinPasswordLength)
             {
                 ModelState.AddModelError("password",
-                    String.Format(CultureInfo.CurrentCulture,
-                         "You must specify a password of {0} or more characters.",
-                         MembershipService.MinPasswordLength));
+                                         String.Format(CultureInfo.CurrentCulture,
+                                                       "You must specify a password of {0} or more characters.",
+                                                       MembershipService.MinPasswordLength));
             }
             if (!String.Equals(password, confirmPassword, StringComparison.Ordinal))
             {
@@ -275,11 +270,6 @@ namespace nLess.SampleWeb.Controllers
         }
         #endregion
     }
-
-    // The FormsAuthentication type is sealed and contains static members, so it is difficult to
-    // unit test code that calls its members. The interface and helper class below demonstrate
-    // how to create an abstract wrapper around such a type in order to make the AccountController
-    // code unit testable.
 
     public interface IFormsAuthentication
     {

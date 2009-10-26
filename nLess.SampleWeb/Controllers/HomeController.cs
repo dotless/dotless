@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-
-namespace nLess.SampleWeb.Controllers
+﻿namespace dotless.SampleWeb.Controllers
 {
+    using System.Web.Mvc;
+
     [HandleError]
     public class HomeController : Controller
     {

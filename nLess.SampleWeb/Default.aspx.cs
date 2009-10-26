@@ -2,7 +2,7 @@
 using System.Web.Mvc;
 using System.Web.UI;
 
-namespace nLess.SampleWeb
+namespace dotless.SampleWeb
 {
     public partial class _Default : Page
     {

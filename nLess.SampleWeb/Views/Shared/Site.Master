@@ -11,7 +11,7 @@
     <div class="page">
         <div id="header"></div>
         <div id="subheader">
-            <h1>nLess brings the <span class="highlight">magic</span> of the LessCss libary to the world of .NET</h1>
+            <h1><a href="http://www.dotlesscss.com">dotless</a> brings the <span class="highlight">magic</span> of the LessCss libary to the world of .NET</h1>
         </div>
         <div id="main">
             <asp:ContentPlaceHolder ID="MainContent" runat="server" />
