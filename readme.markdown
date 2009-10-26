@@ -1,4 +1,4 @@
-nLess Readme
+dotless Readme
 ============
 
 Whats this all about?
