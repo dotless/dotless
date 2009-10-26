@@ -96,14 +96,14 @@ task Merge -depends Build {
 
 task Release-NoTest -depends Merge {
     $commit = Get-Git-Commit
-    $filename = "nLess.core"
+    $filename = "dotless.core"
     & $lib_dir\7zip\7za.exe a $release_dir\dotless-$commit.zip `
     $build_dir\$filename.dll `
     $build_dir\$filename.pdb `
-    $build_dir\dotless.compiler.exe
+    $build_dir\dotless.compiler.exe `
+	acknowledgements.txt `
     #$build_dir\Testresult.xml `
     #license.txt `
-    #acknowledgements.txt `
     
     Write-Host -ForegroundColor Yellow "Please note that no tests where run during release process!"
     Write-host "-----------------------------"
@@ -119,9 +119,10 @@ task Release -depends Test, Merge {
     $build_dir\$filename.dll `
     $build_dir\$filename.pdb `
     $build_dir\Testresult.xml `
-    $build_dir\dotless.compiler.exe
+    $build_dir\dotless.compiler.exe `
+    acknowledgements.txt `
     #license.txt `
-    #acknowledgements.txt `
+    
     
     Write-host "-----------------------------"
     Write-Host "dotless was successfully compiled and packaged."
