@@ -1,10 +1,11 @@
 ﻿using System;
-using nless.Core.engine;
 using NUnit.Framework;
 using System.Collections.Generic;
 
 namespace nLess.Test.Unit.engine
 {
+    using dotless.Core.engine;
+
     [TestFixture]
     public class ElementFixture
     {

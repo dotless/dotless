@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nless.Core", "nless.Core\nless.Core.csproj", "{D7A24E58-68D0-4B10-A324-EA33C822FA56}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotless.Core", "nless.Core\dotless.Core.csproj", "{D7A24E58-68D0-4B10-A324-EA33C822FA56}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nLess.Test", "nLess.Test\nLess.Test.csproj", "{D5D40B22-0A71-4D0F-B389-8C31730EE318}"
 EndProject

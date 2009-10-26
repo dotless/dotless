@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
-using nless.Core.engine;
 using NUnit.Framework;
 
 namespace nLess.Test
 {
+    using dotless.Core.engine;
 
     //NOTE: This test is nonsense, just a quick  point in time proof
     [TestFixture]

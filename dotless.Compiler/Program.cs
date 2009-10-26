@@ -4,8 +4,8 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Reflection;
-    using nless.Core;
-    using nless.Core.configuration;
+    using Core;
+    using Core.configuration;
 
     public class Program
     {

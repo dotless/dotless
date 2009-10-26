@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using nless.Core.Exceptions;
-using nless.Core.utils;
-
-namespace nless.Core.engine
+﻿namespace dotless.Core.engine
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using exceptions;
+    using utils;
+
     public class Element : INode, INearestResolver
     {
 
@@ -38,7 +38,7 @@ namespace nless.Core.engine
                 return Elements.LastOrDefault();
             }
         }
-       public Element First
+        public Element First
         {
             get
             {
@@ -310,7 +310,7 @@ namespace nless.Core.engine
         {
             var equiv = Rules.Count() == other.Rules.Count();
             var differentToCss =
-               Rules.SelectMany(a => other.Rules, (a, b) => new {a, b})
+                Rules.SelectMany(a => other.Rules, (a, b) => new {a, b})
                     .Where(@t => @t.a.ToCss() != @t.b.ToCss())
                     .Select(@t => @t.a);
             return equiv && differentToCss.Count() == 0;

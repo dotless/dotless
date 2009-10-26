@@ -1,4 +1,4 @@
-namespace nless.Core.configuration
+namespace dotless.Core.configuration
 {
     using System.Configuration;
 

@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-namespace nless.Core.minifier
+namespace dotless.Core.minifier
 {
-    using System;
     using System.Text;
 
     public class ExpressionBuilder : IExpressionBuilder

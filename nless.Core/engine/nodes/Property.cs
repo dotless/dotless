@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace nless.Core.engine
+namespace dotless.Core.engine
 {
     public class Property : Entity, INearestResolver
     {

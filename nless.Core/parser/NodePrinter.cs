@@ -1,6 +1,6 @@
 using Peg.Base;
 
-namespace nless.Core.parser
+namespace dotless.Core.parser
 {
     internal class NodePrinter
     {

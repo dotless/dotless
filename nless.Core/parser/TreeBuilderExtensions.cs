@@ -1,7 +1,7 @@
 using nLess;
 using Peg.Base;
 
-namespace nless.Core.parser
+namespace dotless.Core.parser
 {
     internal static class TreeBuilderExtensions
     {

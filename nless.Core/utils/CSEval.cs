@@ -1,11 +1,10 @@
-﻿using System;
-using System.CodeDom.Compiler;
-using System.Reflection;
-using System.Text;
-using Microsoft.CSharp;
-
-namespace nless.Core.utils
+﻿namespace dotless.Core.utils
 {
+    using System;
+    using System.CodeDom.Compiler;
+    using System.Text;
+    using Microsoft.CSharp;
+
     public static class CsEval
     {
         public static object Eval(string injectedCode)
@@ -24,10 +23,9 @@ namespace nless.Core.utils
             }
             cp.GenerateExecutable = false;
             cp.GenerateInMemory = true;
-
             var code = new StringBuilder();
             code.Append("using System; \n");
-            code.Append("using nless.Core.engine; \n");
+            code.Append("using dotless.Core.engine; \n");
             code.Append("namespace CsEvaluation { \n");
             code.Append("  public class _Evaluator { \n");
             code.Append("       public object _Eval() { \n");

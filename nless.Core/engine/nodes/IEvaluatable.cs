@@ -1,5 +1,4 @@
-namespace nless.Core.engine
-{
+namespace dotless.Core.engine{
     public interface IEvaluatable
     {
         INode Evaluate();

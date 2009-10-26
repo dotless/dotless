@@ -1,4 +1,4 @@
-namespace nless.Core
+namespace dotless.Core
 {
     using configuration;
 

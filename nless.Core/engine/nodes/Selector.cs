@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace nless.Core.engine
+namespace dotless.Core.engine
 {
     public class Selectors : Dictionary<string, Func<Selector>> 
     {

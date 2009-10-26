@@ -3,7 +3,7 @@ namespace nLess.Test.Unit.configuration
     using System;
     using System.IO;
     using System.Xml;
-    using nless.Core.configuration;
+    using dotless.Core.configuration;
     using NUnit.Framework;
 
     [TestFixture]

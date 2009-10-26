@@ -80,9 +80,9 @@
     <Compile Include="Unit\utils\RegexExtentionsFixtures.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\nless.Core\nless.Core.csproj">
+    <ProjectReference Include="..\nless.Core\dotless.Core.csproj">
       <Project>{D7A24E58-68D0-4B10-A324-EA33C822FA56}</Project>
-      <Name>nless.Core</Name>
+      <Name>dotless.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

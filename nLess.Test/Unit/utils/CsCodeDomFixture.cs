@@ -1,10 +1,11 @@
 ﻿using System;
-using nless.Core.engine;
-using nless.Core.utils;
 using NUnit.Framework;
 
 namespace nLess.Test.Unit.utils
 {
+    using dotless.Core.engine;
+    using dotless.Core.utils;
+
     [TestFixture]
     public class CsCodeDomFixture
     {

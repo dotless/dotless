@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Linq;
 
-namespace nless.Core.engine
+namespace dotless.Core.engine
 {
     public class Font : Literal
     {
@@ -9,6 +9,7 @@ namespace nless.Core.engine
         {
         }
     }
+
     public class Keyword : Literal
     {
         public Keyword(string value) : base(value)
@@ -19,6 +20,7 @@ namespace nless.Core.engine
             return string.Format("#{0}", this);
         }
     }
+
     public class FontFamily : Literal
     {
         internal Literal[] Family { get; set; }

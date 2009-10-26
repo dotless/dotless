@@ -1,6 +1,6 @@
 using System;
 
-namespace nless.Core.Exceptions
+namespace dotless.Core.exceptions
 {
     internal class ParsingException : Exception
     {

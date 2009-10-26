@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace nless.Core.engine
+namespace dotless.Core.exceptions
 {
     public class MixedUnitsExeption : Exception
     {

@@ -1,9 +1,10 @@
 ﻿using System;
-using nless.Core.engine;
 using NUnit.Framework;
 
 namespace nLess.Test.Unit.engine
 {
+    using dotless.Core.engine;
+
     [TestFixture]
     public class PropertyFixture
     {

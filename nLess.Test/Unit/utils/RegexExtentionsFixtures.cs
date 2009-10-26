@@ -1,8 +1,9 @@
-﻿using nless.Core.utils;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace nLess.Test.Unit.utils
 {
+    using dotless.Core.utils;
+
     [TestFixture]
     public class RegexExtentionsFixtures
     {

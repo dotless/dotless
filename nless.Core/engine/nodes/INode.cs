@@ -1,7 +1,7 @@
-using System.Collections.Generic;
-
-namespace nless.Core.engine
+namespace dotless.Core.engine
 {
+    using System.Collections.Generic;
+
     public interface INode
     {
         INode Parent { get; set; }

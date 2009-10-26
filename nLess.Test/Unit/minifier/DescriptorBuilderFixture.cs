@@ -16,7 +16,7 @@
 
 namespace nLess.Test.Unit.minifier
 {
-    using nless.Core.minifier;
+    using dotless.Core.minifier;
     using NUnit.Framework;
 
     [TestFixture]

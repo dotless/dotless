@@ -1,4 +1,4 @@
-namespace nless.Core.configuration
+namespace dotless.Core.configuration
 {
     public class DotlessConfiguration
     {

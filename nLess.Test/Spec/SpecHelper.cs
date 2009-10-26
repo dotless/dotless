@@ -1,7 +1,7 @@
 ﻿namespace nLess.Test.Spec
 {
     using System.IO;
-    using nless.Core.engine;
+    using dotless.Core.engine;
     using NUnit.Framework;
 
     public class SpecHelper

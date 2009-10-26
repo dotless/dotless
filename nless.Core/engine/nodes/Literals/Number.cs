@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace nless.Core.engine
+namespace dotless.Core.engine
 {
     public class Number : Literal
     {
@@ -91,5 +91,4 @@ namespace nless.Core.engine
         }
         #endregion
     }
-
 }

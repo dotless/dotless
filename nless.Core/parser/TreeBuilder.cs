@@ -4,14 +4,13 @@ using System.Globalization;
 using System.IO;
 using System.Web;
 using nLess;
-using nless.Core.engine;
-using nless.Core.engine.nodes.Literals;
-using nless.Core.Exceptions;
 using Peg.Base;
-using String=nless.Core.engine.String;
 
-namespace nless.Core.parser
+namespace dotless.Core.parser
 {
+    using engine;
+    using exceptions;
+
     public class TreeBuilder
     {
         public PegNode Root { get; set; }
@@ -75,18 +74,18 @@ namespace nless.Core.parser
                 path = node.child_.GetAsString(Src); 
             }
             path = path.Replace("\"", "").Replace("'", "");
-           //TODO: Fuck around with pah to make it absolute relative
+            //TODO: Fuck around with pah to make it absolute relative
 
             if(HttpContext.Current!=null)
             {
                 path = HttpContext.Current.Server.MapPath(path);
             }
 
-           if(File.Exists(path))
-           {
-               var engine = new Engine(File.ReadAllText(path), null);
-               element.Rules.AddRange(engine.Parse().Root.Rules); 
-           }
+            if(File.Exists(path))
+            {
+                var engine = new Engine(File.ReadAllText(path), null);
+                element.Rules.AddRange(engine.Parse().Root.Rules); 
+            }
         }
 
         /// <summary>

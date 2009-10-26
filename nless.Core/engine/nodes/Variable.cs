@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace nless.Core.engine
+namespace dotless.Core.engine
 {
     public class Variable : Property, IEvaluatable
     {
@@ -47,8 +47,8 @@ namespace nless.Core.engine
                 _eval = _eval ?? Value.Evaluate();
             else
                 _eval = _eval ?? (ParentAs<INearestResolver>()
-                                    .NearestAs<IEvaluatable>(ToString()))
-                                    .Evaluate();
+                                     .NearestAs<IEvaluatable>(ToString()))
+                                     .Evaluate();
             return _eval;
         }
         public override string  ToCSharp()

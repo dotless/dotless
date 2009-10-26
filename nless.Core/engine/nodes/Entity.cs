@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace nless.Core.engine
+﻿namespace dotless.Core.engine
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
     public class Entity : INode
     {
         public string Value { get; set; }
@@ -13,7 +13,7 @@ namespace nless.Core.engine
 
         public Entity(string value)
             : this(value, null){
-        }
+            }
 
         public Entity(string value, INode parent){
             Value = value;

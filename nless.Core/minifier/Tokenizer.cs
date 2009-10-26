@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace nless.Core.minifier
+namespace dotless.Core.minifier
 {
     using System.Collections.Generic;
     using System.Linq;

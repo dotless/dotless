@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace nless.Core.engine
+namespace dotless.Core.engine
 {
     public class Color : Literal
     {
@@ -41,56 +41,56 @@ namespace nless.Core.engine
         }
 
         #region operator overrides
-            public static Color operator +(Color colour1,  Color colour2)
-            {
-                return colour1.Operate((i, j) => i + j, colour2);
-            }
-            public static Color operator +(Color colour1, int colour2)
-            {
-                return colour1.Operate((i, j) => i + j, colour2);
-            }
-            public static Color operator -(Color colour1, Color colour2)
-            {
-                return colour1.Operate((i, j) => i - j, colour2);
-            }
-            public static Color operator -(Color colour1, int colour2)
-            {
-                return colour1.Operate((i, j) => i - j, colour2);
-            }
-            public static Color operator *(Color colour1, Color colour2)
-            {
-                return colour1.Operate((i, j) => i * j, colour2);
-            }
-            public static Color operator *(Color colour1, int colour2)
-            {
-                return colour1.Operate((i, j) => i * j, colour2);
-            }
-            public static Color operator /(Color colour1, Color colour2)
-            {
-                return colour1.Operate((i, j) => i / j, colour2);
-            }
-            public static Color operator /(Color colour1, int colour2)
-            {
-                return colour1.Operate((i, j) => i / j, colour2);
-            }
+        public static Color operator +(Color colour1,  Color colour2)
+        {
+            return colour1.Operate((i, j) => i + j, colour2);
+        }
+        public static Color operator +(Color colour1, int colour2)
+        {
+            return colour1.Operate((i, j) => i + j, colour2);
+        }
+        public static Color operator -(Color colour1, Color colour2)
+        {
+            return colour1.Operate((i, j) => i - j, colour2);
+        }
+        public static Color operator -(Color colour1, int colour2)
+        {
+            return colour1.Operate((i, j) => i - j, colour2);
+        }
+        public static Color operator *(Color colour1, Color colour2)
+        {
+            return colour1.Operate((i, j) => i * j, colour2);
+        }
+        public static Color operator *(Color colour1, int colour2)
+        {
+            return colour1.Operate((i, j) => i * j, colour2);
+        }
+        public static Color operator /(Color colour1, Color colour2)
+        {
+            return colour1.Operate((i, j) => i / j, colour2);
+        }
+        public static Color operator /(Color colour1, int colour2)
+        {
+            return colour1.Operate((i, j) => i / j, colour2);
+        }
 
-            //Invert it so (2 * color) works as well as (color * 2)
-            public static Color operator -(int colour2, Color colour1)
-            {
-                return colour1.Operate((i, j) => i - j, colour2);
-            }
-            public static Color operator +(int colour2, Color colour1)
-            {
-                return colour1.Operate((i, j) => i + j, colour2);
-            }
-            public static Color operator *(int colour2, Color colour1)
-            {
-                return colour1.Operate((i, j) => i * j, colour2);
-            }
-            public static Color operator /(int colour2, Color colour1)
-            {
-                return colour1.Operate((i, j) => i / j, colour2);
-            }
+        //Invert it so (2 * color) works as well as (color * 2)
+        public static Color operator -(int colour2, Color colour1)
+        {
+            return colour1.Operate((i, j) => i - j, colour2);
+        }
+        public static Color operator +(int colour2, Color colour1)
+        {
+            return colour1.Operate((i, j) => i + j, colour2);
+        }
+        public static Color operator *(int colour2, Color colour1)
+        {
+            return colour1.Operate((i, j) => i * j, colour2);
+        }
+        public static Color operator /(int colour2, Color colour1)
+        {
+            return colour1.Operate((i, j) => i / j, colour2);
+        }
 
         #endregion
         public Color Operate(Func<int, int, int> action, int other)
@@ -123,10 +123,10 @@ namespace nless.Core.engine
             return new Color(R, G, B, a);
         }
 
-      //NOTE: Dont understand this
-      //def coerce other
-      //  return self, other
-      //end
+        //NOTE: Dont understand this
+        //def coerce other
+        //  return self, other
+        //end
 
         public override string ToString()
         {
@@ -145,7 +145,4 @@ namespace nless.Core.engine
             return (A < 1 ? string.Format("rgba({0},{1},{2}, {3})", R, G, B, A) : string.Format("rgb({0},{1},{2})", R, G, B)).ToLower();
         }
     }
-
-
-
 }

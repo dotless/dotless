@@ -1,11 +1,13 @@
 ﻿using System;
 using System.IO;
-using nless.Core.Exceptions;
-using nless.Core.parser;
 using Peg.Base;
 
-namespace nless.Core.engine
+namespace dotless.Core.engine
 {
+    using exceptions;
+    using engine;
+    using parser;
+
     public class Engine
     {
         private nLess.nLess _parser;  
