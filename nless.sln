@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nLess.SampleWeb", "nLess.Sa
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6CC48544-7A6A-4EB8-9F2D-B92CFC042E59}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotless.Compiler", "dotless.Compiler\dotless.Compiler.csproj", "{D0CE2A3A-5086-494A-A967-5D54B41BBC64}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{10A490E0-9199-4C12-970F-FAEC765F5967}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{10A490E0-9199-4C12-970F-FAEC765F5967}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{10A490E0-9199-4C12-970F-FAEC765F5967}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0CE2A3A-5086-494A-A967-5D54B41BBC64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0CE2A3A-5086-494A-A967-5D54B41BBC64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0CE2A3A-5086-494A-A967-5D54B41BBC64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0CE2A3A-5086-494A-A967-5D54B41BBC64}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
