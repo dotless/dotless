@@ -13,7 +13,7 @@
         public void Can_Parse()
         {
             var engine = new Engine(File.ReadAllText(@"TestData/EngineRoom.less"), Console.Out);
-            Console.Write(engine.Parse().Css);
+            Console.Write(engine.Parse(true).Css);
         }
     }
 }
