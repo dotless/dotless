@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D7A24E58-68D0-4B10-A324-EA33C822FA56}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>dotless.Core</RootNamespace>
+    <AssemblyName>dotless.Core</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="PegBase, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\PegBase.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="configuration\ConfigurationLoader.cs" />
+    <Compile Include="configuration\DotlessConfiguration.cs" />
+    <Compile Include="configuration\DotlessConfigurationSectionHandler.cs" />
+    <Compile Include="configuration\XmlConfigurationInterpreter.cs" />
+    <Compile Include="EngineFactory.cs" />
+    <Compile Include="engine\engine.cs" />
+    <Compile Include="engine\nodes\Anonymous.cs" />
+    <Compile Include="engine\nodes\Element.cs" />
+    <Compile Include="engine\nodes\Entity.cs" />
+    <Compile Include="engine\nodes\Expression.cs" />
+    <Compile Include="engine\nodes\IEvaluatable.cs" />
+    <Compile Include="engine\nodes\INearestResolver.cs" />
+    <Compile Include="engine\nodes\INode.cs" />
+    <Compile Include="engine\nodes\Literal.cs" />
+    <Compile Include="engine\nodes\Literals\Color.cs" />
+    <Compile Include="engine\nodes\Literals\Font.cs" />
+    <Compile Include="engine\nodes\Literals\Function.cs" />
+    <Compile Include="engine\nodes\Literals\Number.cs" />
+    <Compile Include="engine\nodes\Literals\String.cs" />
+    <Compile Include="exceptions\MixedUnitsExeption.cs" />
+    <Compile Include="engine\nodes\Operator.cs" />
+    <Compile Include="engine\nodes\Property.cs" />
+    <Compile Include="engine\nodes\Selector.cs" />
+    <Compile Include="engine\nodes\Variable.cs" />
+    <Compile Include="exceptions\VariableNameException.cs" />
+    <Compile Include="ILessEngine.cs" />
+    <Compile Include="LessCssHttpHandler.cs" />
+    <Compile Include="LessEngine.cs" />
+    <Compile Include="MinifierDecorator.cs" />
+    <Compile Include="minifier\CleanedStream.cs" />
+    <Compile Include="minifier\ExpressionBuilder.cs" />
+    <Compile Include="minifier\IDescriptorBuilder.cs" />
+    <Compile Include="minifier\IExpression.cs" />
+    <Compile Include="minifier\IExpressionBuilder.cs" />
+    <Compile Include="minifier\ITokenizer.cs" />
+    <Compile Include="minifier\ITreeCompiler.cs" />
+    <Compile Include="minifier\ITreeNode.cs" />
+    <Compile Include="minifier\Processor.cs" />
+    <Compile Include="minifier\StyleExpression.cs" />
+    <Compile Include="minifier\Tokenizer.cs" />
+    <Compile Include="minifier\TreeCompiler.cs" />
+    <Compile Include="minifier\TreeNode.cs" />
+    <Compile Include="parser\C#\nLess.cs" />
+    <Compile Include="parser\NodePrinter.cs" />
+    <Compile Include="exceptions\ParsingException.cs" />
+    <Compile Include="parser\TreeBuilder.cs" />
+    <Compile Include="parser\TreeBuilderExtensions.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="utils\CSEval.cs" />
+    <Compile Include="utils\RegexExtentions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="parser\Less.gram" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
