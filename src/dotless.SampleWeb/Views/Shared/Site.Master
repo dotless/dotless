@@ -1,0 +1,22 @@
+<%@ Master Language="C#" Inherits="System.Web.Mvc.ViewMasterPage" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title><asp:ContentPlaceHolder ID="TitleContent" runat="server" /></title>
+    <link href="../../Content/Site.less" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <div class="page">
+        <div id="header"></div>
+        <div id="subheader">
+            <h1><a href="http://www.dotlesscss.com">dotless</a> brings the <span class="highlight">magic</span> of the LessCss libary to the world of .NET</h1>
+        </div>
+        <div id="main">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+        </div>
+        <div id="footer"></div>
+    </div>
+</body>
+</html>
