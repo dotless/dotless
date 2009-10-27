@@ -1,1 +1,1 @@
-echo something_nonsensical_here | powershell.exe .\psake.ps1
+echo something_nonsensical_here | C:\WINDOWS\system32\windowspowershell\v1.0\powershell.exe .\psake.ps1
