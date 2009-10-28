@@ -20,7 +20,6 @@
         public static void ShouldEqual(string filename)
         {
             var less = Lessify(filename);
-            //Console.WriteLine(less);
             var css = Css(filename);
             css.ShouldEqual(less, string.Format("|{0}| != |{1}|", less, css));
         }

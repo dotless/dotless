@@ -61,7 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ParserFixtures.cs" />
+    <Compile Include="PointInTime\PointInTimeFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Spec\SpecHelper.cs" />
     <Compile Include="Spec\SpecEngine.cs" />
@@ -212,10 +212,7 @@
     <None Include="Spec\less\whitespace.less">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="TestData\erimport.less">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="TestData\engineroom.less">
+    <None Include="PointInTime\TestData.less">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

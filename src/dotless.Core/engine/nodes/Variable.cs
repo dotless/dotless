@@ -5,7 +5,7 @@ namespace dotless.Core.engine
 {
     public class Variable : Property, IEvaluatable
     {
-        protected bool _declaration;
+        protected bool Declaration;
 
         public Variable(string key)
             : this(key, new List<INode>(), null)
@@ -28,7 +28,7 @@ namespace dotless.Core.engine
         public Variable(string key, IEnumerable<INode> value, Element parent)
             : base(key, value, parent)
         {
-            _declaration = (value==null || ((IList)value).Count == 0)? false : true;
+            Declaration = (value==null || ((IList)value).Count == 0)? false : true;
             Key = key.Replace("@", "");
         }
         public override string  ToString()
@@ -43,7 +43,7 @@ namespace dotless.Core.engine
         /// <remarks>Only evaluates first time, next time will just return last evaluation</remarks>
         public override INode Evaluate()
         {
-            if(_declaration)
+            if(Declaration)
                 _eval = _eval ?? Value.Evaluate();
             else
                 _eval = _eval ?? (ParentAs<INearestResolver>()
