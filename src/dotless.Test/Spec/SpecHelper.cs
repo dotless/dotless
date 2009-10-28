@@ -14,7 +14,7 @@
         public static string Css(string fileName)
         {
             var file = Path.Combine("Spec/css", fileName + ".css");
-            return File.ReadAllText(file);
+            return File.ReadAllText(file).Replace("\r\n", "\n");
         }
 
         public static void ShouldEqual(string filename)
