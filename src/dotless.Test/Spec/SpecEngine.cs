@@ -5,15 +5,17 @@
     [TestFixture]
     public class SpecEngine
     {
+        private const string Upcoming = "Upcoming functionality";
+
         [Test]
         public void ShouldParseAccessors()
         {
             SpecHelper.ShouldEqual("accessors"); //PASS
         }
-        [Test]
+        [Test, Ignore(Upcoming)]
         public void ShouldGroupSelectorsWhenItCan()
         {
-//            SpecHelper.ShouldEqual("selectors"); //FAIL
+            SpecHelper.ShouldEqual("selectors"); //IGNORE
         }
         [Test]
         public void ShouldParseABigFile()
@@ -40,10 +42,10 @@
         {
             SpecHelper.ShouldEqual("css"); //PASS
         }
-        [Test]
+        [Test, Ignore(Upcoming)]
         public void ShouldHandleSomeFunctions()
         {
-//            SpecHelper.ShouldEqual("functions"); //FAIL
+            SpecHelper.ShouldEqual("functions"); //IGNORE
         }   
         [Test]
         public void ShouldWorkWithImport()
@@ -55,15 +57,15 @@
         {
             SpecHelper.ShouldEqual("lazy-eval"); //PASS
         }
-        [Test]
+        [Test, Ignore(Upcoming)]
         public void ShouldParseMixins()
         {
-//            SpecHelper.ShouldEqual("mixins"); //FAIL
+            SpecHelper.ShouldEqual("mixins"); //IGNORE
         }
-        [Test]
+        [Test, Ignore(Upcoming)]
         public void ShouldParseMixinsWithArguments()
         {
-//            SpecHelper.ShouldEqual("mixins-args"); //FAIL
+            SpecHelper.ShouldEqual("mixins-args"); //IGNORE
         }
         [Test]
         public void ShouldParseOperations()
@@ -90,10 +92,10 @@
         {
             SpecHelper.ShouldEqual("variables"); //PASS
         }
-        [Test]
+        [Test, Ignore(Upcoming)]
         public void ShouldManageWhitespace()
         {
-//            SpecHelper.ShouldEqual("whitespace"); //FAIL
+            SpecHelper.ShouldEqual("whitespace"); //IGNORE
         } 
     }
 }
