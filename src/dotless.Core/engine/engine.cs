@@ -1,16 +1,15 @@
-﻿using System;
-using System.IO;
-using Peg.Base;
-
-namespace dotless.Core.engine
+﻿namespace dotless.Core.engine
 {
+    using System;
+    using System.IO;
+    using Peg.Base;
+
     using exceptions;
-    using engine;
     using parser;
 
     public class Engine
     {
-        private nLess.nLess _parser;  
+        private readonly nLess.nLess _parser;  
         private string css = "";
         public string Css
         {

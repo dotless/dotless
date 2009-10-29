@@ -56,6 +56,7 @@
     <Compile Include="configuration\DotlessConfigurationSectionHandler.cs" />
     <Compile Include="configuration\XmlConfigurationInterpreter.cs" />
     <Compile Include="EngineFactory.cs" />
+    <Compile Include="engine\altEngine.cs" />
     <Compile Include="engine\engine.cs" />
     <Compile Include="engine\nodes\Anonymous.cs" />
     <Compile Include="engine\nodes\Element.cs" />
