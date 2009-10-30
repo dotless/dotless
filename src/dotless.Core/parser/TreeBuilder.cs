@@ -435,11 +435,13 @@ namespace dotless.Core.parser
             {
                 node = node.child_;
                 var elements = Selectors(node, element, els => els);
+                IList<INode> rules = null;
+                var root = element.GetRoot();
                 foreach (var el in elements){
-                    var root = element.GetRoot();
-                    var rules = root.Descend(el.Selector, el).Rules;
-                    element.Rules.AddRange(rules);
+                    root = root.Descend(el.Selector, el);
+                    rules = root.Rules;
                 }
+                if (rules != null) element.Rules.AddRange(rules);
             }
         }
 
