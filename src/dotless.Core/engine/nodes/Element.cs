@@ -1,4 +1,6 @@
-﻿namespace dotless.Core.engine
+﻿using System;
+
+namespace dotless.Core.engine
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -83,7 +85,7 @@
 
         public bool IsLeaf
         {
-            get { return Rules.Count() == 0; }
+            get { return Elements.Count() == 0; }
         }
 
         public IList<Property> Identifiers
@@ -131,6 +133,17 @@
             var els = this;
             while (!els.IsRoot){
                 els = (Element)els.Parent;
+            }
+            return els;
+        }
+
+
+        private Element GetLeaf()
+        {
+            var els = this;
+            while (!els.IsLeaf)
+            {
+                els = (Element)els.First;
             }
             return els;
         }
@@ -300,7 +313,8 @@
             }
             return this;
         }
-        
+
+
         /// <summary>
         /// Compares two elements 
         /// </summary>
