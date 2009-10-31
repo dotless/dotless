@@ -3,7 +3,7 @@ namespace dotless.Core.configuration
     public class DotlessConfiguration
     {
         public bool MinifyOutput { get; set; }
-        public CacheConfig CacheConfiguration { get; set; }
+        public bool CacheEnabled { get; set; }
 
         public static DotlessConfiguration Default
         {
@@ -12,16 +12,9 @@ namespace dotless.Core.configuration
                 return new DotlessConfiguration
                            {
                                MinifyOutput = false,
-                               CacheConfiguration = new CacheConfig {CacheEnabled = false}
+                               CacheEnabled = true
                            };
             }
         }
-    }
-
-    public class CacheConfig
-    {
-        public bool CacheEnabled { get; set; }
-        public string CacheStragy { get; set; }
-        public long CacheExpiration { get; set; }
     }
 }
