@@ -1,4 +1,4 @@
-﻿/* Copyright 2009 dotless project, http://www.dotlesscss.com
+﻿﻿/* Copyright 2009 dotless project, http://www.dotlesscss.com
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -97,7 +97,7 @@ namespace dotless.Core.engine
 
         public bool IsLeaf
         {
-            get { return Rules.Count() == 0; }
+            get { return Elements.Count() == 0; }
         }
 
         public IList<Property> Identifiers
@@ -145,6 +145,17 @@ namespace dotless.Core.engine
             var els = this;
             while (!els.IsRoot){
                 els = (Element)els.Parent;
+            }
+            return els;
+        }
+
+
+        private Element GetLeaf()
+        {
+            var els = this;
+            while (!els.IsLeaf)
+            {
+                els = (Element)els.First;
             }
             return els;
         }
@@ -314,7 +325,8 @@ namespace dotless.Core.engine
             }
             return this;
         }
-        
+
+
         /// <summary>
         /// Compares two elements 
         /// </summary>
