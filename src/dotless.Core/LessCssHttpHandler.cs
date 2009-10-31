@@ -42,8 +42,6 @@ namespace dotless.Core
                     context.Cache.Insert(lessFile, css, new CacheDependency(lessFile));
             }
             context.Response.Write(context.Cache[lessFile]);
-
-            context.Response.Write(context.Cache.Count);
             context.Response.End();
 
             
