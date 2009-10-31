@@ -108,7 +108,7 @@ task Release-NoTest -depends Merge {
     
     Write-Host -ForegroundColor Yellow "Please note that no tests where run during release process!"
     Write-host "-----------------------------"
-    Write-Host "dotless was successfully compiled and packaged."
+    Write-Host "dotless $version was successfully compiled and packaged."
     Write-Host "The release bits can be found in ""$release_dir"""
     Write-Host -ForegroundColor Cyan "Thank you for using dotless!"
 }
@@ -126,7 +126,7 @@ task Release -depends Test, Merge {
     
     
     Write-host "-----------------------------"
-    Write-Host "dotless was successfully compiled and packaged."
+    Write-Host "dotless $version was successfully compiled and packaged."
     Write-Host "The release bits can be found in ""$release_dir"""
     Write-Host -ForegroundColor Cyan "Thank you for using dotless!"
 }
