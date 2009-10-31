@@ -102,12 +102,13 @@ task Release-NoTest -depends Merge {
     $build_dir\$filename.pdb `
     $build_dir\dotless.compiler.exe `
 	acknowledgements.txt `
+    license.txt `
     #$build_dir\Testresult.xml `
-    #license.txt `
+    
     
     Write-Host -ForegroundColor Yellow "Please note that no tests where run during release process!"
     Write-host "-----------------------------"
-    Write-Host "dotless was successfully compiled and packaged."
+    Write-Host "dotless $version was successfully compiled and packaged."
     Write-Host "The release bits can be found in ""$release_dir"""
     Write-Host -ForegroundColor Cyan "Thank you for using dotless!"
 }
@@ -121,11 +122,11 @@ task Release -depends Test, Merge {
     $build_dir\Testresult.xml `
     $build_dir\dotless.compiler.exe `
     acknowledgements.txt `
-    #license.txt `
+    license.txt `
     
     
     Write-host "-----------------------------"
-    Write-Host "dotless was successfully compiled and packaged."
+    Write-Host "dotless $version was successfully compiled and packaged."
     Write-Host "The release bits can be found in ""$release_dir"""
     Write-Host -ForegroundColor Cyan "Thank you for using dotless!"
 }

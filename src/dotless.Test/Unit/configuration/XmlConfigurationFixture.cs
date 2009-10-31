@@ -1,3 +1,17 @@
+/* Copyright 2009 dotless project, http://www.dotlesscss.com
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *     
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License. */
+
 namespace dotless.Test.Unit.configuration
 {
     using System;
@@ -51,98 +65,17 @@ namespace dotless.Test.Unit.configuration
         }
 
         [Test]
-        public void CacheAttributeCanBeOmitted_DisablesCache()
+        public void CacheIsEnabledByDefault()
         {
-            XmlNode testnode = GetTestnodeWithoutAttribute();
-            var interpeter = new XmlConfigurationInterpreter();
-
-            var output = interpeter.Process(testnode);
-
-            Assert.IsFalse(output.CacheConfiguration.CacheEnabled);
+            XmlNode attribute = GetTestnodeWithoutAttribute();
+            DotlessConfiguration xml = InterpretXml(attribute);
+            Assert.IsTrue(xml.CacheEnabled);
         }
 
-        [Test]
-        public void CacheEnabledSetToFalse_DisablesCache()
+        private DotlessConfiguration InterpretXml(XmlNode xml)
         {
-            XmlNode testnode = GetTestNodeWithCache("disabled");
-            var interpeter = new XmlConfigurationInterpreter();
-
-            var output = interpeter.Process(testnode);
-
-            Assert.IsFalse(output.CacheConfiguration.CacheEnabled);
-        }
-
-        [Test]
-        public void CacheEnabledSetToEnabled_EnablesCache()
-        {
-            var testnode = GetTestNodeWithCache("enabled");
-            var interpeter = new XmlConfigurationInterpreter();
-
-            var output = interpeter.Process(testnode);
-
-            Assert.IsTrue(output.CacheConfiguration.CacheEnabled);
-        }
-
-        [Test]
-        public void CacheExpirationTimeCanBeSet()
-        {
-            var testnode = GetTestNodeWithTimeAndExpiration(100);
             var interpreter = new XmlConfigurationInterpreter();
-
-            var output = interpreter.Process(testnode);
-
-            Assert.AreEqual(100, output.CacheConfiguration.CacheExpiration);
-        }
-
-        [Test]
-        public void CacheStrategyIsFileByDefault()
-        {
-            var node = GetTestNodeWithCache("enabled");
-            var interpreter = new XmlConfigurationInterpreter();
-
-            var output = interpreter.Process(node);
-
-            Assert.AreEqual("file", output.CacheConfiguration.CacheStragy);
-        }
-
-        [Test]
-        public void CacheStrategy_CanBeSetToFile()
-        {
-            var node = GetTestNodeWithCacheAndStrategy("file");
-            var interpreter = new XmlConfigurationInterpreter();
-
-            var output = interpreter.Process(node);
-
-            Assert.AreEqual("file", output.CacheConfiguration.CacheStragy);
-        }
-
-        [Test]
-        public void CacheStrategy_CanBeSetToExpiration()
-        {
-            var node = GetTestNodeWithCacheAndStrategy("expiration");
-            var interpreter = new XmlConfigurationInterpreter();
-
-            var output = interpreter.Process(node);
-
-            Assert.AreEqual("expiration", output.CacheConfiguration.CacheStragy);
-        }
-
-        private XmlNode GetTestNodeWithTimeAndExpiration(int expiration)
-        {
-            var xml = String.Format("<dotless cache=\"enabled\" strategy=\"time\" expires=\"{0}\"></dotless>", expiration);
-            return CreateXmlNode(xml);
-        }
-
-        private XmlNode GetTestNodeWithCache(string cacheEnabled)
-        {
-            var xml = String.Format("<dotless cache=\"{0}\"></dotless>", cacheEnabled);
-            return CreateXmlNode(xml);
-        }
-
-        private XmlNode GetTestNodeWithCacheAndStrategy(string cacheStrategy)
-        {
-            var xml = String.Format("<dotless cache=\"enabled\" strategy=\"{0}\"></dotless>", cacheStrategy);
-            return CreateXmlNode(xml);
+            return interpreter.Process(xml);
         }
 
         private XmlNode GetTestnodeWithoutAttribute()
