@@ -250,7 +250,7 @@ namespace dotless.Core.parser
                 case EnLess.accessor:
                     return Accessor(node.child_, element);
                 case EnLess.fonts:
-                    return Fonts(node.child_);
+                    return Fonts(node);
                 case EnLess.keyword:
                     return Keyword(node);
                 case EnLess.function:
@@ -336,13 +336,8 @@ namespace dotless.Core.parser
         /// <returns></returns>
         private INode Fonts(PegNode node)
         {
-            var fonts = new List<Literal>();
-            while (node!=null)
-            {
-                if (node.child_ != null) fonts.Add(new String(node.child_.GetAsString(Src)));
-                else fonts.Add(new Keyword(node.GetAsString(Src)));
-                node = node.next_;
-            }
+            var fonts = from childNode in node.AsEnumerable()
+                        select (childNode.child_ ?? childNode).GetAsString(Src);
             return new FontFamily(fonts.ToArray());
         }
 
