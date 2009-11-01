@@ -421,25 +421,14 @@ namespace dotless.Core.parser
             switch (node.id_.ToEnLess())
             {
                 case EnLess.standard_ruleset:
-                    {
-                        node = node.child_;
-                        var elements = Selectors(node, els => StandardSelectors(element, els));
-                        foreach (var el in elements)
-                            Primary(node.next_, el);
-                    }
+                    foreach (var el in Selectors(node.child_, els => StandardSelectors(element, els)))
+                        Primary(node.child_.next_, el);
                     break;
                 case EnLess.mixin_ruleset:
-                    {
-                        node = node.child_;
-                        var elements = Selectors(node, els => els);
-                        IList<INode> rules = null;
-                        var root = element.GetRoot();
-                        foreach (var el in elements){
-                            root = root.Descend(el.Selector, el);
-                            rules = root.Rules;
-                        }
-                        if (rules != null) element.Rules.AddRange(rules);
-                    }
+                    var root = element.GetRoot();
+                    foreach (var el in Selectors(node.child_, els => els))
+                        root = root.Descend(el.Selector, el);
+                    if(root.Rules != null) element.Rules.AddRange(root.Rules);
                     break;
             }
         }
@@ -470,7 +459,8 @@ namespace dotless.Core.parser
         {
             foreach(var selector in node.AsEnumerable(x => x.id_.ToEnLess() == EnLess.selector))
             {
-                foreach(var s in action.Invoke(Selector(selector.child_))) yield return s;
+                var selectors = Selector(selector);
+                foreach(var s in action.Invoke(selectors)) yield return s;
             }
         }
 
@@ -481,17 +471,13 @@ namespace dotless.Core.parser
         /// <returns></returns>
         private IEnumerable<Element> Selector(PegNode node)
         {
-            while (node != null)
+            var enumerator = node.AsEnumerable().GetEnumerator();
+            while(enumerator.MoveNext())
             {
-                if (node.id_.ToEnLess() != EnLess.select)
-                    throw new ParsingException("Selectors must be something");
-
-                var selector = node.GetAsString(Src).Replace(" ", "");
-                node = node.next_;
-                var name = node.GetAsString(Src);
+                var selector = enumerator.Current.GetAsString(Src).Trim();
+                enumerator.MoveNext();
+                var name = enumerator.Current.GetAsString(Src);
                 yield return new Element(name, selector);
-
-                node = node.next_;
             }
         }
     }
