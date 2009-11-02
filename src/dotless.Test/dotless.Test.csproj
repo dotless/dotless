@@ -119,6 +119,7 @@
     <Content Include="Spec\css\mixins.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Spec\css\namespaces.css" />
     <Content Include="Spec\css\operations.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -191,6 +192,7 @@
     <None Include="Spec\less\mixins.less">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Spec\less\namespaces.less" />
     <None Include="Spec\less\operations.less">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
