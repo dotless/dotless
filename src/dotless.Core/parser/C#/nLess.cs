@@ -1,4 +1,4 @@
-/* created on 13/10/2009 00:12:13 from peg generator V1.0 using '' as input*/
+/* created on 2-11-2009 12:45:05 from peg generator V1.0 using '' as input*/
 
 using Peg.Base;
 using System;
@@ -152,11 +152,10 @@ namespace nLess
            return TreeNT((int)EnLess.declaration,()=>
                     standard_declaration() || catchall_declaration() );
 		}
-        public bool standard_declaration()    /*^^standard_declaration: ws (ident / variable)  s ':' s expressions  s (';'/ ws &'}') ws ;*/
+        public bool standard_declaration()    /*standard_declaration: ws (ident / variable)  s ':' s expressions  s (';'/ ws &'}') ws ;*/
         {
 
-           return TreeNT((int)EnLess.standard_declaration,()=>
-                And(()=>  
+           return And(()=>  
                      ws()
                   && (    ident() || variable())
                   && s()
@@ -167,20 +166,19 @@ namespace nLess
                   && (    
                          Char(';')
                       || And(()=>    ws() && Peek(()=> Char('}') ) ))
-                  && ws() ) );
+                  && ws() );
 		}
-        public bool catchall_declaration()    /*^^catchall_declaration:  ws ident s ':' s ';' ws ;*/
+        public bool catchall_declaration()    /*catchall_declaration:  ws ident s ':' s ';' ws ;*/
         {
 
-           return TreeNT((int)EnLess.catchall_declaration,()=>
-                And(()=>  
+           return And(()=>  
                      ws()
                   && ident()
                   && s()
                   && Char(':')
                   && s()
                   && Char(';')
-                  && ws() ) );
+                  && ws() );
 		}
         public bool ident()    /*^^ident: '*'? '-'? [-_a-zA-Z0-9]+;*/
         {
@@ -255,11 +253,10 @@ namespace nLess
                      And(()=>    S() && OneOf("-+*/") && S() )
                   || OneOf("-+*/") );
 		}
-        public bool ruleset()    /*^^ruleset : standard_ruleset / mixin_ruleset;*/
+        public bool ruleset()    /*ruleset : standard_ruleset / mixin_ruleset;*/
         {
 
-           return TreeNT((int)EnLess.ruleset,()=>
-                    standard_ruleset() || mixin_ruleset() );
+           return     standard_ruleset() || mixin_ruleset();
 		}
         public bool standard_ruleset()    /*^^standard_ruleset: ws selectors [{] ws primary ws [}] ws;*/
         {

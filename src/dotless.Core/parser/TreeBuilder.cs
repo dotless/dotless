@@ -12,6 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
+using System.Linq;
+
 namespace dotless.Core.parser
 {
     using engine;
@@ -23,7 +25,7 @@ namespace dotless.Core.parser
     using System.Web;
     using nLess;
     using Peg.Base;
-    using String=dotless.Core.engine.String;
+    using String=engine.String;
 
     public class TreeBuilder
     {
@@ -41,9 +43,14 @@ namespace dotless.Core.parser
         /// <returns></returns>
         public Element Build()
         {
-            var el = new Element("");
-            Primary(Root.child_, el);
-            return el;
+            return Primary(Root.child_);
+        }
+
+        private Element Primary(PegNode node)
+        {
+            var element = new Element("");
+            Primary(node, element);
+            return element;
         }
 
         /// <summary>
@@ -53,25 +60,23 @@ namespace dotless.Core.parser
         /// <param name="element"></param>
         private void Primary(PegNode node, Element element)
         {
-            var nextPrimary = node.child_;
-            if (nextPrimary == null && node.next_ != null) Primary(node.next_, element);
-            else
+            foreach (var nextPrimary in node.AsEnumerable())
             {
-                while (nextPrimary != null)
+                switch (nextPrimary.id_.ToEnLess())
                 {
-                    switch (nextPrimary.id_.ToEnLess())
-                    {
-                        case EnLess.import:
-                            Import(nextPrimary.child_, element);
-                            break;
-                        case EnLess.ruleset:
-                            RuleSet(nextPrimary.child_, element);
-                            break;
-                        case EnLess.declaration:
-                            Declaration(nextPrimary.child_, element);
-                            break;
-                    }
-                    nextPrimary = nextPrimary.next_;
+                    case EnLess.import:
+                        var import = Import(nextPrimary.child_);
+                        element.Rules.AddRange(import);
+                        break;
+                    case EnLess.standard_ruleset:
+                        RuleSet(nextPrimary, element);
+                        break;
+                    case EnLess.mixin_ruleset:
+                        Mixin(nextPrimary,element);
+                        break;
+                    case EnLess.declaration:
+                        Declaration(nextPrimary.child_, element);
+                        break;
                 }
             }
         }
@@ -80,15 +85,12 @@ namespace dotless.Core.parser
         /// import :  ws '@import'  S import_url medias? s ';' ;
         /// </summary>
         /// <param name="node"></param>
-        /// <param name="element"></param>
-        private void Import(PegNode node, Element element)
+        private IEnumerable<INode> Import(PegNode node)
         {
-            var path = node.GetAsString(Src);
-            if(node.child_ != null){
-                path = node.child_.GetAsString(Src); 
-            }
-            path = path.Replace("\"", "").Replace("'", "");
-            //TODO: Fuck around with pah to make it absolute relative
+            var path = (node.child_ ?? node).GetAsString(Src)
+                        .Replace("\"", "").Replace("'", "");
+            
+            //TODO: Fuck around with path to make it absolute relative
 
             if(HttpContext.Current!=null)
             {
@@ -98,8 +100,9 @@ namespace dotless.Core.parser
             if(File.Exists(path))
             {
                 var engine = new Engine(File.ReadAllText(path), null);
-                element.Rules.AddRange(engine.Parse().Root.Rules); 
+                return engine.Parse().Root.Rules; 
             }
+            return new List<INode>();
         }
 
         /// <summary>
@@ -109,30 +112,15 @@ namespace dotless.Core.parser
         /// <param name="element"></param>
         private void Declaration(PegNode node, Element element)
         {
-            if (node.id_.ToEnLess() == EnLess.standard_declaration)
+            var name = node.GetAsString(Src).Replace(" ", "");
+            if(node.next_ == null)
             {
-                node = node.child_;
-                var name = node.GetAsString(Src).Replace(" ", "");
-
-                if (name.Substring(0, 1) == "@")
-                {
-                    var property = new Variable(name, Expressions(node.next_, element));
-                    element.Add(property);
-                }
-                else
-                {
-                    var property = new Property(name, Expressions(node.next_, element));
-                    element.Add(property);
-                }
+                // TODO: emit warning: empty declaration //
+                return;
             }
-            else if (node.id_.ToEnLess() == EnLess.catchall_declaration)
-            {
-/*                node = node.child_;
-                var name = node.GetAsString(Src).Replace(" ", "");
-                element.Add(new Property(name));*/
-                
-                //TODO: Should I be doing something here?
-            }
+            var values = Expressions(node.next_, element);
+            var property = name.StartsWith("@") ? new Variable(name, values) : new Property(name, values);
+            element.Add(property);
         }
 
         /// <summary>
@@ -141,15 +129,15 @@ namespace dotless.Core.parser
         /// <param name="node"></param>
         /// <param name="element"></param>
         /// <returns></returns>
-        private IList<INode> Expressions(PegNode node, Element element)
+        private IEnumerable<INode> Expressions(PegNode node, Element element)
         {
             // Expression
             switch (node.id_.ToEnLess())
             {
                 case EnLess.operation_expressions:
-                    return OperationExpressions(node.child_, element);
+                    return OperationExpressions(node.child_, element).ToList();
                 case EnLess.space_delimited_expressions:
-                    return SpaceDelimitedExpressions(node.child_, element);
+                    return SpaceDelimitedExpressions(node.child_, element).ToList();
                 default:
                     if (node.child_ == null) //CatchAll
                         return new List<INode>
@@ -166,27 +154,25 @@ namespace dotless.Core.parser
         /// <param name="node"></param>
         /// <param name="element"></param>
         /// <returns></returns>
-        private IList<INode> OperationExpressions(PegNode node, Element element)
+        private IEnumerable<INode> OperationExpressions(PegNode node, Element element)
         {
-            var lessNodes = new List<INode> {Expression(node.child_, element)};
-            node = node.next_;
-
+            yield return Expression(node.child_, element);
+            node = node.next_;            
+            
             //Tail
             while (node != null)
             {
                 switch (node.id_.ToEnLess())
                 {
                     case EnLess.@operator:
-                        lessNodes.Add(new Operator(node.GetAsString(Src)));
+                        yield return new Operator(node.GetAsString(Src));
                         break;
                     case EnLess.expression:
-                        lessNodes.Add(Expression(node.child_, element));
+                        yield return Expression(node.child_, element);
                         break;
                 }
                 node = node.next_;
             }
-
-            return lessNodes;
         }
 
         /// <summary>
@@ -195,9 +181,9 @@ namespace dotless.Core.parser
         /// <param name="node"></param>
         /// <param name="element"></param>
         /// <returns></returns>
-        private IList<INode> SpaceDelimitedExpressions(PegNode node, Element element)
+        private IEnumerable<INode> SpaceDelimitedExpressions(PegNode node, Element element)
         {
-            var lessNodes = new List<INode> {Expression(node.child_, element)};
+            yield return Expression(node.child_, element);
             node = node.next_;
 
             //Tail
@@ -206,16 +192,14 @@ namespace dotless.Core.parser
                 switch (node.id_.ToEnLess())
                 {
                     case EnLess.expression:
-                        lessNodes.Add(Expression(node.child_, element));;
+                        yield return Expression(node.child_, element);
                         break;
                     case EnLess.important:
-                        lessNodes.Add(new Keyword("!important"));
+                        yield return new Keyword("!important");
                         break;
                 }
                 node = node.next_;
             }
-
-            return lessNodes;
         }
 
         /// <summary>
@@ -232,8 +216,9 @@ namespace dotless.Core.parser
                     return new Expression(Expressions(node, element));
                 case EnLess.entity:
                     return Entity(node.child_, element);
+                default:
+                    throw new ParsingException("Expression should either be child expressions or an entity");
             }
-            throw new ParsingException("Expression should either be child expressions or an entity");
         }
 
         /// <summary>
@@ -249,22 +234,22 @@ namespace dotless.Core.parser
                 case EnLess.literal:
                     return Entity(node.child_, element);
                 case EnLess.number:
-                    return Number(node, element);
+                    return Number(node);
                 case EnLess.color:
-                    return Color(node, element);
+                    return Color(node);
                 case EnLess.variable:
-                    return Variable(node, element);
+                    return Variable(node);
                 case EnLess.accessor:
                     return Accessor(node.child_, element);
                 case EnLess.fonts:
-                    return Fonts(node.child_, element);
+                    return Fonts(node);
                 case EnLess.keyword:
-                    return Keyword(node, element);
+                    return Keyword(node);
                 case EnLess.function:
-                    return Function(node.child_, element);
+                    return Function(node);
+                default:
+                    return new Anonymous(node.GetAsString(Src));
             }
-
-            return new Anonymous(node.GetAsString(Src));
         }
 
         /// <summary>
@@ -278,10 +263,10 @@ namespace dotless.Core.parser
             var ident = node.GetAsString(Src);
             var key = node.next_.GetAsString(Src).Replace("'", "");
             var el = element.NearestAs<Element>(ident);
-            if (el!=null)
+            if (el != null)
             {
                 var prop = el.GetAs<Property>(key);
-                if (((INode)prop) != null) return prop.Value;
+                if (prop != null) return prop.Value;
             }
             return new Anonymous("");
         }
@@ -290,56 +275,48 @@ namespace dotless.Core.parser
         /// function: function_name arguments ;
         /// </summary>
         /// <param name="node"></param>
-        /// <param name="element"></param>
         /// <returns></returns>
-        private INode Function(PegNode node, Element element)
+        private INode Function(PegNode node)
         {
-            var funcName = node.GetAsString(Src);
-            var arguments = Arguments(node.next_, element);
-            return new Function(funcName, arguments);
+            var funcName = node.child_.GetAsString(Src);
+            var arguments = Arguments(node);
+            return new Function(funcName, arguments.ToList());
         }
 
         /// <summary>
         /// arguments : '(' s argument s (',' s argument s)* ')';
         /// </summary>
         /// <param name="node"></param>
-        /// <param name="element"></param>
         /// <returns></returns>
-        private IList<INode> Arguments(PegNode node, Element element)
+        private IEnumerable<INode> Arguments(PegNode node)
         {
-            var args = new List<INode>();
-            while (node != null)
-            {
-                switch (node.id_.ToEnLess())
+            foreach(var argument in node.AsEnumerable().Skip(1))
+                switch (argument.id_.ToEnLess())
                 {
                     case EnLess.color:
-                        args.Add(Color(node, element));
+                        yield return Color(argument);
                         break;
                     case EnLess.number:
-                        args.Add(Number(node, element));
+                        yield return Number(argument);
                         break;
                     case EnLess.@string:
-                        args.Add(new String(node.GetAsString(Src)));
+                        yield return new String(argument.GetAsString(Src));
                         break;
                     case EnLess.keyword:
-                        args.Add(new Keyword(node.GetAsString(Src)));
+                        yield return new Keyword(argument.GetAsString(Src));
                         break;
                     default:
-                        args.Add(new Anonymous(node.GetAsString(Src)));
+                        yield return new Anonymous(argument.GetAsString(Src));
                         break;
-                }
-                node = node.next_;
             }
-            return args;
         }
 
         /// <summary>
         /// keyword: [-a-zA-Z]+ !ns;
         /// </summary>
         /// <param name="node"></param>
-        /// <param name="element"></param>
         /// <returns></returns>
-        private INode Keyword(PegNode node, Element element)
+        private INode Keyword(PegNode node)
         {
             return new Keyword(node.GetAsString(Src));
         }
@@ -348,17 +325,11 @@ namespace dotless.Core.parser
         /// fonts : font (s ',' s font)+  ;
         /// </summary>
         /// <param name="node"></param>
-        /// <param name="element"></param>
         /// <returns></returns>
-        private INode Fonts(PegNode node, Element element)
+        private INode Fonts(PegNode node)
         {
-            var fonts = new List<Literal>();
-            while (node!=null)
-            {
-                if (node.child_ != null) fonts.Add(new String(node.child_.GetAsString(Src)));
-                else fonts.Add(new Keyword(node.GetAsString(Src)));
-                node = node.next_;
-            }
+            var fonts = from childNode in node.AsEnumerable()
+                        select (childNode.child_ ?? childNode).GetAsString(Src);
             return new FontFamily(fonts.ToArray());
         }
 
@@ -366,9 +337,8 @@ namespace dotless.Core.parser
         /// number: '-'? [0-9]* '.' [0-9]+ / '-'? [0-9]+;
         /// </summary>
         /// <param name="node"></param>
-        /// <param name="element"></param>
         /// <returns></returns>
-        private INode Number(PegNode node, Element element)
+        private INode Number(PegNode node)
         {
             var val = float.Parse(node.GetAsString(Src), NumberFormatInfo.InvariantInfo);
             var unit = "";
@@ -381,52 +351,49 @@ namespace dotless.Core.parser
         /// color: '#' rgb;
         /// </summary>
         /// <param name="node"></param>
-        /// <param name="element"></param>
         /// <returns></returns>
-        private INode Color(PegNode node, Element element)
+        private INode Color(PegNode node)
         {
-            return RGB(node.child_, element);
+            return RGB(node.child_);
         }
 
         /// <summary>
         /// rgb:(rgb_node)(rgb_node)(rgb_node) / hex hex hex ;
         /// </summary>
         /// <param name="node"></param>
-        /// <param name="element"></param>
         /// <returns></returns>
-        private INode RGB(PegNode node, Element element)
+        private INode RGB(PegNode node)
         {
-            int R = 0, G = 0, B = 0;
+            int r = 0, g = 0, b = 0;
             string tmp;
 
             var rgbNode = node.child_; //Fisrt node;
             if (rgbNode != null)
             {
                 tmp = rgbNode.GetAsString(Src);
-                R = int.Parse(tmp.Length==1 ? tmp+tmp : tmp, NumberStyles.HexNumber);
+                r = int.Parse(tmp.Length==1 ? tmp+tmp : tmp, NumberStyles.HexNumber);
                 rgbNode = rgbNode.next_;
                 if (rgbNode != null)
                 {
                     tmp = rgbNode.GetAsString(Src);
-                    G = int.Parse(tmp.Length == 1 ? tmp + tmp : tmp, NumberStyles.HexNumber);
+                    g = int.Parse(tmp.Length == 1 ? tmp + tmp : tmp, NumberStyles.HexNumber);
                     rgbNode = rgbNode.next_;
                     if (rgbNode != null)
                     {
                         tmp = rgbNode.GetAsString(Src);
-                        B = int.Parse(tmp.Length == 1 ? tmp + tmp : tmp, NumberStyles.HexNumber);
+                        b = int.Parse(tmp.Length == 1 ? tmp + tmp : tmp, NumberStyles.HexNumber);
                     }
                 }
             }
-            return new Color(R, G, B);
+            return new Color(r, g, b);
         }
 
         /// <summary>
         /// variable: '@' [-_a-zA-Z0-9]+; 
         /// </summary>
         /// <param name="node"></param>
-        /// <param name="element"></param>
         /// <returns></returns>
-        private INode Variable(PegNode node, Element element)
+        private INode Variable(PegNode node)
         {
             return new Variable(node.GetAsString(Src));
         }
@@ -438,25 +405,16 @@ namespace dotless.Core.parser
         /// <param name="element"></param>
         private void RuleSet(PegNode node, Element element)
         {
-            if (node.id_.ToEnLess() == EnLess.standard_ruleset)
-            {
-                node = node.child_;
-                var elements = Selectors(node, element, els => StandardSelectors(element, els));
-                foreach (var el in elements)
-                    Primary(node.next_, el);
-            }
-            else if (node.id_.ToEnLess() == EnLess.mixin_ruleset)
-            {
-                node = node.child_;
-                var elements = Selectors(node, element, els => els);
-                IList<INode> rules = null;
-                var root = element.GetRoot();
-                foreach (var el in elements){
-                    root = root.Descend(el.Selector, el);
-                    rules = root.Rules;
-                }
-                if (rules != null) element.Rules.AddRange(rules);
-            }
+            foreach (var el in Selectors(node.child_, els => StandardSelectors(element, els)))
+                Primary(node.child_.next_, el);
+        }
+
+        private void Mixin(PegNode node, Element element)
+        {
+            var root = element.GetRoot();
+            foreach (var el in Selectors(node.child_, els => els))
+                root = root.Descend(el.Selector, el);
+            if (root.Rules != null) element.Rules.AddRange(root.Rules);
         }
 
         /// <summary>
@@ -465,32 +423,29 @@ namespace dotless.Core.parser
         /// <param name="element"></param>
         /// <param name="els"></param>
         /// <returns></returns>
-        private static IList<Element> StandardSelectors(Element element, IEnumerable<Element> els)
+        private static IEnumerable<Element> StandardSelectors(Element element, IEnumerable<Element> els)
         {
-            foreach (var el in els){
+            foreach (var el in els)
+            {
                 element.Add(el);
                 element = element.Last;
             }
-            return new List<Element> { element};
+            yield return element;
         }
 
         /// <summary>
         /// selectors :  ws selector (s ',' ws selector)* ws ;
         /// </summary>
         /// <param name="node"></param>
-        /// <param name="el"></param>
         /// <param name="action"></param>
         /// <returns></returns>
-        private IList<Element> Selectors(PegNode node, Element el, Func<IList<Element>, IList<Element>> action)
+        private IEnumerable<Element> Selectors(PegNode node, Func<IEnumerable<Element>, IEnumerable<Element>> action)
         {
-            var selector = node.child_;
-            var elements = new List<Element>();
-            while (selector != null && selector.id_.ToEnLess() == EnLess.selector)
+            foreach(var selector in node.AsEnumerable(x => x.id_.ToEnLess() == EnLess.selector))
             {
-                elements.AddRange(action.Invoke(Selector(selector.child_)));
-                selector = selector.next_;
+                var selectors = Selector(selector);
+                foreach(var s in action.Invoke(selectors)) yield return s;
             }
-            return elements;
         }
 
         /// <summary>
@@ -498,23 +453,16 @@ namespace dotless.Core.parser
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
-        private IList<Element> Selector(PegNode node)
+        private IEnumerable<Element> Selector(PegNode node)
         {
-            var elements = new List<Element>();
-            while (node != null)
+            var enumerator = node.AsEnumerable().GetEnumerator();
+            while(enumerator.MoveNext())
             {
-                if (node.id_.ToEnLess() != EnLess.select)
-                    throw new ParsingException("Selectors must be something");
-                {
-                    var selector = node.GetAsString(Src).Replace(" ", "");
-                    node = node.next_;
-                    var name = node.GetAsString(Src);
-                    elements.Add(new Element(name, selector));
-                }
-
-                node = node.next_;
+                var selector = enumerator.Current.GetAsString(Src).Trim();
+                enumerator.MoveNext();
+                var name = enumerator.Current.GetAsString(Src);
+                yield return new Element(name, selector);
             }
-            return elements;
         }
     }
 }

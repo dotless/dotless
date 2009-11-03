@@ -12,6 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
+using System;
+using System.Collections.Generic;
+
 namespace dotless.Core.parser
 {
     using nLess;
@@ -27,6 +30,26 @@ namespace dotless.Core.parser
         internal static EnLess ToEnLess(this PegNode node)
         {
             return node.id_.ToEnLess();
+        }
+
+        internal static IEnumerable<PegNode> AsEnumerable(this PegNode node)
+        {
+            return AsEnumerable(node, x => true);
+        }
+
+        internal static IEnumerable<PegNode> AsEnumerable(this PegNode node, Func<PegNode, bool> condition)
+        {
+            var cursor = node.child_;
+            while (cursor != null)
+            {
+                if (!condition(cursor))
+                {
+                    cursor = cursor.next_;
+                    continue;
+                }
+                yield return cursor;
+                cursor = cursor.next_;
+            }            
         }
     }
 }

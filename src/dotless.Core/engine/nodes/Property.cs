@@ -75,19 +75,18 @@ namespace dotless.Core.engine
             Add(node);
         }
 
-        public static bool operator ==(Property property1, Property property2)
-        {
-            return property1.ToString() == property2.ToString();
-        }
+        //public static bool operator ==(Property property1, Property property2)
+        //{
+        //    return property1.ToString() == property2.ToString();
+        //}
 
-        public static bool operator !=(Property property1, Property property2)
-        {
-            return property1.ToString() != property2.ToString();
-        }
 
         public override bool Equals(object obj)
         {
-            return (obj is Property && ToString() == obj.ToString() && Value.Equals(((Property) obj).Value));
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != typeof (Property)) return false;
+            return Equals((Property) obj);
         }
 
 
@@ -115,6 +114,18 @@ namespace dotless.Core.engine
         public T NearestAs<T>(string ident)
         {
             return (T)Nearest(ident);
+        }
+
+        public bool Equals(Property other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Equals(other.Key, Key);
+        }
+
+        public override int GetHashCode()
+        {
+            return (Key != null ? Key.GetHashCode() : 0);
         }
     }
 }

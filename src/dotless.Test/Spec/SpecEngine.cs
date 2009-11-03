@@ -110,6 +110,12 @@ namespace dotless.Test.Spec
         public void ShouldManageWhitespace()
         {
             SpecHelper.ShouldEqual("whitespace"); //IGNORE
-        } 
+        }
+
+        [Test]
+        public void ShouldManageNamespacedMixins()
+        {
+            SpecHelper.ShouldEqual("namespaces");
+        }
     }
 }
