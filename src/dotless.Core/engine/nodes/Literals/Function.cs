@@ -12,12 +12,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
+using dotless.Core.utils;
+
 namespace dotless.Core.engine
 {
     using System.Collections.Generic;
     using System.Text;
 
-    public class Function : Literal
+    public static class Functions
+    {
+        public static INode ADD(float a, float b)
+        {
+            return new Number(a + b);
+        }
+        public static INode RGB(int r, int g, int b)
+        {
+            return new Color(r, g, b);
+        }
+    }
+
+    public class Function : Literal, IEvaluatable
     {
         public IList<INode> Args
         {
@@ -34,10 +48,10 @@ namespace dotless.Core.engine
             return Evaluate().ToCss();
         }
 
-        private INode Evaluate()
+        public INode Evaluate()
         {
             //TODO: Evaluate function instead of just printing
-            return new Anonymous(string.Format("{0}{1}", Value, ArgsString));
+            return (INode)CsEval.Eval(string.Format("Functions.{0}{1}", Value.ToUpper(), ArgsString));
         }
 
         protected string ArgsString
