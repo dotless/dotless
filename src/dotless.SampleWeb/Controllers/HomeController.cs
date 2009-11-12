@@ -16,5 +16,22 @@
         {
             return View();
         }
+
+
+        public ActionResult About()
+        {
+            return View();
+        }
+
+    }
+
+    public class SomeDTO : IDTO
+    {
+        public string Name { get; set; }
+    }
+
+    public interface IDTO
+    {
+        string Name;
     }
 }

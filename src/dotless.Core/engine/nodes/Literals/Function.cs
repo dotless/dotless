@@ -12,24 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
+using System;
 using dotless.Core.utils;
 
 namespace dotless.Core.engine
 {
     using System.Collections.Generic;
     using System.Text;
-
-    public static class Functions
-    {
-        public static INode ADD(float a, float b)
-        {
-            return new Number(a + b);
-        }
-        public static INode RGB(int r, int g, int b)
-        {
-            return new Color(r, g, b);
-        }
-    }
 
     public class Function : Literal, IEvaluatable
     {
@@ -50,8 +39,16 @@ namespace dotless.Core.engine
 
         public INode Evaluate()
         {
-            //TODO: Evaluate function instead of just printing
-            return (INode)CsEval.Eval(string.Format("Functions.{0}{1}", Value.ToUpper(), ArgsString));
+            return new Literal(string.Format("{0}{1}", Value.ToUpper(), ArgsString));
+            //TODO: Functions are sloooooow this way, consider a caching att avaliable function calls. and b using reflection emit
+            try
+            {
+                return (INode)CsEval.Eval(string.Format("Functions.{0}{1}", Value.ToUpper(), ArgsString));
+            }
+            catch (Exception)
+            {
+                return new Literal(string.Format("{0}({1})", Value.ToUpper(), ArgsString));
+            }
         }
 
         protected string ArgsString
