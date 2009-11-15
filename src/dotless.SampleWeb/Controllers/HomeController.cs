@@ -17,12 +17,6 @@
             return View();
         }
 
-
-        public ActionResult About()
-        {
-            return View();
-        }
-
     }
 
     public class SomeDTO : IDTO
@@ -32,6 +26,6 @@
 
     public interface IDTO
     {
-        string Name;
+        string Name { get; set;}
     }
 }
