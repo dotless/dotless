@@ -12,6 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
+using System;
+
 namespace dotless.Core
 {
     using System.Web;
@@ -35,13 +37,21 @@ namespace dotless.Core
 
             //TODO: Clean up this code. Seperate concerns here
             context.Response.ContentType = "text/css";
-            if (context.Cache[lessFile] == null)
+            string css = engine.TransformToCss(lessFile);
+
+            if (config.CacheEnabled)
             {
-                string css = engine.TransformToCss(lessFile);
-                if (config.CacheEnabled)
+                if (context.Cache[lessFile] == null)
+                {
                     context.Cache.Insert(lessFile, css, new CacheDependency(lessFile));
+                }
+                context.Response.Write(context.Cache[lessFile]);
             }
-            context.Response.Write(context.Cache[lessFile]);
+            else
+            {
+                context.Response.Write(css);
+            }
+
             context.Response.End();
 
             
