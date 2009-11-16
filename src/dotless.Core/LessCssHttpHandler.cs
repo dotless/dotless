@@ -15,7 +15,7 @@
 namespace dotless.Core
 {
     using System.Web;
-    using System.Web.Caching;
+    using Abstractions;
     using configuration;
 
     public class LessCssHttpHandler : IHttpHandler
@@ -27,32 +27,13 @@ namespace dotless.Core
             var config = ConfigurationLoader.GetConfigurationFromWebconfig();
             ILessEngine engine = engineFactory.GetEngine(config);
 
-            // our unprocessed filename   
-            var lessFile = context.Server.MapPath(context.Request.Url.LocalPath);
+            var cache = new CssCache(context.Cache);
+            var provider = new PathProvider(context.Server);
+            var request = new Request(context.Request);
+            var response = new CssResponse(context.Response);
 
-            //context.Response.AddFileDependency(lessFile);
-            context.Response.Cache.SetCacheability(HttpCacheability.Public);    //Anyone can cache this
-
-            //TODO: Clean up this code. Seperate concerns here
-            context.Response.ContentType = "text/css";
-            string css = engine.TransformToCss(lessFile);
-
-            if (config.CacheEnabled)
-            {
-                if (context.Cache[lessFile] == null)
-                {
-                    context.Cache.Insert(lessFile, css, new CacheDependency(lessFile));
-                }
-                context.Response.Write(context.Cache[lessFile]);
-            }
-            else
-            {
-                context.Response.Write(css);
-            }
-
-            context.Response.End();
-
-            
+            var handler = new HandlerImpl();
+            handler.Execute(cache, provider, request, response, config, engine);
         }
 
         public bool IsReusable

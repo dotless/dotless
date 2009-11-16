@@ -51,6 +51,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abstractions\ICache.cs" />
+    <Compile Include="Abstractions\IPathProvider.cs" />
+    <Compile Include="Abstractions\IRequest.cs" />
+    <Compile Include="Abstractions\IResponse.cs" />
     <Compile Include="configuration\ConfigurationLoader.cs" />
     <Compile Include="configuration\DotlessConfiguration.cs" />
     <Compile Include="configuration\DotlessConfigurationSectionHandler.cs" />
@@ -78,6 +82,7 @@
     <Compile Include="engine\nodes\Selector.cs" />
     <Compile Include="engine\nodes\Variable.cs" />
     <Compile Include="exceptions\VariableNameException.cs" />
+    <Compile Include="HandlerImpl.cs" />
     <Compile Include="ILessEngine.cs" />
     <Compile Include="LessCssHttpHandler.cs" />
     <Compile Include="LessEngine.cs" />
