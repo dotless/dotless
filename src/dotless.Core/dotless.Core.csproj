@@ -51,6 +51,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abstractions\ICache.cs" />
+    <Compile Include="Abstractions\IPathProvider.cs" />
+    <Compile Include="Abstractions\IRequest.cs" />
+    <Compile Include="Abstractions\IResponse.cs" />
     <Compile Include="configuration\ConfigurationLoader.cs" />
     <Compile Include="configuration\DotlessConfiguration.cs" />
     <Compile Include="configuration\DotlessConfigurationSectionHandler.cs" />
@@ -88,6 +92,7 @@
     <Compile Include="engine\LessNodes\Selector.cs" />
     <Compile Include="engine\LessNodes\Variable.cs" />
     <Compile Include="exceptions\VariableNameException.cs" />
+    <Compile Include="HandlerImpl.cs" />
     <Compile Include="ILessEngine.cs" />
     <Compile Include="LessCssHttpHandler.cs" />
     <Compile Include="LessEngine.cs" />
@@ -106,6 +111,7 @@
     <Compile Include="minifier\TreeCompiler.cs" />
     <Compile Include="minifier\TreeNode.cs" />
     <Compile Include="parser\C#\nLess.cs" />
+    <Compile Include="parser\ILessParser.cs" />
     <Compile Include="parser\LessParser.cs" />
     <Compile Include="parser\NodePrinter.cs" />
     <Compile Include="exceptions\ParsingException.cs" />
