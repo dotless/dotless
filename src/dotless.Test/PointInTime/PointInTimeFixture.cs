@@ -16,7 +16,7 @@ namespace dotless.Test.PointInTime
 {
     using System;
     using System.IO;
-    using dotless.Core.engine;
+    using Core.engine;
     using NUnit.Framework;
 
     /// <summary>

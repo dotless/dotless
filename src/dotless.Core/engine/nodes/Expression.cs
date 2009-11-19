@@ -15,7 +15,6 @@
 namespace dotless.Core.engine
 {
     using exceptions;
-    using engine;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -112,6 +111,7 @@ namespace dotless.Core.engine
                 var entity = Literals.Where(e => unit.Contains(e.Unit)).FirstOrDefault() ?? Entities.First();
 
                 if (result is Entity) returnNode = (INode)result;
+                else if (result.GetType()==typeof(string)) returnNode = new Literal(string.Format("{0}",result));
                 else if (result is Expression)
                     returnNode = ((Expression)result).Count() == 1
                                      ? ((Expression)result).First()

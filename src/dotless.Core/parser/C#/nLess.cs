@@ -1,4 +1,4 @@
-/* created on 2-11-2009 12:45:05 from peg generator V1.0 using '' as input*/
+/* created on 12/11/2009 21:58:59 from peg generator V1.0 using '' as input*/
 
 using Peg.Base;
 using System;
@@ -77,7 +77,7 @@ namespace nLess
                 OptRepeat(()=>  
                       import() || declaration() || ruleset() || comment() ) );
 		}
-        public bool import()    /*^^import :  ws '@import'  S import_url medias? s (';'/FATAL<"Semi colon expected">) ;*/
+        public bool import()    /*^^import :  ws '@import'  S import_url medias? s ';' ;*/
         {
 
            return TreeNT((int)EnLess.import,()=>
@@ -88,13 +88,13 @@ namespace nLess
                   && import_url()
                   && Option(()=> medias() )
                   && s()
-                  && (    Char(';') || Fatal("Semi colon expected")) ) );
+                  && Char(';') ) );
 		}
-        public bool import_url()    /*^^import_url : (string / url) ;*/
+        public bool import_url()    /*^^import_url : (expressions / string / url ) ;*/
         {
 
            return TreeNT((int)EnLess.import_url,()=>
-                    @string() || url() );
+                    expressions() || @string() || url() );
 		}
         public bool medias()    /*^^medias : [-a-z]+ (s ',' s [a-z]+)*;*/
         {
@@ -118,7 +118,7 @@ namespace nLess
                   && url_path()
                   && Char(')') ) );
 		}
-        public bool url_path()    /*^url_path: (string / [-a-zA-Z0-9_%$/.&=:;#+?]+);*/
+        public bool url_path()    /*^url_path: (string / [-a-zA-Z0-9_%$/.&=:;#+?]+ );*/
         {
 
            return TreeAST((int)EnLess.url_path,()=>

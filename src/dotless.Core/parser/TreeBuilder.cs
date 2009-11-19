@@ -65,7 +65,7 @@ namespace dotless.Core.parser
                 switch (nextPrimary.id_.ToEnLess())
                 {
                     case EnLess.import:
-                        var import = Import(nextPrimary.child_);
+                        var import = Import(nextPrimary.child_, element);
                         element.Rules.AddRange(import);
                         break;
                     case EnLess.standard_ruleset:
@@ -85,13 +85,28 @@ namespace dotless.Core.parser
         /// import :  ws '@import'  S import_url medias? s ';' ;
         /// </summary>
         /// <param name="node"></param>
-        private IEnumerable<INode> Import(PegNode node)
+        private IEnumerable<INode> Import(PegNode node, Element element)
         {
-            var path = (node.child_ ?? node).GetAsString(Src)
-                        .Replace("\"", "").Replace("'", "");
-            
-            //TODO: Fuck around with path to make it absolute relative
+            node = (node.child_ ?? node);
+//
+//            var path = "";
+//            if(node.ToEnLess()==EnLess.expressions)
+//            {
+//                var values = Expressions(node, element);
+//                var fakeVariableName = new Variable(string.Format("@{0}", DateTime.Now.Ticks), values);
+//                element.Add(fakeVariableName);
+//                path = fakeVariableName.ToCss();
+//            }
+//            else
+//            {
+//                path = (node).GetAsString(Src)
+//                    .Replace("\"", "").Replace("'", "");
+//            }
 
+            var path = (node).GetAsString(Src)
+                .Replace("\"", "").Replace("'", "");
+
+            //TODO: Fuck around with path to make it absolute relative
             if(HttpContext.Current!=null)
             {
                 path = HttpContext.Current.Server.MapPath(path);
