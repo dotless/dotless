@@ -1,7 +1,7 @@
 ﻿﻿/* Copyright 2009 dotless project, http://www.dotlesscss.com
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
+ * you may not use this file except in compliance with the License.sz\
  * You may obtain a copy of the License at
  * 
  *     http://www.apache.org/licenses/LICENSE-2.0
@@ -143,20 +143,16 @@ namespace dotless.Core.engine
         public Element GetRoot()
         {
             var els = this;
-            while (!els.IsRoot){
+            while (!els.IsRoot)
                 els = (Element)els.Parent;
-            }
             return els;
         }
-
 
         private Element GetLeaf()
         {
             var els = this;
             while (!els.IsLeaf)
-            {
-                els = (Element)els.First;
-            }
+                els = els.First;
             return els;
         }
 
