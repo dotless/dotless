@@ -15,30 +15,28 @@
 namespace dotless.Core
 {
     using Abstractions;
-    using configuration;
 
     public class HandlerImpl
     {
-        public void Execute(ICache cache, IPathProvider pathProvider, IRequest request, IResponse response, DotlessConfiguration configuration, ILessEngine engine)
+        private readonly IPathProvider pathProvider;
+        private readonly IRequest request;
+        private readonly IResponse response;
+        private readonly ILessEngine engine;
+
+        public HandlerImpl(IPathProvider pathProvider, IRequest request, IResponse response, ILessEngine engine)
+        {
+            this.pathProvider = pathProvider;
+            this.request = request;
+            this.response = response;
+            this.engine = engine;
+        }
+
+        public void Execute()
         {
             // our unprocessed filename   
             var lessFile = pathProvider.MapPath(request.LocalPath);
 
-            if (configuration.CacheEnabled)
-            {
-                
-                if (!cache.Exists(lessFile))
-                {
-                    string css = engine.TransformToCss(lessFile);
-                    cache.Insert(lessFile, css);
-                }
-                response.WriteCss(cache.Retrieve(lessFile));
-            }
-            else
-            {
-                string css = engine.TransformToCss(lessFile);
-                response.WriteCss(css);
-            }
+            response.WriteCss(engine.TransformToCss(lessFile));
         }
     }
 }

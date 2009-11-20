@@ -18,6 +18,7 @@ namespace dotless.Core
 
     public class EngineFactory
     {
+        //TODO: This class is now obsolte
         public ILessEngine GetEngine(DotlessConfiguration configuration)
         {
             ILessEngine engine = new LessEngine();

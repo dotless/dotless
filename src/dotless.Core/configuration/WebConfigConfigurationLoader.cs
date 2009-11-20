@@ -16,13 +16,13 @@ namespace dotless.Core.configuration
 {
     using System.Configuration;
 
-    public class ConfigurationLoader
+    public class WebConfigConfigurationLoader : IConfigurationLoader
     {
-        public static DotlessConfiguration GetConfigurationFromWebconfig()
+        public DotlessConfiguration GetConfiguration()
         {
             var webconfig = (DotlessConfiguration)ConfigurationManager.GetSection("dotless");
             if (webconfig == null)
-                return new DotlessConfiguration();
+                return DotlessConfiguration.Default;
             return webconfig;
         }
     }
