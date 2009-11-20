@@ -15,8 +15,11 @@
 namespace dotless.Core
 {
     using System.Web;
+    using System.Web.Caching;
     using Abstractions;
     using configuration;
+    using Microsoft.Practices.ServiceLocation;
+    using Pandora;
 
     public class LessCssHttpHandler : IHttpHandler
     {
@@ -37,6 +40,37 @@ namespace dotless.Core
         public bool IsReusable
         {
             get { return true; }
+        }
+    }
+
+    public class ContainerFactory
+    {
+        public IServiceLocator GetContainer()
+        {
+            var container = new PandoraContainer();
+            //ASP.NET Services
+            container.Register(p => {
+                                        p.Service<Cache>()
+                                            .Instance(HttpContext.Current.Cache);
+                                        p.Service<HttpServerUtility>()
+                                            .Instance(HttpContext.Current.Server);
+                                        p.Service<HttpRequest>()
+                                            .Instance(HttpContext.Current.Request);
+                                        p.Service<HttpResponse>()
+                                            .Instance(HttpContext.Current.Response);
+            });
+            container.Register(p =>
+                                   {
+                                       p.Service<ICache>()
+                                           .Implementor<CssCache>();
+                                       p.Service<IPathProvider>()
+                                           .Implementor<PathProvider>();
+                                       p.Service<IRequest>()
+                                           .Implementor<Request>();
+                                       p.Service<IResponse>()
+                                           .Implementor<CssResponse>();
+                                   });
+            return new CommonServiceLocatorAdapter(container);
         }
     }
 }
