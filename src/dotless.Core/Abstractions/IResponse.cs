@@ -23,19 +23,18 @@ namespace dotless.Core.Abstractions
 
     public class CssResponse : IResponse
     {
-        private readonly HttpResponse response;
-
-        public CssResponse(HttpResponse response)
-        {
-            this.response = response;
-        }
-
         public void WriteCss(string css)
         {
+            var response = GetResponse();
             response.Cache.SetCacheability(HttpCacheability.Public);
             response.ContentType = "text/css";
             response.Write(css);
             response.End();
+        }
+
+        private static HttpResponse GetResponse()
+        {
+            return HttpContext.Current.Response;
         }
     }
 }

@@ -14,6 +14,7 @@
 
 namespace dotless.Core.Abstractions
 {
+    using System.Web;
     using System.Web.Caching;
 
     public interface ICache
@@ -25,16 +26,9 @@ namespace dotless.Core.Abstractions
 
     public class CssCache : ICache
     {
-        private readonly Cache cache;
-
-        public CssCache(Cache cache)
-        {
-            this.cache = cache;
-        }
-
         public void Insert(string fileName, string css)
         {
-            cache.Insert(fileName, css, new CacheDependency(fileName));
+            GetCache().Insert(fileName, css, new CacheDependency(fileName));
         }
 
         public bool Exists(string filename)
@@ -44,7 +38,12 @@ namespace dotless.Core.Abstractions
 
         public string Retrieve(string filename)
         {
-            return (string)cache[filename];
+            return (string)GetCache()[filename];
+        }
+
+        private static Cache GetCache()
+        {
+            return HttpContext.Current.Cache;
         }
     }
 }
