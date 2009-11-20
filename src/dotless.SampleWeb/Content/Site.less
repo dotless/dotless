@@ -1,36 +1,23 @@
 ﻿@import "~/Content/blueprint/screen.css";
 
-#page
-{
-	@header-color: #000;
-	@font-color: #fff;
-
-	#header{
-		padding:10px;
-		height:100px;
-		background:@header-color;
-		h1
-		{
-			color:@font-color;
-		}
-	}
-	#left-menu
-	{
-		.column;
-		.span-3;
-		margin:5px;
-		background:red;
-		color: @font-color;
-		padding:10px;
-	}
-	#main-content
-	{
-		.column;
-		.span-19;
-		margin:5px;
-		background:blue;
-		color: @font-color;
-		padding:10px; 
-	}
-
+#header {
+    #title {
+        .span-10;
+        .column;
+    }
+    
+    #logindisplay {
+        .prepend-8;
+        .span-6;
+        .column;
+        .last;
+        text-align: right;
+    }
+    
+    #menucontainer {
+        .span-24;
+        .last;
+        text-align: right;
+    }
 }
+

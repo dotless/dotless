@@ -9,21 +9,17 @@
 <body>
     <div id="page">
         <div id="header">
-             <h1><a class="highlight" href="http://www.dotlesscss.com">http://www.dotlesscss.com</a> brings the <span class="highlight">magic</span> of the LessCss libary to the world of .NET</h1>
+            <div id="title">
+                Sparkwise here...
+            </div>
+            <div id="logindisplay">
+                Login
+            </div>
+            <div id="menucontainer">
+                Menu | Menu | Menu | Menu 
+            </div>
         </div>
-        <div id="left-menu">
-            <p>This menu uses blueprint yet you'll see no "span-4" classes here</p>
-            <ul>
-                <li><a href="">Item 1</a></li>
-                <li><a href="">Item 2</a></li>
-                <li><a href="">Item 3</a></li>
-            </ul>
-        </div>
-         <div id="main-content">
-           blueprint container, without the ugly css selectors. blueprint container, without the ugly css selectors. blueprint container, without the ugly css selectors.
-           blueprint container, without the ugly css selectors. blueprint container, without the ugly css selectors. blueprint container, without the ugly css selectors.
-           blueprint container, without the ugly css selectors.  blueprint container, without the ugly css selectors. blueprint container, without the ugly css selectors.
-        </div>
+    
         <div id="footer"></div>
     </div>
 </body>
