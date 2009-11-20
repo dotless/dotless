@@ -22,8 +22,17 @@ namespace dotless.Core
     {
         public string TransformToCss(string filename)
         {
-            var engine = new Engine(File.ReadAllText(filename), Console.Out);
-            return engine.Parse().Css;
+            var engineImpl = new EngineImpl(File.ReadAllText(filename), Console.Out);
+            return engineImpl.Parse().Css;
+        }
+    }
+
+    public class AltLessEngine : ILessEngine
+    {
+        public string TransformToCss(string filename)
+        {
+            var engineImpl = new AltEngineImpl(File.ReadAllText(filename));
+            return engineImpl.Css;
         }
     }
 }

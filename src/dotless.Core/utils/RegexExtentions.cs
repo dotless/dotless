@@ -23,5 +23,10 @@ namespace dotless.Core.utils
             var rule = new Regex("^[.#]");
             return rule.Match(str).Success;
         }
+        public static bool IsVariable(this string str)
+        {
+            var rule = new Regex("^[@]");
+            return rule.Match(str).Success;
+        }
     }
 }

@@ -17,9 +17,11 @@ namespace dotless.Core.exceptions
     using System;
     public class VariableNameException : Exception
     {
+        public string Ident { get; set; }
+
         public VariableNameException(string ident)
         {
-            throw new NotImplementedException();
+            Ident = ident;
         }
     }
 }

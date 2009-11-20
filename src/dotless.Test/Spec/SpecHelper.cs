@@ -34,9 +34,9 @@ namespace dotless.Test.Spec
             switch (Engine)
             {
                 case EngineImpl.AltEngine:
-                    return new AltEngine(File.ReadAllText(file)).Css.Replace("\r\n", "\n");
+                    return new AltEngineImpl(File.ReadAllText(file)).Css.Replace("\r\n", "\n");
                 default:
-                    return new Engine(File.ReadAllText(file)).Parse().Css.Replace("\r\n", "\n");
+                    return new Core.engine.EngineImpl(File.ReadAllText(file)).Parse().Css.Replace("\r\n", "\n");
             }
         }
         public static string Css(string fileName)

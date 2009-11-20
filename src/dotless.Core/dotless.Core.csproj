@@ -69,7 +69,7 @@
     <Compile Include="configuration\DotlessConfigurationSectionHandler.cs" />
     <Compile Include="configuration\XmlConfigurationInterpreter.cs" />
     <Compile Include="ContainerFactory.cs" />
-    <Compile Include="engine\AltEngine.cs" />
+    <Compile Include="engine\AltEngineImpl.cs" />
     <Compile Include="engine\Pipeline\CssBuilder.cs" />
     <Compile Include="engine\CssNodes\CssDocument.cs" />
     <Compile Include="engine\CssNodes\CssElement.cs" />
@@ -80,7 +80,7 @@
     <Compile Include="engine\Pipeline\ILessToCssDomConverter.cs" />
     <Compile Include="engine\Pipeline\LessToCssDomConverter.cs" />
     <Compile Include="engine\Pipeline\PipelineFactory.cs" />
-    <Compile Include="engine\Engine.cs" />
+    <Compile Include="engine\EngineImpl.cs" />
     <Compile Include="engine\LessNodes\Anonymous.cs" />
     <Compile Include="engine\LessNodes\Element.cs" />
     <Compile Include="engine\LessNodes\Entity.cs" />

@@ -68,7 +68,7 @@ namespace dotless.Core
                                                .Implementor<MinifierDecorator>();
                                        }
                                        p.Service<ILessEngine>()
-                                           .Implementor<LessEngine>();
+                                           .Implementor<AltLessEngine>();
                                    });
             return container;
         }

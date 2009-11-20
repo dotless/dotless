@@ -19,7 +19,13 @@ namespace dotless.Test.Spec
     [TestFixture]
     public class SpecEngine
     {
-        private const string Upcoming = "Upcoming functionality"; 
+        private const string Upcoming = "Upcoming functionality";
+
+        [Test]
+        public void ShouldAddManyMixins()
+        {
+            SpecHelper.ShouldEqual("several-mixins"); //PASS
+        }
 
         [Test]
         public void ShouldParseAccessors()

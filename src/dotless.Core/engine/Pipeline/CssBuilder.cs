@@ -20,6 +20,11 @@ namespace dotless.Core.engine.Pipeline
 {
     public class CssBuilder : ICssBuilder
     {
+        /// <summary>
+        /// Takes a CssDocument and returns the CSS output
+        /// </summary>
+        /// <param name="document"></param>
+        /// <returns></returns>
         public string ToCss(CssDocument document)
         {
             var stringBuilder  = new StringBuilder();
@@ -34,6 +39,11 @@ namespace dotless.Core.engine.Pipeline
             return stringBuilder.ToString();
         }
 
+        /// <summary>
+        /// Get ruleset string i.e. "a .hello, d.test"
+        /// </summary>
+        /// <param name="ruleset"></param>
+        /// <returns></returns>
         private static string GetRuleSetString(IList<CssElement> ruleset)
         {
             var setContent = new StringBuilder(ruleset[0].Identifiers);
@@ -43,6 +53,11 @@ namespace dotless.Core.engine.Pipeline
             return setContent.ToString();
         }
 
+        /// <summary>
+        /// Build properties css string
+        /// </summary>
+        /// <param name="properties"></param>
+        /// <returns></returns>
         private static string GetPropertyString(ICollection<CssProperty> properties)
         {
             var propertyStringBuilder = new StringBuilder();
@@ -58,6 +73,11 @@ namespace dotless.Core.engine.Pipeline
             return propertyStringBuilder.ToString();
         }
 
+        /// <summary>
+        /// Now we have a simplified CSS model, grouping is simply a matter of comparing properties
+        /// </summary>
+        /// <param name="elements"></param>
+        /// <returns></returns>
         private IList<IList<CssElement>> GroupElements(IList<CssElement> elements)
         {
             var groupedElements = new List<IList<CssElement>>();
