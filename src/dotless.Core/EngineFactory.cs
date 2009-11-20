@@ -20,7 +20,9 @@ namespace dotless.Core
     {
         public ILessEngine GetEngine(DotlessConfiguration configuration)
         {
-            ILessEngine engine = new LessEngine();
+            //TODO: Resolve engine via IoC using Daniels "Pandora" container
+            //ILessEngine engine = new LessEngine();
+            ILessEngine engine = new AltLessEngine();
             if (configuration.MinifyOutput)
                 engine = new MinifierDecorator(engine);
             return engine;

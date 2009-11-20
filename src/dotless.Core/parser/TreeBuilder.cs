@@ -114,7 +114,7 @@ namespace dotless.Core.parser
 
             if(File.Exists(path))
             {
-                var engine = new Engine(File.ReadAllText(path), null);
+                var engine = new EngineImpl(File.ReadAllText(path), null);
                 return engine.Parse().Root.Rules; 
             }
             return new List<INode>();
@@ -423,14 +423,39 @@ namespace dotless.Core.parser
             foreach (var el in Selectors(node.child_, els => StandardSelectors(element, els)))
                 Primary(node.child_.next_, el);
         }
-
-        private void Mixin(PegNode node, Element element)
+        /// <summary>
+        /// TODO: Added quick fix for multipule mixins, but need to add mixins with variables which will changes things a bit
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="element"></param>
+        private void OldMixin(PegNode node, Element element)
         {
             var root = element.GetRoot();
             foreach (var el in Selectors(node.child_, els => els))
                 root = root.Descend(el.Selector, el);
             if (root.Rules != null) element.Rules.AddRange(root.Rules);
         }
+        private void Mixin(PegNode node, Element element)
+        {
+            var root = element.GetRoot();
+            var rules = new List<INode>();
+            var selectors = Selectors(node.child_, els => els);
+            if (selectors.Count() > 1)
+            {
+                foreach (var el in selectors)
+                    root = root.Descend(el.Selector, el);
+                if (root.Rules != null) element.Rules.AddRange(root.Rules); 
+            }
+            else
+            {
+                var el = selectors.First();
+                foreach (var mixinElement in root.Nearests(el.Name))
+                {
+                    if (mixinElement.Rules != null) rules.AddRange(mixinElement.Rules);
+                }
+                element.Rules.AddRange(rules);
+            }
+ }
 
         /// <summary>
         /// standard_ruleset: ws selectors [{] ws primary ws [}] ws;

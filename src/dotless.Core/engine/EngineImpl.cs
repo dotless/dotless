@@ -21,7 +21,7 @@ namespace dotless.Core.engine
     using exceptions;
     using parser;
 
-    public class Engine
+    public class EngineImpl
     {
         private readonly nLess.nLess _parser;  
         private string css = "";
@@ -43,21 +43,21 @@ namespace dotless.Core.engine
 
         internal Element Root;
         
-        public Engine(string less) : this(less, Console.Out){}
-        public Engine(string less, TextWriter errorOut)
+        public EngineImpl(string less) : this(less, Console.Out){}
+        public EngineImpl(string less, TextWriter errorOut)
         {
             this.less = less;
             _parser = new nLess.nLess(less, errorOut);
         }
-        public Engine Parse()
+        public EngineImpl Parse()
         {
             return Parse(false);
         }
-        public Engine Parse(bool showTree)
+        public EngineImpl Parse(bool showTree)
         {
             return Parse(showTree, new Element());
         }
-        internal Engine Parse(bool showTree, Element env)
+        internal EngineImpl Parse(bool showTree, Element env)
         {
             var matches = _parser.Parse();
             if(!matches) throw new ParsingException("FAILURE: Parser did not match input file");

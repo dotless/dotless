@@ -28,19 +28,19 @@ namespace dotless.Test.PointInTime
         [Test]
         public void Parse_Test_Data_And_Output_Tree()
         {
-            var engine = new Engine(File.ReadAllText(@"PointInTime/TestData.less"), Console.Out);
+            var engine = new EngineImpl(File.ReadAllText(@"PointInTime/TestData.less"), Console.Out);
             Console.Write(engine.Parse(true).Css);
         }
         [Test]
         public void Parse_Test_Data()
         {
-            var engine = new Engine(File.ReadAllText(@"PointInTime/TestData.less"), Console.Out);
+            var engine = new EngineImpl(File.ReadAllText(@"PointInTime/TestData.less"), Console.Out);
             Console.Write(engine.Parse().Css);
         }
         [Test]
         public void AltEngine_Parse_Test_Data()
         {
-            var engine = new AltEngine(File.ReadAllText(@"PointInTime/TestData.less"));
+            var engine = new AltEngineImpl(File.ReadAllText(@"PointInTime/TestData.less"));
             Console.Write(engine.Css);
         }
     }

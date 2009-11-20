@@ -340,7 +340,7 @@ namespace dotless.Core.engine
 
 
         /// <summary>
-        /// Lol, I dont understand this code
+        /// Decend through
         /// </summary>
         /// <param name="selector"></param>
         /// <param name="element"></param>
@@ -379,6 +379,18 @@ namespace dotless.Core.engine
             if (node == null)  throw new VariableNameException(ident);
             return node;
         }
+        public IList<Element> Nearests(string ident)
+        {
+            IList<Element> nodes = null;
+            foreach (var el in Path().Where(n => n is Element).Select(n => (Element)n))
+            {
+                var ary = ident.IsIdent() ? el.Elements.Select(n => (INode)n).ToList() : el.Variables.Select(n => (INode)n).ToList();
+                nodes = ary.Where(i => i.ToString() == ident).Select(e=>(Element)e).ToList();
+            }
+            //if (nodes == null || nodes.Count==0) throw new VariableNameException(ident);
+            return nodes;
+        }
+
         public T NearestAs<T>(string ident) { return (T) Nearest(ident); }
     }
 }
