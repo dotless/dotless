@@ -384,7 +384,7 @@ namespace dotless.Core.engine
             IList<Element> nodes = null;
             foreach (var el in Path().Where(n => n is Element).Select(n => (Element)n))
             {
-                var ary = ident.IsIdent() ? el.Elements.Select(n => (INode)n).ToList() : el.Variables.Select(n => (INode)n).ToList();
+                var ary = !ident.IsVariable() ? el.Elements.Select(n => (INode)n).ToList() : el.Variables.Select(n => (INode)n).ToList();
                 nodes = ary.Where(i => i.ToString() == ident).Select(e=>(Element)e).ToList();
             }
             //if (nodes == null || nodes.Count==0) throw new VariableNameException(ident);

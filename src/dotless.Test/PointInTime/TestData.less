@@ -1,10 +1,7 @@
-﻿.p {
-	padding: 20px;
-	color: purple;
-}
-.p{
-	color:red;
-}
-#header{
-	.p;
+﻿@color: red;
+
+div.mixin {float:left;}
+.mix-me-in{
+	div.mixin;
+	color: @color;
 }
