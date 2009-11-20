@@ -15,17 +15,13 @@
 namespace dotless.Core
 {
     using System.Web;
-    using configuration;
     using Microsoft.Practices.ServiceLocation;
 
     public class LessCssHttpHandler : IHttpHandler
     {
         public void ProcessRequest(HttpContext context)
         {
-            DotlessConfiguration dotlessConfiguration = new WebConfigConfigurationLoader().GetConfiguration();
-            dotlessConfiguration.MinifyOutput = true;
-            dotlessConfiguration.CacheEnabled = false;
-            IServiceLocator container = new ContainerFactory().GetContainer(dotlessConfiguration);
+            IServiceLocator container = new ContainerFactory().GetContainer();
             var handler = container.GetInstance<HandlerImpl>();
             handler.Execute();
         }

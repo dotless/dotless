@@ -14,8 +14,6 @@
 
 namespace dotless.Core
 {
-    using System.Web;
-    using System.Web.Caching;
     using Abstractions;
     using configuration;
     using Microsoft.Practices.ServiceLocation;
@@ -23,26 +21,29 @@ namespace dotless.Core
 
     public class ContainerFactory
     {
-        public IServiceLocator GetContainer(DotlessConfiguration configuration)
+        private static PandoraContainer _container;
+        private static readonly object LockObject = new object();
+        public IServiceLocator GetContainer()
         {
-            return new CommonServiceLocatorAdapter(CreateContainer(configuration));
+            if (_container == null)
+            {
+                lock (LockObject)
+                {
+                    if (_container == null)
+                    {
+                        DotlessConfiguration configuration = new WebConfigConfigurationLoader().GetConfiguration();
+                        _container = CreateContainer(configuration);
+                    }
+                }
+            }
+
+            return new CommonServiceLocatorAdapter(_container);
         }
 
         private PandoraContainer CreateContainer(DotlessConfiguration configuration)
         {
             var container = new PandoraContainer();
-            //ASP.NET Services
-            container.Register(p =>
-                                   {
-                                       p.Service<Cache>()
-                                           .Instance(HttpContext.Current.Cache);
-                                       p.Service<HttpServerUtility>()
-                                           .Instance(HttpContext.Current.Server);
-                                       p.Service<HttpRequest>()
-                                           .Instance(HttpContext.Current.Request);
-                                       p.Service<HttpResponse>()
-                                           .Instance(HttpContext.Current.Response);
-                                   });
+
             container.Register(p =>
                                    {
                                        p.Service<ICache>()
