@@ -20,10 +20,24 @@ namespace dotless.Test.Spec
 
     public class SpecHelper
     {
+        //TODO: Take this Hacky shit out
+        public enum EngineImpl
+        {
+            Engine = 1,
+            AltEngine = 2
+        }
+
+        public static EngineImpl Engine = EngineImpl.Engine;
         public static string Lessify(string fileName)
         {
             var file = Path.Combine("Spec/less", fileName + ".less");
-            return new Engine(File.ReadAllText(file)).Parse().Css.Replace("\r\n", "\n");
+            switch (Engine)
+            {
+                case EngineImpl.AltEngine:
+                    return new AltEngine(File.ReadAllText(file)).Css.Replace("\r\n", "\n");
+                default:
+                    return new Engine(File.ReadAllText(file)).Parse().Css.Replace("\r\n", "\n");
+            }
         }
         public static string Css(string fileName)
         {

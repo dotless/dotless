@@ -75,12 +75,6 @@ namespace dotless.Core.engine
             Add(node);
         }
 
-        //public static bool operator ==(Property property1, Property property2)
-        //{
-        //    return property1.ToString() == property2.ToString();
-        //}
-
-
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
@@ -88,7 +82,6 @@ namespace dotless.Core.engine
             if (obj.GetType() != typeof (Property)) return false;
             return Equals((Property) obj);
         }
-
 
         public virtual INode Evaluate()
         {

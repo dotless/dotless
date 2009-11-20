@@ -37,5 +37,11 @@ namespace dotless.Test.PointInTime
             var engine = new Engine(File.ReadAllText(@"PointInTime/TestData.less"), Console.Out);
             Console.Write(engine.Parse().Css);
         }
+        [Test]
+        public void AltEngine_Parse_Test_Data()
+        {
+            var engine = new AltEngine(File.ReadAllText(@"PointInTime/TestData.less"));
+            Console.Write(engine.Css);
+        }
     }
 }

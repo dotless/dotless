@@ -12,15 +12,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
+using dotless.Core.engine.CssNodes;
+using dotless.Core.engine.Pipeline;
+
 namespace dotless.Core.engine
 {
-
-    public interface ILessParser
+    public class AltEngine
     {
-        IPegNode ParseAST(string Src);
-    }
+        public Element LessDom { get; set; }
+        public CssDocument CssDom { get; set; }
+        public string Css { get; set; }
 
-    public interface IPegNode
-    {
+        /// <summary>
+        /// New engine impl
+        /// </summary>
+        /// <param name="source"></param>
+        public AltEngine(string source)
+        {
+            //Parse the source file and run any Less preprocessors set
+            LessDom = PipelineFactory.LessParser.Parse(source);
+            RunLessDomPreprocessors();
+
+            //Convert the LessDom to the CssDom and run any CSS Dom preprocessors set
+            CssDom = PipelineFactory.LessToCssDomConverter.BuildCssDocument(LessDom);
+            RunCssDomPreprocessors();
+
+            //Convert the CssDom to Css
+            Css = PipelineFactory.CssBuilder.ToCss(CssDom);
+        }
+
+        /// <summary>
+        /// Preprocess the Less document before it is sent to the Css converter
+        /// </summary>
+        private void RunLessDomPreprocessors()
+        {
+            if (PipelineFactory.LessDomPreprocessors != null)
+                foreach (var lessPreprocessor in PipelineFactory.LessDomPreprocessors)
+                    LessDom = lessPreprocessor.Process(LessDom);
+        }
+
+        /// <summary>
+        /// Preprocessing CSS Dom before its converted to Css
+        /// </summary>
+        private void RunCssDomPreprocessors()
+        {
+            if (PipelineFactory.CssDomPreprocessors != null)
+                foreach (var cssPreprocessor in PipelineFactory.CssDomPreprocessors)
+                    CssDom = cssPreprocessor.Process(CssDom);
+        }
+
     }
 }
