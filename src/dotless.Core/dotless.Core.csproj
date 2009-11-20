@@ -64,13 +64,11 @@
     <Compile Include="Abstractions\IRequest.cs" />
     <Compile Include="Abstractions\IResponse.cs" />
     <Compile Include="AspCacheDecorator.cs" />
-    <Compile Include="configuration\IConfigurationLoader.cs" />
     <Compile Include="configuration\WebConfigConfigurationLoader.cs" />
     <Compile Include="configuration\DotlessConfiguration.cs" />
     <Compile Include="configuration\DotlessConfigurationSectionHandler.cs" />
     <Compile Include="configuration\XmlConfigurationInterpreter.cs" />
     <Compile Include="ContainerFactory.cs" />
-    <Compile Include="EngineFactory.cs" />
     <Compile Include="engine\AltEngine.cs" />
     <Compile Include="engine\Pipeline\CssBuilder.cs" />
     <Compile Include="engine\CssNodes\CssDocument.cs" />

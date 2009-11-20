@@ -16,7 +16,7 @@ namespace dotless.Core.configuration
 {
     using System.Configuration;
 
-    public class WebConfigConfigurationLoader : IConfigurationLoader
+    public class WebConfigConfigurationLoader
     {
         public DotlessConfiguration GetConfiguration()
         {

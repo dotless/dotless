@@ -12,13 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
-namespace dotless.Core
+namespace dotless.Compiler
 {
-    using configuration;
+    using Core;
+    using Core.configuration;
 
     public class EngineFactory
     {
-        //TODO: This class is now obsolte
         public ILessEngine GetEngine(DotlessConfiguration configuration)
         {
             ILessEngine engine = new LessEngine();
