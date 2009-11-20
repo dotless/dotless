@@ -1,4 +1,4 @@
-/* created on 12/11/2009 21:58:59 from peg generator V1.0 using '' as input*/
+/* created on 20/11/2009 00:11:21 from peg generator V1.0 using '' as input*/
 
 using Peg.Base;
 using System;
@@ -90,11 +90,11 @@ namespace nLess
                   && s()
                   && Char(';') ) );
 		}
-        public bool import_url()    /*^^import_url : (expressions / string / url ) ;*/
+        public bool import_url()    /*^^import_url : ( string / url ) ;*/
         {
 
            return TreeNT((int)EnLess.import_url,()=>
-                    expressions() || @string() || url() );
+                    @string() || url() );
 		}
         public bool medias()    /*^^medias : [-a-z]+ (s ',' s [a-z]+)*;*/
         {
