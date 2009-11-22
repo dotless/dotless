@@ -5,7 +5,7 @@ To build simply execute psake.ps1.
 
 Possible build targets:
 * Clean = Removes all build artefacts
-* Build = Builds the main ElmsConnector library
+* Build = Builds the main dotless library
 * Test = Builds testproject and runs Unit tests using NUnit
 * Merge = Merges PegBase assembly into dotless release assembly
 * Release = (Default) Executes Build, Test, Merge and creates a release zip.
