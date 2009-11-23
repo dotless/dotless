@@ -61,5 +61,18 @@ namespace dotless.Test.Unit.Handler
 
             mock.AssertWasCalled(p => p.TransformToCss(lessFile));
         }
+
+        [Test]
+        public void WritesEngineOutputToResponse()
+        {
+            var mock = MockRepository.GenerateStub<IResponse>();
+            string output = "myCss";
+            engine.Stub(p => p.TransformToCss(null)).IgnoreArguments().Return(output);
+            var impl = new HandlerImpl(provider, request, mock, engine);
+
+            impl.Execute();
+
+            mock.AssertWasCalled(p => p.WriteCss(output));
+        }
     }
 }
