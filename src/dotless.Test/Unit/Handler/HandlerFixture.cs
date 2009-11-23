@@ -35,5 +35,18 @@ namespace dotless.Test.Unit.Handler
 
             mock.AssertWasCalled(p => p.MapPath(path));
         }
+
+        [Test]
+        public void RetrievesPathFromRequest()
+        {
+            var mock = MockRepository.GenerateMock<IRequest>();
+            string path = "abc";
+
+            var impl = new HandlerImpl(provider, mock, response, engine);
+
+            impl.Execute();
+
+            mock.AssertWasCalled(p => p.LocalPath);
+        }
     }
 }
