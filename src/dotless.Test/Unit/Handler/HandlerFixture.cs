@@ -48,5 +48,18 @@ namespace dotless.Test.Unit.Handler
 
             mock.AssertWasCalled(p => p.LocalPath);
         }
+
+        [Test]
+        public void CallsEngineWithFilePath()
+        {
+            var mock = MockRepository.GenerateMock<ILessEngine>();
+            string lessFile = "myLessfile.less";
+            provider.Stub(p => p.MapPath(null)).IgnoreArguments().Return(lessFile);
+            var impl = new HandlerImpl(provider, request, response, mock);
+
+            impl.Execute();
+
+            mock.AssertWasCalled(p => p.TransformToCss(lessFile));
+        }
     }
 }
