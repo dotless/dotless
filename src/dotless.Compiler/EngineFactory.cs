@@ -21,7 +21,7 @@ namespace dotless.Compiler
     {
         public ILessEngine GetEngine(DotlessConfiguration configuration)
         {
-            ILessEngine engine = new LessEngine();
+            ILessEngine engine = new AltLessEngine();
             if (configuration.MinifyOutput)
                 engine = new MinifierDecorator(engine);
             return engine;
