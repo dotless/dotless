@@ -14,6 +14,7 @@
 
 namespace dotless.Core.minifier
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -66,6 +67,7 @@ namespace dotless.Core.minifier
                         buffer = new List<char>();
                         break;
                     case '}':
+                        currentNode.AppendExpression(ExpressionBuilder.BuildExpression(buffer.ToArray()));
                         currentNode = currentNode.Parent;
                         break;
                     case '"':

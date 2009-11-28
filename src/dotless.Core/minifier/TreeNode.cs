@@ -14,6 +14,7 @@
 
 namespace dotless.Core.minifier
 {
+    using System;
     using System.Collections.Generic;
 
     public class TreeNode : ITreeNode
@@ -42,6 +43,7 @@ namespace dotless.Core.minifier
 
         public void AppendExpression(IExpression expression)
         {
+            if (expression == null) return;
             expressions.Add(expression);
         }
 
