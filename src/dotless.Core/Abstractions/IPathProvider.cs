@@ -23,16 +23,14 @@ namespace dotless.Core.Abstractions
 
     public class PathProvider : IPathProvider
     {
-        private readonly HttpServerUtility server;
-
-        public PathProvider(HttpServerUtility server)
-        {
-            this.server = server;
-        }
-
         public string MapPath(string path)
         {
-            return server.MapPath(path);
+            return GetServer().MapPath(path);
+        }
+
+        private static HttpServerUtility GetServer()
+        {
+            return HttpContext.Current.Server;
         }
     }
 }

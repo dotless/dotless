@@ -84,6 +84,8 @@ task Merge -depends Build {
     Rename-Item $filename $filename-partial.dll
     write-host "Executing ILMerge"
     & $lib_dir\ilmerge\ILMerge.exe $filename-partial.dll `
+        Pandora.dll `
+        Microsoft.Practices.ServiceLocation.dll `
         PegBase.dll `
         /out:$filename `
         /internalize `

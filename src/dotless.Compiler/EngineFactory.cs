@@ -12,18 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
-namespace dotless.Core.configuration
+namespace dotless.Compiler
 {
-    using System.Configuration;
+    using Core;
+    using Core.configuration;
 
-    public class ConfigurationLoader
+    public class EngineFactory
     {
-        public static DotlessConfiguration GetConfigurationFromWebconfig()
+        public ILessEngine GetEngine(DotlessConfiguration configuration)
         {
-            var webconfig = (DotlessConfiguration)ConfigurationManager.GetSection("dotless");
-            if (webconfig == null)
-                return new DotlessConfiguration();
-            return webconfig;
+            ILessEngine engine = new AltLessEngine();
+            if (configuration.MinifyOutput)
+                engine = new MinifierDecorator(engine);
+            return engine;
         }
     }
 }

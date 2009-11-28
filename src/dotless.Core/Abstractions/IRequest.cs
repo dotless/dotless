@@ -23,16 +23,14 @@ namespace dotless.Core.Abstractions
 
     public class Request : IRequest
     {
-        private readonly HttpRequest request;
-
-        public Request(HttpRequest request)
-        {
-            this.request = request;
-        }
-
         public string LocalPath
         {
-            get { return request.Url.LocalPath; }
+            get { return GetRequest().Url.LocalPath; }
+        }
+
+        private static HttpRequest GetRequest()
+        {
+            return HttpContext.Current.Request;
         }
     }
 }
