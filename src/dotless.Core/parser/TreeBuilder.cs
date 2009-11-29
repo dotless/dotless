@@ -262,10 +262,14 @@ namespace dotless.Core.parser
                     return Keyword(node);
                 case EnLess.function:
                     return Function(node);
+                case EnLess.cursors:
+                    return Cursors(node);
                 default:
                     return new Anonymous(node.GetAsString(Src));
             }
         }
+
+
 
         /// <summary>
         /// accessor: accessor_name '[' accessor_key ']'; 
@@ -347,6 +351,19 @@ namespace dotless.Core.parser
                         select (childNode.child_ ?? childNode).GetAsString(Src);
             return new FontFamily(fonts.ToArray());
         }
+
+        /// <summary>
+        /// cursor (s ',' s cursor)+  ;
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        private INode Cursors(PegNode node)
+        {
+            var set = from childNode in node.AsEnumerable()
+                        select (childNode.child_ ?? childNode).GetAsString(Src);
+            return new CursorSet(set.ToArray());
+        }
+
 
         /// <summary>
         /// number: '-'? [0-9]* '.' [0-9]+ / '-'? [0-9]+;

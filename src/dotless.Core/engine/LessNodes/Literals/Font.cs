@@ -57,4 +57,27 @@ namespace dotless.Core.engine
             return sb.ToString(0, sb.Length - 2);
         }
     }
+
+    public class CursorSet : Literal
+    {
+        internal Literal[] Set { get; set; }
+
+        public CursorSet(params string[] set)
+            : this(set.Select(f => new Literal(f)).ToArray())
+        {
+        }
+
+        public CursorSet(params Literal[] set)
+        {
+            Set = set;
+        }
+
+        public override string ToCss()
+        {
+            var sb = new StringBuilder();
+            foreach (var cursor in Set)
+                sb.AppendFormat("{0}, ", cursor.ToCss());
+            return sb.ToString(0, sb.Length - 2);
+        }
+    }
 }

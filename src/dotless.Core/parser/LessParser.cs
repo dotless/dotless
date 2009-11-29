@@ -15,6 +15,7 @@
 using System;
 using dotless.Core.engine;
 using dotless.Core.exceptions;
+using Peg.Base;
 
 namespace dotless.Core.parser
 {
@@ -24,6 +25,19 @@ namespace dotless.Core.parser
         {
             var parser = new nLess.nLess(source, Console.Out);
             if (!parser.Parse()) throw new ParsingException("FAILURE: Parser did not match input file");
+            return new TreeBuilder(parser.GetRoot(), source).Build();
+        }
+    }
+
+
+    public class LessTreePrinterParser : ILessParser
+    {
+        public Element Parse(string source)
+        {
+            var parser = new nLess.nLess(source, Console.Out);
+            if (!parser.Parse()) throw new ParsingException("FAILURE: Parser did not match input file");
+            new TreePrint(Console.Out, source, 60, new NodePrinter(parser).GetNodeName, false)
+                .PrintTree(parser.GetRoot(), 0, 0);
             return new TreeBuilder(parser.GetRoot(), source).Build();
         }
     }

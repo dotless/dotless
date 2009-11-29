@@ -1,4 +1,4 @@
-/* created on 20/11/2009 16:44:08 from peg generator V1.0 using '' as input*/
+/* created on 29/11/2009 15:08:08 from peg generator V1.0 using '' as input*/
 
 using Peg.Base;
 using System;
@@ -16,10 +16,10 @@ namespace nLess
                    argument= 26, element= 27, class_id= 28, attribute= 29, @class= 30, 
                    id= 31, tag= 32, select= 33, function= 34, function_name= 35, 
                    entity= 36, accessor= 37, accessor_name= 38, accessor_key= 39, 
-                   fonts= 40, font= 41, literal= 42, dimension_list= 43, keyword= 44, 
-                   @string= 45, dimension= 46, number= 47, unit= 48, color= 49, 
-                   rgb= 50, rgb_node= 51, hex= 52, WS= 53, ws= 54, s= 55, S= 56, 
-                   ns= 57};
+                   cursors= 40, cursor= 41, fonts= 42, font= 43, literal= 44, dimension_list= 45, 
+                   keyword= 46, @string= 47, dimension= 48, number= 49, unit= 50, 
+                   color= 51, rgb= 52, rgb_node= 53, hex= 54, WS= 55, ws= 56, s= 57, 
+                   S= 58, ns= 59};
       class nLess : PegCharParser 
       {
         
@@ -429,13 +429,14 @@ namespace nLess
            return TreeNT((int)EnLess.function_name,()=>
                 PlusRepeat(()=> (In('a','z', 'A','Z')||OneOf("-_")) ) );
 		}
-        public bool entity()    /*^^entity :  function / fonts / accessor / keyword  / variable / literal  ;*/
+        public bool entity()    /*^^entity :  fonts / cursors /  function /  accessor / keyword  / variable / literal  ;*/
         {
 
            return TreeNT((int)EnLess.entity,()=>
                   
-                     function()
-                  || fonts()
+                     fonts()
+                  || cursors()
+                  || function()
                   || accessor()
                   || keyword()
                   || variable()
@@ -462,6 +463,24 @@ namespace nLess
 
            return TreeNT((int)EnLess.accessor_key,()=>
                     @string() || variable() );
+		}
+        public bool cursors()    /*^^cursors : cursor (s ',' s cursor)+  ;*/
+        {
+
+           return TreeNT((int)EnLess.cursors,()=>
+                And(()=>  
+                     cursor()
+                  && PlusRepeat(()=>    
+                      And(()=>    s() && Char(',') && s() && cursor() ) ) ) );
+		}
+        public bool cursor()    /*^^cursor : [-a-zA-Z0-9]*  / url ;*/
+        {
+
+           return TreeNT((int)EnLess.cursor,()=>
+                  
+                     OptRepeat(()=>    
+                      (In('a','z', 'A','Z', '0','9')||OneOf("-")) )
+                  || url() );
 		}
         public bool fonts()    /*^^fonts : font (s ',' s font)+  ;*/
         {
