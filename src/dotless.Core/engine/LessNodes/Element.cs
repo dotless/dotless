@@ -12,11 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
+using System;
+
 namespace dotless.Core.engine
 {
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
     using exceptions;
     using utils;
 
@@ -25,14 +26,12 @@ namespace dotless.Core.engine
 
         public INode Parent { get; set; }
         public List<INode> Rules { get; set; }
-        public List<Element> Set { get; set; }
         public string Name { get; set; }
         public Selector Selector { get; set; }
 
         public Element(string name, string selector)
         {
             Rules = new List<INode>();
-            Set = new List<Element>(); 
             Name = name;
             Selector = selector!=null ? Selector.Get(selector) : Selector.Get("");
         }
@@ -41,10 +40,6 @@ namespace dotless.Core.engine
         {
         }
 
-        public Element() : this(string.Empty)
-        {
-        }
-       
         public Element Last
         {
             get
@@ -63,41 +58,35 @@ namespace dotless.Core.engine
         {
             get { return !IsId || !IsClass || !IsUniversal; }
         }
+        public bool IsClass
+        {
+            get { return Name.StartsWith("."); }
+        }
+        public bool IsId
+        {
+            get { return Name.StartsWith("#"); }
+        }
+        public bool IsUniversal
+        {
+            get { return Name == "*"; }
+        }
+        public bool IsRoot
+        {
+            get { return Parent == null; }
+        }
+        public bool IsEmpty
+        {
+            get { return Rules.Count() == 0; }
+        }
+        public bool IsLeaf
+        {
+            get { return Elements.Count() == 0; }
+        }
 
         public void Add(INode token)
         {
             token.Parent = this;
             Rules.Add(token);
-        }
-
-        public bool IsClass
-        {
-            get { return Name.StartsWith("."); }
-        }
-
-        public bool IsId
-        {
-            get { return Name.StartsWith("#"); }
-        }
-
-        public bool IsUniversal
-        {
-            get { return Name == "*"; }
-        }
-
-        public bool IsRoot
-        {
-            get { return Parent == null; }
-        }
-
-        public bool IsEmpty
-        {
-            get { return Rules.Count() == 0; }
-        }
-
-        public bool IsLeaf
-        {
-            get { return Elements.Count() == 0; }
         }
 
         public IList<Property> Identifiers
@@ -148,13 +137,6 @@ namespace dotless.Core.engine
             return els;
         }
 
-        private Element GetLeaf()
-        {
-            var els = this;
-            while (!els.IsLeaf)
-                els = els.First;
-            return els;
-        }
 
         /// <summary>
         /// Gets a specific node based upon its ToString value
@@ -181,15 +163,7 @@ namespace dotless.Core.engine
         }
         public T GetAs<T>(INode key) { return (T)Get(key); }
 
-        public override string ToString()
-        {
-            return IsRoot ? "*" : Name;
-        }
 
-        public virtual string ToCSharp()
-        {
-            return "";
-        }
 
         /// <summary>
         /// Path from node up the tree i.e. node-->parent-->parent-->parent-->root
@@ -230,114 +204,11 @@ namespace dotless.Core.engine
         /// Main entry point for the CSS conversion from the Tree
         /// </summary>
         /// <returns></returns>
+        [Obsolete("CSS rendering handled externally in CssBuilder.cs. We need to make all nodes act this way")]
         public virtual string ToCss()
         {
-            return ToCss(new List<string>());
+            return "";
         }
-
-        /// <summary>
-        /// Recursive call appending to the last generated CSS
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        internal string ToCss(ICollection<string> path)
-        {
-            if (!IsRoot){
-                path.Add(Selector.ToCss());
-                path.Add(Name);
-            }
-            var properties = new StringBuilder();
-            var singular = Properties.Count < 2;
-            foreach (var prop in Properties){
-                if (singular)
-                    properties.Append(string.Format(" {0} ", prop.ToCss()));
-                else
-                    properties.Append(string.Format("\r\n  {0}", prop.ToCss()));
-            }
-            if (!singular) properties.Append("\r\n");
-
-            var setArray = Set.Select(s => s.Name).ToArray();
-            var pathContent =  string.Join(string.Empty, path.Where(p => !string.IsNullOrEmpty(p)).ToArray());
-            pathContent = pathContent.StartsWith(" ") ? pathContent.Substring(1) : pathContent;
-            var setContent = new StringBuilder(pathContent);
-
-
-            foreach (var setItem in setArray)
-                setContent.AppendFormat(", {0}", setItem);
-
-            var propContent = string.Format(" {{{0}}}", properties);
-            var ruleset = properties.Length != 0 ? (setContent + propContent + "\r\n") : "";
-            return ruleset + GetChildCss(path);
-        }
-
-        private string GetChildCss(IEnumerable<string> path)
-        {
-            var css = new StringBuilder();
-            foreach(var element in Elements){
-                css.Append(element.ToCss(new List<string>(path)));
-            }
-            return css.ToString();
-        }
-
-
-        /// <summary>
-        /// Group together simmilar elements
-        /// </summary>
-        /// <returns></returns>
-        /// <remarks>TODO: This code was horrible in the Ruby version and its horrible here. Cant even remember how it works</remarks>
-        public Element Group()
-        {
-            var matched = false;
-            var stack = new Stack<Element>(Elements.Reverse());
-            var result = new List<Element>();
-
-            if(Elements.Count() == 0) return this;
-
-            foreach (var element in Elements){
-                var e = stack.First();
-                
-                if(!matched) result.Add(e);
-                matched = true;
-
-                if (stack.Count() > 1){
-                    for (var i = 1; i < stack.Count; i++ ){
-                        var ee = stack.ToArray()[i];
-                        if (ee.IsEquiv(e) && e.Elements.Count == 0){
-                            GetAs<Element>(e).Set.Add(ee);
-                            stack.Pop();
-                        }
-                        else{
-                            stack.Pop();
-                            matched = false;
-                            break;
-                        }
-                    }
-                }
-            }
-            var grpEls = Elements.Where(e => !result.Contains(e)).ToList();
-            if (grpEls.Count > 0){
-                foreach (var gpEl in grpEls)
-                    Rules.Remove(gpEl);
-            }
-            return this;
-        }
-
-
-        /// <summary>
-        /// Compares two elements 
-        /// </summary>
-        /// <param name="other"></param>
-        /// <returns></returns>
-        private bool IsEquiv(Element other)
-        {
-            var equiv = Rules.Count() == other.Rules.Count();
-            var differentToCss =
-                Rules.SelectMany(a => other.Rules, (a, b) => new {a, b})
-                    .Where(@t => @t.a.ToCss() != @t.b.ToCss())
-                    .Select(@t => @t.a);
-            return equiv && differentToCss.Count() == 0;
-        }
-
 
         /// <summary>
         /// Decend through
@@ -379,6 +250,7 @@ namespace dotless.Core.engine
             if (node == null)  throw new VariableNameException(ident);
             return node;
         }
+
         public IList<Element> Nearests(string ident)
         {
             IList<Element> nodes = null;
@@ -387,10 +259,19 @@ namespace dotless.Core.engine
                 var ary = !ident.IsVariable() ? el.Elements.Select(n => (INode)n).ToList() : el.Variables.Select(n => (INode)n).ToList();
                 nodes = ary.Where(i => i.ToString() == ident).Select(e=>(Element)e).ToList();
             }
-            //if (nodes == null || nodes.Count==0) throw new VariableNameException(ident);
+            if (nodes == null || nodes.Count==0) throw new VariableNameException(ident);
             return nodes;
         }
-
         public T NearestAs<T>(string ident) { return (T) Nearest(ident); }
+
+        public override string ToString()
+        {
+            return IsRoot ? "*" : Name;
+        }
+
+        public virtual string ToCSharp()
+        {
+            return "";
+        }
     }
 }
