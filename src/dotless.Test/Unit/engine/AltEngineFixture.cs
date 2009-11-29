@@ -67,12 +67,5 @@ namespace dotless.Test.Unit.engine
             Assert.AreEqual(5, engine.CssDom.Elements.Count);
         }
 
-        [Test]
-        public void Rand()
-        {
-            var fileName = Path.Combine("Spec/less", "operations.less");
-            var engine = new ExtensibleEngineImpl(File.ReadAllText(fileName));
-            Console.WriteLine(engine.Css);
-        }
     }
 }

@@ -94,9 +94,9 @@
     <Content Include="Spec\ExtensibleEngine\css\merge-same.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="Spec\ExtensibleEngine\css\selectors.less">
+    <Content Include="Spec\ExtensibleEngine\css\selectors.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
     <None Include="Spec\ExtensibleEngine\less\accessors.less">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
