@@ -1,0 +1,6 @@
+.a, .b, .c, .d, .e, .f, .g, .h, .i { color: white; }
+.j {
+  color: white;
+  white-space: pre;
+}
+.k { border: 2px solid black; }

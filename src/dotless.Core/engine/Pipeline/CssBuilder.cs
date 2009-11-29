@@ -73,20 +73,16 @@ namespace dotless.Core.engine.Pipeline
             return propertyStringBuilder.ToString();
         }
 
-        /// <summary>
-        /// Now we have a simplified CSS model, grouping is simply a matter of comparing properties
-        /// </summary>
-        /// <param name="elements"></param>
-        /// <returns></returns>
         private IList<IList<CssElement>> GroupElements(IList<CssElement> elements)
         {
             var groupedElements = new List<IList<CssElement>>();
-            while (elements.Count != 0){
+            while (elements.Count != 0)
+            {
                 var comparisonElement = elements[0];
                 var matchingElements = new List<CssElement> { comparisonElement };
-                elements.Remove(comparisonElement); 
+                elements.Remove(comparisonElement);
 
-                foreach(var el in new List<CssElement>(elements))
+                foreach (var el in new List<CssElement>(elements))
                 {
                     if (!comparisonElement.IsEquiv(el)) continue;
                     matchingElements.Add(el);

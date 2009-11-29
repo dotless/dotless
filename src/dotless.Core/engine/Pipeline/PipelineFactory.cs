@@ -61,7 +61,7 @@ namespace dotless.Core.engine.Pipeline
             }
         }
 
-        private static List<ICssDomPreprocessor> _cssDomPreprocessors = new List<ICssDomPreprocessor>();
+        private static List<ICssDomPreprocessor> _cssDomPreprocessors = new List<ICssDomPreprocessor>{ new CssPropertyMerger()};
         public static List<ICssDomPreprocessor> CssDomPreprocessors
         {
             get

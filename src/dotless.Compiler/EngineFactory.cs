@@ -12,6 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
+using Microsoft.Practices.ServiceLocation;
+
 namespace dotless.Compiler
 {
     using Core;
@@ -21,7 +23,10 @@ namespace dotless.Compiler
     {
         public ILessEngine GetEngine(DotlessConfiguration configuration)
         {
-            ILessEngine engine = new AltLessEngine();
+            //ILessEngine engine = new ExtensibleEngine();
+            IServiceLocator container = new ContainerFactory().GetContainer();
+            var engine = container.GetInstance<ILessEngine>();
+
             if (configuration.MinifyOutput)
                 engine = new MinifierDecorator(engine);
             return engine;

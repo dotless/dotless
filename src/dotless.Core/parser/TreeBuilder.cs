@@ -114,8 +114,8 @@ namespace dotless.Core.parser
 
             if(File.Exists(path))
             {
-                var engine = new EngineImpl(File.ReadAllText(path), null);
-                return engine.Parse().Root.Rules; 
+                var engine = new ExtensibleEngineImpl(File.ReadAllText(path));
+                return engine.LessDom.Rules;
             }
             return new List<INode>();
         }
