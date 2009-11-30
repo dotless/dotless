@@ -74,6 +74,24 @@ namespace dotless.Test.Unit.minifier
             Assert.AreEqual("1px solid red;", expression.Expression.Value);
         }
 
+        [Test]
+        public void CanHandleExpressionWithoutTrailingSemicolon()
+        {
+            var input = "font-size: 12px";
+            var expression = BuildExpression(input);
+
+            Assert.AreEqual("12px", expression.Expression.Value);
+        }
+
+        [Test]
+        public void CanHandleAbsoluteUrls()
+        {
+            var input = "background: url(http://www.example.com/blah)";
+            var expression = BuildExpression(input);
+
+            Assert.AreEqual("url(http://www.example.com/blah)", expression.Expression.Value);
+        }
+
         private IExpression BuildExpression(string input)
         {
             return new ExpressionBuilder().BuildExpression(input.ToCharArray());

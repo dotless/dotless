@@ -1,0 +1,1 @@
+p:not([class*="lead"]), a[href^="http://"], a[href$="http://"] { color: black; }

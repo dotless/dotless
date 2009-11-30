@@ -25,7 +25,7 @@ namespace dotless.Test.Unit.engine
         [Test]
         public void Can_Retrieve_Css_Dom()
         {
-            var engine = new AltEngineImpl(".outer .inner > a:Hover { background: red; }");
+            var engine = new ExtensibleEngineImpl(".outer .inner > a:Hover { background: red; }");
             Assert.AreEqual(1, engine.CssDom.Elements.Count);
             Assert.AreEqual(1, engine.CssDom.Elements[0].Properties.Count);
         }
@@ -33,28 +33,28 @@ namespace dotless.Test.Unit.engine
         [Test]
         public void Css_Dom_Should_Contain_Two_Elements_For_CSV_Props()
         {
-            var engine = new AltEngineImpl(".test, .trial{ background: red; }");
+            var engine = new ExtensibleEngineImpl(".test, .trial{ background: red; }");
             Assert.AreEqual(2, engine.CssDom.Elements.Count);
         }
 
         [Test]
         public void Css_Dom_Should_Contain_One_Elements_For_Nested_Element_With_No_Props()
         {
-            var engine = new AltEngineImpl(".outer{ .inner { background: red; } }");
+            var engine = new ExtensibleEngineImpl(".outer{ .inner { background: red; } }");
             Assert.AreEqual(1, engine.CssDom.Elements.Count);
         }
 
         [Test]
         public void Css_Dom_Should_Contain_Two_Elements_For_Nested_Element_With_Props()
         {
-            var engine = new AltEngineImpl(".outer{ background: blue; .inner { background: red; } }");
+            var engine = new ExtensibleEngineImpl(".outer{ background: blue; .inner { background: red; } }");
             Assert.AreEqual(2, engine.CssDom.Elements.Count);
         }
 
         [Test]
         public void Css_Dom_Should_Contain_Four_Elements_For_Nested_Element_With_Props()
         {
-            var engine = new AltEngineImpl(@".outer{ .inner { background: red; }  background: blue;}
+            var engine = new ExtensibleEngineImpl(@".outer{ .inner { background: red; }  background: blue;}
                                          .outerb{ .innerb { background: red; } background: blue; }");
             Assert.AreEqual(4, engine.CssDom.Elements.Count);
         }
@@ -62,17 +62,10 @@ namespace dotless.Test.Unit.engine
         [Test]
         public void Css_Dom_Should_Contain_Five_Elements_For_Nested_Element_With_Props()
         {
-            var engine = new AltEngineImpl(@".outer{ background: blue; .inner { background: red; } }
+            var engine = new ExtensibleEngineImpl(@".outer{ background: blue; .inner { background: red; } }
                                          .outerb{ background: blue; .innerb { background: red; } .innerc { background: red; }}");
             Assert.AreEqual(5, engine.CssDom.Elements.Count);
         }
 
-        [Test]
-        public void Rand()
-        {
-            var fileName = Path.Combine("Spec/less", "operations.less");
-            var engine = new AltEngineImpl(File.ReadAllText(fileName));
-            Console.WriteLine(engine.Css);
-        }
     }
 }

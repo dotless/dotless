@@ -14,24 +14,15 @@
 
 namespace dotless.Core
 {
-    using System;
     using System.IO;
     using engine;
 
-    public class LessEngine : ILessEngine
-    {
-        public string TransformToCss(string filename)
-        {
-            var engineImpl = new EngineImpl(File.ReadAllText(filename), Console.Out);
-            return engineImpl.Parse().Css;
-        }
-    }
 
-    public class AltLessEngine : ILessEngine
+    public class ExtensibleEngine : ILessEngine
     {
         public string TransformToCss(string filename)
         {
-            var engineImpl = new AltEngineImpl(File.ReadAllText(filename));
+            var engineImpl = new ExtensibleEngineImpl(File.ReadAllText(filename));
             return engineImpl.Css;
         }
     }

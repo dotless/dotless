@@ -50,56 +50,5 @@ namespace dotless.Test.Unit.engine
             e2.Add(e3);
             Assert.That(e3.Path().Contains(element));
         }
-
-        [Test]
-        public void CanRetrieveNearestElement()
-        {
-            var root = new Element();
-            var e2 = new Element("E2", ">");
-            var e3 = new Element("#yahoo");
-            var e1 = new Element(".hello");
-            var e1_sibling = new Element(".goodbye");
-            var e1_siblingb = new Element(".helloAgain");
-            root.Add(e1);
-            root.Add(e1_sibling);
-            root.Add(e1_siblingb);
-            root.Add(new Variable("@RootVariable", new Color(1, 1, 1)));
-            e1.Add(e2);
-            e2.Add(e3);
-            e2.Add(new Variable("@Variable", new Color(1, 1, 1)));
-            e2.Add(new Variable("@NumVariable", new Number(10)));
-            var nearestEl = e3.Nearest("@Variable");
-            Assert.AreEqual(nearestEl.ToString(), "@Variable");
-
-            //TODO: Remove this nonsense it isnt a test its just to see ToCSS output 
-            var nodes = new List<INode>
-                            {
-                                new Variable("@Variable", new Color(1, 1, 1)),
-                                new Operator("+"),
-                                new Number(2)
-                            };
-            e1.Add(new Property("color", nodes));
-            e1_sibling.Add(new Property("color", nodes));
-            e1_siblingb.Add(new Property("color", nodes));
-            var nodesb = new List<INode>
-                             {
-                                 new Number("px", 4),
-                                 new Operator("*"),
-                                 new Variable("@NumVariable")
-                             };
-
-
-
-            e2.Add(new Property("padding", nodesb));
-
-            var nodesc = new List<INode>
-                             {
-                                 new Variable("@RootVariable", new Color(1, 1, 1)),
-                                 new Operator("+"),
-                                 new Variable("@Variable", new Color(1, 1, 1))
-                             };
-            e3.Add(new Property("background-color", nodesc));
-            Console.WriteLine(root.Group().ToCss());
-        }
     }
 }

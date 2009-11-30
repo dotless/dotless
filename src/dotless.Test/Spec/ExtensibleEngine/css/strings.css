@@ -1,5 +1,5 @@
 #strings {
-  background-image: url("http://son-of-a-banana.com");
+  background-image: URL("http://son-of-a-banana.com");
   quotes: "~" "~";
   content: "#*%:&^,)!.(~*})";
   empty: "";

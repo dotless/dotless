@@ -38,10 +38,12 @@ ruleset : standard_ruleset / mixin_ruleset;
 ^^function_name: [-a-zA-Z_]+;
 
 //******************************************** Entity
-^^entity :  function / fonts / accessor / keyword  / variable / literal  ;
+^^entity :  fonts / cursors /  function /  accessor / keyword  / variable / literal  ;
 ^^accessor: accessor_name '[' accessor_key ']'; 
 ^^accessor_name: (class_id / tag) ; 
 ^^accessor_key: (string / variable) ; 
+^^cursors : cursor (s ',' s cursor)+  ;
+^^cursor : [-a-zA-Z0-9]*  / url ;
 ^^fonts : font (s ',' s font)+  ;
 ^^font: [a-zA-Z] [-a-zA-Z0-9]* / string  ;
 ^^literal: color / dimension_list / number unit / string ;

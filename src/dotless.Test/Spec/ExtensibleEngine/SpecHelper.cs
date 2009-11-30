@@ -12,36 +12,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
-namespace dotless.Test.Spec
-{
-    using System.IO;
-    using Core.engine;
-    using NUnit.Framework;
+using System.IO;
+using dotless.Core.engine;
 
+namespace dotless.Test.Spec.ExtensibleEngine
+{
     public class SpecHelper
     {
-        //TODO: Take this Hacky shit out
-        public enum EngineImpl
-        {
-            Engine = 1,
-            AltEngine = 2
-        }
-
-        public static EngineImpl Engine = EngineImpl.Engine;
         public static string Lessify(string fileName)
         {
-            var file = Path.Combine("Spec/less", fileName + ".less");
-            switch (Engine)
-            {
-                case EngineImpl.AltEngine:
-                    return new AltEngineImpl(File.ReadAllText(file)).Css.Replace("\r\n", "\n");
-                default:
-                    return new Core.engine.EngineImpl(File.ReadAllText(file)).Parse().Css.Replace("\r\n", "\n");
-            }
+            var file = Path.Combine("Spec/ExtensibleEngine/less", fileName + ".less");
+            return new ExtensibleEngineImpl(File.ReadAllText(file)).Css.Replace("\r\n", "\n");
         }
         public static string Css(string fileName)
         {
-            var file = Path.Combine("Spec/css", fileName + ".css");
+            var file = Path.Combine("Spec/ExtensibleEngine/css", fileName + ".css");
             return File.ReadAllText(file).Replace("\r\n", "\n");
         }
 
@@ -50,14 +35,6 @@ namespace dotless.Test.Spec
             var less = Lessify(filename);
             var css = Css(filename);
             css.ShouldEqual(less, string.Format("|{0}| != |{1}|", less, css));
-        }
-    }
-
-    internal static class SpecExtensions
-    {
-        public static void ShouldEqual(this string a, string b, string assertionFailedMessage)
-        {
-            Assert.AreEqual(a.ToLower(), b.ToLower());
         }
     }
 }

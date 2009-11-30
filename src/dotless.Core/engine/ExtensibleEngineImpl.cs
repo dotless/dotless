@@ -17,7 +17,7 @@ using dotless.Core.engine.Pipeline;
 
 namespace dotless.Core.engine
 {
-    public class AltEngineImpl
+    public class ExtensibleEngineImpl
     {
         public Element LessDom { get; set; }
         public CssDocument CssDom { get; set; }
@@ -27,7 +27,7 @@ namespace dotless.Core.engine
         /// New engine impl
         /// </summary>
         /// <param name="source"></param>
-        public AltEngineImpl(string source)
+        public ExtensibleEngineImpl(string source)
         {
             //Parse the source file and run any Less preprocessors set
             LessDom = PipelineFactory.LessParser.Parse(source);

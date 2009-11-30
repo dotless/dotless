@@ -26,21 +26,10 @@ namespace dotless.Test.PointInTime
     public class PointInTimeFixture
     {
         [Test]
-        public void Parse_Test_Data_And_Output_Tree()
-        {
-            var engine = new EngineImpl(File.ReadAllText(@"PointInTime/TestData.less"), Console.Out);
-            Console.Write(engine.Parse(true).Css);
-        }
-        [Test]
-        public void Parse_Test_Data()
-        {
-            var engine = new EngineImpl(File.ReadAllText(@"PointInTime/TestData.less"), Console.Out);
-            Console.Write(engine.Parse().Css);
-        }
-        [Test]
         public void AltEngine_Parse_Test_Data()
         {
-            var engine = new AltEngineImpl(File.ReadAllText(@"PointInTime/TestData.less"));
+           // PipelineFactory.LessParser = new LessTreePrinterParser();
+            var engine = new ExtensibleEngineImpl(File.ReadAllText(@"PointInTime/TestData.less"));
             Console.Write(engine.Css);
         }
     }

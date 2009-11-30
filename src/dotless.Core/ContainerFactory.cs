@@ -12,6 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
+using System.Web;
+
 namespace dotless.Core
 {
     using Abstractions;
@@ -57,7 +59,7 @@ namespace dotless.Core
                                    });
             container.Register(p =>
                                    {
-                                       if (configuration.CacheEnabled)
+                                       if (configuration.CacheEnabled & HttpContext.Current!=null)
                                        {
                                            p.Service<ILessEngine>()
                                                .Implementor<AspCacheDecorator>();
@@ -68,7 +70,7 @@ namespace dotless.Core
                                                .Implementor<MinifierDecorator>();
                                        }
                                        p.Service<ILessEngine>()
-                                           .Implementor<AltLessEngine>();
+                                           .Implementor<ExtensibleEngine>();
                                    });
             return container;
         }

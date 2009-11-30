@@ -7,16 +7,15 @@
     <link href="../../Content/Site.less" rel="stylesheet" type="text/css" />
 </head>
 <body>
-    <div id="page">
-        <div id="header">
+        <div id="header" class="container">
             <div id="title">
-                Sparkwise here...
+                <h1>APPLICATION NAME</h1>
             </div>
             <div id="logindisplay">
-                Login
+                LOGIN AND DISPLAY
             </div>
             <div id="menucontainer">
-                Menu | Menu | Menu | Menu 
+                MENU CONTAINER
             </div>
         </div>
     

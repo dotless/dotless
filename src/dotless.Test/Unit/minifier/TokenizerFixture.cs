@@ -137,6 +137,24 @@ namespace dotless.Test.Unit.minifier
             Assert.AreEqual("0 auto -168px", tree.Expressions.First().Expression.Value);
         }
 
+        [Test]
+        public void CanHandleMissingTralingSemicolon()
+        {
+            var input = "body { font-size: 12px }";
+            ITreeNode tree = BuildTree(input);
+
+            Assert.AreEqual("12px", tree.Children.First().Expressions.First().Expression.Value);
+        }
+
+        [Test]
+        public void CanTokenizeAbsoluteUrls()
+        {
+            var input = "background: url(http://www.example.com/blah);";
+            var tree = BuildTree(input);
+
+            Assert.AreEqual("url(http://www.example.com/blah)", tree.Expressions.First().Expression.Value);
+        }
+
         private ITreeNode BuildTree(string input)
         {
             var tokenizer = new Tokenizer();

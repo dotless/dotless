@@ -12,112 +12,114 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
-namespace dotless.Test.Spec
-{
-    using NUnit.Framework;
+using NUnit.Framework;
 
+namespace dotless.Test.Spec.ExtensibleEngine
+{
     [TestFixture]
     public class SpecEngine
     {
         private const string Upcoming = "Upcoming functionality";
 
         [Test]
-        public void ShouldAddManyMixins()
-        {
-            SpecHelper.ShouldEqual("several-mixins"); //PASS
-        }
-
-        [Test]
         public void ShouldParseAccessors()
         {
-            SpecHelper.ShouldEqual("accessors"); //PASS
+            SpecHelper.ShouldEqual("accessors"); 
         }
-        [Test, Ignore(Upcoming)]
+        [Test]
         public void ShouldGroupSelectorsWhenItCan()
         {
-            SpecHelper.ShouldEqual("selectors"); //IGNORE
+            SpecHelper.ShouldEqual("selectors"); 
         }
         [Test]
         public void ShouldParseABigFile()
         {
-            SpecHelper.ShouldEqual("big"); //PASS
+            SpecHelper.ShouldEqual("big"); 
         }
         [Test]
         public void ShouldHandleComplexColorOperations()
         {
-            SpecHelper.ShouldEqual("colors"); //PASS
+            SpecHelper.ShouldEqual("colors"); 
         }
         [Test]
         public void ShouldParseComments()
         {
-            SpecHelper.ShouldEqual("comments"); //PASS
+            SpecHelper.ShouldEqual("comments"); 
         }
         [Test]
         public void ShouldParseCss3()
         {
-            SpecHelper.ShouldEqual("css-3"); //PASS
+            SpecHelper.ShouldEqual("css-3"); 
         }
         [Test]
         public void ShouldParseCss()
         {
-            SpecHelper.ShouldEqual("css"); //PASS
+            SpecHelper.ShouldEqual("css"); 
         }
         [Test, Ignore(Upcoming)]
         public void ShouldHandleSomeFunctions()
         {
-            SpecHelper.ShouldEqual("functions"); //IGNORE
-        }   
+            SpecHelper.ShouldEqual("functions"); 
+        }
         [Test]
         public void ShouldWorkWithImport()
         {
-            SpecHelper.ShouldEqual("import"); //PASS
+            SpecHelper.ShouldEqual("import"); 
         }
         [Test]
         public void ShouldEvaluateVariablesLazily()
         {
-            SpecHelper.ShouldEqual("lazy-eval"); //PASS
+            SpecHelper.ShouldEqual("lazy-eval"); 
         }
         [Test, Ignore(Upcoming)]
         public void ShouldParseMixins()
         {
-            SpecHelper.ShouldEqual("mixins"); //IGNORE
+            //Comma seperated mixins not working
+            SpecHelper.ShouldEqual("mixins"); 
         }
         [Test, Ignore(Upcoming)]
         public void ShouldParseMixinsWithArguments()
         {
-            SpecHelper.ShouldEqual("mixins-args"); //IGNORE
+            SpecHelper.ShouldEqual("mixins-args"); 
         }
         [Test]
         public void ShouldParseOperations()
         {
-            SpecHelper.ShouldEqual("operations"); //PASS
+            SpecHelper.ShouldEqual("operations"); 
         }
         [Test]
         public void ShouldParseNestedRules()
         {
-            SpecHelper.ShouldEqual("rulesets"); //PASS
+            SpecHelper.ShouldEqual("rulesets"); 
         }
         [Test]
         public void ShouldManageScope()
         {
-            SpecHelper.ShouldEqual("scope"); //PASS
-        } 
+            SpecHelper.ShouldEqual("scope"); 
+        }
         [Test]
         public void ShouldManageStrings()
         {
-             SpecHelper.ShouldEqual("strings"); //PASS
-        } 
+            SpecHelper.ShouldEqual("strings"); 
+        }
         [Test]
         public void ShouldManageVariables()
         {
-            SpecHelper.ShouldEqual("variables"); //PASS
+            SpecHelper.ShouldEqual("variables"); 
         }
-        [Test, Ignore(Upcoming)]
+        [Test]
         public void ShouldManageWhitespace()
         {
-            SpecHelper.ShouldEqual("whitespace"); //IGNORE
+            //NOTE: Change this test from original as it was testing rouping and whitespace, which is wrong!
+            //See ShouldMergeSameElement for grouping tests
+            SpecHelper.ShouldEqual("whitespace"); 
         }
 
+        [Test, Ignore(Upcoming)]
+        public void ShouldMergeSameElement()
+        {
+            SpecHelper.ShouldEqual("merge-same");
+        }
         [Test]
         public void ShouldManageNamespacedMixins()
         {
