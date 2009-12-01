@@ -23,13 +23,8 @@ namespace dotless.Compiler
     {
         public ILessEngine GetEngine(DotlessConfiguration configuration)
         {
-            //ILessEngine engine = new ExtensibleEngine();
-            IServiceLocator container = new ContainerFactory().GetContainer();
-            var engine = container.GetInstance<ILessEngine>();
-
-            if (configuration.MinifyOutput)
-                engine = new MinifierDecorator(engine);
-            return engine;
+            IServiceLocator container = new ContainerFactory().GetCoreContainer(configuration);
+            return container.GetInstance<ILessEngine>();
         }
     }
 }

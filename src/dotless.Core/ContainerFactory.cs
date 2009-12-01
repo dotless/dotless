@@ -25,6 +25,7 @@ namespace dotless.Core
     {
         private static PandoraContainer _container;
         private static readonly object LockObject = new object();
+
         public IServiceLocator GetContainer()
         {
             if (_container == null)
@@ -42,10 +43,30 @@ namespace dotless.Core
             return new CommonServiceLocatorAdapter(_container);
         }
 
-        private PandoraContainer CreateContainer(DotlessConfiguration configuration)
+        public IServiceLocator GetCoreContainer(DotlessConfiguration configuration)
+        {
+            return new CommonServiceLocatorAdapter(CreateCore(configuration));
+        }
+
+        private PandoraContainer CreateCore(DotlessConfiguration configuration)
         {
             var container = new PandoraContainer();
+            container.Register(p =>
+                                   {
+                                       if (configuration.MinifyOutput)
+                                       {
+                                           p.Service<ILessEngine>()
+                                               .Implementor<MinifierDecorator>();
+                                       }
+                                       p.Service<ILessEngine>()
+                                           .Implementor<ExtensibleEngine>();
+                                   });
+            return container;
+        }
 
+        private PandoraContainer CreateContainer(DotlessConfiguration configuration)
+        {
+            PandoraContainer container = CreateCore(configuration);
             container.Register(p =>
                                    {
                                        p.Service<ICache>()
@@ -59,18 +80,11 @@ namespace dotless.Core
                                    });
             container.Register(p =>
                                    {
-                                       if (configuration.CacheEnabled & HttpContext.Current!=null)
+                                       if (configuration.CacheEnabled)
                                        {
                                            p.Service<ILessEngine>()
                                                .Implementor<AspCacheDecorator>();
                                        }
-                                       if (configuration.MinifyOutput)
-                                       {
-                                           p.Service<ILessEngine>()
-                                               .Implementor<MinifierDecorator>();
-                                       }
-                                       p.Service<ILessEngine>()
-                                           .Implementor<ExtensibleEngine>();
                                    });
             return container;
         }
