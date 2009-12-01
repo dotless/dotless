@@ -38,7 +38,7 @@ namespace dotless.Core.minifier
 
         public static string RemoveComments(string input)
         {
-            Regex regex = CreateRegex("//(.)*$");
+            Regex regex = CreateRegex("(?<!:)//(.)*$");
             return regex.Replace(input, "");
         }
 
