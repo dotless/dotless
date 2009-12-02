@@ -43,6 +43,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\PegSamples.dll</HintPath>
     </Reference>
+    <Reference Include="Rhino.Mocks, Version=3.6.0.0, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Rhino.Mocks\Rhino.Mocks.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -72,6 +76,7 @@
     <Compile Include="Unit\engine\LessNodes\Literals\StringFixture.cs" />
     <Compile Include="Unit\engine\LessNodes\Literals\NumberFixtures.cs" />
     <Compile Include="Unit\engine\LessNodes\PropertyFixture.cs" />
+    <Compile Include="Unit\Handler\HandlerFixture.cs" />
     <Compile Include="Unit\minifier\CleanerFixture.cs" />
     <Compile Include="Unit\minifier\DescriptorBuilderFixture.cs" />
     <Compile Include="Unit\minifier\ExpressionBuilderFixture.cs" />

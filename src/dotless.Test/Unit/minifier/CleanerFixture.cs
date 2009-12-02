@@ -171,5 +171,26 @@ outline: 1px solid red;
 
             Assert.AreEqual(desiredOutput, output);
         }
+
+        [Test]
+        public void ProcessorCanHandleUrls()
+        {
+            string input = "body { background: url(http://www.google.com/); }";
+            string desiredOutput = "body{background:url(http://www.google.com/);}";
+            var processor = new Processor(input);
+            char[] output = processor.Output;
+
+            Assert.AreEqual(desiredOutput, output);
+        }
+
+        [Test]
+        public void CommentRemoverCanHandleUrls()
+        {
+            string input = "body { background: url(http://www.google.com/); }";
+            string desiredOutput = "body { background: url(http://www.google.com/); }";
+            string output = WhiteSpaceFilter.RemoveComments(input);
+
+            Assert.AreEqual(desiredOutput, output);
+        }
     }
 }
