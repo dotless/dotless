@@ -12,6 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
+using dotless.Core.engine.Pipeline;
+using dotless.Core.parser;
+
 namespace dotless.Test.PointInTime
 {
     using System;
@@ -28,7 +31,7 @@ namespace dotless.Test.PointInTime
         [Test]
         public void AltEngine_Parse_Test_Data()
         {
-           // PipelineFactory.LessParser = new LessTreePrinterParser();
+            //PipelineFactory.LessParser = new LessTreePrinterParser();
             var engine = new ExtensibleEngineImpl(File.ReadAllText(@"PointInTime/TestData.less"));
             Console.Write(engine.Css);
         }

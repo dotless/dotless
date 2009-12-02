@@ -180,7 +180,7 @@ namespace dotless.Core.parser
                 switch (node.id_.ToEnLess())
                 {
                     case EnLess.@operator:
-                        yield return new Operator(node.GetAsString(Src));
+                        yield return new Operator(node.GetAsString(Src), element);
                         break;
                     case EnLess.expression:
                         yield return Expression(node.child_, element);
@@ -228,9 +228,11 @@ namespace dotless.Core.parser
             switch (node.id_.ToEnLess())
             {
                 case EnLess.expressions:
-                    return new Expression(Expressions(node, element));
+                    return new Expression(Expressions(node, element), element);
                 case EnLess.entity:
-                    return Entity(node.child_, element);
+                    var entity  = Entity(node.child_, element);
+                    entity.Parent = element;
+                    return entity;
                 default:
                     throw new ParsingException("Expression should either be child expressions or an entity");
             }

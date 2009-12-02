@@ -40,8 +40,8 @@ namespace dotless.Core.engine.Pipeline
                 if(element.Properties.Count !=0 )
                 {
                     var cssProperties = new List<CssProperty>();
-                    foreach (var properties in element.Properties)
-                        cssProperties.Add(new CssProperty(properties.Key, properties.Value.Evaluate().ToCss()));
+                    foreach (var property in element.Properties)
+                        cssProperties.Add(new CssProperty(property.Key, property.Evaluate().ToCss()));
 
                     //Get path content i.e. "p > a:Hover"
                     var pathContent = string.Join(string.Empty, path.Where(p => !string.IsNullOrEmpty(p)).ToArray());

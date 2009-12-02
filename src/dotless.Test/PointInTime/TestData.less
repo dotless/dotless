@@ -1,1 +1,12 @@
-﻿
+﻿@the-border: 1px;
+@base-color: #111;
+ 
+#header {
+  color: @base-color * 3;
+  border-left: @the-border;
+  border-right: @the-border * 2;
+}
+ 
+#footer { 
+  color: (@base-color + #111) * 1.5; 
+}
