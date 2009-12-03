@@ -23,9 +23,9 @@ namespace dotless.Test.Unit.configuration
     [TestFixture]
     public class XmlConfigurationFixture
     {
-        private XmlNode GetTestnode(string minifyCssvalue)
+        private XmlNode GetTestnode(string minifyCssvalue, string cacheValue)
         {
-            var xml = String.Format("<dotless minifyCss=\"{0}\"></dotless>", minifyCssvalue);
+            var xml = String.Format("<dotless minifyCss=\"{0}\" cache=\"{1}\" ></dotless>", minifyCssvalue, cacheValue);
             var document = new XmlDocument();
             document.Load(new StringReader(xml));
             return document.DocumentElement;
@@ -34,7 +34,7 @@ namespace dotless.Test.Unit.configuration
         [Test]
         public void ReadsMinificationFromXmlNodeSetsMinifyOutputTrue()
         {
-            var element = GetTestnode("true");
+            var element = GetTestnode("true", "true");
             var interpreter = new XmlConfigurationInterpreter();
 
             var output = interpreter.Process(element);
@@ -43,9 +43,31 @@ namespace dotless.Test.Unit.configuration
         }
 
         [Test]
+        public void ReadsCachingFromXmlNodeSetsCachingTrue()
+        {
+            var element = GetTestnode("true", "true");
+            var interpreter = new XmlConfigurationInterpreter();
+
+            var output = interpreter.Process(element);
+
+            Assert.IsTrue(output.CacheEnabled);
+        }
+
+        [Test]
+        public void ReadsCachingFromXmlNodeSetsCachingFalse()
+        {
+            var element = GetTestnode("true", "false");
+            var interpreter = new XmlConfigurationInterpreter();
+
+            var output = interpreter.Process(element);
+
+            Assert.IsFalse(output.CacheEnabled);
+        }
+
+        [Test]
         public void MinifyCssAttributeCanBeFalseSetsMinifyOutputFalse()
         {
-            XmlNode testnode = GetTestnode("false");
+            XmlNode testnode = GetTestnode("false", "true");
             var interpreter = new XmlConfigurationInterpreter();
 
             var output = interpreter.Process(testnode);
