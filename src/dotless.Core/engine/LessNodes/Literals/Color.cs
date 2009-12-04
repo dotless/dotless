@@ -65,7 +65,7 @@ namespace dotless.Core.engine
         }
         public static Color operator +(Color colour1, double colour2)
         {
-            return colour1.Operate((i, j) => i + j, (int)colour2);
+            return colour1.Operate((i, j) => i + j, colour2);
         }
         public static Color operator -(Color colour1, Color colour2)
         {
@@ -77,7 +77,7 @@ namespace dotless.Core.engine
         }
         public static Color operator -(Color colour1, double colour2)
         {
-            return colour1.Operate((i, j) => i - j, (int)colour2);
+            return colour1.Operate((i, j) => i - j, colour2);
         }
         public static Color operator *(Color colour1, Color colour2)
         {
@@ -89,7 +89,7 @@ namespace dotless.Core.engine
         }
         public static Color operator *(Color colour1, double colour2)
         {
-            return colour1.Operate((i, j) => i * j, (int)colour2);
+            return colour1.Operate((i, j) => i * j, colour2);
         }
         public static Color operator /(Color colour1, Color colour2)
         {
@@ -101,7 +101,7 @@ namespace dotless.Core.engine
         }
         public static Color operator /(Color colour1, double colour2)
         {
-            return colour1.Operate((i, j) => i / j, (int)colour2);
+            return colour1.Operate((i, j) => i / j, colour2);
         }
 
         //Invert it so (2 * color) works as well as (color * 2)
@@ -125,19 +125,19 @@ namespace dotless.Core.engine
         //Double too.. This is getting painful
         public static Color operator -(double colour2, Color colour1)
         {
-            return colour1.Operate((i, j) => i - j, (int)colour2);
+            return colour1.Operate((i, j) => i - j, colour2);
         }
         public static Color operator +(double colour2, Color colour1)
         {
-            return colour1.Operate((i, j) => i + j, (int)colour2);
+            return colour1.Operate((i, j) => i + j, colour2);
         }
         public static Color operator *(double colour2, Color colour1)
         {
-            return colour1.Operate((i, j) => i * j, (int)colour2);
+            return colour1.Operate((i, j) => i * j, colour2);
         }
         public static Color operator /(double colour2, Color colour1)
         {
-            return colour1.Operate((i, j) => i / j, (int)colour2);
+            return colour1.Operate((i, j) => i / j, colour2);
         }
 
         #endregion
