@@ -79,6 +79,23 @@ task Test -depends Build {
 task Merge -depends Build {
     $old = pwd
     cd $build_dir
+	
+	$filename = "dotless.Compiler.exe"
+	Remove-Item $filename-partial.exe -ErrorAction SilentlyContinue
+	Rename-Item $filename $filename-partial.exe
+	& $lib_dir\ilmerge\ILMerge.exe $filename-partial.exe `
+		Pandora.dll `
+		dotless.Core.dll `
+		Microsoft.Practices.ServiceLocation.dll `
+        PegBase.dll `
+        /out:$filename `
+        /internalize `
+        /t:exe
+	if ($lastExitCode -ne 0) {
+        throw "Error: Failed to merge compiler assemblies"
+    }
+	Remove-Item $filename-partial.exe -ErrorAction SilentlyContinue
+	
     $filename = "dotless.Core.dll"
     Remove-Item $filename-partial.dll -ErrorAction SilentlyContinue
     Rename-Item $filename $filename-partial.dll
@@ -93,6 +110,7 @@ task Merge -depends Build {
     if ($lastExitCode -ne 0) {
         throw "Error: Failed to merge assemblies"
     }
+	Remove-Item $filename-partial.dll -ErrorAction SilentlyContinue
     cd $old
 }
 
