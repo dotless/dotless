@@ -159,6 +159,9 @@
     <Content Include="Spec\ExtensibleEngine\css\will-mixin-all.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="PointInTime\Import.less">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Spec\ExtensibleEngine\less\accessors.less">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

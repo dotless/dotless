@@ -23,9 +23,14 @@ namespace dotless.Core.parser
     {
         public Element Parse(string source)
         {
+            return Parse(source, null);
+        }
+
+        public Element Parse(string source, Element tail)
+        {
             var parser = new nLess.nLess(source, Console.Out);
             if (!parser.Parse()) throw new ParsingException("FAILURE: Parser did not match input file");
-            return new TreeBuilder(parser.GetRoot(), source).Build();
+            return new TreeBuilder(parser.GetRoot(), source).Build(tail);
         }
     }
 
@@ -34,11 +39,16 @@ namespace dotless.Core.parser
     {
         public Element Parse(string source)
         {
+            return Parse(source, null);
+        }
+
+        public Element Parse(string source, Element tail)
+        {
             var parser = new nLess.nLess(source, Console.Out);
             if (!parser.Parse()) throw new ParsingException("FAILURE: Parser did not match input file");
             new TreePrint(Console.Out, source, 60, new NodePrinter(parser).GetNodeName, false)
                 .PrintTree(parser.GetRoot(), 0, 0);
-            return new TreeBuilder(parser.GetRoot(), source).Build();
+            return new TreeBuilder(parser.GetRoot(), source).Build(tail);
         }
     }
 }

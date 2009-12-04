@@ -46,11 +46,19 @@ namespace dotless.Core.parser
             return Primary(Root.child_);
         }
 
+        /// <summary>
+        /// Main entry point for the build
+        /// </summary>
+        /// <returns></returns>
+        public Element Build(Element tail)
+        {
+            return tail == null ? Build() : Primary(Root.child_, tail);
+        }
+
         private Element Primary(PegNode node)
         {
             var element = new Element("");
-            Primary(node, element);
-            return element;
+            return Primary(node, element);
         }
 
         /// <summary>
@@ -58,7 +66,7 @@ namespace dotless.Core.parser
         /// </summary>
         /// <param name="node"></param>
         /// <param name="element"></param>
-        private void Primary(PegNode node, Element element)
+        private Element Primary(PegNode node, Element element)
         {
             foreach (var nextPrimary in node.AsEnumerable())
             {
@@ -66,7 +74,7 @@ namespace dotless.Core.parser
                 {
                     case EnLess.import:
                         var import = Import(nextPrimary.child_, element);
-                        element.Rules.AddRange(import);
+                        //element.Rules.AddRange(import);
                         break;
                     case EnLess.standard_ruleset:
                         RuleSet(nextPrimary, element);
@@ -79,6 +87,7 @@ namespace dotless.Core.parser
                         break;
                 }
             }
+            return element;
         }
 
         /// <summary>
@@ -106,15 +115,13 @@ namespace dotless.Core.parser
             var path = (node).GetAsString(Src)
                 .Replace("\"", "").Replace("'", "");
 
-            //TODO: Fuck around with path to make it absolute relative
-            if(HttpContext.Current!=null)
-            {
+            if(HttpContext.Current!=null){
                 path = HttpContext.Current.Server.MapPath(path);
             }
 
             if(File.Exists(path))
             {
-                var engine = new ExtensibleEngineImpl(File.ReadAllText(path));
+                var engine = new ExtensibleEngineImpl(File.ReadAllText(path), element);
                 return engine.LessDom.Rules;
             }
             return new List<INode>();

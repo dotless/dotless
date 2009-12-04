@@ -20,36 +20,36 @@ namespace dotless.Core.engine
 
     public class Color : Literal
     {
-        public int R { get; set; }
-        public int G { get; set; }
-        public int B { get; set; }
-        public int A { get; set; }
+        public double R { get; set; }
+        public double G { get; set; }
+        public double B { get; set; }
+        public double A { get; set; }
 
-        public Color(int r, int g, int b)
+        public Color(double r, double g, double b)
             : this(r, g, b, 1)
         {
         }
 
-        public Color(int r, int g, int b, int a)
+        public Color(double r, double g, double b, double a)
         {
-            R = Normailze(Convert.ToInt16(r));
-            G = Normailze(Convert.ToInt16(g));
-            B = Normailze(Convert.ToInt16(b));
+            R = Normailze(r);
+            G = Normailze(g);
+            B = Normailze(b);
             A = Normailze(a, 1);
         }
-   
 
-        protected int Normailze(int v) 
+
+        protected double Normailze(double v) 
         {
             return Normailze(v, 255, 0);
         }
 
-        protected int Normailze(int v, int max) 
+        protected double Normailze(double v, double max) 
         {
             return Normailze(v, max, 0);
         }
 
-        protected int Normailze(int v, int max, int min)
+        protected double Normailze(double v, double max, double min)
         {
             return new[] { new[] { min, v }.Max(), max }.Min();
         }
@@ -122,7 +122,6 @@ namespace dotless.Core.engine
             return colour1.Operate((i, j) => i / j, colour2);
         }
 
-
         //Double too.. This is getting painful
         public static Color operator -(double colour2, Color colour1)
         {
@@ -141,11 +140,10 @@ namespace dotless.Core.engine
             return colour1.Operate((i, j) => i / j, (int)colour2);
         }
 
-
-
-
         #endregion
-        public Color Operate(Func<int, int, int> action, int other)
+
+
+        public Color Operate(Func<double, double, double> action, double other)
         {
             var rgb = RGB;
             //NOTE: Seems like there should be a nice way to do this using lambdas
@@ -154,15 +152,23 @@ namespace dotless.Core.engine
             return new Color(rgb[0], rgb[1], rgb[2]);
         }
 
+        public Color Operate(Func<int, int, int> action, int other)
+        {
+            var rgb = RGB;
+            //NOTE: Seems like there should be a nice way to do this using lambdas
+            for (var i = 0; i < rgb.Count; i++)
+                rgb[i] = action.Invoke((int)rgb[i], other);
+            return new Color(rgb[0], rgb[1], rgb[2]);
+        }
         public Color Operate(Func<int, int, int> action, Color other)
         {
             var rgb = RGB;
             for (var i = 0; i < rgb.Count; i++)
-                rgb[i] = action.Invoke(rgb[i], other.RGB[i]);
+                rgb[i] = action.Invoke((int)rgb[i], (int)other.RGB[i]);
             return new Color(rgb[0], rgb[1], rgb[2]);
         }
 
-        public List<int> RGB
+        public List<double> RGB
         {
             get
             {
@@ -182,7 +188,7 @@ namespace dotless.Core.engine
 
         public override string ToString()
         {
-            return (A < 1 ? string.Format("rgba({0},{1},{2}, {3})", R, G, B, A) : string.Format("#{0:X2}{1:X2}{2:X2}", R, G, B)).ToLower();
+            return (A < 1 ? string.Format("rgba({0},{1},{2}, {3})", (int)R, (int)G, (int)B, (int)A) : string.Format("#{0:X2}{1:X2}{2:X2}", (int)R, (int)G, (int)B)).ToLower();
         }
         public override string ToCss()
         {
@@ -194,7 +200,7 @@ namespace dotless.Core.engine
         }
         public override string Inspect()
         {
-            return (A < 1 ? string.Format("rgba({0},{1},{2}, {3})", R, G, B, A) : string.Format("rgb({0},{1},{2})", R, G, B)).ToLower();
+            return (A < 1 ? string.Format("rgba({0},{1},{2}, {3})", R, G, B, A) : string.Format("rgb({0},{1},{2})", (int)R, (int)G, (int)B)).ToLower();
         }
     }
 }

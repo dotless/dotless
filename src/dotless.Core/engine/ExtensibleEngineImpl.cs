@@ -23,14 +23,10 @@ namespace dotless.Core.engine
         public CssDocument CssDom { get; set; }
         public string Css { get; set; }
 
-        /// <summary>
-        /// New engine impl
-        /// </summary>
-        /// <param name="source"></param>
-        public ExtensibleEngineImpl(string source)
+        public ExtensibleEngineImpl(string source, Element tail)
         {
             //Parse the source file and run any Less preprocessors set
-            LessDom = PipelineFactory.LessParser.Parse(source);
+            LessDom = PipelineFactory.LessParser.Parse(source, tail);
             RunLessDomPreprocessors();
 
             //Convert the LessDom to the CssDom and run any CSS Dom preprocessors set
@@ -38,7 +34,16 @@ namespace dotless.Core.engine
             RunCssDomPreprocessors();
 
             //Convert the CssDom to Css
-            Css = PipelineFactory.CssBuilder.ToCss(CssDom);
+            Css = PipelineFactory.CssBuilder.ToCss(CssDom); 
+        }
+
+        /// <summary>
+        /// New engine impl
+        /// </summary>
+        /// <param name="source"></param>
+        public ExtensibleEngineImpl(string source) : this(source, null)
+        {
+
         }
 
         /// <summary>
