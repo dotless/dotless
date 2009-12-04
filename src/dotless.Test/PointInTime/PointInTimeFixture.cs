@@ -12,9 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
-using dotless.Core.engine.Pipeline;
-using dotless.Core.parser;
-
 namespace dotless.Test.PointInTime
 {
     using System;

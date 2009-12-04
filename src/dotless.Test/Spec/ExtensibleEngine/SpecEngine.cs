@@ -125,5 +125,10 @@ namespace dotless.Test.Spec.ExtensibleEngine
         {
             SpecHelper.ShouldEqual("namespaces");
         }
+        [Test]
+        public void CantMixVariableContexts()
+        {
+            SpecHelper.ShouldEqual("mixed-context-variables");
+        }
     }
 }

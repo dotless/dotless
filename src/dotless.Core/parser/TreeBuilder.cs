@@ -73,7 +73,7 @@ namespace dotless.Core.parser
                 switch (nextPrimary.id_.ToEnLess())
                 {
                     case EnLess.import:
-                        var import = Import(nextPrimary.child_, element);
+                        Import(nextPrimary.child_, element);
                         //element.Rules.AddRange(import);
                         break;
                     case EnLess.standard_ruleset:

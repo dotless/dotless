@@ -162,6 +162,9 @@
     <None Include="PointInTime\Import.less">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Content Include="Spec\ExtensibleEngine\css\mixed-context-variables.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Spec\ExtensibleEngine\less\accessors.less">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -172,6 +175,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Spec\ExtensibleEngine\less\comments.less">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Spec\ExtensibleEngine\less\import\mixed-context-import.less">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Spec\ExtensibleEngine\less\merge-same.less">
@@ -199,6 +205,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Spec\ExtensibleEngine\less\lazy-eval.less">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Spec\ExtensibleEngine\less\mixed-context-variables.less">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Spec\ExtensibleEngine\less\mixins-args.less">
