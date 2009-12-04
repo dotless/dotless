@@ -130,5 +130,10 @@ namespace dotless.Test.Spec.ExtensibleEngine
         {
             SpecHelper.ShouldEqual("mixed-context-variables");
         }
+        [Test]
+        public void CantWorkWithDoublesInNumbers()
+        {
+            SpecHelper.ShouldEqual("decimal-round");
+        }
     }
 }

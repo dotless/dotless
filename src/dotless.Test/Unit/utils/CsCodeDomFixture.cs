@@ -29,5 +29,11 @@ namespace dotless.Test.Unit.utils
             Console.WriteLine(color.ToCSharp());
             Console.WriteLine(CsEval.Eval(color.ToCSharp()));
         }
+
+        [Test]
+        public void CanEvaluateNumbers()
+        {
+            Console.WriteLine(CsEval.Eval("new Number(10)/4;"));
+        }
     }
 }

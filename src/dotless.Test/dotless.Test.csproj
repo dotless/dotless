@@ -165,6 +165,9 @@
     <Content Include="Spec\ExtensibleEngine\css\mixed-context-variables.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Spec\ExtensibleEngine\css\decimal-round.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Spec\ExtensibleEngine\less\accessors.less">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -175,6 +178,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Spec\ExtensibleEngine\less\comments.less">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Spec\ExtensibleEngine\less\decimal-round.less">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Spec\ExtensibleEngine\less\import\mixed-context-import.less">

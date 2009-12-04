@@ -29,7 +29,6 @@ namespace dotless.Core.engine
             : this(r, g, b, 1)
         {
         }
-
         public Color(double r, double g, double b, double a)
         {
             R = Normailze(r);
@@ -37,18 +36,14 @@ namespace dotless.Core.engine
             B = Normailze(b);
             A = Normailze(a, 1);
         }
-
-
         protected double Normailze(double v) 
         {
             return Normailze(v, 255, 0);
         }
-
         protected double Normailze(double v, double max) 
         {
             return Normailze(v, max, 0);
         }
-
         protected double Normailze(double v, double max, double min)
         {
             return new[] { new[] { min, v }.Max(), max }.Min();
@@ -59,23 +54,7 @@ namespace dotless.Core.engine
         {
             return colour1.Operate((i, j) => i + j, colour2);
         }
-        public static Color operator +(Color colour1, int colour2)
-        {
-            return colour1.Operate((i, j) => i + j, colour2);
-        }
-        public static Color operator +(Color colour1, double colour2)
-        {
-            return colour1.Operate((i, j) => i + j, colour2);
-        }
         public static Color operator -(Color colour1, Color colour2)
-        {
-            return colour1.Operate((i, j) => i - j, colour2);
-        }
-        public static Color operator -(Color colour1, int colour2)
-        {
-            return colour1.Operate((i, j) => i - j, colour2);
-        }
-        public static Color operator -(Color colour1, double colour2)
         {
             return colour1.Operate((i, j) => i - j, colour2);
         }
@@ -83,46 +62,10 @@ namespace dotless.Core.engine
         {
             return colour1.Operate((i, j) => i * j, colour2);
         }
-        public static Color operator *(Color colour1, int colour2)
-        {
-            return colour1.Operate((i, j) => i * j, colour2);
-        }
-        public static Color operator *(Color colour1, double colour2)
-        {
-            return colour1.Operate((i, j) => i * j, colour2);
-        }
         public static Color operator /(Color colour1, Color colour2)
         {
             return colour1.Operate((i, j) => i / j, colour2);
         }
-        public static Color operator /(Color colour1, int colour2)
-        {
-            return colour1.Operate((i, j) => i / j, colour2);
-        }
-        public static Color operator /(Color colour1, double colour2)
-        {
-            return colour1.Operate((i, j) => i / j, colour2);
-        }
-
-        //Invert it so (2 * color) works as well as (color * 2)
-        public static Color operator -(int colour2, Color colour1)
-        {
-            return colour1.Operate((i, j) => i - j, colour2);
-        }
-        public static Color operator +(int colour2, Color colour1)
-        {
-            return colour1.Operate((i, j) => i + j, colour2);
-        }
-        public static Color operator *(int colour2, Color colour1)
-        {
-            return colour1.Operate((i, j) => i * j, colour2);
-        }
-        public static Color operator /(int colour2, Color colour1)
-        {
-            return colour1.Operate((i, j) => i / j, colour2);
-        }
-
-        //Double too.. This is getting painful
         public static Color operator -(double colour2, Color colour1)
         {
             return colour1.Operate((i, j) => i - j, colour2);
@@ -139,9 +82,23 @@ namespace dotless.Core.engine
         {
             return colour1.Operate((i, j) => i / j, colour2);
         }
-
+        public static Color operator +(Color colour1, double colour2)
+        {
+            return colour1.Operate((i, j) => i + j, colour2);
+        }
+        public static Color operator -(Color colour1, double colour2)
+        {
+            return colour1.Operate((i, j) => i - j, colour2);
+        }
+        public static Color operator *(Color colour1, double colour2)
+        {
+            return colour1.Operate((i, j) => i * j, colour2);
+        }
+        public static Color operator /(Color colour1, double colour2)
+        {
+            return colour1.Operate((i, j) => i / j, colour2);
+        }
         #endregion
-
 
         public Color Operate(Func<double, double, double> action, double other)
         {
@@ -151,23 +108,13 @@ namespace dotless.Core.engine
                 rgb[i] = action.Invoke(rgb[i], other);
             return new Color(rgb[0], rgb[1], rgb[2]);
         }
-
-        public Color Operate(Func<int, int, int> action, int other)
-        {
-            var rgb = RGB;
-            //NOTE: Seems like there should be a nice way to do this using lambdas
-            for (var i = 0; i < rgb.Count; i++)
-                rgb[i] = action.Invoke((int)rgb[i], other);
-            return new Color(rgb[0], rgb[1], rgb[2]);
-        }
-        public Color Operate(Func<int, int, int> action, Color other)
+        public Color Operate(Func<double, double, double> action, Color other)
         {
             var rgb = RGB;
             for (var i = 0; i < rgb.Count; i++)
                 rgb[i] = action.Invoke((int)rgb[i], (int)other.RGB[i]);
             return new Color(rgb[0], rgb[1], rgb[2]);
         }
-
         public List<double> RGB
         {
             get
@@ -175,17 +122,10 @@ namespace dotless.Core.engine
                 return new [] { R,G,B}.ToList();
             }
         }
-
         public Color Alpha(int a)
         {
             return new Color(R, G, B, a);
         }
-
-        //NOTE: Dont understand this
-        //def coerce other
-        //  return self, other
-        //end
-
         public override string ToString()
         {
             return (A < 1 ? string.Format("rgba({0},{1},{2}, {3})", (int)R, (int)G, (int)B, (int)A) : string.Format("#{0:X2}{1:X2}{2:X2}", (int)R, (int)G, (int)B)).ToLower();
