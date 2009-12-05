@@ -69,6 +69,7 @@
     <Compile Include="configuration\DotlessConfigurationSectionHandler.cs" />
     <Compile Include="configuration\XmlConfigurationInterpreter.cs" />
     <Compile Include="ContainerFactory.cs" />
+    <Compile Include="EngineFactory.cs" />
     <Compile Include="engine\ExtensibleEngineImpl.cs" />
     <Compile Include="engine\Pipeline\CssBuilder.cs" />
     <Compile Include="engine\CssNodes\CssDocument.cs" />

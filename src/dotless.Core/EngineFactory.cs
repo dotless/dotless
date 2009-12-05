@@ -14,10 +14,9 @@
 
 using Microsoft.Practices.ServiceLocation;
 
-namespace dotless.Compiler
+namespace dotless.Core
 {
-    using Core;
-    using Core.configuration;
+    using configuration;
 
     public class EngineFactory
     {
