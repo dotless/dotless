@@ -42,7 +42,7 @@ namespace dotless.Core.engine
         public override string ToCSharp()
         {
 
-            return Value.ToString("N2");
+            return Value.ToString("N2", CultureInfo.InvariantCulture);
         }
 
 
