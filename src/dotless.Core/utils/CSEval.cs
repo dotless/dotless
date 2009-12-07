@@ -12,6 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
+using System.CodeDom;
+using System.Threading;
+
 namespace dotless.Core.utils
 {
     using System;
@@ -19,36 +22,17 @@ namespace dotless.Core.utils
     using System.Text;
     using Microsoft.CSharp;
 
-    public static class CsEval
+    public static class OldCsEval
     {
+        private static int counter = 0;
         public static object Eval(string injectedCode)
         {
+            Console.WriteLine(counter);
+            counter++;
+            var c = new CSharpCodeProvider();
+            
             var comp = (new CSharpCodeProvider().CreateCompiler());
-            var cp = new CompilerParameters();
-            //cp.ReferencedAssemblies.Add("system.dll");
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies()){
-                try{
-                    var location = assembly.Location;
-                    if (!String.IsNullOrEmpty(location)) cp.ReferencedAssemblies.Add(location);
-                }
-                catch (NotSupportedException){
-                    // this happens for dynamic assemblies, so just ignore it.
-                }
-            }
-            cp.GenerateExecutable = false;
-            cp.GenerateInMemory = true;
-            var code = new StringBuilder();
-            code.Append("using System; \n");
-            code.Append("using dotless.Core.engine; \n");
-            code.Append("namespace CsEvaluation { \n");
-            code.Append("  public class _Evaluator { \n");
-            code.Append("       public object _Eval() { \n");
-            code.AppendFormat("             return {0}; ", injectedCode);
-            code.Append("               }\n");
-            code.Append("       }\n");
-            code.Append("  }\n");
-
-            var cr = comp.CompileAssemblyFromSource(cp, code.ToString());
+            var cr = comp.CompileAssemblyFromSource(Params, GetCode(injectedCode));
             if (cr.Errors.HasErrors)
             {
                 var error = new StringBuilder();
@@ -64,5 +48,132 @@ namespace dotless.Core.utils
             var mi = compiled.GetType().GetMethod("_Eval");
             return mi.Invoke(compiled, null);
         }
+
+        private static string GetCode(string injectedCode)
+        {
+            var code = new StringBuilder();
+            code.Append("using System; \n");
+            code.Append("using dotless.Core.engine; \n");
+            code.Append("namespace CsEvaluation { \n");
+            code.Append("  public class _Evaluator { \n");
+            code.Append("       public object _Eval() { \n");
+            code.AppendFormat("             return {0}; ", injectedCode);
+            code.Append("               }\n");
+            code.Append("       }\n");
+            code.Append("  }\n");
+            return code.ToString();
+        }
+
+        private static CompilerParameters _params;
+        private static CompilerParameters Params
+        {
+            get
+            {
+                if(_params==null){
+                    _params = new CompilerParameters {GenerateExecutable = false, GenerateInMemory = true};
+
+                    foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+                    {
+                        try
+                        {
+                            var location = assembly.Location;
+                            if (!String.IsNullOrEmpty(location)) _params.ReferencedAssemblies.Add(location);
+                        }
+                        catch (NotSupportedException)
+                        {
+                            // this happens for dynamic assemblies, so just ignore it.
+                        }
+                    }
+                }
+                return _params;
+            }
+        }
     }
+
+
+    public static class CsEval
+    {
+        static void LogTime(string Message)
+        {
+           if (Last == 0)
+                Last = DateTime.Now.Ticks;
+            else
+            {
+
+                Console.WriteLine(string.Format("{0} - {1}", DateTime.Now.Ticks - Last, Message));
+                Last = DateTime.Now.Ticks;
+            }
+        }
+
+        private static long Last = 132;
+        public static object Eval(string injectedCode)
+        {
+
+            //LogTime("starting");
+            var code = GetCode(injectedCode);
+            //LogTime("getting code");
+            var compileUnit = new CodeSnippetCompileUnit(code);
+            //LogTime("CodeSnippetCompileUnit");
+            var provider = new CSharpCodeProvider();
+            var cr = provider.CompileAssemblyFromDom(Params, compileUnit);
+            //LogTime("CompileAssemblyFromDom");
+            if (cr.Errors.HasErrors)
+            {
+                var error = new StringBuilder();
+                foreach (CompilerError err in cr.Errors)
+                    error.AppendFormat("{0}\n", err.ErrorText);
+
+                throw new Exception(error.ToString());
+            }
+
+            var a = cr.CompiledAssembly;
+            var compiled = a.CreateInstance("CsEvaluation._Evaluator");
+            var mi = compiled.GetType().GetMethod("_Eval");
+            var returnObj =  mi.Invoke(compiled, null);
+            //LogTime("Reflection results");
+            return returnObj;
+        }
+
+        private static string GetCode(string injectedCode)
+        {
+            var code = new StringBuilder();
+            code.Append("using System; \n");
+            code.Append("using dotless.Core.engine; \n");
+            code.Append("namespace CsEvaluation { \n");
+            code.Append("  public class _Evaluator { \n");
+            code.Append("       public object _Eval() { \n");
+            code.AppendFormat("             return {0}; ", injectedCode);
+            code.Append("               }\n");
+            code.Append("       }\n");
+            code.Append("  }\n");
+            return code.ToString();
+        }
+
+        private static CompilerParameters _params;
+        private static CompilerParameters Params
+        {
+            get
+            {
+                if (_params == null)
+                {
+                    _params = new CompilerParameters { GenerateExecutable = false, GenerateInMemory = true };
+
+                    foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+                    {
+                        try
+                        {
+                            var location = assembly.Location;
+                            if (!String.IsNullOrEmpty(location)) _params.ReferencedAssemblies.Add(location);
+                        }
+                        catch (NotSupportedException)
+                        {
+                            // this happens for dynamic assemblies, so just ignore it.
+                        }
+                    }
+                }
+                return _params;
+            }
+        }
+    }
+
 }

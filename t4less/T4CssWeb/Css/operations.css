@@ -1,16 +1,1 @@
-System.Exception: ; erwartet.
-Ungültiger Ausdruck ,.
-; erwartet.
-
-   at dotless.Core.utils.CsEval.Eval(String injectedCode)
-   at dotless.Core.engine.Expression.Evaluate()
-   at dotless.Core.engine.Property.Evaluate()
-   at dotless.Core.engine.Pipeline.LessToCssDomConverter.BuildCssDocumentImpl(Element element, ICollection`1 path)
-   at dotless.Core.engine.Pipeline.LessToCssDomConverter.BuildCssDocumentImpl(Element element, ICollection`1 path)
-   at dotless.Core.engine.Pipeline.LessToCssDomConverter.BuildCssDocument()
-   at dotless.Core.engine.Pipeline.LessToCssDomConverter.BuildCssDocument(Element LessRootElement)
-   at dotless.Core.engine.ExtensibleEngineImpl..ctor(String source, Element tail)
-   at dotless.Core.engine.ExtensibleEngineImpl..ctor(String source)
-   at dotless.Core.ExtensibleEngine.TransformToCss(String filename)
-   at dotless.Core.MinifierDecorator.TransformToCss(String filename)
-   at Microsoft.VisualStudio.TextTemplating15EF7120A9F2EBFB4B414E76375DA665.GeneratedTextTransformation.TransformText()
+#header{color:#333333;border-left:1px;border-right:2px;}#footer{color:#333333;}

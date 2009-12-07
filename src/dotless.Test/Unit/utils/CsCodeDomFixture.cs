@@ -33,7 +33,8 @@ namespace dotless.Test.Unit.utils
         [Test]
         public void CanEvaluateNumbers()
         {
-            Console.WriteLine(CsEval.Eval("new Number(10)/4;"));
+            for (var i = 0; i < 15; i++ )
+                CsEval.Eval("new Number(10)/4;");
         }
     }
 }

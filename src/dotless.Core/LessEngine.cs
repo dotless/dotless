@@ -17,7 +17,6 @@ namespace dotless.Core
     using System.IO;
     using engine;
 
-
     public class ExtensibleEngine : ILessEngine
     {
         public string TransformToCss(string filename)
