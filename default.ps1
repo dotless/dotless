@@ -147,13 +147,14 @@ task t4css -depends Merge {
     cp $dir\t4less\T4CssWeb\Css\T4CSS.tt $target\T4CssWeb\Css\T4CSS.tt
     cp $dir\t4less\T4CssWeb\Css\*.less $target\T4CssWeb\Css\
     cp $dir\t4less\T4CssWeb\Css\*.css $target\T4CssWeb\Css\
+    cp $dir\t4less\T4CssWeb\Css\*.log $target\T4CssWeb\Css\
     
     
     & $lib_dir\7zip\7za.exe a $release_dir\t4css-$commit.zip `
     $build_dir\t4css\    
 }
 
-task Release -depends Test, Merge {
+task Release -depends Test, Merge, t4css {
     $commit = Get-Git-Commit
     $filename = "dotless.core"
     & $lib_dir\7zip\7za.exe a $release_dir\dotless-$commit.zip `
