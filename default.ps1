@@ -133,7 +133,28 @@ task Release-NoTest -depends Merge {
     Write-Host -ForegroundColor Cyan "Thank you for using dotless!"
 }
 
-task Release -depends Test, Merge {
+task t4css -depends Merge {
+    $commit = Get-Git-Commit
+    $dir = pwd
+    $target = "$build_dir\t4css"
+    echo "bla"
+    mkdir $build_dir\t4css -ErrorAction silentlycontinue
+    mkdir $build_dir\t4css\T4CssWeb -ErrorAction silentlycontinue
+    mkdir $build_dir\t4css\T4CssWeb\Css -ErrorAction silentlycontinue
+    cp $build_dir\dotless.Core.dll $target\dotless.Core.dll
+    cp $dir\t4less\T4Css.sln $target\T4Css.sln
+    cp $dir\t4less\T4CssWeb\T4CssWeb.csproj $target\T4CssWeb\T4CssWeb.csproj
+    cp $dir\t4less\T4CssWeb\Css\T4CSS.tt $target\T4CssWeb\Css\T4CSS.tt
+    cp $dir\t4less\T4CssWeb\Css\*.less $target\T4CssWeb\Css\
+    cp $dir\t4less\T4CssWeb\Css\*.css $target\T4CssWeb\Css\
+    cp $dir\t4less\T4CssWeb\Css\*.log $target\T4CssWeb\Css\
+    
+    
+    & $lib_dir\7zip\7za.exe a $release_dir\t4css-$commit.zip `
+    $build_dir\t4css\    
+}
+
+task Release -depends Test, Merge, t4css {
     $commit = Get-Git-Commit
     $filename = "dotless.core"
     & $lib_dir\7zip\7za.exe a $release_dir\dotless-$commit.zip `
