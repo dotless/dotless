@@ -33,7 +33,15 @@ namespace dotless.Test.Unit.utils
         [Test]
         public void CanEvaluateNumbers()
         {
-            Console.WriteLine(CsEval.Eval("new Number(10)/4;"));
+            float result = (float)CsEval.Eval("10f/4;");
+            Assert.AreEqual(2.5f, result);
+        }
+
+        [Test]
+        public void CanEvaluateBraces()
+        {
+            float result = (float) CsEval.Eval("(2f + 3) * 2");
+            Assert.AreEqual(10, result);
         }
     }
 }
