@@ -106,7 +106,8 @@ task Merge -depends Build {
         PegBase.dll `
         /out:$filename `
         /internalize `
-        /t:library
+        /t:library `
+		/keyfile:$source_dir\dotless-open-source.snk
     if ($lastExitCode -ne 0) {
         throw "Error: Failed to merge assemblies"
     }
