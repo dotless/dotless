@@ -98,7 +98,7 @@
     <Compile Include="engine\LessNodes\Literals\Functions.cs" />
     <Compile Include="engine\LessNodes\Literals\Number.cs" />
     <Compile Include="engine\LessNodes\Literals\String.cs" />
-    <Compile Include="exceptions\MixedUnitsExeption.cs" />
+    <Compile Include="exceptions\MixedUnitsException.cs" />
     <Compile Include="engine\LessNodes\Operator.cs" />
     <Compile Include="engine\LessNodes\Property.cs" />
     <Compile Include="engine\LessNodes\Selector.cs" />

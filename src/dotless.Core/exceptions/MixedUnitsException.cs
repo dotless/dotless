@@ -17,21 +17,21 @@ namespace dotless.Core.exceptions
     using System;
     using System.Runtime.Serialization;
 
-    public class MixedUnitsExeption : Exception
+    public class MixedUnitsException : Exception
     {
-        public MixedUnitsExeption()
+        public MixedUnitsException()
         {
         }
 
-        public MixedUnitsExeption(string message) : base(message)
+        public MixedUnitsException(string message) : base(message)
         {
         }
 
-        public MixedUnitsExeption(string message, Exception innerException) : base(message, innerException)
+        public MixedUnitsException(string message, Exception innerException) : base(message, innerException)
         {
         }
 
-        protected MixedUnitsExeption(SerializationInfo info, StreamingContext context) : base(info, context)
+        protected MixedUnitsException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }
