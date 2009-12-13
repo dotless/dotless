@@ -22,17 +22,17 @@ namespace dotless.Core.engine.CssNodes
     {
         //full set of identifiers and selectors i.e. ".test > a:Hover span.trial"
         public string Identifiers { get; set; } 
-        public List<CssProperty> Properties { get; set; }
+        public HashSet<CssProperty> Properties { get; set; }
 
         public CssElement(string identifierWithSelectors)
             : this(identifierWithSelectors, new List<CssProperty>())
         {
         }
 
-        public CssElement(string identifierWithSelectors, List<CssProperty> properties)
+        public CssElement(string identifierWithSelectors, IList<CssProperty> properties)
         {
             Identifiers = identifierWithSelectors;
-            Properties = properties;
+            Properties = new HashSet<CssProperty>(properties);
         }
 
         public bool HasProperty(CssProperty property)
@@ -49,15 +49,7 @@ namespace dotless.Core.engine.CssNodes
 
         public bool IsEquiv(CssElement element)
         {
-            var equiv = element.Properties.Count == Properties.Count;
-            if (!equiv) return false;
-           
-                var differentToCss =
-                    Properties.SelectMany(a => element.Properties, (a, b) => new { a, b })
-                        .Where(@t => @t.a.Key != @t.b.Key || @t.a.Value != @t.b.Value)
-                        .Select(@t => @t.a);
-            
-            return equiv && differentToCss.Count() == 0;
+            return element.Properties.SetEquals(Properties);
         }
     }
 }

@@ -45,8 +45,10 @@ namespace dotless.Test.PointInTime
         [Test]
         public void AltEngine_Parse_Test_Data()
         {
-            //PipelineFactory.LessParser = new LessTreePrinterParser();
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
             var engine = new ExtensibleEngineImpl(File.ReadAllText(@"PointInTime/TestData.less"));
+            Console.Write("Time elapsed: " + stopwatch.ElapsedMilliseconds);
             Console.Write(engine.Css);
         }
     }

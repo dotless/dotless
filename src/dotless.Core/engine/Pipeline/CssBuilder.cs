@@ -13,6 +13,7 @@
  * limitations under the License. */
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using dotless.Core.engine.CssNodes;
 
@@ -32,9 +33,8 @@ namespace dotless.Core.engine.Pipeline
 
             foreach(var ruleset in rulesets)
             {
-                var rulesetString = GetRuleSetString(new List<CssElement>(ruleset));
-                var propertyString = GetPropertyString(new List<CssProperty>(ruleset[0].Properties));
-                stringBuilder.Append(string.Format("{0} {{{1}}}\r\n", rulesetString, propertyString));
+                var propertyString = GetPropertyString(new List<CssProperty>(ruleset.Properties));
+                stringBuilder.Append(string.Format("{0} {{{1}}}\r\n", ruleset.Identifiers, propertyString));
             }
             return stringBuilder.ToString();
         }
@@ -44,13 +44,9 @@ namespace dotless.Core.engine.Pipeline
         /// </summary>
         /// <param name="ruleset"></param>
         /// <returns></returns>
-        private static string GetRuleSetString(IList<CssElement> ruleset)
+        private static string GetRuleSetString(IEnumerable<CssElement> ruleset)
         {
-            var setContent = new StringBuilder(ruleset[0].Identifiers);
-            ruleset.RemoveAt(0);
-            foreach (var rulesetItem in ruleset)
-                setContent.AppendFormat(", {0}", rulesetItem.Identifiers);
-            return setContent.ToString();
+            return string.Join(", ", ruleset.Select(x => x.Identifiers).ToArray());
         }
 
         /// <summary>
@@ -73,24 +69,22 @@ namespace dotless.Core.engine.Pipeline
             return propertyStringBuilder.ToString();
         }
 
-        private IList<IList<CssElement>> GroupElements(IList<CssElement> elements)
+        private IEnumerable<CssElement> GroupElements(IList<CssElement> elements)
         {
-            var groupedElements = new List<IList<CssElement>>();
             while (elements.Count != 0)
             {
                 var comparisonElement = elements[0];
-                var matchingElements = new List<CssElement> { comparisonElement };
-                elements.Remove(comparisonElement);
+                var similarElements = elements.Where(x => x.IsEquiv(comparisonElement)).ToList();
+                var matchingElements = new List<CssElement>();
 
-                foreach (var el in new List<CssElement>(elements))
+                foreach (var el in similarElements)
                 {
-                    if (!comparisonElement.IsEquiv(el)) continue;
                     matchingElements.Add(el);
                     elements.Remove(el);
                 }
-                groupedElements.Add(matchingElements);
+                var rulesetString = GetRuleSetString(similarElements);
+                yield return new CssElement(rulesetString) { Properties = comparisonElement.Properties };
             }
-            return groupedElements;
         }
     }
 }
