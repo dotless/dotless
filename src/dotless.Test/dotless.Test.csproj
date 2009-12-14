@@ -81,7 +81,6 @@
     <Compile Include="Unit\minifier\DescriptorBuilderFixture.cs" />
     <Compile Include="Unit\minifier\ExpressionBuilderFixture.cs" />
     <Compile Include="Unit\minifier\TokenizerFixture.cs" />
-    <Compile Include="Unit\utils\CsCodeDomFixture.cs" />
     <Compile Include="Unit\utils\RegexExtentionsFixtures.cs" />
   </ItemGroup>
   <ItemGroup>
