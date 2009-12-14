@@ -45,12 +45,11 @@ namespace dotless.Core
 
         public IServiceLocator GetCoreContainer(DotlessConfiguration configuration)
         {
-            return new CommonServiceLocatorAdapter(CreateCore(configuration));
+            return new CommonServiceLocatorAdapter(RegisterCoreServices(new PandoraContainer(), configuration));
         }
 
-        private PandoraContainer CreateCore(DotlessConfiguration configuration)
+        private PandoraContainer RegisterCoreServices(PandoraContainer container, DotlessConfiguration configuration)
         {
-            var container = new PandoraContainer();
             container.Register(p =>
                                    {
                                        if (configuration.MinifyOutput)
@@ -66,7 +65,7 @@ namespace dotless.Core
 
         private PandoraContainer CreateContainer(DotlessConfiguration configuration)
         {
-            PandoraContainer container = CreateCore(configuration);
+            var container = new PandoraContainer();
             container.Register(p =>
                                    {
                                        p.Service<ICache>()
@@ -77,16 +76,15 @@ namespace dotless.Core
                                            .Implementor<Request>();
                                        p.Service<IResponse>()
                                            .Implementor<CssResponse>();
-                                   });
-            container.Register(p =>
-                                   {
+
                                        if (configuration.CacheEnabled)
                                        {
                                            p.Service<ILessEngine>()
                                                .Implementor<AspCacheDecorator>();
                                        }
                                    });
-            return container;
+
+            return RegisterCoreServices(container, configuration);
         }
     }
 }
