@@ -115,7 +115,7 @@ namespace dotless.Test.Spec.ExtensibleEngine
             SpecHelper.ShouldEqual("whitespace"); 
         }
 
-        [Test, Ignore(Upcoming)]
+        [Test]
         public void ShouldMergeSameElement()
         {
             SpecHelper.ShouldEqual("merge-same");
