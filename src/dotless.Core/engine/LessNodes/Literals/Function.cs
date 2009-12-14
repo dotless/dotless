@@ -13,6 +13,7 @@
  * limitations under the License. */
 
 using System;
+using System.Linq;
 using dotless.Core.utils;
 
 namespace dotless.Core.engine
@@ -39,7 +40,17 @@ namespace dotless.Core.engine
 
         public INode Evaluate()
         {
-            return new Literal(string.Format("{0}{1}", Value.ToUpper(), ArgsString));
+            // RGB color hack
+            if(Value.Equals("rgb", StringComparison.InvariantCultureIgnoreCase))
+            {
+                if(!Args.All(arg => arg is Number) || !(Args.Count == 3))
+                {
+                    throw new exceptions.ParsingException("Expected 3 numeric arguments for RGB color.");
+                }
+                var colorArgs = Args.Cast<Number>().Select(arg => arg.Unit == "%" ? 255*arg.Value/100 : arg.Value).ToArray();
+                return new Color(colorArgs[0], colorArgs[1], colorArgs[2]);
+            }
+            return new Literal(string.Format("{0}({1})", Value.ToUpper(), ArgsString));
             //TODO: Functions are sloooooow this way, consider a caching att avaliable function calls. and b using reflection emit
             try
             {
@@ -57,7 +68,7 @@ namespace dotless.Core.engine
             {
                 var sb = new StringBuilder();
                 foreach (var arg in Args)
-                    sb.AppendFormat("{0},", arg);
+                    sb.AppendFormat("{0},", arg.ToCss());
                 var args = sb.ToString();
                 return args.Substring(0, args.Length - 1);
             }

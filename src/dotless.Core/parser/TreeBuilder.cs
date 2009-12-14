@@ -318,24 +318,31 @@ namespace dotless.Core.parser
         /// <returns></returns>
         private IEnumerable<INode> Arguments(PegNode node)
         {
-            foreach(var argument in node.AsEnumerable().Skip(1))
-                switch (argument.id_.ToEnLess())
+            foreach (var argument in node.AsEnumerable().Skip(1))
+            {
+                if (argument.child_ == null)
+                    yield return new Anonymous(argument.GetAsString(Src));
+                else
                 {
-                    case EnLess.color:
-                        yield return Color(argument);
-                        break;
-                    case EnLess.number:
-                        yield return Number(argument);
-                        break;
-                    case EnLess.@string:
-                        yield return new String(argument.GetAsString(Src));
-                        break;
-                    case EnLess.keyword:
-                        yield return new Keyword(argument.GetAsString(Src));
-                        break;
-                    default:
-                        yield return new Anonymous(argument.GetAsString(Src));
-                        break;
+                    switch (argument.child_.id_.ToEnLess())
+                    {
+                        case EnLess.color:
+                            yield return Color(argument);
+                            break;
+                        case EnLess.number:
+                            yield return Number(argument);
+                            break;
+                        case EnLess.@string:
+                            yield return new String(argument.GetAsString(Src));
+                            break;
+                        case EnLess.keyword:
+                            yield return new Keyword(argument.GetAsString(Src));
+                            break;
+                        default:
+                            yield return new Anonymous(argument.GetAsString(Src));
+                            break;
+                    }
+                }
             }
         }
 
