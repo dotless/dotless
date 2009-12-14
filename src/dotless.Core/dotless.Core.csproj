@@ -106,8 +106,10 @@
     <Compile Include="exceptions\VariableNameException.cs" />
     <Compile Include="HandlerImpl.cs" />
     <Compile Include="ILessEngine.cs" />
+    <Compile Include="ILogger.cs" />
     <Compile Include="LessCssHttpHandler.cs" />
     <Compile Include="LessEngine.cs" />
+    <Compile Include="Loggers\ConsoleLogger.cs" />
     <Compile Include="MinifierDecorator.cs" />
     <Compile Include="minifier\CleanedStream.cs" />
     <Compile Include="minifier\ExpressionBuilder.cs" />
