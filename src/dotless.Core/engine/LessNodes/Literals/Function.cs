@@ -14,6 +14,8 @@
 
 using System;
 using System.Linq;
+using System.Reflection;
+using dotless.Core.engine.Functions;
 using dotless.Core.utils;
 
 namespace dotless.Core.engine
@@ -41,25 +43,15 @@ namespace dotless.Core.engine
         public INode Evaluate()
         {
             // RGB color hack
-            if(Value.Equals("rgb", StringComparison.InvariantCultureIgnoreCase))
+
+            Type functionType = Type.GetType("dotless.Core.engine.Functions." + Value + "Function", false, true);
+            if(functionType == null)
             {
-                if(!Args.All(arg => arg is Number) || !(Args.Count == 3))
-                {
-                    throw new exceptions.ParsingException("Expected 3 numeric arguments for RGB color.");
-                }
-                var colorArgs = Args.Cast<Number>().Select(arg => arg.Unit == "%" ? 255*arg.Value/100 : arg.Value).ToArray();
-                return new Color(colorArgs[0], colorArgs[1], colorArgs[2]);
+                return new Literal(string.Format("{0}({1})", Value.ToUpper(), ArgsString));                
             }
-            return new Literal(string.Format("{0}({1})", Value.ToUpper(), ArgsString));
-            //TODO: Functions are sloooooow this way, consider a caching att avaliable function calls. and b using reflection emit
-            try
-            {
-                return (INode)CsEval.Eval(string.Format("Functions.{0}{1}", Value.ToUpper(), ArgsString));
-            }
-            catch (Exception)
-            {
-                return new Literal(string.Format("{0}({1})", Value.ToUpper(), ArgsString));
-            }
+            var function = (FunctionBase)Activator.CreateInstance(functionType);
+            function.SetArguments(Args.ToArray());
+            return function.Evaluate();
         }
 
         protected string ArgsString
