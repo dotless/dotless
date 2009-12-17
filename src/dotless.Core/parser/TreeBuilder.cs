@@ -135,12 +135,16 @@ namespace dotless.Core.parser
         private void Declaration(PegNode node, Element element)
         {
             var name = node.GetAsString(Src).Replace(" ", "");
-            if(node.next_ == null)
-            {
+            var nextNode = node.next_;
+
+            if(nextNode == null){
                 // TODO: emit warning: empty declaration //
                 return;
             }
-            var values = Expressions(node.next_, element);
+            if (nextNode.ToEnLess() == EnLess.comment)
+                nextNode = nextNode.next_;
+
+            var values = Expressions(nextNode, element);
             var property = name.StartsWith("@") ? new Variable(name, values) : new Property(name, values);
             element.Add(property);
         }
@@ -191,6 +195,9 @@ namespace dotless.Core.parser
                         break;
                     case EnLess.expression:
                         yield return Expression(node.child_, element);
+                        break;
+                    case EnLess.comment:
+                        node.ToString();
                         break;
                 }
                 node = node.next_;

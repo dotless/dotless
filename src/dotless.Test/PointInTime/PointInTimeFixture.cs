@@ -14,6 +14,8 @@
 
 using System.Diagnostics;
 using System.Linq;
+using dotless.Core.engine.Pipeline;
+using dotless.Core.parser;
 
 namespace dotless.Test.PointInTime
 {
@@ -44,6 +46,7 @@ namespace dotless.Test.PointInTime
         [Test]
         public void AltEngine_Parse_Test_Data()
         {
+            //PipelineFactory.LessParser = new LessTreePrinterParser();
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             var engine = new ExtensibleEngineImpl(File.ReadAllText(@"PointInTime/TestData.less"));

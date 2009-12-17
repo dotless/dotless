@@ -1,4 +1,4 @@
-/* created on 14-12-2009 1:22:33 from peg generator V1.0 using '' as input*/
+/* created on 17/12/2009 21:20:05 from peg generator V1.0 using '' as input*/
 
 using Peg.Base;
 using System;
@@ -152,16 +152,19 @@ namespace nLess
            return TreeNT((int)EnLess.declaration,()=>
                     standard_declaration() || catchall_declaration() );
 		}
-        public bool standard_declaration()    /*standard_declaration: ws (ident / variable)  ws ':' ws expressions  ws (';'/ ws &'}') ws ;*/
+        public bool standard_declaration()    /*standard_declaration: ws (ident / variable)  ws (comment)* ':' ws (comment)* expressions (comment)* ws (';'/ ws &'}') ws ;*/
         {
 
            return And(()=>  
                      ws()
                   && (    ident() || variable())
                   && ws()
+                  && OptRepeat(()=> comment() )
                   && Char(':')
                   && ws()
+                  && OptRepeat(()=> comment() )
                   && expressions()
+                  && OptRepeat(()=> comment() )
                   && ws()
                   && (    
                          Char(';')
