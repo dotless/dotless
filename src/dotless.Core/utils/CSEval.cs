@@ -1,4 +1,4 @@
-﻿/* Copyright 2009 dotless project, http://www.dotlesscss.com
+﻿﻿/* Copyright 2009 dotless project, http://www.dotlesscss.com
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,8 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
-using System.CodeDom;
-using System.Threading;
+using System.Collections.Generic;
+using dotless.Core.engine;
 
 namespace dotless.Core.utils
 {
@@ -22,17 +22,39 @@ namespace dotless.Core.utils
     using System.Text;
     using Microsoft.CSharp;
 
-    public static class OldCsEval
+    public static class CsEval
     {
-        private static int counter = 0;
         public static object Eval(string injectedCode)
         {
-            Console.WriteLine(counter);
-            counter++;
-            var c = new CSharpCodeProvider();
-            
             var comp = (new CSharpCodeProvider().CreateCompiler());
-            var cr = comp.CompileAssemblyFromSource(Params, GetCode(injectedCode));
+            var cp = new CompilerParameters();
+            //cp.ReferencedAssemblies.Add("system.dll");
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                try
+                {
+                    var location = assembly.Location;
+                    if (!String.IsNullOrEmpty(location)) cp.ReferencedAssemblies.Add(location);
+                }
+                catch (NotSupportedException)
+                {
+                    // this happens for dynamic assemblies, so just ignore it.
+                }
+            }
+            cp.GenerateExecutable = false;
+            cp.GenerateInMemory = true;
+            var code = new StringBuilder();
+            code.Append("using System; \n");
+            code.Append("using dotless.Core.engine; \n");
+            code.Append("namespace CsEvaluation { \n");
+            code.Append("  public class _Evaluator { \n");
+            code.Append("       public object _Eval() { \n");
+            code.AppendFormat("             return {0}; ", injectedCode);
+            code.Append("               }\n");
+            code.Append("       }\n");
+            code.Append("  }\n");
+
+            var cr = comp.CompileAssemblyFromSource(cp, code.ToString());
             if (cr.Errors.HasErrors)
             {
                 var error = new StringBuilder();
@@ -49,131 +71,210 @@ namespace dotless.Core.utils
             return mi.Invoke(compiled, null);
         }
 
-        private static string GetCode(string injectedCode)
-        {
-            var code = new StringBuilder();
-            code.Append("using System; \n");
-            code.Append("using dotless.Core.engine; \n");
-            code.Append("namespace CsEvaluation { \n");
-            code.Append("  public class _Evaluator { \n");
-            code.Append("       public object _Eval() { \n");
-            code.AppendFormat("             return {0}; ", injectedCode);
-            code.Append("               }\n");
-            code.Append("       }\n");
-            code.Append("  }\n");
-            return code.ToString();
-        }
 
-        private static CompilerParameters _params;
-        private static CompilerParameters Params
+        public static object StackEval(Expression expression)
         {
-            get
+            var temporaryStack = new Stack<Entity>();
+            var postfix = new List<Entity>();
+            foreach (var node in expression)
             {
-                if(_params==null){
-                    _params = new CompilerParameters {GenerateExecutable = false, GenerateInMemory = true};
-
-                    foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-                    {
-                        try
-                        {
-                            var location = assembly.Location;
-                            if (!String.IsNullOrEmpty(location)) _params.ReferencedAssemblies.Add(location);
-                        }
-                        catch (NotSupportedException)
-                        {
-                            // this happens for dynamic assemblies, so just ignore it.
-                        }
-                    }
-                }
-                return _params;
-            }
-        }
-    }
-
-
-    public static class CsEval
-    {
-        static void LogTime(string Message)
-        {
-           if (Last == 0)
-                Last = DateTime.Now.Ticks;
-            else
-            {
-
-                Console.WriteLine(string.Format("{0} - {1}", DateTime.Now.Ticks - Last, Message));
-                Last = DateTime.Now.Ticks;
-            }
-        }
-
-        private static long Last = 132;
-        public static object Eval(string injectedCode)
-        {
-
-            //LogTime("starting");
-            var code = GetCode(injectedCode);
-            //LogTime("getting code");
-            var compileUnit = new CodeSnippetCompileUnit(code);
-            //LogTime("CodeSnippetCompileUnit");
-            var provider = new CSharpCodeProvider();
-            var cr = provider.CompileAssemblyFromDom(Params, compileUnit);
-            //LogTime("CompileAssemblyFromDom");
-            if (cr.Errors.HasErrors)
-            {
-                var error = new StringBuilder();
-                foreach (CompilerError err in cr.Errors)
-                    error.AppendFormat("{0}\n", err.ErrorText);
-
-                throw new Exception(error.ToString());
-            }
-
-            var a = cr.CompiledAssembly;
-            var compiled = a.CreateInstance("CsEvaluation._Evaluator");
-            var mi = compiled.GetType().GetMethod("_Eval");
-            var returnObj =  mi.Invoke(compiled, null);
-            //LogTime("Reflection results");
-            return returnObj;
-        }
-
-        private static string GetCode(string injectedCode)
-        {
-            var code = new StringBuilder();
-            code.Append("using System; \n");
-            code.Append("using dotless.Core.engine; \n");
-            code.Append("namespace CsEvaluation { \n");
-            code.Append("  public class _Evaluator { \n");
-            code.Append("       public object _Eval() { \n");
-            code.AppendFormat("             return {0}; ", injectedCode);
-            code.Append("               }\n");
-            code.Append("       }\n");
-            code.Append("  }\n");
-            return code.ToString();
-        }
-
-        private static CompilerParameters _params;
-        private static CompilerParameters Params
-        {
-            get
-            {
-                if (_params == null)
+                if (node is Operator)
                 {
-                    _params = new CompilerParameters { GenerateExecutable = false, GenerateInMemory = true };
-
-                    foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+                    var oper = (Operator)node;
+                    switch (oper.Value)
                     {
-                        try
+                        case "(":
+                            temporaryStack.Push(oper);
+                            break;
+                        case ")":
+                            while (!(temporaryStack.Peek() is Operator) && temporaryStack.Peek().Value != ")")
+                            {
+                                postfix.Add(temporaryStack.Pop());
+                            }
+                            temporaryStack.Pop();
+                            break;
+                    }
+                    if (temporaryStack.Count > 0)
+                    {
+                        switch (oper.Value.Trim())
                         {
-                            var location = assembly.Location;
-                            if (!String.IsNullOrEmpty(location)) _params.ReferencedAssemblies.Add(location);
-                        }
-                        catch (NotSupportedException)
-                        {
-                            // this happens for dynamic assemblies, so just ignore it.
+                            case "+":
+                            case "-":
+                                while (temporaryStack.Count > 0 && temporaryStack.Peek().Value.Trim() != "(")
+                                {
+                                    postfix.Add(temporaryStack.Pop());
+                                }
+                                break;
+                            case "/":
+                            case "*":
+                                while (temporaryStack.Count > 0 && (temporaryStack.Peek().Value.Trim() == "/" || temporaryStack.Peek().Value.Trim() == "*"))
+                                {
+                                    postfix.Add(temporaryStack.Pop());
+                                }
+                                break;
                         }
                     }
+                    temporaryStack.Push(oper);
+
                 }
-                return _params;
+                else
+                {
+                    postfix.Add((Entity)node);
+                }
             }
+            while (temporaryStack.Count > 0)
+            {
+                postfix.Add(temporaryStack.Pop());
+            }
+
+            var values = new Stack<Entity>();
+            foreach (var element in postfix)
+            {
+                if (element is Operator)
+                {
+                    var right = values.Pop();
+                    var left = values.Pop();
+                    switch (element.Value.Trim())
+                    {
+                        case "+":
+                            values.Push(Add(left, right));
+                            break;
+                        case "-":
+                            values.Push(Sub(left, right));
+                            break;
+                        case "/":
+                            values.Push(Div(left, right));
+                            break;
+                        case "*":
+                            values.Push(Mul(left, right));
+                            break;
+                    }
+
+                }
+                else
+                {
+                    values.Push(element);
+                }
+            }
+            return values.Pop();
+        }
+
+        private static Entity Sub(Entity left, Entity right)
+        {
+            if (left is Color)
+            {
+                if (right is Number)
+                {
+                    return (Color)left - ((Number)right).Value;
+                }
+                if (right is Color)
+                {
+                    return (Color)left - (Color)right;
+                }
+                throw new InvalidOperationException();
+            }
+            if (left is Number)
+            {
+                if (right is Number)
+                {
+                    return (Number)left - (Number)right;
+                }
+                if (right is Color)
+                {
+                    return ((Number)left).Value - (Color)right;
+                }
+                throw new InvalidOperationException();
+
+            }
+            throw new NotImplementedException();
+        }
+
+        private static Entity Div(Entity left, Entity right)
+        {
+            if (left is Color)
+            {
+                if (right is Number)
+                {
+                    return (Color)left / ((Number)right).Value;
+                }
+                if (right is Color)
+                {
+                    return (Color)left / (Color)right;
+                }
+                throw new InvalidOperationException();
+            }
+            if (left is Number)
+            {
+                if (right is Number)
+                {
+                    return (Number)left / (Number)right;
+                }
+                if (right is Color)
+                {
+                    return ((Number)left).Value / (Color)right;
+                }
+                throw new InvalidOperationException();
+
+            }
+            throw new NotImplementedException();
+        }
+        private static Entity Mul(Entity left, Entity right)
+        {
+            if (left is Color)
+            {
+                if (right is Number)
+                {
+                    return (Color)left * ((Number)right).Value;
+                }
+                if (right is Color)
+                {
+                    return (Color)left * (Color)right;
+                }
+                throw new InvalidOperationException();
+            }
+            if (left is Number)
+            {
+                if (right is Number)
+                {
+                    return (Number)left * (Number)right;
+                }
+                if (right is Color)
+                {
+                    return ((Number)left).Value * (Color)right;
+                }
+                throw new InvalidOperationException();
+
+            }
+            throw new NotImplementedException();
+        }
+        private static Entity Add(Entity left, Entity right)
+        {
+            if (left is Color)
+            {
+                if (right is Number)
+                {
+                    return (Color)left + ((Number)right).Value;
+                }
+                if (right is Color)
+                {
+                    return (Color)left + (Color)right;
+                }
+                throw new InvalidOperationException();
+            }
+            if (left is Number)
+            {
+                if (right is Number)
+                {
+                    return (Number)left + (Number)right;
+                }
+                if (right is Color)
+                {
+                    return ((Number)left).Value + (Color)right;
+                }
+                throw new InvalidOperationException();
+
+            }
+            throw new NotImplementedException();
         }
     }
-
 }

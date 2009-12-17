@@ -12,6 +12,8 @@
     <AssemblyName>dotless.Core</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\dotless-open-source.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -96,7 +98,7 @@
     <Compile Include="engine\LessNodes\Literals\Functions.cs" />
     <Compile Include="engine\LessNodes\Literals\Number.cs" />
     <Compile Include="engine\LessNodes\Literals\String.cs" />
-    <Compile Include="exceptions\MixedUnitsExeption.cs" />
+    <Compile Include="exceptions\MixedUnitsException.cs" />
     <Compile Include="engine\LessNodes\Operator.cs" />
     <Compile Include="engine\LessNodes\Property.cs" />
     <Compile Include="engine\LessNodes\Selector.cs" />
@@ -132,6 +134,9 @@
     <Compile Include="utils\RegexExtentions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\dotless-open-source.snk">
+      <Link>dotless-open-source.snk</Link>
+    </None>
     <None Include="parser\Less.gram" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

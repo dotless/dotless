@@ -12,6 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
+using System.Diagnostics;
+using System.Linq;
+
 namespace dotless.Test.PointInTime
 {
     using System;
@@ -25,6 +28,20 @@ namespace dotless.Test.PointInTime
     [TestFixture]
     public class PointInTimeFixture
     {
+        [Test]
+        public void Expression_Eval_Benchmark()
+        {
+            var query = "@a: 10px;";
+            var rules = Enumerable.Range(0, 10).Select(x => string.Format("class{0} {{ width: @a / 2 + 4; }}", x));
+            query += string.Join(Environment.NewLine, rules.ToArray());
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            var engine = new ExtensibleEngineImpl(query);
+            Console.Write("Time elapsed: " + stopwatch.ElapsedMilliseconds);
+            Console.Write(engine.Css);
+            
+
+        }
         [Test]
         public void AltEngine_Parse_Test_Data()
         {
