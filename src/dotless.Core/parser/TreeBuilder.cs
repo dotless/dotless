@@ -142,7 +142,7 @@ namespace dotless.Core.parser
                 return;
             }
             if (nextNode.ToEnLess() == EnLess.comment)
-                nextNode = nextNode.next_;
+                nextNode = nextNode.next_; 
 
             var values = Expressions(nextNode, element);
             var property = name.StartsWith("@") ? new Variable(name, values) : new Property(name, values);
