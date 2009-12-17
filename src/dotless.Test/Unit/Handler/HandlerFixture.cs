@@ -40,7 +40,6 @@ namespace dotless.Test.Unit.Handler
         public void RetrievesPathFromRequest()
         {
             var mock = MockRepository.GenerateMock<IRequest>();
-            string path = "abc";
 
             var impl = new HandlerImpl(provider, mock, response, engine);
 

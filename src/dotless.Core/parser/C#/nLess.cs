@@ -1,4 +1,4 @@
-/* created on 29/11/2009 15:08:08 from peg generator V1.0 using '' as input*/
+/* created on 14-12-2009 1:22:33 from peg generator V1.0 using '' as input*/
 
 using Peg.Base;
 using System;
@@ -298,18 +298,17 @@ namespace nLess
                       And(()=>    s() && select() && element() && s() ) )
                   && Option(()=> arguments() ) ) );
 		}
-        public bool arguments()    /*^^arguments : '(' s argument s (',' s argument s)* ')';*/
+        public bool arguments()    /*arguments : '(' s argument s (',' s argument s)* ')';*/
         {
 
-           return TreeNT((int)EnLess.arguments,()=>
-                And(()=>  
+           return And(()=>  
                      Char('(')
                   && s()
                   && argument()
                   && s()
                   && OptRepeat(()=>    
                       And(()=>    Char(',') && s() && argument() && s() ) )
-                  && Char(')') ) );
+                  && Char(')') );
 		}
         public bool argument()    /*^^argument : color / number unit / string / [a-zA-Z]+ '=' dimension / [-a-zA-Z0-9_%$/.&=:;#+?]+ / function / keyword (S keyword)*;*/
         {

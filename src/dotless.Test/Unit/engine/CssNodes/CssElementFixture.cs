@@ -12,6 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
+using System.Collections.Generic;
 using dotless.Core.engine.CssNodes;
 using NUnit.Framework;
 
@@ -35,6 +36,25 @@ namespace dotless.Test.Unit.engine.CssNodes
             element.AddProperty(property);
             element.AddProperty(property);
             Assert.AreEqual(1, element.Properties.Count);
+        }
+        
+        [Test]
+        public void Equal_Properties_Grouped_Correctly()
+        {
+            var element = new CssElement("a .class");
+            element.Properties = new HashSet<CssProperty>
+                                     {
+                                         new CssProperty("padding", "20px"),
+                                         new CssProperty("color","red")
+                                     };
+
+            var otherElement = new CssElement("a .notherclass");
+            otherElement.Properties = new HashSet<CssProperty>
+                                          {
+                                         new CssProperty("color","red"),
+                                         new CssProperty("padding", "20px"),
+                                     };
+            Assert.IsTrue(element.IsEquiv(otherElement));
         }
     }
 }

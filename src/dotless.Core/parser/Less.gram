@@ -25,7 +25,7 @@ ruleset : standard_ruleset / mixin_ruleset;
 ^^mixin_ruleset :  ws selectors ';' ws; 
 ^^selectors :  ws selector (s ',' ws selector)* ws ;
 ^^selector : (s select element s)+ arguments? ;
-^^arguments : '(' s argument s (',' s argument s)* ')';
+arguments : '(' s argument s (',' s argument s)* ')';
 ^^argument : color / number unit / string / [a-zA-Z]+ '=' dimension / [-a-zA-Z0-9_%$/.&=:;#+?]+ / function / keyword (S keyword)*;
 ^^element : (class_id / tag / ident) attribute* ('(' ident? attribute* ')')? / attribute+ / '@media' / '@font-face';
 ^^class_id : tag? (class / id)+;

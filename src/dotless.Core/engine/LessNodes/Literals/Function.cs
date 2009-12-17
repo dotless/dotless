@@ -13,6 +13,9 @@
  * limitations under the License. */
 
 using System;
+using System.Linq;
+using System.Reflection;
+using dotless.Core.engine.Functions;
 using dotless.Core.utils;
 
 namespace dotless.Core.engine
@@ -39,16 +42,16 @@ namespace dotless.Core.engine
 
         public INode Evaluate()
         {
-            return new Literal(string.Format("{0}{1}", Value.ToUpper(), ArgsString));
-            //TODO: Functions are sloooooow this way, consider a caching att avaliable function calls. and b using reflection emit
-            try
+            // RGB color hack
+
+            Type functionType = Type.GetType("dotless.Core.engine.Functions." + Value + "Function", false, true);
+            if(functionType == null)
             {
-                return (INode)CsEval.Eval(string.Format("Functions.{0}{1}", Value.ToUpper(), ArgsString));
+                return new Literal(string.Format("{0}({1})", Value.ToUpper(), ArgsString));                
             }
-            catch (Exception)
-            {
-                return new Literal(string.Format("{0}({1})", Value.ToUpper(), ArgsString));
-            }
+            var function = (FunctionBase)Activator.CreateInstance(functionType);
+            function.SetArguments(Args.ToArray());
+            return function.Evaluate();
         }
 
         protected string ArgsString
@@ -57,7 +60,7 @@ namespace dotless.Core.engine
             {
                 var sb = new StringBuilder();
                 foreach (var arg in Args)
-                    sb.AppendFormat("{0},", arg);
+                    sb.AppendFormat("{0},", arg.ToCss());
                 var args = sb.ToString();
                 return args.Substring(0, args.Length - 1);
             }

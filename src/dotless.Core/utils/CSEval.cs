@@ -14,73 +14,21 @@
 
 using System.Collections.Generic;
 using dotless.Core.engine;
+using System;
 
 namespace dotless.Core.utils
 {
-    using System;
-    using System.CodeDom.Compiler;
-    using System.Text;
-    using Microsoft.CSharp;
-
     public static class CsEval
     {
-        public static object Eval(string injectedCode)
-        {
-            var comp = (new CSharpCodeProvider().CreateCompiler());
-            var cp = new CompilerParameters();
-            //cp.ReferencedAssemblies.Add("system.dll");
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                try
-                {
-                    var location = assembly.Location;
-                    if (!String.IsNullOrEmpty(location)) cp.ReferencedAssemblies.Add(location);
-                }
-                catch (NotSupportedException)
-                {
-                    // this happens for dynamic assemblies, so just ignore it.
-                }
-            }
-            cp.GenerateExecutable = false;
-            cp.GenerateInMemory = true;
-            var code = new StringBuilder();
-            code.Append("using System; \n");
-            code.Append("using dotless.Core.engine; \n");
-            code.Append("namespace CsEvaluation { \n");
-            code.Append("  public class _Evaluator { \n");
-            code.Append("       public object _Eval() { \n");
-            code.AppendFormat("             return {0}; ", injectedCode);
-            code.Append("               }\n");
-            code.Append("       }\n");
-            code.Append("  }\n");
-
-            var cr = comp.CompileAssemblyFromSource(cp, code.ToString());
-            if (cr.Errors.HasErrors)
-            {
-                var error = new StringBuilder();
-                foreach (CompilerError err in cr.Errors)
-                {
-                    error.AppendFormat("{0}\n", err.ErrorText);
-                }
-                throw new Exception(error.ToString());
-            }
-
-            var a = cr.CompiledAssembly;
-            var compiled = a.CreateInstance("CsEvaluation._Evaluator");
-            var mi = compiled.GetType().GetMethod("_Eval");
-            return mi.Invoke(compiled, null);
-        }
-
-
         public static object StackEval(Expression expression)
         {
             var temporaryStack = new Stack<Entity>();
             var postfix = new List<Entity>();
             foreach (var node in expression)
             {
-                if (node is Operator)
+                if(node is Operator)
                 {
-                    var oper = (Operator)node;
+                    var oper = (Operator) node;
                     switch (oper.Value)
                     {
                         case "(":
@@ -122,7 +70,7 @@ namespace dotless.Core.utils
                     postfix.Add((Entity)node);
                 }
             }
-            while (temporaryStack.Count > 0)
+            while(temporaryStack.Count > 0)
             {
                 postfix.Add(temporaryStack.Pop());
             }
@@ -161,19 +109,19 @@ namespace dotless.Core.utils
 
         private static Entity Sub(Entity left, Entity right)
         {
-            if (left is Color)
+            if(left is Color)
             {
-                if (right is Number)
+                if(right is Number)
                 {
-                    return (Color)left - ((Number)right).Value;
+                    return (Color) left - ((Number)right).Value;
                 }
-                if (right is Color)
+                if(right is Color)
                 {
-                    return (Color)left - (Color)right;
+                    return (Color) left - (Color) right;
                 }
                 throw new InvalidOperationException();
             }
-            if (left is Number)
+            if(left is Number)
             {
                 if (right is Number)
                 {
@@ -184,7 +132,7 @@ namespace dotless.Core.utils
                     return ((Number)left).Value - (Color)right;
                 }
                 throw new InvalidOperationException();
-
+                
             }
             throw new NotImplementedException();
         }
@@ -211,7 +159,7 @@ namespace dotless.Core.utils
                 }
                 if (right is Color)
                 {
-                    return ((Number)left).Value / (Color)right;
+                    return ((Number) left).Value/(Color) right;
                 }
                 throw new InvalidOperationException();
 
@@ -240,7 +188,7 @@ namespace dotless.Core.utils
                 }
                 if (right is Color)
                 {
-                    return ((Number)left).Value * (Color)right;
+                    return ((Number) left).Value*(Color) right;
                 }
                 throw new InvalidOperationException();
 

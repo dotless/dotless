@@ -24,5 +24,38 @@ namespace dotless.Core.engine.CssNodes
             Key = key;
             Value = value;
         }
+
+        public bool Equals(CssProperty other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Equals(other.Key, Key) && Equals(other.Value, Value);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != typeof (CssProperty)) return false;
+            return Equals((CssProperty) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (Key.GetHashCode()*397) ^ Value.GetHashCode();
+            }
+        }
+
+        public static bool operator ==(CssProperty left, CssProperty right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(CssProperty left, CssProperty right)
+        {
+            return !Equals(left, right);
+        }
     }
 }
