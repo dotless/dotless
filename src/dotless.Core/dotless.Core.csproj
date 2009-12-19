@@ -12,6 +12,8 @@
     <AssemblyName>dotless.Core</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\dotless-open-source.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -71,6 +73,11 @@
     <Compile Include="ContainerFactory.cs" />
     <Compile Include="EngineFactory.cs" />
     <Compile Include="engine\ExtensibleEngineImpl.cs" />
+    <Compile Include="engine\Functions\AddFunction.cs" />
+    <Compile Include="engine\Functions\ColorFunction.cs" />
+    <Compile Include="engine\Functions\FunctionBase.cs" />
+    <Compile Include="engine\Functions\IncrementFunction.cs" />
+    <Compile Include="engine\Functions\RgbFunction.cs" />
     <Compile Include="engine\Pipeline\CssBuilder.cs" />
     <Compile Include="engine\CssNodes\CssDocument.cs" />
     <Compile Include="engine\CssNodes\CssElement.cs" />
@@ -93,10 +100,9 @@
     <Compile Include="engine\LessNodes\Literals\Color.cs" />
     <Compile Include="engine\LessNodes\Literals\Font.cs" />
     <Compile Include="engine\LessNodes\Literals\Function.cs" />
-    <Compile Include="engine\LessNodes\Literals\Functions.cs" />
     <Compile Include="engine\LessNodes\Literals\Number.cs" />
     <Compile Include="engine\LessNodes\Literals\String.cs" />
-    <Compile Include="exceptions\MixedUnitsExeption.cs" />
+    <Compile Include="exceptions\MixedUnitsException.cs" />
     <Compile Include="engine\LessNodes\Operator.cs" />
     <Compile Include="engine\LessNodes\Property.cs" />
     <Compile Include="engine\LessNodes\Selector.cs" />
@@ -104,8 +110,10 @@
     <Compile Include="exceptions\VariableNameException.cs" />
     <Compile Include="HandlerImpl.cs" />
     <Compile Include="ILessEngine.cs" />
+    <Compile Include="ILogger.cs" />
     <Compile Include="LessCssHttpHandler.cs" />
     <Compile Include="LessEngine.cs" />
+    <Compile Include="Loggers\ConsoleLogger.cs" />
     <Compile Include="MinifierDecorator.cs" />
     <Compile Include="minifier\CleanedStream.cs" />
     <Compile Include="minifier\ExpressionBuilder.cs" />
@@ -132,6 +140,9 @@
     <Compile Include="utils\RegexExtentions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\dotless-open-source.snk">
+      <Link>dotless-open-source.snk</Link>
+    </None>
     <None Include="parser\Less.gram" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

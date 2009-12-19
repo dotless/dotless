@@ -12,27 +12,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
-namespace dotless.Core.exceptions
+namespace dotless.Core.Loggers
 {
     using System;
-    using System.Runtime.Serialization;
+    using System.Diagnostics;
 
-    public class MixedUnitsExeption : Exception
+    public class DebuggerLogger : ILogger
     {
-        public MixedUnitsExeption()
+        public void WriteError(string file, int line, string message)
         {
-        }
-
-        public MixedUnitsExeption(string message) : base(message)
-        {
-        }
-
-        public MixedUnitsExeption(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-
-        protected MixedUnitsExeption(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
+            if (Debugger.IsLogging())
+                Debugger.Log(10, ".less", String.Format("[.LESS] [{0}] {1} in File {2} \n", line, message, file));
         }
     }
 }

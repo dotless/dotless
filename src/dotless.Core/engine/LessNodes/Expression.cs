@@ -103,11 +103,13 @@ namespace dotless.Core.engine
                 for (var i=0; i<Count; i++){
                     this[i] = this[i] is IEvaluatable ? ((IEvaluatable)this[i]).Evaluate() : this[i];
                 }
-                var result = Operators.Count() == 0 ? this : CsEval.Eval(ToCSharp());
+                object result;
+                result = Operators.Count == 0 ? this : CsEval.StackEval(this);
+                
                 INode returnNode;
 
                 var unit = Literals.Where(l => !string.IsNullOrEmpty(l.Unit)).Select(l => l.Unit).Distinct().ToArray();
-                if (unit.Count() > 1 && Operators.Count() != 0) throw new MixedUnitsExeption(); 
+                if (unit.Count() > 1 && Operators.Count() != 0) throw new MixedUnitsException(); 
                 var entity = Literals.Where(e => unit.Contains(e.Unit)).FirstOrDefault() ?? Entities.First();
 
                 if (result is Entity) returnNode = (INode)result;

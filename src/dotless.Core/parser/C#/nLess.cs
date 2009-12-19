@@ -1,4 +1,4 @@
-/* created on 29/11/2009 15:08:08 from peg generator V1.0 using '' as input*/
+/* created on 17/12/2009 21:20:05 from peg generator V1.0 using '' as input*/
 
 using Peg.Base;
 using System;
@@ -152,16 +152,19 @@ namespace nLess
            return TreeNT((int)EnLess.declaration,()=>
                     standard_declaration() || catchall_declaration() );
 		}
-        public bool standard_declaration()    /*standard_declaration: ws (ident / variable)  ws ':' ws expressions  ws (';'/ ws &'}') ws ;*/
+        public bool standard_declaration()    /*standard_declaration: ws (ident / variable)  ws (comment)* ':' ws (comment)* expressions (comment)* ws (';'/ ws &'}') ws ;*/
         {
 
            return And(()=>  
                      ws()
                   && (    ident() || variable())
                   && ws()
+                  && OptRepeat(()=> comment() )
                   && Char(':')
                   && ws()
+                  && OptRepeat(()=> comment() )
                   && expressions()
+                  && OptRepeat(()=> comment() )
                   && ws()
                   && (    
                          Char(';')
@@ -298,18 +301,17 @@ namespace nLess
                       And(()=>    s() && select() && element() && s() ) )
                   && Option(()=> arguments() ) ) );
 		}
-        public bool arguments()    /*^^arguments : '(' s argument s (',' s argument s)* ')';*/
+        public bool arguments()    /*arguments : '(' s argument s (',' s argument s)* ')';*/
         {
 
-           return TreeNT((int)EnLess.arguments,()=>
-                And(()=>  
+           return And(()=>  
                      Char('(')
                   && s()
                   && argument()
                   && s()
                   && OptRepeat(()=>    
                       And(()=>    Char(',') && s() && argument() && s() ) )
-                  && Char(')') ) );
+                  && Char(')') );
 		}
         public bool argument()    /*^^argument : color / number unit / string / [a-zA-Z]+ '=' dimension / [-a-zA-Z0-9_%$/.&=:;#+?]+ / function / keyword (S keyword)*;*/
         {

@@ -13,6 +13,7 @@
  * limitations under the License. */
 
 using System;
+using dotless.Core.exceptions;
 
 namespace dotless.Core.engine
 {
@@ -71,64 +72,61 @@ namespace dotless.Core.engine
         #region operator overrides
         public static Number operator +(Number number1, Number number2)
         {
-            number1.Value += number2.Value;
-            return number1;
+            if (number1.Unit != number2.Unit && !string.IsNullOrEmpty(number1.Unit) && !string.IsNullOrEmpty(number2.Unit)) throw new MixedUnitsException();
+            var unit = number1.Unit != "" ? number1.Unit : number2.Unit;
+            return new Number(number1.Value + number2.Value) { Unit = unit };
         }
         public static Number operator +(Number number1, double number2)
         {
-            number1.Value += number2;
-            return number1;
+            return new Number(number1.Value + number2) { Unit = number1.Unit };
         }
-        public static Number operator +(double number2, Number number1)
+        public static Number operator +(double number1, Number number2)
         {
-            number1.Value += number2;
-            return number1;
+            return new Number(number1 + number2.Value) { Unit = number2.Unit };
         }
         public static Number operator -(Number number1, Number number2)
         {
-            number1.Value -= number2.Value;
-            return number1;
+            if (number1.Unit != number2.Unit && !string.IsNullOrEmpty(number1.Unit) && !string.IsNullOrEmpty(number2.Unit)) throw new MixedUnitsException();
+            var unit = number1.Unit != "" ? number1.Unit : number2.Unit;
+            return new Number(number1.Value - number2.Value) { Unit = unit };
         }
         public static Number operator -(Number number1, double number2)
         {
-            number1.Value -= number2;
-            return number1;
+            return new Number(number1.Value - number2) { Unit = number1.Unit };
         }
-        public static Number operator -(double number2, Number number1)
+        public static Number operator -(double number1, Number number2)
         {
-            number1.Value -= number2;
-            return number1;
+            return new Number(number1 - number2.Value) { Unit = number2.Unit };
         }      
         public static Number operator *(Number number1, Number number2)
         {
-            number1.Value *= number2.Value;
-            return number1;
+            if (number1.Unit != number2.Unit && !string.IsNullOrEmpty(number1.Unit) && !string.IsNullOrEmpty(number2.Unit)) throw new MixedUnitsException();
+            var unit = number1.Unit != "" ? number1.Unit : number2.Unit;
+            return new Number(number1.Value * number2.Value) { Unit = unit };
         }
         public static Number operator *(Number number1, double number2)
         {
-            number1.Value *= number2;
-            return number1;
+            return new Number(number1.Value * number2) { Unit = number1.Unit };
         }
-        public static Number operator *(double number2, Number number1)
+        public static Number operator *(double number1, Number number2)
         {
-            number1.Value *= number2;
-            return number1;
+            return new Number(number1 * number2.Value) { Unit = number2.Unit };
         }
         public static Number operator /(Number number1, Number number2)
         {
-            number1.Value /= number2.Value;
-            return number1;
+            if (number1.Unit != number2.Unit && !string.IsNullOrEmpty(number1.Unit) && !string.IsNullOrEmpty(number2.Unit)) throw new MixedUnitsException();
+            var unit = number1.Unit != "" ? number1.Unit : number2.Unit;
+            return new Number(number1.Value / number2.Value) { Unit = unit };
         }
         public static Number operator /(Number number1, double number2)
         {
-            number1.Value /= number2;
-            return number1;
+            return new Number(number1.Value/number2) {Unit = number1.Unit};
         }
-        public static Number operator /(double number2, Number number1)
+        public static Number operator /(double number1, Number number2)
         {
-            number1.Value /= number2;
-            return number1;
+            return new Number(number1 / number2.Value) { Unit = number2.Unit };
         }
+
         #endregion
     }
 }

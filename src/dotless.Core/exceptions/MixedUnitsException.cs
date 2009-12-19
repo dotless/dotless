@@ -12,17 +12,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
-namespace dotless.Core
+namespace dotless.Core.exceptions
 {
-    using System.IO;
-    using engine;
+    using System;
+    using System.Runtime.Serialization;
 
-    public class ExtensibleEngine : ILessEngine
+    public class MixedUnitsException : Exception
     {
-        public string TransformToCss(string filename)
+        public MixedUnitsException()
         {
-            var engineImpl = new ExtensibleEngineImpl(File.ReadAllText(filename));
-            return engineImpl.Css;
+        }
+
+        public MixedUnitsException(string message) : base(message)
+        {
+        }
+
+        public MixedUnitsException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
+        protected MixedUnitsException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
         }
     }
 }

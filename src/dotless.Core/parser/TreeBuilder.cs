@@ -135,12 +135,16 @@ namespace dotless.Core.parser
         private void Declaration(PegNode node, Element element)
         {
             var name = node.GetAsString(Src).Replace(" ", "");
-            if(node.next_ == null)
-            {
+            var nextNode = node.next_;
+
+            if(nextNode == null){
                 // TODO: emit warning: empty declaration //
                 return;
             }
-            var values = Expressions(node.next_, element);
+            if (nextNode.ToEnLess() == EnLess.comment)
+                nextNode = nextNode.next_; 
+
+            var values = Expressions(nextNode, element);
             var property = name.StartsWith("@") ? new Variable(name, values) : new Property(name, values);
             element.Add(property);
         }
@@ -191,6 +195,9 @@ namespace dotless.Core.parser
                         break;
                     case EnLess.expression:
                         yield return Expression(node.child_, element);
+                        break;
+                    case EnLess.comment:
+                        node.ToString();
                         break;
                 }
                 node = node.next_;
@@ -318,24 +325,31 @@ namespace dotless.Core.parser
         /// <returns></returns>
         private IEnumerable<INode> Arguments(PegNode node)
         {
-            foreach(var argument in node.AsEnumerable().Skip(1))
-                switch (argument.id_.ToEnLess())
+            foreach (var argument in node.AsEnumerable().Skip(1))
+            {
+                if (argument.child_ == null)
+                    yield return new Anonymous(argument.GetAsString(Src));
+                else
                 {
-                    case EnLess.color:
-                        yield return Color(argument);
-                        break;
-                    case EnLess.number:
-                        yield return Number(argument);
-                        break;
-                    case EnLess.@string:
-                        yield return new String(argument.GetAsString(Src));
-                        break;
-                    case EnLess.keyword:
-                        yield return new Keyword(argument.GetAsString(Src));
-                        break;
-                    default:
-                        yield return new Anonymous(argument.GetAsString(Src));
-                        break;
+                    switch (argument.child_.id_.ToEnLess())
+                    {
+                        case EnLess.color:
+                            yield return Color(argument);
+                            break;
+                        case EnLess.number:
+                            yield return Number(argument);
+                            break;
+                        case EnLess.@string:
+                            yield return new String(argument.GetAsString(Src));
+                            break;
+                        case EnLess.keyword:
+                            yield return new Keyword(argument.GetAsString(Src));
+                            break;
+                        default:
+                            yield return new Anonymous(argument.GetAsString(Src));
+                            break;
+                    }
+                }
             }
         }
 
