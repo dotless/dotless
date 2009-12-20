@@ -18,14 +18,13 @@ namespace dotless.Core.engine.Pipeline
             while (elements.Count != 0)
             {
                 var element = elements[0];
-
                 var allProperties = (from e in elements
                                      from property in e.Properties
                                      where e.Identifiers == element.Identifiers
                                      select property).Reverse().Distinct(new CssPropertyComparer()).Reverse();
 
 
-                yield return new CssElement(element.Identifiers) { Properties = new HashSet<CssProperty>(allProperties)};
+                yield return new CssElement(element.Identifiers) { Properties = new HashSet<CssProperty>(allProperties), InsertContent = element.InsertContent};
 
                 elements.RemoveAll(e => e.Identifiers == element.Identifiers);
             }

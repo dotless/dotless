@@ -36,10 +36,12 @@ namespace dotless.Core.engine.Pipeline
                 path.Add(element.Selector.ToCss());
                 path.Add(element.Name);
 
+
                 //Only add an element to the document when we have reached the end of the path
                 if(element.Properties.Count !=0 )
                 {
-                    var cssProperties = new List<CssProperty>();
+                 var cssProperties = new List<CssProperty>();
+
                     foreach (var property in element.Properties)
                         cssProperties.Add(new CssProperty(property.Key, property.Evaluate().ToCss()));
 
@@ -48,6 +50,10 @@ namespace dotless.Core.engine.Pipeline
                     pathContent = pathContent.StartsWith(" ") ? pathContent.Substring(1) : pathContent;
                     _cssDocument.Elements.Add(new CssElement(pathContent, cssProperties));
                 }
+            }
+            if (element.Inserts.Count != 0){
+                foreach (var insert in element.Inserts)
+                    _cssDocument.Elements.Add(new CssElement { InsertContent = insert.ToString()});
             }
             //Keep going
             foreach (var nextElement in element.Elements)

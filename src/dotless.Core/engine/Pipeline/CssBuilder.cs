@@ -33,8 +33,15 @@ namespace dotless.Core.engine.Pipeline
 
             foreach(var ruleset in rulesets)
             {
-                var propertyString = GetPropertyString(new List<CssProperty>(ruleset.Properties));
-                stringBuilder.Append(string.Format("{0} {{{1}}}\r\n", ruleset.Identifiers, propertyString));
+                if(ruleset.InsertContent!=null)
+                {
+                    stringBuilder.Append(string.Format("{0}\r\n", ruleset.InsertContent));  
+                }
+                else
+                {
+                    var propertyString = GetPropertyString(new List<CssProperty>(ruleset.Properties));
+                    stringBuilder.Append(string.Format("{0} {{{1}}}\r\n", ruleset.Identifiers, propertyString));  
+                }
             }
             return stringBuilder.ToString();
         }
@@ -83,7 +90,7 @@ namespace dotless.Core.engine.Pipeline
                     elements.Remove(el);
                 }
                 var rulesetString = GetRuleSetString(similarElements);
-                yield return new CssElement(rulesetString) { Properties = comparisonElement.Properties };
+                yield return new CssElement(rulesetString) { Properties = comparisonElement.Properties, InsertContent = comparisonElement.InsertContent};
             }
         }
     }

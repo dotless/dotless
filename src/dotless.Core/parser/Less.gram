@@ -2,8 +2,9 @@
 
 //******************************************** Less
 ^Parse:  primary ;
-^^primary: (import / declaration / ruleset / comment)* ;
+^^primary: (import / insert/ declaration / ruleset / comment)* ;
 ^^import :  ws '@import'  S import_url medias? s ';' ;
+^^insert :  ws '@insert'  S import_url medias? s ';' ;
 ^^import_url : ( string / url  ) ;
 ^^medias : [-a-z]+ (s ',' s [a-z]+)*;
 ^url: 'url(' url_path ')';

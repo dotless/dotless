@@ -21,8 +21,23 @@ namespace dotless.Core.engine
     using exceptions;
     using utils;
 
+    public class Insert : Literal
+    {
+        public Insert(string value) : base(value)
+        {
+        }
+    }
+
     public class Element : INode, INearestResolver
     {
+        public IList<Insert> Inserts
+        {
+            get
+            {
+                return Rules.Where(r => r.GetType() == typeof(Insert))
+                    .Select(r => (Insert) r).ToList();
+            }
+        }
 
         public INode Parent { get; set; }
         public List<INode> Rules { get; set; }

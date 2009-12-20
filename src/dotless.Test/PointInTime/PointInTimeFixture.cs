@@ -14,8 +14,6 @@
 
 using System.Diagnostics;
 using System.Linq;
-using dotless.Core.engine.Pipeline;
-using dotless.Core.parser;
 
 namespace dotless.Test.PointInTime
 {

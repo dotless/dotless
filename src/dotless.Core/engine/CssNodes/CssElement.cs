@@ -24,12 +24,20 @@ namespace dotless.Core.engine.CssNodes
         public string Identifiers { get; set; } 
         public HashSet<CssProperty> Properties { get; set; }
 
+        public string InsertContent { get; set; }
+
+        public CssElement()
+        {
+            Identifiers = string.Empty;
+            Properties = new HashSet<CssProperty>();
+        }
+
         public CssElement(string identifierWithSelectors)
             : this(identifierWithSelectors, new List<CssProperty>())
         {
         }
 
-        public CssElement(string identifierWithSelectors, IList<CssProperty> properties)
+        public CssElement(string identifierWithSelectors, IList<CssProperty> properties) : this()
         {
             Identifiers = identifierWithSelectors;
             Properties = new HashSet<CssProperty>(properties);

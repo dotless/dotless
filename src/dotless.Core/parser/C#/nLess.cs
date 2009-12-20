@@ -1,4 +1,4 @@
-/* created on 17/12/2009 21:20:05 from peg generator V1.0 using '' as input*/
+/* created on 19/12/2009 15:41:11 from peg generator V1.0 using '' as input*/
 
 using Peg.Base;
 using System;
@@ -7,19 +7,19 @@ using System.Text;
 namespace nLess
 {
       
-      enum EnLess{Parse= 1, primary= 2, import= 3, import_url= 4, medias= 5, url= 6, 
-                   url_path= 7, comment= 8, declaration= 9, standard_declaration= 10, 
-                   catchall_declaration= 11, ident= 12, variable= 13, expressions= 14, 
-                   operation_expressions= 15, space_delimited_expressions= 16, important= 17, 
-                   expression= 18, @operator= 19, ruleset= 20, standard_ruleset= 21, 
-                   mixin_ruleset= 22, selectors= 23, selector= 24, arguments= 25, 
-                   argument= 26, element= 27, class_id= 28, attribute= 29, @class= 30, 
-                   id= 31, tag= 32, select= 33, function= 34, function_name= 35, 
-                   entity= 36, accessor= 37, accessor_name= 38, accessor_key= 39, 
-                   cursors= 40, cursor= 41, fonts= 42, font= 43, literal= 44, dimension_list= 45, 
-                   keyword= 46, @string= 47, dimension= 48, number= 49, unit= 50, 
-                   color= 51, rgb= 52, rgb_node= 53, hex= 54, WS= 55, ws= 56, s= 57, 
-                   S= 58, ns= 59};
+      enum EnLess{Parse= 1, primary= 2, import= 3, insert= 4, import_url= 5, medias= 6, 
+                   url= 7, url_path= 8, comment= 9, declaration= 10, standard_declaration= 11, 
+                   catchall_declaration= 12, ident= 13, variable= 14, expressions= 15, 
+                   operation_expressions= 16, space_delimited_expressions= 17, important= 18, 
+                   expression= 19, @operator= 20, ruleset= 21, standard_ruleset= 22, 
+                   mixin_ruleset= 23, selectors= 24, selector= 25, arguments= 26, 
+                   argument= 27, element= 28, class_id= 29, attribute= 30, @class= 31, 
+                   id= 32, tag= 33, select= 34, function= 35, function_name= 36, 
+                   entity= 37, accessor= 38, accessor_name= 39, accessor_key= 40, 
+                   cursors= 41, cursor= 42, fonts= 43, font= 44, literal= 45, dimension_list= 46, 
+                   keyword= 47, @string= 48, dimension= 49, number= 50, unit= 51, 
+                   color= 52, rgb= 53, rgb_node= 54, hex= 55, WS= 56, ws= 57, s= 58, 
+                   S= 59, ns= 60};
       class nLess : PegCharParser 
       {
         
@@ -70,12 +70,17 @@ namespace nLess
 
            return TreeAST((int)EnLess.Parse,()=> primary() );
 		}
-        public bool primary()    /*^^primary: (import / declaration / ruleset / comment)* ;*/
+        public bool primary()    /*^^primary: (import / insert/ declaration / ruleset / comment)* ;*/
         {
 
            return TreeNT((int)EnLess.primary,()=>
                 OptRepeat(()=>  
-                      import() || declaration() || ruleset() || comment() ) );
+                      
+                         import()
+                      || insert()
+                      || declaration()
+                      || ruleset()
+                      || comment() ) );
 		}
         public bool import()    /*^^import :  ws '@import'  S import_url medias? s ';' ;*/
         {
@@ -84,6 +89,19 @@ namespace nLess
                 And(()=>  
                      ws()
                   && Char('@','i','m','p','o','r','t')
+                  && S()
+                  && import_url()
+                  && Option(()=> medias() )
+                  && s()
+                  && Char(';') ) );
+		}
+        public bool insert()    /*^^insert :  ws '@insert'  S import_url medias? s ';' ;*/
+        {
+
+           return TreeNT((int)EnLess.insert,()=>
+                And(()=>  
+                     ws()
+                  && Char('@','i','n','s','e','r','t')
                   && S()
                   && import_url()
                   && Option(()=> medias() )

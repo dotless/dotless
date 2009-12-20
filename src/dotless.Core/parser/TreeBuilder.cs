@@ -76,6 +76,10 @@ namespace dotless.Core.parser
                         Import(nextPrimary.child_, element);
                         //element.Rules.AddRange(import);
                         break;
+                    case EnLess.insert:
+                        Insert(nextPrimary.child_, element);
+                        //element.Rules.AddRange(import);
+                        break;
                     case EnLess.standard_ruleset:
                         RuleSet(nextPrimary, element);
                         break;
@@ -126,6 +130,25 @@ namespace dotless.Core.parser
             }
             return new List<INode>();
         }
+
+
+        private IEnumerable<INode> Insert(PegNode node, Element element)
+        {
+            node = (node.child_ ?? node);
+            var path = (node).GetAsString(Src)
+                .Replace("\"", "").Replace("'", "");
+
+            if (HttpContext.Current != null){
+                path = HttpContext.Current.Server.MapPath(path);
+            }
+
+            if (File.Exists(path)){
+                var text = File.ReadAllText(path);
+                element.Add(new Insert(text));
+            }
+            return new List<INode>();
+        }
+
 
         /// <summary>
         /// declaration:  standard_declaration / catchall_declaration ;
@@ -468,13 +491,13 @@ namespace dotless.Core.parser
         /// </summary>
         /// <param name="node"></param>
         /// <param name="element"></param>
-        private void OldMixin(PegNode node, Element element)
-        {
-            var root = element.GetRoot();
-            foreach (var el in Selectors(node.child_, els => els))
-                root = root.Descend(el.Selector, el);
-            if (root.Rules != null) element.Rules.AddRange(root.Rules);
-        }
+//        private void OldMixin(PegNode node, Element element)
+//        {
+//            var root = element.GetRoot();
+//            foreach (var el in Selectors(node.child_, els => els))
+//                root = root.Descend(el.Selector, el);
+//            if (root.Rules != null) element.Rules.AddRange(root.Rules);
+//        }
         private void Mixin(PegNode node, Element element)
         {
             var root = element.GetRoot();
