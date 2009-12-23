@@ -194,7 +194,7 @@ outline: 1px solid red;
         }
 
         [Test]
-        public void CommentRemoverIgnoresForcedComments()
+        public void RemoveExtendedCommentsIgnoresForcedComments()
         {
             //The general idea is to ignore all comments starting with /*! so users can keep stuff like
             //license agreements in there
