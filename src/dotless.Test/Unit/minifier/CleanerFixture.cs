@@ -192,5 +192,19 @@ outline: 1px solid red;
 
             Assert.AreEqual(desiredOutput, output);
         }
+
+        [Test]
+        public void CommentRemoverIgnoresForcedComments()
+        {
+            //The general idea is to ignore all comments starting with /*! so users can keep stuff like
+            //license agreements in there
+
+            string input = "body {background: red; /*! Hello */}";
+            string desiredOutput = "body {background: red; /*! Hello */}";
+            string output = WhiteSpaceFilter.RemoveExtendedComments(input);
+            
+            Assert.AreEqual(desiredOutput, output);
+            
+        }
     }
 }

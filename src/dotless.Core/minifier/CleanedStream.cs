@@ -44,8 +44,9 @@ namespace dotless.Core.minifier
 
         public static string RemoveExtendedComments(string input)
         {
-            // Clear Regex: (?<!\".*)/\*(.|\n)*\*/(?!.*\")
-            return CreateRegex("(?<!\\\".*)/\\*(.|\\n)*\\*/(?!.*\\\")").Replace(input, "");
+            // Clear Regex: (?<!\".*)/\*(?!!)(.|\n)*\*/(?!.*\")
+            //Note: Does not remove forced comments /*!
+            return CreateRegex("(?<!\\\".*)/\\*(?!!)(.|\\n)*\\*/(?!.*\\\")").Replace(input, "");
         }
 
         public static string RemoveMultipleWhiteSpaces(string input)
