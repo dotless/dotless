@@ -116,6 +116,7 @@
     <Compile Include="Loggers\ConsoleLogger.cs" />
     <Compile Include="MinifierDecorator.cs" />
     <Compile Include="minifier\CleanedStream.cs" />
+    <Compile Include="minifier\CommentExpression.cs" />
     <Compile Include="minifier\ExpressionBuilder.cs" />
     <Compile Include="minifier\IDescriptorBuilder.cs" />
     <Compile Include="minifier\IExpression.cs" />

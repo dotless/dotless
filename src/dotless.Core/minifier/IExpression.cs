@@ -15,9 +15,11 @@
 namespace dotless.Core.minifier
 {
     using System.Collections.Generic;
+    using System.Text;
 
     public interface IExpression
     {
         KeyValuePair<string, string> Expression { get; }
+        void BuildCss(StringBuilder builder);
     }
 }

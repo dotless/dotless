@@ -39,10 +39,7 @@ namespace dotless.Core.minifier
 
             foreach(var expression in node.Expressions)
             {
-                builder.Append(expression.Expression.Key);
-                builder.Append(':');
-                builder.Append(expression.Expression.Value);
-                builder.Append(';');
+                expression.BuildCss(builder);
             }
 
             if (node.Descriptor != "ROOT")

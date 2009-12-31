@@ -60,6 +60,8 @@ namespace dotless.Core.minifier
             }
             
             var value = builder.ToString().Trim();
+            if (value.StartsWith("/*!"))
+                return new CommentExpression(value);
             if (descriptor == null || value == null || string.IsNullOrEmpty(descriptor) || string.IsNullOrEmpty(value))
                 return null;
             return new StyleExpression(descriptor.Trim(), value.Trim());

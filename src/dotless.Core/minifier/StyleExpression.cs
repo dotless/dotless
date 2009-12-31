@@ -15,6 +15,7 @@
 namespace dotless.Core.minifier
 {
     using System.Collections.Generic;
+    using System.Text;
 
     public class StyleExpression : IExpression
     {
@@ -27,9 +28,14 @@ namespace dotless.Core.minifier
             Expression = value;
         }
 
-        public KeyValuePair<string, string> Expression
+        public KeyValuePair<string, string> Expression { get; private set; }
+
+        public void BuildCss(StringBuilder builder)
         {
-            get; private set;
+            builder.Append(Expression.Key);
+            builder.Append(':');
+            builder.Append(Expression.Value);
+            builder.Append(';');
         }
     }
 }
