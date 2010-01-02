@@ -14,6 +14,8 @@
 
 namespace dotless.Core
 {
+    using System;
+    using System.Configuration;
     using Abstractions;
 
     public class AspCacheDecorator : ILessEngine
@@ -27,14 +29,15 @@ namespace dotless.Core
             this.cache = cache;
         }
 
-        public string TransformToCss(string filename)
+        public string TransformToCss(ILessSource source)
         {
-            if (!cache.Exists(filename))
+            if (!source.Cacheable) throw new ConfigurationErrorsException("Your LessSource does not support ASP caching!");
+            if (!cache.Exists(source.Key))
             {
-                string css = underlying.TransformToCss(filename);
-                cache.Insert(filename, css);
+                string css = underlying.TransformToCss(source);
+                cache.Insert(source.Key, css);
             }
-            return cache.Retrieve(filename);
+            return cache.Retrieve(source.Key);
         }
     }
 }

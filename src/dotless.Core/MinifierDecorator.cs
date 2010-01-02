@@ -28,7 +28,13 @@ namespace dotless.Core
 
         public string TransformToCss(string filename)
         {
-            string buffer = engine.TransformToCss(filename);
+            var fileSource = new FileSource(filename);
+            return TransformToCss(fileSource);
+        }
+
+        public string TransformToCss(ILessSource source)
+        {
+            string buffer = engine.TransformToCss(source);
             var processor = new Processor(buffer);
             return new StringBuilder().Append(processor.Output).ToString();
         }

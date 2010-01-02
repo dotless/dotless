@@ -14,14 +14,19 @@
 
 namespace dotless.Core
 {
-    using System.IO;
     using engine;
 
     public class ExtensibleEngine : ILessEngine
     {
         public string TransformToCss(string filename)
+        {                                               
+            var fileSource = new FileSource(filename);
+            return TransformToCss(fileSource);
+        }
+
+        public string TransformToCss(ILessSource source)
         {
-            var engineImpl = new ExtensibleEngineImpl(File.ReadAllText(filename));
+            var engineImpl = new ExtensibleEngineImpl(source.Content);
             return engineImpl.Css;
         }
     }

@@ -4,6 +4,7 @@ namespace dotless.Test.Unit.Handler
     using Core.Abstractions;
     using NUnit.Framework;
     using Rhino.Mocks;
+    using Rhino.Mocks.Constraints;
 
     [TestFixture]
     public class HandlerFixture
@@ -58,7 +59,7 @@ namespace dotless.Test.Unit.Handler
 
             impl.Execute();
 
-            mock.AssertWasCalled(p => p.TransformToCss(lessFile));
+            mock.AssertWasCalled(p => p.TransformToCss(null), p => p.IgnoreArguments().Constraints(Property.Value("Key", lessFile)));
         }
 
         [Test]

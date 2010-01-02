@@ -108,8 +108,10 @@
     <Compile Include="engine\LessNodes\Selector.cs" />
     <Compile Include="engine\LessNodes\Variable.cs" />
     <Compile Include="exceptions\VariableNameException.cs" />
+    <Compile Include="FileSource.cs" />
     <Compile Include="HandlerImpl.cs" />
     <Compile Include="ILessEngine.cs" />
+    <Compile Include="ILessSource.cs" />
     <Compile Include="ILogger.cs" />
     <Compile Include="LessCssHttpHandler.cs" />
     <Compile Include="LessEngine.cs" />

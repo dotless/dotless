@@ -35,8 +35,8 @@ namespace dotless.Core
         {
             // our unprocessed filename   
             var lessFile = pathProvider.MapPath(request.LocalPath);
-
-            response.WriteCss(engine.TransformToCss(lessFile));
+            var fileSource = new FileSource(lessFile);
+            response.WriteCss(engine.TransformToCss(fileSource));
         }
     }
 }
