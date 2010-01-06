@@ -14,7 +14,7 @@
 
 namespace dotless.Core
 {
-    public class LessSourceFactory : ILessSourceFactory
+    public class FileSourceFactory : ILessSourceFactory
     {
         public ILessSource GetSource(string path)
         {

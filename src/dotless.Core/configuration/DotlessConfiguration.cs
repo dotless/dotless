@@ -14,11 +14,18 @@
 
 namespace dotless.Core.configuration
 {
+    using System;
+
     public class DotlessConfiguration
     {
+        public DotlessConfiguration()
+        {
+            SourceFactory = typeof (FileSource);
+        }
+
         public bool MinifyOutput { get; set; }
         public bool CacheEnabled { get; set; }
-
+        public Type SourceFactory { get; set; }
         public static DotlessConfiguration Default
         {
             get

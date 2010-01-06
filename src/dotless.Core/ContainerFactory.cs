@@ -67,7 +67,7 @@ namespace dotless.Core
             container.Register(p =>
                                    {
                                        p.Service<ILessSourceFactory>()
-                                           .Implementor<LessSourceFactory>();
+                                           .Implementor(configuration.SourceFactory);
                                        p.Service<ICache>()
                                            .Implementor<CssCache>();
                                        p.Service<IPathProvider>()

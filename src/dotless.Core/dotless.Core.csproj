@@ -116,7 +116,7 @@
     <Compile Include="ILogger.cs" />
     <Compile Include="LessCssHttpHandler.cs" />
     <Compile Include="LessEngine.cs" />
-    <Compile Include="LessSourceFactory.cs" />
+    <Compile Include="FileSourceFactory.cs" />
     <Compile Include="Loggers\ConsoleLogger.cs" />
     <Compile Include="MinifierDecorator.cs" />
     <Compile Include="minifier\CleanedStream.cs" />
@@ -144,6 +144,7 @@
     <Compile Include="StringSource.cs" />
     <Compile Include="utils\CSEval.cs" />
     <Compile Include="utils\RegexExtentions.cs" />
+    <Compile Include="VirtualPathSource.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\dotless-open-source.snk">
