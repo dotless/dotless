@@ -22,20 +22,22 @@ namespace dotless.Core
         private readonly IRequest request;
         private readonly IResponse response;
         private readonly ILessEngine engine;
+        private readonly ILessSourceFactory lessSourceFactory;
 
-        public HandlerImpl(IPathProvider pathProvider, IRequest request, IResponse response, ILessEngine engine)
+        public HandlerImpl(IPathProvider pathProvider, IRequest request, IResponse response, ILessEngine engine, ILessSourceFactory lessSourceFactory)
         {
             this.pathProvider = pathProvider;
             this.request = request;
             this.response = response;
             this.engine = engine;
+            this.lessSourceFactory = lessSourceFactory;
         }
 
         public void Execute()
         {
             // our unprocessed filename   
             var lessFile = pathProvider.MapPath(request.LocalPath);
-            var fileSource = new FileSource(lessFile);
+            var fileSource = lessSourceFactory.GetSource(lessFile);
             response.WriteCss(engine.TransformToCss(fileSource));
         }
     }

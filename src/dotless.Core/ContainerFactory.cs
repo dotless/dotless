@@ -12,8 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
-using System.Web;
-
 namespace dotless.Core
 {
     using Abstractions;
@@ -68,6 +66,8 @@ namespace dotless.Core
             var container = new PandoraContainer();
             container.Register(p =>
                                    {
+                                       p.Service<ILessSourceFactory>()
+                                           .Implementor<LessSourceFactory>();
                                        p.Service<ICache>()
                                            .Implementor<CssCache>();
                                        p.Service<IPathProvider>()
