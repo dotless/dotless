@@ -67,6 +67,7 @@
     <Compile Include="Spec\ExtensibleEngine\SpecHelper.cs" />
     <Compile Include="Spec\SpecExtensions.cs" />
     <Compile Include="Unit\configuration\XmlConfigurationFixture.cs" />
+    <Compile Include="Unit\ConsoleRunner\CompilerFixture.cs" />
     <Compile Include="Unit\engine\AltEngineFixture.cs" />
     <Compile Include="Unit\engine\CssNodes\CssElementFixture.cs" />
     <Compile Include="Unit\engine\CssNodes\CssPropertyFixture.cs" />
@@ -85,6 +86,10 @@
     <Compile Include="Unit\utils\RegexExtentionsFixtures.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\dotless.Compiler\dotless.Compiler.csproj">
+      <Project>{D0CE2A3A-5086-494A-A967-5D54B41BBC64}</Project>
+      <Name>dotless.Compiler</Name>
+    </ProjectReference>
     <ProjectReference Include="..\dotless.Core\dotless.Core.csproj">
       <Project>{D7A24E58-68D0-4B10-A324-EA33C822FA56}</Project>
       <Name>dotless.Core</Name>
