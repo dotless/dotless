@@ -59,7 +59,7 @@ namespace dotless.Compiler
                 var factory = new EngineFactory();
                 ILessEngine engine = factory.GetEngine(configuration);
                 Console.Write("Compiling {0} -> {1} ", inputFilePath, outputFilePath);
-                string css = engine.TransformToCss(new FileSource(inputFilePath));
+                string css = engine.TransformToCss(new FileSource().GetSource(inputFilePath));
                 File.WriteAllText(outputFilePath, css);
                 Console.WriteLine("[Done]");
             }

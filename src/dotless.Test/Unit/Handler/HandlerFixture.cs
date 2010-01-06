@@ -12,7 +12,7 @@ namespace dotless.Test.Unit.Handler
         private IRequest request;
         private IResponse response;
         private ILessEngine engine;
-        private ILessSourceFactory lessSourceFactory;
+        private ILessSource lessSource;
 
         [SetUp]
         public void SetUp()
@@ -21,7 +21,7 @@ namespace dotless.Test.Unit.Handler
             request = MockRepository.GenerateStub<IRequest>();
             response = MockRepository.GenerateStub<IResponse>();
             engine = MockRepository.GenerateStub<ILessEngine>();
-            lessSourceFactory = MockRepository.GenerateStub<ILessSourceFactory>();
+            lessSource = MockRepository.GenerateStub<ILessSource>();
         }
 
         [Test]
@@ -30,7 +30,7 @@ namespace dotless.Test.Unit.Handler
             var mock = MockRepository.GenerateMock<IPathProvider>();
             string path = "abc";
             request.Stub(p => p.LocalPath).Return(path);
-            var impl = new HandlerImpl(mock, request, response, engine, lessSourceFactory);
+            var impl = new HandlerImpl(mock, request, response, engine, lessSource);
 
             impl.Execute();
 
@@ -42,7 +42,7 @@ namespace dotless.Test.Unit.Handler
         {
             var mock = MockRepository.GenerateMock<IRequest>();
 
-            var impl = new HandlerImpl(provider, mock, response, engine, lessSourceFactory);
+            var impl = new HandlerImpl(provider, mock, response, engine, lessSource);
 
             impl.Execute();
 
@@ -52,7 +52,7 @@ namespace dotless.Test.Unit.Handler
         [Test]
         public void CallsSourceFactoryWithFilePath()
         {
-            var mock = MockRepository.GenerateMock<ILessSourceFactory>();
+            var mock = MockRepository.GenerateMock<ILessSource>();
             string lessFile = "myLessfile.less";
             provider.Stub(p => p.MapPath(null)).IgnoreArguments().Return(lessFile);
             var impl = new HandlerImpl(provider, request, response, engine, mock);
@@ -68,7 +68,7 @@ namespace dotless.Test.Unit.Handler
             var mock = MockRepository.GenerateStub<IResponse>();
             string output = "myCss";
             engine.Stub(p => p.TransformToCss(null)).IgnoreArguments().Return(output);
-            var impl = new HandlerImpl(provider, request, mock, engine, lessSourceFactory);
+            var impl = new HandlerImpl(provider, request, mock, engine, lessSource);
 
             impl.Execute();
 

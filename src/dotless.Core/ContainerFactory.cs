@@ -66,8 +66,8 @@ namespace dotless.Core
             var container = new PandoraContainer();
             container.Register(p =>
                                    {
-                                       p.Service<ILessSourceFactory>()
-                                           .Implementor(configuration.SourceFactory);
+                                       p.Service<ILessSource>()
+                                           .Implementor(configuration.LessSource);
                                        p.Service<ICache>()
                                            .Implementor<CssCache>();
                                        p.Service<IPathProvider>()

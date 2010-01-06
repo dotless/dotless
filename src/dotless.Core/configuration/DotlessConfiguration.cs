@@ -20,12 +20,12 @@ namespace dotless.Core.configuration
     {
         public DotlessConfiguration()
         {
-            SourceFactory = typeof (FileSource);
+            LessSource = typeof (FileSource);
         }
 
         public bool MinifyOutput { get; set; }
         public bool CacheEnabled { get; set; }
-        public Type SourceFactory { get; set; }
+        public Type LessSource { get; set; }
         public static DotlessConfiguration Default
         {
             get

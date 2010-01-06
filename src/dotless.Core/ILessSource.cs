@@ -16,8 +16,13 @@ namespace dotless.Core
 {
     public interface ILessSource
     {
-        string Content { get; }
-        bool Cacheable { get; }
-        string Key { get; }
+        LessSourceObject GetSource(string key);
+    }
+
+    public class LessSourceObject
+    {
+        public string Content { get; set; }
+        public bool Cacheable { get; set; }
+        public string Key { get; set; }
     }
 }

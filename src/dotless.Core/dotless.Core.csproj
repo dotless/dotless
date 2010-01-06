@@ -112,11 +112,9 @@
     <Compile Include="HandlerImpl.cs" />
     <Compile Include="ILessEngine.cs" />
     <Compile Include="ILessSource.cs" />
-    <Compile Include="ILessSourceFactory.cs" />
     <Compile Include="ILogger.cs" />
     <Compile Include="LessCssHttpHandler.cs" />
     <Compile Include="LessEngine.cs" />
-    <Compile Include="FileSourceFactory.cs" />
     <Compile Include="Loggers\ConsoleLogger.cs" />
     <Compile Include="MinifierDecorator.cs" />
     <Compile Include="minifier\CleanedStream.cs" />

@@ -19,32 +19,17 @@ namespace dotless.Core
 
     public class StringSource : ILessSource
     {
-        private readonly string content;
-
-        public StringSource(string content)
+        private static string ComputeHash(string content)
         {
-            this.content = content;
-        }
-
-        public string Content
-        {
-            get { return content; }
-        }
-
-        public bool Cacheable
-        {
-            get { return false; }
-        }
-
-        public string Key
-        {
-            get
-            {
                 byte[] inputStream = Encoding.Default.GetBytes(content);
                 return BitConverter.ToString(
                     System.Security.Cryptography.SHA1.Create().ComputeHash(inputStream))
                     .Replace("-", "");
-            }
+        }
+
+        public LessSourceObject GetSource(string key)
+        {
+            return new LessSourceObject {Content = key, Key = ComputeHash(key)};
         }
     }
 }

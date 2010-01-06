@@ -19,12 +19,12 @@ namespace dotless.Core
     public class ExtensibleEngine : ILessEngine
     {
         public string TransformToCss(string filename)
-        {                                               
-            var fileSource = new FileSource(filename);
+        {
+            var fileSource = new FileSource().GetSource(filename);
             return TransformToCss(fileSource);
         }
 
-        public string TransformToCss(ILessSource source)
+        public string TransformToCss(LessSourceObject source)
         {
             var engineImpl = new ExtensibleEngineImpl(source.Content);
             return engineImpl.Css;

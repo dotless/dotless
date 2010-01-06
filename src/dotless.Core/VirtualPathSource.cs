@@ -19,33 +19,13 @@ namespace dotless.Core
 
     public class VirtualPathSource : ILessSource
     {
-        private readonly string fileName;
-
-        public VirtualPathSource(string fileName)
+        public LessSourceObject GetSource(string key)
         {
-            this.fileName = fileName;
-        }
-
-        public string Content
-        {
-            get
-            {
-                VirtualPathProvider virtualPathProvider = HostingEnvironment.VirtualPathProvider;
-                VirtualFile virtualFile = virtualPathProvider.GetFile(fileName);
-                var streamReader = new StreamReader(virtualFile.Open());
-                string fileContent = streamReader.ReadToEnd();
-                return fileContent;
-            }
-        }
-
-        public bool Cacheable
-        {
-            get { return true; }
-        }
-
-        public string Key
-        {
-            get { return fileName; }
+            VirtualPathProvider virtualPathProvider = HostingEnvironment.VirtualPathProvider;
+            VirtualFile virtualFile = virtualPathProvider.GetFile(key);
+            var streamReader = new StreamReader(virtualFile.Open());
+            string fileContent = streamReader.ReadToEnd();
+            return new LessSourceObject {Content = fileContent, Key = key};
         }
     }
 }

@@ -28,11 +28,11 @@ namespace dotless.Core
 
         public string TransformToCss(string filename)
         {
-            var fileSource = new FileSource(filename);
+            var fileSource = new FileSource().GetSource(filename);
             return TransformToCss(fileSource);
         }
 
-        public string TransformToCss(ILessSource source)
+        public string TransformToCss(LessSourceObject source)
         {
             string buffer = engine.TransformToCss(source);
             var processor = new Processor(buffer);
