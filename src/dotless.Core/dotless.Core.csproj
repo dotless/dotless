@@ -115,6 +115,7 @@
     <Compile Include="ILogger.cs" />
     <Compile Include="LessCssHttpHandler.cs" />
     <Compile Include="LessEngine.cs" />
+    <Compile Include="LessSourceObject.cs" />
     <Compile Include="Loggers\ConsoleLogger.cs" />
     <Compile Include="MinifierDecorator.cs" />
     <Compile Include="minifier\CleanedStream.cs" />

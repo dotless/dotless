@@ -14,13 +14,10 @@
 
 namespace dotless.Core
 {
-    using System.IO;
-
-    public class FileSource : ILessSource
+    public class LessSourceObject
     {
-        public LessSourceObject GetSource(string key)
-        {
-            return new LessSourceObject {Content = File.ReadAllText(key), Key = key, Cacheable = true};
-        }
+        public string Content { get; set; }
+        public bool Cacheable { get; set; }
+        public string Key { get; set; }
     }
 }

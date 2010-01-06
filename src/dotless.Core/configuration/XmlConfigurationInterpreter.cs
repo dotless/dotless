@@ -14,6 +14,7 @@
 
 namespace dotless.Core.configuration
 {
+    using System;
     using System.Xml;
 
     public class XmlConfigurationInterpreter
@@ -29,6 +30,11 @@ namespace dotless.Core.configuration
             XmlAttribute cacheAttribute = section.Attributes["cache"];
             if (cacheAttribute != null && cacheAttribute.Value == "false")
                 dotlessConfiguration.CacheEnabled = false;
+
+            //Source
+            XmlAttribute sourceAttribute = section.Attributes["source"];
+            if (sourceAttribute != null)
+                dotlessConfiguration.LessSource = Type.GetType(sourceAttribute.Value);
 
             return dotlessConfiguration;
         }

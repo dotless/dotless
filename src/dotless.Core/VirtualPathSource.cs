@@ -25,7 +25,7 @@ namespace dotless.Core
             VirtualFile virtualFile = virtualPathProvider.GetFile(key);
             var streamReader = new StreamReader(virtualFile.Open());
             string fileContent = streamReader.ReadToEnd();
-            return new LessSourceObject {Content = fileContent, Key = key};
+            return new LessSourceObject {Content = fileContent, Key = key, Cacheable = true};
         }
     }
 }
