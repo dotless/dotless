@@ -139,6 +139,7 @@
     <Compile Include="parser\TreeBuilder.cs" />
     <Compile Include="parser\TreeBuilderExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StringSource.cs" />
     <Compile Include="utils\CSEval.cs" />
     <Compile Include="utils\RegexExtentions.cs" />
   </ItemGroup>
