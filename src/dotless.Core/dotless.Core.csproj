@@ -62,7 +62,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abstractions\ICache.cs" />
-    <Compile Include="Abstractions\IPathProvider.cs" />
     <Compile Include="Abstractions\IRequest.cs" />
     <Compile Include="Abstractions\IResponse.cs" />
     <Compile Include="AspCacheDecorator.cs" />

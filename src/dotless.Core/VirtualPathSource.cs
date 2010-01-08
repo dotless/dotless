@@ -14,7 +14,9 @@
 
 namespace dotless.Core
 {
+    using System;
     using System.IO;
+    using System.Web;
     using System.Web.Hosting;
 
     public class VirtualPathSource : ILessSource
@@ -26,6 +28,25 @@ namespace dotless.Core
             var streamReader = new StreamReader(virtualFile.Open());
             string fileContent = streamReader.ReadToEnd();
             return new LessSourceObject {Content = fileContent, Key = key, Cacheable = true};
+        }
+    }
+
+    public class AspServerPathSource : ILessSource
+    {
+        public LessSourceObject GetSource(string key)
+        {
+            var path = GetServer().MapPath(key);
+            return new LessSourceObject
+                       {
+                           Content = File.ReadAllText(path),
+                           Cacheable = true,
+                           Key = path
+                       };
+        }
+
+        private static HttpServerUtility GetServer()
+        {
+            return HttpContext.Current.Server;
         }
     }
 }

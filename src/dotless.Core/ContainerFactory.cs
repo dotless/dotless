@@ -57,6 +57,8 @@ namespace dotless.Core
                                        }
                                        p.Service<ILessEngine>()
                                            .Implementor<ExtensibleEngine>();
+                                       p.Service<ILessSource>()
+                                           .Implementor<FileSource>();
                                    });
             return container;
         }
@@ -70,8 +72,6 @@ namespace dotless.Core
                                            .Implementor(configuration.LessSource);
                                        p.Service<ICache>()
                                            .Implementor<CssCache>();
-                                       p.Service<IPathProvider>()
-                                           .Implementor<PathProvider>();
                                        p.Service<IRequest>()
                                            .Implementor<Request>();
                                        p.Service<IResponse>()

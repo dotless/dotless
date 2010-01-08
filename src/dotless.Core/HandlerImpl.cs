@@ -18,15 +18,13 @@ namespace dotless.Core
 
     public class HandlerImpl
     {
-        private readonly IPathProvider pathProvider;
         private readonly IRequest request;
         private readonly IResponse response;
         private readonly ILessEngine engine;
         private readonly ILessSource lessSource;
 
-        public HandlerImpl(IPathProvider pathProvider, IRequest request, IResponse response, ILessEngine engine, ILessSource lessSource)
+        public HandlerImpl(IRequest request, IResponse response, ILessEngine engine, ILessSource lessSource)
         {
-            this.pathProvider = pathProvider;
             this.request = request;
             this.response = response;
             this.engine = engine;
@@ -36,9 +34,8 @@ namespace dotless.Core
         public void Execute()
         {
             // our unprocessed filename   
-            var lessFile = pathProvider.MapPath(request.LocalPath);
-            var fileSource = lessSource.GetSource(lessFile);
-            response.WriteCss(engine.TransformToCss(fileSource));
+            var source = lessSource.GetSource(request.LocalPath);
+            response.WriteCss(engine.TransformToCss(source));
         }
     }
 }

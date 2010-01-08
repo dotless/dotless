@@ -22,7 +22,7 @@ namespace dotless.Core.configuration
         {
             var webconfig = (DotlessConfiguration)ConfigurationManager.GetSection("dotless");
             if (webconfig == null)
-                return DotlessConfiguration.Default;
+                return DotlessConfiguration.DefaultWeb;
             return webconfig;
         }
     }
