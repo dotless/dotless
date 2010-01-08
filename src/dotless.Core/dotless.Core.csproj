@@ -65,6 +65,7 @@
     <Compile Include="Abstractions\IRequest.cs" />
     <Compile Include="Abstractions\IResponse.cs" />
     <Compile Include="AspCacheDecorator.cs" />
+    <Compile Include="AspServerPathSource.cs" />
     <Compile Include="configuration\WebConfigConfigurationLoader.cs" />
     <Compile Include="configuration\DotlessConfiguration.cs" />
     <Compile Include="configuration\DotlessConfigurationSectionHandler.cs" />
