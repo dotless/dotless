@@ -30,7 +30,7 @@ namespace dotless.Core
 
         public string TransformToCss(LessSourceObject source)
         {
-            if (!source.Cacheable) throw new ConfigurationErrorsException("Your LessSource does not support ASP caching!");
+            if (!source.Cacheable) throw new ConfigurationErrorsException("Your LessSource does not support ASP caching!\nPlease either disable caching or select a source provider that supports caching like AspServerPathSource or FileSource");
             if (!cache.Exists(source.Key))
             {
                 string css = underlying.TransformToCss(source);

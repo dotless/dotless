@@ -20,7 +20,7 @@ namespace dotless.Core
     {
         public LessSourceObject GetSource(string key)
         {
-            return new LessSourceObject {Content = File.ReadAllText(key), Key = key, Cacheable = true};
+            return new LessSourceObject {Content = File.ReadAllText(key), Key = key, Cacheable = false};
         }
     }
 }
