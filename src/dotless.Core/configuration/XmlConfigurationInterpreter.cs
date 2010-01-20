@@ -21,7 +21,7 @@ namespace dotless.Core.configuration
     {
         public DotlessConfiguration Process(XmlNode section)
         {
-            var dotlessConfiguration = DotlessConfiguration.Default;
+            var dotlessConfiguration = DotlessConfiguration.DefaultWeb;
             //Minify
             XmlAttribute attribute = section.Attributes["minifyCss"];
             if (attribute != null && attribute.Value == "true")

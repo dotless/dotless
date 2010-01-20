@@ -20,7 +20,7 @@ namespace dotless.Core.configuration
     {
         public DotlessConfiguration()
         {
-            LessSource = typeof (FileSource);
+            LessSource = typeof(FileSource);
         }
 
         public bool MinifyOutput { get; set; }
@@ -41,6 +41,7 @@ namespace dotless.Core.configuration
             {
                 return new DotlessConfiguration
                            {
+                               LessSource = typeof (FileSource),
                                MinifyOutput = false,
                                CacheEnabled = true
                            };
