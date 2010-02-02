@@ -86,11 +86,6 @@
     <Compile Include="Unit\engine\LessNodes\Literals\NumberFixtures.cs" />
     <Compile Include="Unit\engine\LessNodes\PropertyFixture.cs" />
     <Compile Include="Unit\Handler\HandlerFixture.cs" />
-    <Compile Include="Unit\minifier\CleanerFixture.cs" />
-    <Compile Include="Unit\minifier\DescriptorBuilderFixture.cs" />
-    <Compile Include="Unit\minifier\ExpressionBuilderFixture.cs" />
-    <Compile Include="Unit\minifier\ForcedCommentsFixture.cs" />
-    <Compile Include="Unit\minifier\TokenizerFixture.cs" />
     <Compile Include="Unit\utils\RegexExtentionsFixtures.cs" />
     <Compile Include="Unit\wiring\Wiring.cs" />
   </ItemGroup>

@@ -4,6 +4,7 @@ dotless is using:
 	* ILMerge (http://research.microsoft.com/en-us/people/mbarnett/ilmerge.aspx)
 	* 7zip (www.7-zip.org/)
 	* MSpec (http://github.com/machine/machine.specifications)
+	* YUI Compressor for .NET (http://www.codeplex.com/YUICompressor)
 
 The build script was inspired by Rhino.Mocks and is using psake by James Covacs
 

@@ -14,8 +14,7 @@
 
 namespace dotless.Core
 {
-    using System.Text;
-    using minifier;
+    using Yahoo.Yui.Compressor;
 
     public class MinifierDecorator : ILessEngine
     {
@@ -35,8 +34,7 @@ namespace dotless.Core
         public string TransformToCss(LessSourceObject source)
         {
             string buffer = engine.TransformToCss(source);
-            var processor = new Processor(buffer);
-            return new StringBuilder().Append(processor.Output).ToString();
+            return CssCompressor.Compress(buffer);
         }
     }
 }

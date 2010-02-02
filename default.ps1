@@ -88,6 +88,7 @@ task Merge -depends Build {
 		dotless.Core.dll `
 		Microsoft.Practices.ServiceLocation.dll `
         PegBase.dll `
+        Yahoo.Yui.Compressor.dll `
         /out:$filename `
         /internalize `
         /t:exe
@@ -104,6 +105,7 @@ task Merge -depends Build {
         Pandora.dll `
         Microsoft.Practices.ServiceLocation.dll `
         PegBase.dll `
+        Yahoo.Yui.Compressor.dll `
         /out:$filename `
         /internalize `
         /t:library

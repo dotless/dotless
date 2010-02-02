@@ -59,6 +59,10 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Yahoo.Yui.Compressor, Version=1.4.1.0, Culture=neutral, PublicKeyToken=f8b4b81ec75097e2, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\YUI Compressor .NET\Yahoo.Yui.Compressor.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abstractions\ICache.cs" />
@@ -118,20 +122,6 @@
     <Compile Include="LessSourceObject.cs" />
     <Compile Include="Loggers\ConsoleLogger.cs" />
     <Compile Include="MinifierDecorator.cs" />
-    <Compile Include="minifier\CleanedStream.cs" />
-    <Compile Include="minifier\CommentExpression.cs" />
-    <Compile Include="minifier\ExpressionBuilder.cs" />
-    <Compile Include="minifier\IDescriptorBuilder.cs" />
-    <Compile Include="minifier\IExpression.cs" />
-    <Compile Include="minifier\IExpressionBuilder.cs" />
-    <Compile Include="minifier\ITokenizer.cs" />
-    <Compile Include="minifier\ITreeCompiler.cs" />
-    <Compile Include="minifier\ITreeNode.cs" />
-    <Compile Include="minifier\Processor.cs" />
-    <Compile Include="minifier\StyleExpression.cs" />
-    <Compile Include="minifier\Tokenizer.cs" />
-    <Compile Include="minifier\TreeCompiler.cs" />
-    <Compile Include="minifier\TreeNode.cs" />
     <Compile Include="parser\C#\nLess.cs" />
     <Compile Include="parser\ILessParser.cs" />
     <Compile Include="parser\LessParser.cs" />
