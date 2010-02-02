@@ -50,7 +50,9 @@ foreach(var cssFile in cssFiles)
     manager.StartNewFile(GetCssFileName(cssFile));
     try
     {
-        string css = dotLess.TransformToCss(cssFile);
+	var fs = new FileSource();
+	var lso = fs.GetSource(cssFile);
+        string css = dotLess.TransformToCss(lso);
         Write(css);
     }
     catch(Exception e) 
