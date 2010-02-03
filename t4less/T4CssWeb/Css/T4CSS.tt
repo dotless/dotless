@@ -31,14 +31,15 @@
 /*-------------------------------------------------*/
 bool _minimize = true;
 bool _runOnBuild = true;
+bool _useCssExtension = true;
 #>
 
 T4.Less Log
 ---------------
 <#
 var currentDirectory = Path.GetDirectoryName(Host.TemplateFile);
-//var cssFiles = Directory.GetFiles(currentDirectory, "*.less");
-var cssFiles = Directory.GetFiles(currentDirectory, "*.less.css");
+var filespec = _useCssExtension ? "*.less.css" : "*.less";
+var cssFiles = Directory.GetFiles(currentDirectory, filespec);
 #>
 
 Template File: <#=Host.TemplateFile #>
@@ -301,7 +302,6 @@ class Manager
 */
 
 public string GetCssFileName(string dotLessFileName) {
-    //return Path.GetFileNameWithoutExtension(dotLessFileName) + ".css";
     return Path.GetFileNameWithoutExtension(dotLessFileName.Replace(".less","")) + ".css"; 
 }
 #>
