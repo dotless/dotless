@@ -30,8 +30,8 @@
 // Settings      
 /*-------------------------------------------------*/
 bool _minimize = true;
-bool _runOnBuild = true;
-bool _useCssExtension = true;
+bool _runOnBuild = false;
+bool _useCssExtension = false;
 #>
 
 T4.Less Log
