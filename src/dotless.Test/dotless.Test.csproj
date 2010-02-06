@@ -80,8 +80,10 @@
     <Compile Include="Unit\engine\CssNodes\CssElementFixture.cs" />
     <Compile Include="Unit\engine\CssNodes\CssPropertyFixture.cs" />
     <Compile Include="Unit\engine\LessNodes\ElementFixtures.cs" />
+    <Compile Include="Unit\engine\LessNodes\Functions\FunctionFixture.cs" />
     <Compile Include="Unit\engine\LessNodes\Literals\ColorFixture.cs" />
     <Compile Include="Unit\engine\LessNodes\Literals\FontFamilyFixtures.cs" />
+    <Compile Include="Unit\engine\LessNodes\Literals\HslColorFixture.cs" />
     <Compile Include="Unit\engine\LessNodes\Literals\StringFixture.cs" />
     <Compile Include="Unit\engine\LessNodes\Literals\NumberFixtures.cs" />
     <Compile Include="Unit\engine\LessNodes\PropertyFixture.cs" />
