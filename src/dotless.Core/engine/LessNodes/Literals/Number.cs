@@ -53,14 +53,17 @@ namespace dotless.Core.engine
         /// <returns></returns>
         private string FormatValue()
         {
-
-            string value = Decimal.Round((Decimal)Value, 2).ToString(NumberFormatInfo.InvariantInfo);
+            string value = Decimal.Round((Decimal) Value, 2).ToString(NumberFormatInfo.InvariantInfo);
             if (value.StartsWith("0."))
                 value = value.Remove(0, 1);
-            if (value.StartsWith("-0."))
+            else if (value.StartsWith("-0."))
                 value = value.Remove(1, 1);
-            if (value.Contains(".") && value.EndsWith("0"))
+
+            if (value.EndsWith(".00"))
+                value = value.Substring(0, value.Length - 3);
+            else if (value.Contains(".") && value.EndsWith("0"))
                 value = value.Substring(0, value.Length - 1);
+
             return value;
         }
         public override string ToCss()
