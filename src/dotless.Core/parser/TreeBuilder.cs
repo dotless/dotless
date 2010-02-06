@@ -357,10 +357,13 @@ namespace dotless.Core.parser
                     switch (argument.child_.id_.ToEnLess())
                     {
                         case EnLess.color:
-                            yield return Color(argument);
+                            yield return Color(argument.child_);
                             break;
                         case EnLess.number:
-                            yield return Number(argument);
+                            yield return Number(argument.child_);
+                            break;
+                        case EnLess.function:
+                            yield return Function(argument.child_);
                             break;
                         case EnLess.@string:
                             yield return new String(argument.GetAsString(Src));

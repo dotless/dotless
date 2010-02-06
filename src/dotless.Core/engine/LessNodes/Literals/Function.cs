@@ -50,7 +50,12 @@ namespace dotless.Core.engine
                 return new Literal(string.Format("{0}({1})", Value.ToUpper(), ArgsString));                
             }
             var function = (FunctionBase)Activator.CreateInstance(functionType);
-            function.SetArguments(Args.ToArray());
+
+            var args = Args
+              .Select(a => a is IEvaluatable ? (a as IEvaluatable).Evaluate() : a)
+              .ToArray();
+
+            function.SetArguments(args);
             return function.Evaluate();
         }
 
