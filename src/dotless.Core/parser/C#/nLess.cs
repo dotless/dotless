@@ -331,7 +331,7 @@ namespace nLess
                       And(()=>    Char(',') && s() && argument() && s() ) )
                   && Char(')') );
 		}
-        public bool argument()    /*^^argument : color / number unit / string / [a-zA-Z]+ '=' dimension / [-a-zA-Z0-9_%$/.&=:;#+?]+ / function / keyword (S keyword)*;*/
+        public bool argument()    /*^^argument : color / number unit / string / [a-zA-Z]+ '=' dimension / function / [-a-zA-Z0-9_%$/.&=:;#+?]+ / keyword (S keyword)*;*/
         {
 
            return TreeNT((int)EnLess.argument,()=>
@@ -343,8 +343,8 @@ namespace nLess
                          PlusRepeat(()=> In('a','z', 'A','Z') )
                       && Char('=')
                       && dimension() )
-                  || PlusRepeat(()=> OneOf(optimizedCharset2) )
                   || function()
+                  || PlusRepeat(()=> OneOf(optimizedCharset2) )
                   || And(()=>    
                          keyword()
                       && OptRepeat(()=> And(()=>    S() && keyword() ) ) ) );
