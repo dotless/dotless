@@ -12,6 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
+using dotless.Core.utils;
+
 namespace dotless.Core.engine
 {
     using System;
@@ -31,22 +33,10 @@ namespace dotless.Core.engine
         }
         public Color(double r, double g, double b, double a)
         {
-            R = Normailze(r);
-            G = Normailze(g);
-            B = Normailze(b);
-            A = Normailze(a, 1);
-        }
-        protected double Normailze(double v) 
-        {
-            return Normailze(v, 255, 0);
-        }
-        protected double Normailze(double v, double max) 
-        {
-            return Normailze(v, max, 0);
-        }
-        protected double Normailze(double v, double max, double min)
-        {
-            return new[] { new[] { min, v }.Max(), max }.Min();
+            R = NumberExtensions.Normalize(r, 0, 255);
+            G = NumberExtensions.Normalize(g, 0, 255);
+            B = NumberExtensions.Normalize(b, 0, 255);
+            A = NumberExtensions.Normalize(a);
         }
 
         #region operator overrides
@@ -102,17 +92,16 @@ namespace dotless.Core.engine
 
         public Color Operate(Func<double, double, double> action, double other)
         {
-            var rgb = RGB;
-            //NOTE: Seems like there should be a nice way to do this using lambdas
-            for (var i = 0; i < rgb.Count; i++)
-                rgb[i] = action.Invoke(rgb[i], other);
+            var rgb = RGB.Select(x => action(x, other))
+                .ToArray();
+
             return new Color(rgb[0], rgb[1], rgb[2]);
         }
         public Color Operate(Func<double, double, double> action, Color other)
         {
-            var rgb = RGB;
-            for (var i = 0; i < rgb.Count; i++)
-                rgb[i] = action.Invoke((int)rgb[i], (int)other.RGB[i]);
+            var rgb = RGB.Select((x, i) => action(x, other.RGB[i]))
+                .ToArray();
+
             return new Color(rgb[0], rgb[1], rgb[2]);
         }
         public List<double> RGB
@@ -122,14 +111,27 @@ namespace dotless.Core.engine
                 return new [] { R,G,B}.ToList();
             }
         }
-        public Color Alpha(int a)
+        public Color Alpha(double a)
         {
             return new Color(R, G, B, a);
         }
         public override string ToString()
         {
-            return (A < 1 ? string.Format("rgba({0},{1},{2}, {3})", (int)R, (int)G, (int)B, (int)A) : string.Format("#{0:X2}{1:X2}{2:X2}", (int)R, (int)G, (int)B)).ToLower();
+            var rgb = RGB.Select(x => (int) Math.Round(x)).ToArray();
+
+
+            string result;
+            if (A < 1)
+            {
+                var alpha = new Number(A); // force alpha to print like Number
+                result = string.Format("rgba({0}, {1}, {2}, {3})", rgb[0], rgb[1], rgb[2], alpha.ToCss());
+            }
+            else
+                result = string.Format("#{0:X2}{1:X2}{2:X2}", rgb[0], rgb[1], rgb[2]);
+
+            return result.ToLower();
         }
+
         public override string ToCss()
         {
             return ToString();
@@ -140,7 +142,7 @@ namespace dotless.Core.engine
         }
         public override string Inspect()
         {
-            return (A < 1 ? string.Format("rgba({0},{1},{2}, {3})", R, G, B, A) : string.Format("rgb({0},{1},{2})", (int)R, (int)G, (int)B)).ToLower();
+            return (A < 1 ? string.Format("rgba({0}, {1}, {2}, {3})", R, G, B, A) : string.Format("rgb({0}, {1}, {2})", R, G, B)).ToLower();
         }
     }
 }

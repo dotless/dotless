@@ -1,7 +1,7 @@
 #yelow #short, #yelow #long { color: #ffeeaa; }
-#yelow #rgba { color: RGBA(255,238,170,.1); }
+#yelow #rgba { color: RGBA(255, 238, 170, .1); }
 #blue #short, #blue #long { color: #0000ff; }
-#blue #rgba { color: RGBA(0,0,255,.1); }
+#blue #rgba { color: RGBA(0, 0, 255, .1); }
 #overflow .a { color: #000000; }
 #overflow .b, #overflow .c { color: #ffffff; }
 #overflow .d { color: #00ff00; }

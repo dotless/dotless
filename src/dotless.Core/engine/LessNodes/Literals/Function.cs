@@ -63,11 +63,7 @@ namespace dotless.Core.engine
         {
             get
             {
-                var sb = new StringBuilder();
-                foreach (var arg in Args)
-                    sb.AppendFormat("{0},", arg.ToCss());
-                var args = sb.ToString();
-                return args.Substring(0, args.Length - 1);
+                return string.Join(", ", Args.Select(arg => arg.ToCss()).ToArray());
             }
         }
     }
