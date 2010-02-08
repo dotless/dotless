@@ -19,62 +19,77 @@ namespace dotless.Core.engine.Functions
 {
     public class RedFunction : ColorFunctionBase
     {
-        protected override INode Eval(Color color, INode[] args)
+        protected override INode Eval(Color color)
         {
             return new Number(color.R);
         }
 
-        protected override string Name
+        protected override INode EditColor(Color color, Number number)
         {
-            get { return "red"; }
+            var value = number.Value;
+
+            if (number.Unit == "%")
+                value = (value * 255) / 100d;
+
+            return new Color(color.R + value, color.G, color.B);
         }
     }
 
     public class GreenFunction : ColorFunctionBase
     {
-        protected override INode Eval(Color color, INode[] args)
+        protected override INode Eval(Color color)
         {
             return new Number(color.G);
         }
 
-        protected override string Name
+        protected override INode EditColor(Color color, Number number)
         {
-            get { return "green"; }
+            var value = number.Value;
+
+            if (number.Unit == "%")
+                value = (value * 255) / 100d;
+
+            return new Color(color.R, color.G + value, color.B);
         }
     }
 
     public class BlueFunction : ColorFunctionBase
     {
-        protected override INode Eval(Color color, INode[] args)
+        protected override INode Eval(Color color)
         {
             return new Number(color.B);
         }
 
-        protected override string Name
+        protected override INode EditColor(Color color, Number number)
         {
-            get { return "blue"; }
+            var value = number.Value;
+
+            if (number.Unit == "%")
+                value = (value * 255) / 100d;
+
+            return new Color(color.R, color.G, color.B + value);
         }
     }
 
     public class AlphaFunctionImpl : ColorFunctionBase
     {
-        protected override INode Eval(Color color, INode[] args)
+        protected override INode Eval(Color color)
         {
             return new Number(color.A);
         }
 
         protected override INode EditColor(Color color, Number number)
         {
-            return new Color(color.R, color.G, color.B, color.A + number.Value);
-        }
+            var alpha = number.Value;
 
-        protected override string Name
-        {
-            get { return "alpha"; }
+            if (number.Unit == "%")
+                alpha = alpha / 100d;
+
+            return new Color(color.R, color.G, color.B, color.A + alpha);
         }
     }
 
-    // HACK: avoid Alpha from throwing an error in case of "filter: aplha(Opacity = x);"
+    // HACK: avoid Alpha from throwing an error in case of "filter: alpha(Opacity = x);"
     public class AlphaFunction : FunctionBase
     {
         public override INode Evaluate()
@@ -83,42 +98,28 @@ namespace dotless.Core.engine.Functions
             {
                 var function = new AlphaFunctionImpl();
                 function.SetArguments(Arguments);
+                function.Name = Name;
+
                 return function.Evaluate();
             }
             catch(ParsingException)
             {
+                if(!Arguments[0].ToCss().ToLowerInvariant().Contains("opacity"))
+                    throw;
+
                 var argumentString = string.Join(", ", Arguments.Select(x => x.ToCss()).ToArray());
                 return new Literal(string.Format("ALPHA({0})", argumentString));
             }
         }
     }
 
-    public class ComplementFunction : HslColorFunctionBase
-    {
-        protected override INode EvalHsl(HslColor color, INode[] args)
-        {
-            color.Hue += 0.5;
-            return color.ToRgbColor();
-        }
-
-        protected override string Name
-        {
-            get { return "complement"; }
-        }
-    }
-
     public class GrayscaleFunction : ColorFunctionBase
     {
-        protected override INode Eval(Color color, INode[] args)
+        protected override INode Eval(Color color)
         {
             var grey = (color.RGB.Max() + color.RGB.Min()) / 2;
 
             return new Color(grey, grey, grey);
-        }
-
-        protected override string Name
-        {
-            get { return "grayscale"; }
         }
     }
 }

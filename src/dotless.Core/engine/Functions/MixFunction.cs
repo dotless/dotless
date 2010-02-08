@@ -13,6 +13,7 @@
  * limitations under the License. */
 
 using System.Linq;
+using dotless.Core.utils;
 
 namespace dotless.Core.engine.Functions
 {
@@ -20,27 +21,22 @@ namespace dotless.Core.engine.Functions
     {
         public override INode Evaluate()
         {
-            if (Arguments.Length < 2)
-                throw new exceptions.ParsingException(string.Format("Expected at least 2 arguments in function 'mix'."));
-
-            if (Arguments.Length > 3)
-                throw new exceptions.ParsingException(string.Format("Expected at most 3 arguments in function 'mix'."));
-
-            if (!Arguments.Take(2).All(arg => arg is Color))
-                throw new exceptions.ParsingException(string.Format("First 2 arguments in function 'mix' mist be colors."));
+            Guard.ExpectMinArguments(2, Arguments.Length, this);
+            Guard.ExpectMaxArguments(3, Arguments.Length, this);
+            Guard.ExpectAllNodes<Color>(Arguments.Take(2), this);
 
             double weight = 50;
             if (Arguments.Length == 3)
             {
-                var arg = Arguments[2];
-                if (!(arg is Number))
-                    throw new exceptions.ParsingException(string.Format("Expected number, found '{0}'.", arg));
+                Guard.ExpectNode<Number>(Arguments[2], this);
 
-                weight = (arg as Number).Value;
+                weight = ((Number) Arguments[2]).Value;
             }
 
 
             var colors = Arguments.Take(2).Cast<Color>().ToArray();
+
+            // Note: this algorithm taken from http://github.com/nex3/haml/blob/0e249c844f66bd0872ed68d99de22b774794e967/lib/sass/script/functions.rb
 
             var p = weight / 100.0;
             var w = p * 2 - 1;

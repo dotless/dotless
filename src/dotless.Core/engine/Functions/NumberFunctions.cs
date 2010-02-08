@@ -23,11 +23,6 @@ namespace dotless.Core.engine.Functions
         {
             return new Number(number.Unit, Math.Abs(number.Value));
         }
-
-        protected override string Name
-        {
-            get { return "abs"; }
-        }
     }
 
     public class RoundFunction : NumberFunctionBase
@@ -35,11 +30,6 @@ namespace dotless.Core.engine.Functions
         protected override INode Eval(Number number, INode[] args)
         {
             return new Number(number.Unit, Math.Round(number.Value));
-        }
-
-        protected override string Name
-        {
-            get { return "round"; }
         }
     }
 
@@ -49,11 +39,6 @@ namespace dotless.Core.engine.Functions
         {
             return new Number(number.Unit, Math.Floor(number.Value));
         }
-
-        protected override string Name
-        {
-            get { return "floor"; }
-        }
     }
 
     public class CeilFunction : NumberFunctionBase
@@ -61,11 +46,6 @@ namespace dotless.Core.engine.Functions
         protected override INode Eval(Number number, INode[] args)
         {
             return new Number(number.Unit, Math.Ceiling(number.Value));
-        }
-
-        protected override string Name
-        {
-            get { return "ceil"; }
         }
     }
 
@@ -81,11 +61,6 @@ namespace dotless.Core.engine.Functions
 
             throw new ParsingException(string.Format("Expected unitless number in function '{0}', found {1}", Name, number.ToCss()));
         }
-
-        protected override string Name
-        {
-            get { return "percentage"; }
-        }
     }
 
     public class IncrementFunction : NumberFunctionBase
@@ -93,11 +68,6 @@ namespace dotless.Core.engine.Functions
         protected override INode Eval(Number number, INode[] args)
         {
             return new Number(number.Unit, number.Value + 1);
-        }
-
-        protected override string Name
-        {
-            get { return "increment"; }
         }
     }
 }

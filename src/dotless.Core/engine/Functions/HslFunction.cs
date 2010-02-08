@@ -13,6 +13,7 @@
  * limitations under the License. */
 
 using System.Linq;
+using dotless.Core.utils;
 
 namespace dotless.Core.engine.Functions
 {
@@ -20,10 +21,8 @@ namespace dotless.Core.engine.Functions
     {
         public override INode Evaluate()
         {
-            if (!Arguments.All(arg => arg is Number) || !(Arguments.Length == 4))
-            {
-                throw new exceptions.ParsingException("Expected 4 numeric arguments for HSLA color.");
-            }
+            Guard.ExpectArguments(4, Arguments.Length, this);
+            Guard.ExpectAllNodes<Number>(Arguments, this);
 
             var args = Arguments
               .Cast<Number>()
@@ -45,10 +44,8 @@ namespace dotless.Core.engine.Functions
     {
         public override INode Evaluate()
         {
-            if (!Arguments.All(arg => arg is Number) || !(Arguments.Length == 3))
-            {
-                throw new exceptions.ParsingException("Expected 3 numeric arguments for HSL color.");
-            }
+            Guard.ExpectArguments(3, Arguments.Length, this);
+            Guard.ExpectAllNodes<Number>(Arguments, this);
 
             Arguments = Arguments.Concat(new[] { new Number(1) }).ToArray();
 

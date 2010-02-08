@@ -42,8 +42,6 @@ namespace dotless.Core.engine
 
         public INode Evaluate()
         {
-            // RGB color hack
-
             Type functionType = Type.GetType("dotless.Core.engine.Functions." + Value + "Function", false, true);
             if(functionType == null)
             {
@@ -56,6 +54,8 @@ namespace dotless.Core.engine
               .ToArray();
 
             function.SetArguments(args);
+            function.Name = Value.ToLowerInvariant();
+
             return function.Evaluate();
         }
 

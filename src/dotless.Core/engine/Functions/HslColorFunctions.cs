@@ -12,11 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
+using System;
+
 namespace dotless.Core.engine.Functions
 {
     public class HueFunction : HslColorFunctionBase
     {
-        protected override INode EvalHsl(HslColor color, INode[] args)
+        protected override INode EvalHsl(HslColor color)
         {
             return color.GetHueInDegrees();
         }
@@ -26,16 +28,11 @@ namespace dotless.Core.engine.Functions
             color.Hue += number.Value / 360d;
             return color.ToRgbColor();
         }
-
-        protected override string Name
-        {
-            get { return "hue"; }
-        }
     }
 
     public class SaturationFunction : HslColorFunctionBase
     {
-        protected override INode EvalHsl(HslColor color, INode[] args)
+        protected override INode EvalHsl(HslColor color)
         {
             return color.GetSaturation();
         }
@@ -45,17 +42,11 @@ namespace dotless.Core.engine.Functions
             color.Saturation += number.Value / 100;
             return color.ToRgbColor();
         }
-
-
-        protected override string Name
-        {
-            get { return "saturation"; }
-        }
     }
 
     public class LightnessFunction : HslColorFunctionBase
     {
-        protected override INode EvalHsl(HslColor color, INode[] args)
+        protected override INode EvalHsl(HslColor color)
         {
             return color.GetLightness();
         }
@@ -65,10 +56,19 @@ namespace dotless.Core.engine.Functions
             color.Lightness += number.Value / 100;
             return color.ToRgbColor();
         }
+    }
 
-        protected override string Name
+    public class ComplementFunction : HslColorFunctionBase
+    {
+        protected override INode EvalHsl(HslColor color)
         {
-            get { return "lightness"; }
+            color.Hue += 0.5;
+            return color.ToRgbColor();
+        }
+
+        protected override INode EditHsl(HslColor color, Number number)
+        {
+            return null;
         }
     }
 }

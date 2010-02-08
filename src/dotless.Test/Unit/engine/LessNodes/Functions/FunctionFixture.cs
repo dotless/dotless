@@ -11,7 +11,19 @@ namespace dotless.Test.Unit.engine.LessNodes.Functions
     [TestFixture]
     public class FunctionFixture
     {
-        // Note: these tests are lifted from http://github.com/nex3/haml/blob/master/test/sass/functions_test.rb
+        // Note: these tests were modified from http://github.com/nex3/haml/blob/0e249c844f66bd0872ed68d99de22b774794e967/test/sass/functions_test.rb
+
+        [Test]
+        public void TestExpressionsAsArguments()
+        {
+            Assert.AreEqual("#33cccc", Evaluate("hsl(100 + 80, 60%, 50%)"));
+        }
+
+        [Test]
+        public void TestHsl()
+        {
+            Assert.AreEqual("#33cccc", Evaluate("hsl(180, 60%, 50%)"));
+        }
 
         [Test, Ignore]
         public void TestHslChecksBounds()
@@ -20,12 +32,12 @@ namespace dotless.Test.Unit.engine.LessNodes.Functions
             AssertErrorMessage("Lightness 256 must be between 0% and 100% for `hsl'", "hsl(10, 10, 256%)");
         }
 
-        [Test, Ignore]
+        [Test]
         public void TestHslChecksTypes()
         {
-            AssertErrorMessage("\"foo\" is not a number for `hsl'", "hsl(\"foo\", 10, 12)");
-            AssertErrorMessage("\"foo\" is not a number for `hsl'", "hsl(10, \"foo\", 12)");
-            AssertErrorMessage("\"foo\" is not a number for `hsl'", "hsl(10, 10, \"foo\")");
+            AssertErrorMessage("Expected number in function 'hsl', found \"foo\"", "hsl(\"foo\", 10, 12)");
+            AssertErrorMessage("Expected number in function 'hsl', found \"foo\"", "hsl(10, \"foo\", 12)");
+            AssertErrorMessage("Expected number in function 'hsl', found \"foo\"", "hsl(10, 10, \"foo\")");
         }
 
         [Test]
@@ -45,40 +57,43 @@ namespace dotless.Test.Unit.engine.LessNodes.Functions
             AssertErrorMessage("Alpha channel 1.1 must be between 0 and 1 for `hsla'", "hsla(10, 10, 10, 1.1)");
         }
 
-        [Test, Ignore]
+        [Test]
         public void TestHslaChecksTypes()
         {
-            AssertErrorMessage("\"foo\" is not a number for `hsla'", "hsla(\"foo\", 10, 12, 0.3)");
-            AssertErrorMessage("\"foo\" is not a number for `hsla'", "hsla(10, \"foo\", 12, 0)");
-            AssertErrorMessage("\"foo\" is not a number for `hsla'", "hsla(10, 10, \"foo\", 1)");
-            AssertErrorMessage("\"foo\" is not a number for `hsla'", "hsla(10, 10, 10, \"foo\")");
+            AssertErrorMessage("Expected number in function 'hsla', found \"foo\"", "hsla(\"foo\", 10, 12, 0.3)");
+            AssertErrorMessage("Expected number in function 'hsla', found \"foo\"", "hsla(10, \"foo\", 12, 0)");
+            AssertErrorMessage("Expected number in function 'hsla', found \"foo\"", "hsla(10, 10, \"foo\", 1)");
+            AssertErrorMessage("Expected number in function 'hsla', found \"foo\"", "hsla(10, 10, 10, \"foo\")");
         }
 
         [Test]
         public void TestPercentage()
         {
+            Assert.AreEqual("25%", Evaluate("percentage(25%)"));
+            Assert.AreEqual("2500%", Evaluate("percentage(25)"));
             Assert.AreEqual("50%", Evaluate("percentage(.5)"));
             Assert.AreEqual("100%", Evaluate("percentage(1)"));
             //      Assert.AreEqual("25%", Evaluate("percentage(25px / 100px)"));
         }
 
-        [Test, Ignore]
+        [Test]
         public void TestPercentageChecksTypes()
         {
-            AssertErrorMessage("25px is not a unitless number for `percentage'", "percentage(25px)");
-            AssertErrorMessage("#cccccc is not a unitless number for `percentage'", "percentage(#ccc)");
-            AssertErrorMessage("\"string\" is not a unitless number for `percentage'", "percentage('string')");
+            AssertErrorMessage("Expected unitless number in function 'percentage', found 25px", "percentage(25px)");
+            AssertErrorMessage("Expected number in function 'percentage', found #cccccc", "percentage(#ccc)");
+            AssertErrorMessage("Expected number in function 'percentage', found 'string'", "percentage('string')");
         }
 
         [Test]
         public void TestRound()
         {
+            Assert.AreEqual("4", Evaluate("round(4)"));
             Assert.AreEqual("5", Evaluate("round(4.8)"));
             Assert.AreEqual("5px", Evaluate("round(4.8px)"));
             Assert.AreEqual("5px", Evaluate("round(5.49px)"));
             Assert.AreEqual("50%", Evaluate("round(50.1%)"));
 
-            //AssertErrorMessage("#cccccc is not a number for `round'", "round(#ccc)");
+            AssertErrorMessage("Expected number in function 'round', found #cccccc", "round(#ccc)");
         }
 
         [Test]
@@ -89,18 +104,19 @@ namespace dotless.Test.Unit.engine.LessNodes.Functions
             Assert.AreEqual("5px", Evaluate("floor(5.49px)"));
             Assert.AreEqual("50%", Evaluate("floor(50.1%)"));
 
-            //AssertErrorMessage("\"foo\" is not a number for `floor'", "floor(\"foo\")");
+            AssertErrorMessage("Expected number in function 'floor', found \"foo\"", "floor(\"foo\")");
         }
 
         [Test]
         public void TestCeil()
         {
+            Assert.AreEqual("4", Evaluate("ceil(4)"));
             Assert.AreEqual("5", Evaluate("ceil(4.8)"));
             Assert.AreEqual("5px", Evaluate("ceil(4.8px)"));
             Assert.AreEqual("6px", Evaluate("ceil(5.49px)"));
             Assert.AreEqual("51%", Evaluate("ceil(50.1%)"));
 
-            //AssertErrorMessage("\"a\" is not a number for `ceil'", "ceil(\"a\")");
+            AssertErrorMessage("Expected number in function 'ceil', found \"a\"", "ceil(\"a\")");
         }
 
         [Test]
@@ -111,7 +127,7 @@ namespace dotless.Test.Unit.engine.LessNodes.Functions
             Assert.AreEqual("5px", Evaluate("abs(-5px)"));
             Assert.AreEqual("5px", Evaluate("abs(5px)"));
 
-            //AssertErrorMessage("#aaaaaa is not a number for `abs'", "abs(#aaa)");
+            AssertErrorMessage("Expected number in function 'abs', found #aaaaaa", "abs(#aaa)");
         }
 
         [Test]
@@ -157,12 +173,12 @@ namespace dotless.Test.Unit.engine.LessNodes.Functions
                                  "rgb(0, 0, 101%)");
         }
 
-        [Test, Ignore]
+        [Test]
         public void TestRgbTestsTypes()
         {
-            AssertErrorMessage("\"foo\" is not a number for `rgb'", "rgb(\"foo\", 10, 12)");
-            AssertErrorMessage("\"foo\" is not a number for `rgb'", "rgb(10, \"foo\", 12)");
-            AssertErrorMessage("\"foo\" is not a number for `rgb'", "rgb(10, 10, \"foo\")");
+            AssertErrorMessage("Expected number in function 'rgb', found \"foo\"", "rgb(\"foo\", 10, 12)");
+            AssertErrorMessage("Expected number in function 'rgb', found \"foo\"", "rgb(10, \"foo\", 12)");
+            AssertErrorMessage("Expected number in function 'rgb', found \"foo\"", "rgb(10, 10, \"foo\")");
         }
 
         [Test]
@@ -192,36 +208,36 @@ namespace dotless.Test.Unit.engine.LessNodes.Functions
                                  "rgba(1, 1, 1, 1.2)");
         }
 
-        [Test, Ignore]
+        [Test]
         public void TestRgbaTestsTypes()
         {
-            AssertErrorMessage("\"foo\" is not a number for `rgba'", "rgba(\"foo\", 10, 12, 0.2)");
-            AssertErrorMessage("\"foo\" is not a number for `rgba'", "rgba(10, \"foo\", 12, 0.1)");
-            AssertErrorMessage("\"foo\" is not a number for `rgba'", "rgba(10, 10, \"foo\", 0)");
-            AssertErrorMessage("\"foo\" is not a number for `rgba'", "rgba(10, 10, 10, \"foo\")");
+            AssertErrorMessage("Expected number in function 'rgba', found \"foo\"", "rgba(\"foo\", 10, 12, 0.2)");
+            AssertErrorMessage("Expected number in function 'rgba', found \"foo\"", "rgba(10, \"foo\", 12, 0.1)");
+            AssertErrorMessage("Expected number in function 'rgba', found \"foo\"", "rgba(10, 10, \"foo\", 0)");
+            AssertErrorMessage("Expected number in function 'rgba', found \"foo\"", "rgba(10, 10, 10, \"foo\")");
         }
 
         [Test]
         public void TestRgbaWithColor()
         {
             Assert.AreEqual("rgba(16, 32, 48, .5)", Evaluate("rgba(#102030, .5)"));
-            // Assert.AreEqual("rgba(0, 0, 255, 0.5)", Evaluate("rgba(blue, 0.5)"));
+            // Assert.AreEqual("rgba(0, 0, 255, 0.5)", Evaluate("rgba(blue, 0.5)"));  // color keywords are not evaluated
         }
 
-        [Test, Ignore]
+        [Test]
         public void TestRgbaWithColorTestsTypes()
         {
-            AssertErrorMessage("\"foo\" is not a color for `rgba'", "rgba(\"foo\", 0.2)");
-            AssertErrorMessage("\"foo\" is not a number for `rgba'", "rgba(blue, \"foo\")");
+            AssertErrorMessage("Expected color in function 'rgba', found \"foo\"", "rgba(\"foo\", 0.2)");
+            AssertErrorMessage("Expected number in function 'rgba', found \"foo\"", "rgba(#123456, \"foo\")");
         }
 
-        [Test, Ignore]
+        [Test]
         public void TestRgbaTestsNumArgs()
         {
-            AssertErrorMessage("wrong number of arguments (0 for 4) for `rgba'", "rgba()");
-            AssertErrorMessage("wrong number of arguments (1 for 4) for `rgba'", "rgba(blue)");
-            AssertErrorMessage("wrong number of arguments (3 for 4) for `rgba'", "rgba(1, 2, 3)");
-            AssertErrorMessage("wrong number of arguments (5 for 4) for `rgba'", "rgba(1, 2, 3, 0.4, 5)");
+            AssertErrorMessage("Expected 4 arguments in function 'rgba', found 0", "rgba()");
+            AssertErrorMessage("Expected 4 arguments in function 'rgba', found 1", "rgba(blue)");
+            AssertErrorMessage("Expected 4 arguments in function 'rgba', found 3", "rgba(1, 2, 3)");
+            AssertErrorMessage("Expected 4 arguments in function 'rgba', found 5", "rgba(1, 2, 3, 0.4, 5)");
         }
 
         [Test]
@@ -230,10 +246,10 @@ namespace dotless.Test.Unit.engine.LessNodes.Functions
             Assert.AreEqual("18", Evaluate("red(#123456)"));
         }
 
-        [Test, Ignore]
+        [Test]
         public void TestRedException()
         {
-            AssertErrorMessage("12 is not a color for `red'", "red(12)");
+            AssertErrorMessage("Expected color in function 'red', found 12", "red(12)");
         }
 
         [Test]
@@ -242,10 +258,10 @@ namespace dotless.Test.Unit.engine.LessNodes.Functions
             Assert.AreEqual("52", Evaluate("green(#123456)"));
         }
 
-        [Test, Ignore]
+        [Test]
         public void TestGreenException()
         {
-            AssertErrorMessage("12 is not a color for `green'", "green(12)");
+            AssertErrorMessage("Expected color in function 'green', found 12", "green(12)");
         }
 
         [Test]
@@ -254,10 +270,10 @@ namespace dotless.Test.Unit.engine.LessNodes.Functions
             Assert.AreEqual("86", Evaluate("blue(#123456)"));
         }
 
-        [Test, Ignore]
+        [Test]
         public void TestBlueException()
         {
-            AssertErrorMessage("12 is not a color for `blue'", "blue(12)");
+            AssertErrorMessage("Expected color in function 'blue', found 12", "blue(12)");
         }
 
         [Test]
@@ -266,10 +282,10 @@ namespace dotless.Test.Unit.engine.LessNodes.Functions
             Assert.AreEqual("18", Evaluate("hue(hsl(18, 50%, 20%))"));
         }
 
-        [Test, Ignore]
+        [Test]
         public void TestHueException()
         {
-            AssertErrorMessage("12 is not a color for `hue'", "hue(12)");
+            AssertErrorMessage("Expected color in function 'hue', found 12", "hue(12)");
         }
 
         [Test]
@@ -279,10 +295,10 @@ namespace dotless.Test.Unit.engine.LessNodes.Functions
             Assert.AreEqual("52%", Evaluate("saturation(hsl(20, 52, 20%))"));
         }
 
-        [Test, Ignore]
+        [Test]
         public void TestSaturationException()
         {
-            AssertErrorMessage("12 is not a color for `saturation'", "saturation(12)");
+            AssertErrorMessage("Expected color in function 'saturation', found 12", "saturation(12)");
         }
 
         [Test]
@@ -292,10 +308,10 @@ namespace dotless.Test.Unit.engine.LessNodes.Functions
             Assert.AreEqual("86%", Evaluate("lightness(hsl(120, 50%, 86))"));
         }
 
-        [Test, Ignore]
+        [Test]
         public void TestLightnessException()
         {
-            AssertErrorMessage("12 is not a color for `lightness'", "lightness(12)");
+            AssertErrorMessage("Expected color in function 'lightness', found 12", "lightness(12)");
         }
 
         [Test]
@@ -307,6 +323,54 @@ namespace dotless.Test.Unit.engine.LessNodes.Functions
         }
 
         [Test]
+        public void TestAlphaOpacityHack()
+        {
+            Assert.AreEqual("ALPHA(Opacity=75)", Evaluate("alpha(Opacity=75)"));
+        }
+
+        [Test]
+        public void TestAlphaTestsTypes()
+        {
+            AssertErrorMessage("Expected color in function 'alpha', found 12", "alpha(12)");
+        }
+
+        [Test]
+        public void TestEditRed()
+        {
+            Assert.AreEqual("#1c3456", Evaluate("red(#123456, 10)"));
+        }
+
+        [Test]
+        public void TestEditRedTestsTypes()
+        {
+            AssertErrorMessage("Expected color in function 'red', found 12", "red(12)");
+        }
+
+        [Test]
+        public void TestEditGreen()
+        {
+            Assert.AreEqual("#123e56", Evaluate("green(#123456, 10)"));
+        }
+
+        [Test]
+        public void TestEditGreenTestsTypes()
+        {
+            AssertErrorMessage("Expected color in function 'green', found 12", "green(12)");
+        }
+
+        [Test]
+        public void TestEditBlue()
+        {
+            Assert.AreEqual("#123460", Evaluate("blue(#123456, 10)"));
+        }
+
+        [Test]
+        public void TestEditBlueTestsTypes()
+        {
+            AssertErrorMessage("Expected color in function 'blue', found 12", "blue(12)");
+        }
+
+        [Test]
         public void TestEditAlpha()
         {
             // Opacify / Fade In
@@ -315,7 +379,7 @@ namespace dotless.Test.Unit.engine.LessNodes.Functions
             Assert.AreEqual("rgba(0, 0, 0, .7)", Evaluate("alpha(rgba(0, 0, 0, 0.2), .5px)"));
             Assert.AreEqual("#000000", Evaluate("alpha(rgba(0, 0, 0, 0.2), 0.8)"));
             Assert.AreEqual("#000000", Evaluate("alpha(rgba(0, 0, 0, 0.2), 1)"));
-            Assert.AreEqual("rgba(0, 0, 0, .2)", Evaluate("alpha(rgba(0, 0, 0, 0.2), 0%)"));
+            Assert.AreEqual("rgba(0, 0, 0, .2)", Evaluate("alpha(rgba(0, 0, 0, 0.2), 0)"));
 
             // Transparentize / Fade Out
             Assert.AreEqual("rgba(0, 0, 0, .3)", Evaluate("alpha(rgba(0, 0, 0, 0.5), -.2)"));
@@ -326,10 +390,20 @@ namespace dotless.Test.Unit.engine.LessNodes.Functions
             Assert.AreEqual("rgba(0, 0, 0, .2)", Evaluate("alpha(rgba(0, 0, 0, 0.2), 0)"));
         }
 
-        [Test, Ignore]
-        public void TestAlphaException()
+        [Test]
+        public void TestEditAlphaPercent()
         {
-            AssertErrorMessage("12 is not a color for `alpha'", "alpha(12)");
+            Assert.AreEqual("rgba(0, 0, 0, .5)", Evaluate("alpha(rgba(0, 0, 0, 0.5), 0%)"));
+            Assert.AreEqual("rgba(0, 0, 0, .75)", Evaluate("alpha(rgba(0, 0, 0, 0.5), 25%)"));
+            Assert.AreEqual("rgba(0, 0, 0, .25)", Evaluate("alpha(rgba(0, 0, 0, 0.5), -25%)"));
+        }
+
+
+        [Test]
+        public void TestEditAlphaTestsTypes()
+        {
+            AssertErrorMessage("Expected color in function 'alpha', found \"foo\"", "alpha(\"foo\", 10%)");
+            AssertErrorMessage("Expected number in function 'alpha', found \"foo\"", "alpha(#fff, \"foo\")");
         }
 
         [Test]
@@ -361,11 +435,11 @@ namespace dotless.Test.Unit.engine.LessNodes.Functions
                                  "lightness(#123, 100.001)");
         }
 
-        [Test, Ignore]
+        [Test]
         public void TestEditLightnessTestsTypes()
         {
-            AssertErrorMessage("\"foo\" is not a color for `lighten'", "lightness(\"foo\", 10%)");
-            AssertErrorMessage("\"foo\" is not a number for `lighten'", "lightness(#fff, \"foo\")");
+            AssertErrorMessage("Expected color in function 'lightness', found \"foo\"", "lightness(\"foo\", 10%)");
+            AssertErrorMessage("Expected number in function 'lightness', found \"foo\"", "lightness(#fff, \"foo\")");
         }
 
         [Test]
@@ -391,7 +465,7 @@ namespace dotless.Test.Unit.engine.LessNodes.Functions
         }
 
         [Test, Ignore]
-        public void TestSaturateTestsBounds()
+        public void TestEditSaturationTestsBounds()
         {
             AssertErrorMessage("Amount -0.001 must be between 0% and 100% for `saturate'",
                                  "saturate(#123, -0.001)");
@@ -399,11 +473,11 @@ namespace dotless.Test.Unit.engine.LessNodes.Functions
                                  "saturate(#123, 100.001)");
         }
 
-        [Test, Ignore]
-        public void TestSaturateTestsTypes()
+        [Test]
+        public void TestEditSaturationTestsTypes()
         {
-            AssertErrorMessage("\"foo\" is not a color for `saturate'", "saturate(\"foo\", 10%)");
-            AssertErrorMessage("\"foo\" is not a number for `saturate'", "saturate(#fff, \"foo\")");
+            AssertErrorMessage("Expected color in function 'saturation', found \"foo\"", "saturation(\"foo\", 10%)");
+            AssertErrorMessage("Expected number in function 'saturation', found \"foo\"", "saturation(#fff, \"foo\")");
         }
 
 
@@ -420,11 +494,11 @@ namespace dotless.Test.Unit.engine.LessNodes.Functions
             Assert.AreEqual("rgba(136, 106, 17, .5)", Evaluate("hue(rgba(136, 17, 17, .5), 45)"));
         }
 
-        [Test, Ignore]
-        public void TestAdjustHueTestsTypes()
+        [Test]
+        public void TestEditHueTestsTypes()
         {
-            AssertErrorMessage("\"foo\" is not a color for `adjust-hue'", "adjust-hue(\"foo\", 10%)");
-            AssertErrorMessage("\"foo\" is not a number for `adjust-hue'", "adjust-hue(#fff, \"foo\")");
+            AssertErrorMessage("Expected color in function 'hue', found \"foo\"", "hue(\"foo\", 10%)");
+            AssertErrorMessage("Expected number in function 'hue', found \"foo\"", "hue(#fff, \"foo\")");
         }
 
         [Test]
@@ -445,12 +519,12 @@ namespace dotless.Test.Unit.engine.LessNodes.Functions
             Assert.AreEqual("rgba(255, 0, 0, 0)", Evaluate("mix(rgba(#f00, 0), #00f, 100%)"));
         }
 
-        [Test, Ignore]
+        [Test]
         public void TestMixTestsTypes()
         {
-            AssertErrorMessage("\"foo\" is not a color for `mix'", "mix(\"foo\", #f00, 10%)");
-            AssertErrorMessage("\"foo\" is not a color for `mix'", "mix(#f00, \"foo\", 10%)");
-            AssertErrorMessage("\"foo\" is not a number for `mix'", "mix(#f00, #baf, \"foo\")");
+            AssertErrorMessage("Expected color in function 'mix', found \"foo\"", "mix(\"foo\", #f00, 10%)");
+            AssertErrorMessage("Expected color in function 'mix', found \"foo\"", "mix(#f00, \"foo\", 10%)");
+            AssertErrorMessage("Expected number in function 'mix', found \"foo\"", "mix(#f00, #baf, \"foo\")");
         }
 
         [Test, Ignore]
@@ -472,10 +546,10 @@ namespace dotless.Test.Unit.engine.LessNodes.Functions
             Assert.AreEqual("#000000", Evaluate("grayscale(#000)"));
         }
 
-        [Test, Ignore]
+        [Test]
         public void TestGrayscaleTestsTypes()
         {
-            AssertErrorMessage("\"foo\" is not a color for `grayscale'", "grayscale(\"foo\")");
+            AssertErrorMessage("Expected color in function 'grayscale', found \"foo\"", "grayscale(\"foo\")");
         }
 
         [Test]
@@ -488,15 +562,15 @@ namespace dotless.Test.Unit.engine.LessNodes.Functions
             Assert.AreEqual("#000000", Evaluate("complement(#000)"));
         }
 
-        [Test, Ignore]
+        [Test]
         public void TestComplementTestsTypes()
         {
-            AssertErrorMessage("\"foo\" is not a color for `complement'", "complement(\"foo\")");
+            AssertErrorMessage("Expected color in function 'complement', found \"foo\"", "complement(\"foo\")");
         }
 
         private static void AssertErrorMessage(string message, string expression)
         {
-            Assert.That(() => Evaluate(expression), Throws.Exception.Message.Contains(message));
+            Assert.That(() => Evaluate(expression), Throws.Exception.Message.EqualTo(message));
         }
 
 

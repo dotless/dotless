@@ -13,6 +13,7 @@
  * limitations under the License. */
 
 using System.Linq;
+using dotless.Core.utils;
 
 namespace dotless.Core.engine.Functions
 {
@@ -20,13 +21,18 @@ namespace dotless.Core.engine.Functions
     {
         public override INode Evaluate()
         {
-            if (Arguments.All(arg => arg is Number) && Arguments.Length == 4)
-                return GetFromComponents();
+            if (Arguments.Length == 2)
+            {
+                Guard.ExpectNode<Color>(Arguments[0], this);
+                Guard.ExpectNode<Number>(Arguments[1], this);
 
-            if (Arguments.Length == 2 && Arguments[0] is Color && Arguments[1] is Number)
-                return AddAlphaToColor(Arguments[0] as Color, Arguments[1] as Number);
+                return AddAlphaToColor((Color) Arguments[0], (Number) Arguments[1]);
+            }
 
-            throw new exceptions.ParsingException("Expected 4 numeric arguments for RGBA color.");
+            Guard.ExpectArguments(4, Arguments.Length, this);
+            Guard.ExpectAllNodes<Number>(Arguments, this);
+
+            return GetFromComponents();
         }
 
         private INode AddAlphaToColor(Color color, Number number)
@@ -59,10 +65,8 @@ namespace dotless.Core.engine.Functions
     {
         public override INode Evaluate()
         {
-            if (!Arguments.All(arg => arg is Number) || !(Arguments.Length == 3))
-            {
-                throw new exceptions.ParsingException("Expected 3 numeric arguments for RGB color.");
-            }
+            Guard.ExpectArguments(3, Arguments.Length, this);
+            Guard.ExpectAllNodes<Number>(Arguments, this);
 
             Arguments = Arguments.Concat(new[] { new Number(1) }).ToArray();
 
