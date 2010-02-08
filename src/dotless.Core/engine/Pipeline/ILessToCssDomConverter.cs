@@ -18,6 +18,6 @@ namespace dotless.Core.engine.Pipeline
 {
     public interface ILessToCssDomConverter
     {
-        CssDocument BuildCssDocument(Element LessRootElement);
+        CssDocument BuildCssDocument(ElementBlock lessRootElementBlock);
     }
 }

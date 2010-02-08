@@ -16,6 +16,6 @@ namespace dotless.Core.engine.Pipeline
 {
     public interface ILessDomPreprocessor
     {
-        Element Process(Element document);
+        ElementBlock Process(ElementBlock document);
     }
 }

@@ -31,7 +31,7 @@ namespace dotless.Core.engine
             : this(key, value, null)
         {
         }
-        public Variable(string key, INode value, Element parent)
+        public Variable(string key, INode value, ElementBlock parent)
             :this(key, new List<INode>{value}, parent)
         {
         }
@@ -40,7 +40,7 @@ namespace dotless.Core.engine
         {
 
         }
-        public Variable(string key, IEnumerable<INode> value, Element parent)
+        public Variable(string key, IEnumerable<INode> value, ElementBlock parent)
             : base(key, value, parent)
         {
             Declaration = (value==null || ((IList)value).Count == 0)? false : true;
@@ -65,10 +65,6 @@ namespace dotless.Core.engine
                                      .NearestAs<IEvaluatable>(ToString()))
                                      .Evaluate();
             return _eval;
-        }
-        public override string  ToCSharp()
-        {
-            return Evaluate() == null ? "" : Evaluate().ToCSharp(); ;
         }
         public override string  ToCss()
         {

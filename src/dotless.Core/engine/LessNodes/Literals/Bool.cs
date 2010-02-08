@@ -12,23 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
-namespace dotless.Core
+namespace dotless.Core.engine
 {
-    using System.Web;
-    using Microsoft.Practices.ServiceLocation;
-
-    public class LessCssHttpHandler : IHttpHandler
+    public class Bool : Literal
     {
-        public void ProcessRequest(HttpContext context)
+        public new bool Value { get; private set; }
+        public Bool(bool value)
         {
-            IServiceLocator container = new ContainerFactory().GetContainer();
-            var handler = container.GetInstance<HandlerImpl>();
-            handler.Execute();
-        }
-
-        public bool IsReusable
-        {
-            get { return true; }
+            Value = value;
         }
     }
 }

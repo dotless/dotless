@@ -29,10 +29,6 @@ namespace dotless.Core.engine
         public Keyword(string value) : base(value)
         {
         }
-        public override string Inspect()
-        {
-            return string.Format("#{0}", this);
-        }
     }
 
     public class FontFamily : Literal

@@ -19,11 +19,11 @@ namespace dotless.Core.engine
 {
     public class ExtensibleEngineImpl
     {
-        public Element LessDom { get; set; }
+        public ElementBlock LessDom { get; set; }
         public CssDocument CssDom { get; set; }
         public string Css { get; set; }
 
-        public ExtensibleEngineImpl(string source, Element tail)
+        public ExtensibleEngineImpl(string source, ElementBlock tail)
         {
             //Parse the source file and run any Less preprocessors set
             LessDom = PipelineFactory.LessParser.Parse(source, tail);

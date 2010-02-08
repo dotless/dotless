@@ -29,7 +29,7 @@ namespace dotless.Core.engine
         {
         }
 
-        public Property(string key, INode value, Element parent)
+        public Property(string key, INode value, ElementBlock parent)
             : this(key, new List<INode> {value}, parent)
         {
         }
@@ -39,7 +39,7 @@ namespace dotless.Core.engine
         {
         }
 
-        public Property(string key, IEnumerable<INode> value, Element parent)
+        public Property(string key, IEnumerable<INode> value, ElementBlock parent)
         {
             Key = key;
             foreach (var node in value){
@@ -101,7 +101,7 @@ namespace dotless.Core.engine
 
         public INode Nearest(string ident)
         {
-            return ParentAs<Element>().Nearest(ident);
+            return ParentAs<ElementBlock>().Nearest(ident);
         }
 
         public T NearestAs<T>(string ident)

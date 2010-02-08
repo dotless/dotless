@@ -15,10 +15,8 @@
 namespace dotless.Core.engine
 {
     using exceptions;
-    using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
     using utils;
 
     public class Expression : List<INode>, INode, IEvaluatable
@@ -28,15 +26,7 @@ namespace dotless.Core.engine
         {
             return string.Join(" ", this.Select(x => x.ToCss()).ToArray());
         }
-        public string ToCSharp()
-        {
-            var sb = new StringBuilder();
-            foreach (var node in this)
-            {
-                sb.AppendFormat(" {0} ", node.ToCSharp());
-            }
-            return sb.ToString();
-        }
+
         public IList<INode> Path(INode node)
         {
             var path = new List<INode>();
@@ -118,9 +108,10 @@ namespace dotless.Core.engine
                     returnNode = ((Expression)result).Count() == 1
                                      ? ((Expression)result).First()
                                      : (Expression)result;
+
                 else returnNode = entity is Number && unit.Count() > 0
-                                      ? (INode)Activator.CreateInstance(entity.GetType(), unit.First(), float.Parse(result.ToString()))
-                                      : (INode)Activator.CreateInstance(entity.GetType(), float.Parse(result.ToString()));
+                                      ? new Number(unit.First(), float.Parse(result.ToString()))
+                                      : new Number(float.Parse(result.ToString()));
                 return returnNode;
             }
             return this.Count() == 1 ? this.First() : this;

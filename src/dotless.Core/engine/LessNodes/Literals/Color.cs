@@ -136,13 +136,5 @@ namespace dotless.Core.engine
         {
             return ToString();
         }
-        public override string ToCSharp()
-        {
-            return string.Format("new Color({0},{1},{2},{3})", R, G, B, A);
-        }
-        public override string Inspect()
-        {
-            return (A < 1 ? string.Format("rgba({0}, {1}, {2}, {3})", R, G, B, A) : string.Format("rgb({0}, {1}, {2})", R, G, B)).ToLower();
-        }
     }
 }

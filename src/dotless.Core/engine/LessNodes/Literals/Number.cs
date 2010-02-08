@@ -40,13 +40,6 @@ namespace dotless.Core.engine
             return string.Format("{0}{1}", Value, Unit);
         }
 
-        public override string ToCSharp()
-        {
-
-            return Value.ToString("N2", CultureInfo.InvariantCulture);
-        }
-
-
         /// <summary>
         /// Ugly hack to make spec pass.
         /// </summary>

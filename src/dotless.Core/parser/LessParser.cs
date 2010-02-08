@@ -21,12 +21,12 @@ namespace dotless.Core.parser
 {
     public class LessParser : ILessParser
     {
-        public Element Parse(string source)
+        public ElementBlock Parse(string source)
         {
             return Parse(source, null);
         }
 
-        public Element Parse(string source, Element tail)
+        public ElementBlock Parse(string source, ElementBlock tail)
         {
             var parser = new nLess.nLess(source, Console.Out);
             if (!parser.Parse()) throw new ParsingException("FAILURE: Parser did not match input file");
@@ -37,12 +37,12 @@ namespace dotless.Core.parser
 
     public class LessTreePrinterParser : ILessParser
     {
-        public Element Parse(string source)
+        public ElementBlock Parse(string source)
         {
             return Parse(source, null);
         }
 
-        public Element Parse(string source, Element tail)
+        public ElementBlock Parse(string source, ElementBlock tail)
         {
             var parser = new nLess.nLess(source, Console.Out);
             if (!parser.Parse()) throw new ParsingException("FAILURE: Parser did not match input file");

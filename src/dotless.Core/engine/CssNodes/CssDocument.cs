@@ -25,9 +25,9 @@ namespace dotless.Core.engine.CssNodes
         }
         public List<CssElement> Elements { get; set; }
 
-        public static CssDocument Build(Element rootLessElement)
+        public static CssDocument Build(ElementBlock rootLessElementBlock)
         {
-            return PipelineFactory.LessToCssDomConverter.BuildCssDocument(rootLessElement);
+            return PipelineFactory.LessToCssDomConverter.BuildCssDocument(rootLessElementBlock);
         }
     }
 }
