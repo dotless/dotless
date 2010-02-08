@@ -319,16 +319,18 @@ namespace nLess
                       And(()=>    s() && select() && element() && s() ) )
                   && Option(()=> arguments() ) ) );
 		}
-        public bool arguments()    /*arguments : '(' s argument s (',' s argument s)* ')';*/
+        public bool arguments()    /*arguments : '(' s (argument s (',' s argument s)*)? ')';*/
         {
 
            return And(()=>  
                      Char('(')
                   && s()
-                  && argument()
-                  && s()
-                  && OptRepeat(()=>    
-                      And(()=>    Char(',') && s() && argument() && s() ) )
+                  && Option(()=> 
+                        And(()=> 
+                                 argument()
+                              && s()
+                              && OptRepeat(()=>    
+                                   And(()=>    Char(',') && s() && argument() && s() ) ) ) )
                   && Char(')') );
 		}
         public bool argument()    /*^^argument : color / number unit / string / [a-zA-Z]+ '=' dimension / function / [-a-zA-Z0-9_%$/.&=:;#+?]+ / keyword (S keyword)*;*/
