@@ -87,12 +87,11 @@ namespace dotless.Core.engine
         }
         public INode Evaluate()
         {
+            for(var i = 0; i < Count; i++)
+                this[i] = this[i] is IEvaluatable ? ((IEvaluatable)this[i]).Evaluate() : this[i];
 
             if(this.Count() > 2 || !Terminal)
             {
-                for (var i=0; i<Count; i++){
-                    this[i] = this[i] is IEvaluatable ? ((IEvaluatable)this[i]).Evaluate() : this[i];
-                }
                 object result;
                 result = Operators.Count == 0 ? this : CsEval.StackEval(this);
                 
