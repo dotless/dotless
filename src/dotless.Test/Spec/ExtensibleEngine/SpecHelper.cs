@@ -13,7 +13,9 @@
  * limitations under the License. */
 
 using System.IO;
+using System.Linq;
 using dotless.Core.engine;
+using NUnit.Framework;
 
 namespace dotless.Test.Spec.ExtensibleEngine
 {
@@ -34,7 +36,15 @@ namespace dotless.Test.Spec.ExtensibleEngine
         {
             var less = Lessify(filename);
             var css = Css(filename);
-            css.ShouldEqual(less, string.Format("|{0}| != |{1}|", less, css));
+
+            var mismatch = css.Split('\n').Zip(less.Split('\n'))
+                .Select((p, i) => new { LineNumber = i, CssLine = p.First.ToLower(), LessLine = p.Second.ToLower() })
+                .FirstOrDefault(x => x.CssLine != x.LessLine);
+
+            if (mismatch == null)
+                return;
+
+            Assert.That(mismatch.LessLine, Is.EqualTo(mismatch.CssLine), "First mismatch on line {0}", mismatch.LineNumber);
         }
     }
 }
