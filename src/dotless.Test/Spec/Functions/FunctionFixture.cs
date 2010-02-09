@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using dotless.Core.engine;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 
 
-namespace dotless.Test.Unit.engine.LessNodes.Functions
+namespace dotless.Test.Spec.Functions
 {
     [TestFixture]
-    public class FunctionFixture
+    public class FunctionFixture : SpecFixtureBase
     {
         // Note: these tests were modified from http://github.com/nex3/haml/blob/0e249c844f66bd0872ed68d99de22b774794e967/test/sass/functions_test.rb
 
@@ -575,29 +575,6 @@ namespace dotless.Test.Unit.engine.LessNodes.Functions
         public void TestComplementTestsTypes()
         {
             AssertErrorMessage("Expected color in function 'complement', found \"foo\"", "complement(\"foo\")");
-        }
-
-        private static void AssertErrorMessage(string message, string expression)
-        {
-            Assert.That(() => Evaluate(expression), Throws.Exception.Message.EqualTo(message));
-        }
-
-
-        private static string Evaluate(string expression)
-        {
-            var less = ".def { @c: #123456; prop: " + expression + "; }";
-
-            var engine = new ExtensibleEngineImpl(less);
-
-            var css = engine.Css;
-
-            if (string.IsNullOrEmpty(css))
-                Assert.Fail("expression '{0}' returned no output.", expression);
-
-            var start = css.IndexOf("prop: ");
-            var end = css.LastIndexOf("}");
-
-            return css.Substring(start + 6, end - start - 8);
         }
     }
 }
