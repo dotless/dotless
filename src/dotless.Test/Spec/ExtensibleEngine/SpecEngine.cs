@@ -71,10 +71,9 @@ namespace dotless.Test.Spec.ExtensibleEngine
         {
             SpecHelper.ShouldEqual("lazy-eval"); 
         }
-        [Test, Ignore(Upcoming)]
+        [Test]
         public void ShouldParseMixins()
         {
-            //Comma seperated mixins not working
             SpecHelper.ShouldEqual("mixins"); 
         }
         [Test, Ignore(Upcoming)]

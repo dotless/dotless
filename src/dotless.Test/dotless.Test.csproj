@@ -142,6 +142,9 @@
     <Content Include="Spec\ExtensibleEngine\css\mixins-args.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Spec\ExtensibleEngine\css\mixins.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Spec\ExtensibleEngine\css\namespaces.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

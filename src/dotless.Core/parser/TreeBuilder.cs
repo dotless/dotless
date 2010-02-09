@@ -511,23 +511,28 @@ namespace dotless.Core.parser
         {
             var root = elementBlock.GetRoot();
             var rules = new List<INode>();
-            var selectors = Selectors(node.child_, els => els);
-            if (selectors.Count() > 1)
+            foreach (var mixins in node.AsEnumerable())
             {
-                foreach (var el in selectors)
-                    root = root.Descend(el.Selector, el);
-                if (root.Children != null) elementBlock.Children.AddRange(root.Children); 
-            }
-            else
-            {
-                var el = selectors.First();
-                foreach (var mixinElement in root.Nearests(el.Name))
+                var selectors = Selectors(mixins, els => els);
+                if (selectors.Count() > 1)
                 {
-                    if (mixinElement.Children != null) rules.AddRange(mixinElement.Children);
+                    foreach (var el in selectors)
+                        root = root.Descend(el.Selector, el);
+                    if (root.Children != null) elementBlock.Children.AddRange(root.Children); 
                 }
-                elementBlock.Children.AddRange(rules);
+                else
+                {
+                    var el = selectors.First();
+                    foreach (var mixinElement in root.Nearests(el.Name))
+                    {
+                        if (mixinElement.Children != null) rules.AddRange(mixinElement.Children);
+                    }
+                }
+                
             }
- }
+
+            element.Rules.AddRange(rules);
+        }
 
         /// <summary>
         /// standard_ruleset: ws selectors [{] ws primary ws [}] ws;

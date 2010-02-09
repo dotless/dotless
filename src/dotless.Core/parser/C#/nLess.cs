@@ -1,4 +1,4 @@
-/* created on 08/02/2010 19:07:45 from peg generator V1.0 using '' as input*/
+/* created on 08/02/2010 19:37:21 from peg generator V1.0 using '' as input*/
 
 using Peg.Base;
 using System;
@@ -12,14 +12,14 @@ namespace nLess
                    catchall_declaration= 12, ident= 13, variable= 14, expressions= 15, 
                    operation_expressions= 16, space_delimited_expressions= 17, important= 18, 
                    expression= 19, @operator= 20, ruleset= 21, standard_ruleset= 22, 
-                   mixin_ruleset= 23, selectors= 24, selector= 25, arguments= 26, 
-                   argument= 27, element= 28, class_id= 29, attribute= 30, @class= 31, 
-                   id= 32, tag= 33, select= 34, function= 35, function_name= 36, 
-                   entity= 37, accessor= 38, accessor_name= 39, accessor_key= 40, 
-                   cursors= 41, cursor= 42, fonts= 43, font= 44, literal= 45, dimension_list= 46, 
-                   keyword= 47, @string= 48, dimension= 49, number= 50, unit= 51, 
-                   color= 52, rgb= 53, rgb_node= 54, hex= 55, WS= 56, ws= 57, s= 58, 
-                   S= 59, ns= 60, na= 61};
+                   mixin_ruleset= 23, mixin_descendant= 24, selectors= 25, selector= 26, 
+                   arguments= 27, argument= 28, element= 29, class_id= 30, attribute= 31, 
+                   @class= 32, id= 33, tag= 34, select= 35, function= 36, function_name= 37, 
+                   entity= 38, accessor= 39, accessor_name= 40, accessor_key= 41, 
+                   cursors= 42, cursor= 43, fonts= 44, font= 45, literal= 46, dimension_list= 47, 
+                   keyword= 48, @string= 49, dimension= 50, number= 51, unit= 52, 
+                   color= 53, rgb= 54, rgb_node= 55, hex= 56, WS= 57, ws= 58, s= 59, 
+                   S= 60, ns= 61, na= 62};
       class nLess : PegCharParser 
       {
         
@@ -293,11 +293,32 @@ namespace nLess
                   && OneOf("}")
                   && ws() ) );
 		}
-        public bool mixin_ruleset()    /*^^mixin_ruleset :  ws selectors ';' ws;*/
+        public bool mixin_ruleset()    /*^^mixin_ruleset :  ws mixin_descendant (s ',' ws mixin_descendant)* ws ';' ws;*/
         {
 
            return TreeNT((int)EnLess.mixin_ruleset,()=>
-                And(()=>    ws() && selectors() && Char(';') && ws() ) );
+                And(()=>  
+                     ws()
+                  && mixin_descendant()
+                  && OptRepeat(()=>    
+                      And(()=>      
+                               s()
+                            && Char(',')
+                            && ws()
+                            && mixin_descendant() ) )
+                  && ws()
+                  && Char(';')
+                  && ws() ) );
+		}
+        public bool mixin_descendant()    /*^^mixin_descendant: ws selector (WS selector)* ws ;*/
+        {
+
+           return TreeNT((int)EnLess.mixin_descendant,()=>
+                And(()=>  
+                     ws()
+                  && selector()
+                  && OptRepeat(()=> And(()=>    WS() && selector() ) )
+                  && ws() ) );
 		}
         public bool selectors()    /*^^selectors :  ws selector (s ',' ws selector)* ws ;*/
         {
