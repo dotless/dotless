@@ -518,7 +518,7 @@ namespace dotless.Core.parser
                 {
                     foreach (var el in selectors)
                         root = root.Descend(el.Selector, el);
-                    if (root.Children != null) elementBlock.Children.AddRange(root.Children); 
+                    if (root.Children != null) rules.AddRange(root.Children); 
                 }
                 else
                 {
@@ -531,7 +531,7 @@ namespace dotless.Core.parser
                 
             }
 
-            element.Rules.AddRange(rules);
+            elementBlock.Children.AddRange(rules);
         }
 
         /// <summary>
