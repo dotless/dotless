@@ -1,4 +1,4 @@
-/* created on 19/12/2009 15:41:11 from peg generator V1.0 using '' as input*/
+/* created on 08/02/2010 19:07:45 from peg generator V1.0 using '' as input*/
 
 using Peg.Base;
 using System;
@@ -19,7 +19,7 @@ namespace nLess
                    cursors= 41, cursor= 42, fonts= 43, font= 44, literal= 45, dimension_list= 46, 
                    keyword= 47, @string= 48, dimension= 49, number= 50, unit= 51, 
                    color= 52, rgb= 53, rgb_node= 54, hex= 55, WS= 56, ws= 57, s= 58, 
-                   S= 59, ns= 60};
+                   S= 59, ns= 60, na= 61};
       class nLess : PegCharParser 
       {
         
@@ -325,31 +325,40 @@ namespace nLess
            return And(()=>  
                      Char('(')
                   && s()
-                  && Option(()=> 
-                        And(()=> 
-                                 argument()
-                              && s()
-                              && OptRepeat(()=>    
-                                   And(()=>    Char(',') && s() && argument() && s() ) ) ) )
+                  && Option(()=>    
+                      And(()=>      
+                               argument()
+                            && s()
+                            && OptRepeat(()=>        
+                                    And(()=>          
+                                                 Char(',')
+                                              && s()
+                                              && argument()
+                                              && s() ) ) ) )
                   && Char(')') );
 		}
-        public bool argument()    /*^^argument : color / number unit / string / [a-zA-Z]+ '=' dimension / function / [-a-zA-Z0-9_%$/.&=:;#+?]+ / keyword (S keyword)*;*/
+        public bool argument()    /*^^argument : color &na / number unit &na / string &na / [a-zA-Z]+ '=' dimension &na / function &na / expressions &na / keyword (S keyword)* &na / [-a-zA-Z0-9_%$/.&=:;#+?]+ &na;*/
         {
 
            return TreeNT((int)EnLess.argument,()=>
                   
-                     color()
-                  || And(()=>    number() && unit() )
-                  || @string()
+                     And(()=>    color() && Peek(()=> na() ) )
+                  || And(()=>    number() && unit() && Peek(()=> na() ) )
+                  || And(()=>    @string() && Peek(()=> na() ) )
                   || And(()=>    
                          PlusRepeat(()=> In('a','z', 'A','Z') )
                       && Char('=')
-                      && dimension() )
-                  || function()
-                  || PlusRepeat(()=> OneOf(optimizedCharset2) )
+                      && dimension()
+                      && Peek(()=> na() ) )
+                  || And(()=>    function() && Peek(()=> na() ) )
+                  || And(()=>    expressions() && Peek(()=> na() ) )
                   || And(()=>    
                          keyword()
-                      && OptRepeat(()=> And(()=>    S() && keyword() ) ) ) );
+                      && OptRepeat(()=> And(()=>    S() && keyword() ) )
+                      && Peek(()=> na() ) )
+                  || And(()=>    
+                         PlusRepeat(()=> OneOf(optimizedCharset2) )
+                      && Peek(()=> na() ) ) );
 		}
         public bool element()    /*^^element : (class_id / tag / ident) attribute* ('(' ident? attribute* ')')? / attribute+ / '@media' / '@font-face';*/
         {
@@ -451,18 +460,18 @@ namespace nLess
            return TreeNT((int)EnLess.function_name,()=>
                 PlusRepeat(()=> (In('a','z', 'A','Z')||OneOf("-_")) ) );
 		}
-        public bool entity()    /*^^entity :  fonts / cursors /  function /  accessor / keyword  / variable / literal  ;*/
+        public bool entity()    /*^^entity :  fonts / function / accessor / keyword / variable / literal / cursors ;*/
         {
 
            return TreeNT((int)EnLess.entity,()=>
                   
                      fonts()
-                  || cursors()
                   || function()
                   || accessor()
                   || keyword()
                   || variable()
-                  || literal() );
+                  || literal()
+                  || cursors() );
 		}
         public bool accessor()    /*^^accessor: accessor_name '[' accessor_key ']';*/
         {
@@ -647,6 +656,11 @@ namespace nLess
         {
 
            return And(()=>    Not(()=> OneOf(" ;\n") ) && Any() );
+		}
+        public bool na()    /*na: s (',' / ')');*/
+        {
+
+           return And(()=>    s() && (    Char(',') || Char(')')) );
 		}
 		#endregion Grammar Rules
 

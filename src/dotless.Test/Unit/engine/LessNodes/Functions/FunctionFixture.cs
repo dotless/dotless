@@ -16,7 +16,16 @@ namespace dotless.Test.Unit.engine.LessNodes.Functions
         [Test]
         public void TestExpressionsAsArguments()
         {
+            Assert.AreEqual("#03070b", Evaluate("rgb((1+2), (3+4), (5+6))"));
+            Assert.AreEqual("#03070b", Evaluate("rgb(1+2, 3+4, 5+6)"));
+            Assert.AreEqual("#33cccc", Evaluate("hsl((100 + 80), 60%, 50%)"));
             Assert.AreEqual("#33cccc", Evaluate("hsl(100 + 80, 60%, 50%)"));
+        }
+
+        [Test]
+        public void TestVariablesAsArguments()
+        {
+            Assert.AreEqual("#123456", Evaluate("rgba(@c, 1)"));
         }
 
         [Test]
@@ -576,11 +585,14 @@ namespace dotless.Test.Unit.engine.LessNodes.Functions
 
         private static string Evaluate(string expression)
         {
-            var less = ".def { prop: " + expression + "; }";
+            var less = ".def { @c: #123456; prop: " + expression + "; }";
 
             var engine = new ExtensibleEngineImpl(less);
 
             var css = engine.Css;
+
+            if (string.IsNullOrEmpty(css))
+                Assert.Fail("expression '{0}' returned no output.", expression);
 
             var start = css.IndexOf("prop: ");
             var end = css.LastIndexOf("}");

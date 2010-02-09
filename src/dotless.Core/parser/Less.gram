@@ -27,7 +27,7 @@ ruleset : standard_ruleset / mixin_ruleset;
 ^^selectors :  ws selector (s ',' ws selector)* ws ;
 ^^selector : (s select element s)+ arguments? ;
 arguments : '(' s (argument s (',' s argument s)*)? ')';
-^^argument : color / number unit / string / [a-zA-Z]+ '=' dimension / function / [-a-zA-Z0-9_%$/.&=:;#+?]+ / keyword (S keyword)*;
+^^argument : color &na / number unit &na / string &na / [a-zA-Z]+ '=' dimension &na / function &na / expressions &na / keyword (S keyword)* &na / [-a-zA-Z0-9_%$/.&=:;#+?]+ &na;
 ^^element : (class_id / tag / ident) attribute* ('(' ident? attribute* ')')? / attribute+ / '@media' / '@font-face';
 ^^class_id : tag? (class / id)+;
 ^^attribute :  '[' tag ([|~*$^]? '=') (tag / string) ']' / '[' (tag / string) ']';
@@ -39,7 +39,7 @@ arguments : '(' s (argument s (',' s argument s)*)? ')';
 ^^function_name: [-a-zA-Z_]+;
 
 //******************************************** Entity
-^^entity :  fonts / cursors /  function /  accessor / keyword  / variable / literal  ;
+^^entity :  fonts / function / accessor / keyword / variable / literal / cursors ;
 ^^accessor: accessor_name '[' accessor_key ']'; 
 ^^accessor_name: (class_id / tag) ; 
 ^^accessor_key: (string / variable) ; 
@@ -65,4 +65,5 @@ ws: [ \r\n\t]*;
 s:  [ ]*;
 S:  [ ]+;
 ns: ![ ;\n] .;
+na: s (',' / ')');
 <</Grammar>>

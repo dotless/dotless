@@ -300,7 +300,7 @@ namespace dotless.Core.parser
                 case EnLess.keyword:
                     return Keyword(node);
                 case EnLess.function:
-                    return Function(node);
+                    return Function(node, elementBlock);
                 case EnLess.cursors:
                     return Cursors(node);
                 default:
@@ -333,20 +333,23 @@ namespace dotless.Core.parser
         /// function: function_name arguments ;
         /// </summary>
         /// <param name="node"></param>
+        /// <param name="element"></param>
         /// <returns></returns>
-        private INode Function(PegNode node)
+        private INode Function(PegNode node, ElementBlock element)
         {
             var funcName = node.child_.GetAsString(Src);
-            var arguments = Arguments(node);
+            var arguments = Arguments(node, element);
             return new Function(funcName, arguments.ToList());
         }
 
         /// <summary>
         /// arguments : '(' s argument s (',' s argument s)* ')';
+        /// argument : color / number unit / string / [a-zA-Z]+ '=' dimension / function / expressions / [-a-zA-Z0-9_%$/.&=:;#+?]+ / keyword (S keyword)*;
         /// </summary>
         /// <param name="node"></param>
+        /// <param name="element"></param>
         /// <returns></returns>
-        private IEnumerable<INode> Arguments(PegNode node)
+        private IEnumerable<INode> Arguments(PegNode node, ElementBlock element)
         {
             foreach (var argument in node.AsEnumerable().Skip(1))
             {
@@ -363,7 +366,10 @@ namespace dotless.Core.parser
                             yield return Number(argument.child_);
                             break;
                         case EnLess.function:
-                            yield return Function(argument.child_);
+                            yield return Function(argument.child_, element);
+                            break;
+                        case EnLess.expressions:
+                            yield return Expression(argument.child_, element);
                             break;
                         case EnLess.@string:
                             yield return new String(argument.GetAsString(Src));
@@ -550,7 +556,7 @@ namespace dotless.Core.parser
             foreach(var selector in node.AsEnumerable(x => x.id_.ToEnLess() == EnLess.selector))
             {
                 var selectors = Selector(selector);
-                foreach(var s in action.Invoke(selectors)) yield return s;
+                foreach(var s in action(selectors)) yield return s;
             }
         }
 
