@@ -98,8 +98,14 @@ namespace dotless.Core.engine
         }
         public static Number operator /(Number number1, Number number2)
         {
-            if (number1.Unit != number2.Unit && !string.IsNullOrEmpty(number1.Unit) && !string.IsNullOrEmpty(number2.Unit)) throw new MixedUnitsException();
-            var unit = number1.Unit != "" ? number1.Unit : number2.Unit;
+            string unit;
+            if (number1.Unit == number2.Unit)
+                unit = "";  // if the units are the same, devision creates unitless number
+            else if (string.IsNullOrEmpty(number1.Unit) || string.IsNullOrEmpty(number2.Unit))
+                unit = number1.Unit + number2.Unit;
+            else
+                throw new MixedUnitsException();
+
             return new Number(number1.Value / number2.Value) { Unit = unit };
         }
         public static Number operator /(Number number1, double number2)
