@@ -34,11 +34,16 @@ namespace dotless.Test.Spec.Functions
             AssertExpression("#33cccc", "hsl(180, 60%, 50%)");
         }
 
-        [Test, Ignore]
-        public void TestHslChecksBounds()
+        [Test]
+        public void TestHslOverflows()
         {
-            AssertErrorMessage("Saturation -114 must be between 0% and 100% for `hsl'", "hsl(10, -114, 12)");
-            AssertErrorMessage("Lightness 256 must be between 0% and 100% for `hsl'", "hsl(10, 10, 256%)");
+            AssertExpression("#1f1f1f", "hsl(10, -114, 12)");
+            AssertExpression("#ffffff", "hsl(10, 10, 256%)");
+
+            AssertExpression("350", "hue(hsl(-10, 10, 10))");
+            AssertExpression("40", "hue(hsl(400, 10, 10))");
+            AssertExpression("1", "hue(hsl(721, 10, 10))");
+            AssertExpression("359", "hue(hsl(-721, 10, 10))");
         }
 
         [Test]
@@ -57,13 +62,18 @@ namespace dotless.Test.Spec.Functions
             AssertExpression("rgba(51, 204, 204, 0)", "hsla(180, 60%, 50%, 0)");
         }
 
-        [Test, Ignore]
-        public void TestHslaChecksBounds()
+        [Test]
+        public void TestHslaOverflows()
         {
-            AssertErrorMessage("Saturation -114 must be between 0% and 100% for `hsla'", "hsla(10, -114, 12, 1)");
-            AssertErrorMessage("Lightness 256 must be between 0% and 100% for `hsla'", "hsla(10, 10, 256%, 0)");
-            AssertErrorMessage("Alpha channel -0.1 must be between 0 and 1 for `hsla'", "hsla(10, 10, 10, -0.1)");
-            AssertErrorMessage("Alpha channel 1.1 must be between 0 and 1 for `hsla'", "hsla(10, 10, 10, 1.1)");
+            AssertExpression("#1f1f1f", "hsla(10, -114, 12, 1)");
+            AssertExpression("#ffffff", "hsla(10, 10, 256%, 1)");
+            AssertExpression("rgba(28, 24, 23, 0)", "hsla(10, 10, 10, -0.1)");
+            AssertExpression("#1c1817", "hsla(10, 10, 10, 1.1)");
+
+            AssertExpression("350", "hue(hsla(-10, 10, 10, 1))");
+            AssertExpression("40", "hue(hsla(400, 10, 10, .5))");
+            AssertExpression("1", "hue(hsla(721, 10, 10, 0))");
+            AssertExpression("359", "hue(hsla(-721, 10, 10, 1))");
         }
 
         [Test]
@@ -82,7 +92,7 @@ namespace dotless.Test.Spec.Functions
             AssertExpression("2500%", "percentage(25)");
             AssertExpression("50%", "percentage(.5)");
             AssertExpression("100%", "percentage(1)");
-            //      AssertExpression("25%", "percentage(25px / 100px)");
+            AssertExpression("25%", "percentage(25px / 100px)");
         }
 
         [Test]
@@ -156,30 +166,22 @@ namespace dotless.Test.Spec.Functions
             AssertExpression("#00ff80", "rgb(0%, 100%, 50%)");
         }
 
-        [Test, Ignore]
-        public void TestRgbTestsBounds()
+        [Test]
+        public void TestRgbOverflows()
         {
-            AssertErrorMessage("Color value 256 must be between 0 and 255 inclusive for `rgb'",
-                                 "rgb(256, 1, 1)");
-            AssertErrorMessage("Color value 256 must be between 0 and 255 inclusive for `rgb'",
-                                 "rgb(1, 256, 1)");
-            AssertErrorMessage("Color value 256 must be between 0 and 255 inclusive for `rgb'",
-                                 "rgb(1, 1, 256)");
-            AssertErrorMessage("Color value 256 must be between 0 and 255 inclusive for `rgb'",
-                                 "rgb(1, 256, 257)");
-            AssertErrorMessage("Color value -1 must be between 0 and 255 inclusive for `rgb'",
-                                 "rgb(-1, 1, 1)");
+            AssertExpression("#ff0101", "rgb(256, 1, 1)");
+            AssertExpression("#01ff01", "rgb(1, 256, 1)");
+            AssertExpression("#0101ff", "rgb(1, 1, 256)");
+            AssertExpression("#01ffff", "rgb(1, 256, 257)");
+            AssertExpression("#000101", "rgb(-1, 1, 1)");
         }
 
-        [Test, Ignore]
+        [Test]
         public void TestRgbTestPercentBounds()
         {
-            AssertErrorMessage("Color value 100.1% must be between 0% and 100% inclusive for `rgb'",
-                                 "rgb(100.1%, 0, 0)");
-            AssertErrorMessage("Color value -0.1% must be between 0% and 100% inclusive for `rgb'",
-                                 "rgb(0, -0.1%, 0)");
-            AssertErrorMessage("Color value 101% must be between 0% and 100% inclusive for `rgb'",
-                                 "rgb(0, 0, 101%)");
+            AssertExpression("#ff0000", "rgb(100.1%, 0, 0)");
+            AssertExpression("#000000", "rgb(0, -0.1%, 0)");
+            AssertExpression("#0000ff", "rgb(0, 0, 101%)");
         }
 
         [Test]
@@ -198,23 +200,15 @@ namespace dotless.Test.Spec.Functions
             AssertExpression("rgba(0, 255, 127, 0)", "rgba(0, 255, 127, 0)");
         }
 
-        [Test, Ignore]
-        public void TestRgbaTestsBounds()
+        [Test]
+        public void TestRgbaOverflows()
         {
-            AssertErrorMessage("Color value 256 must be between 0 and 255 inclusive for `rgba'",
-                                 "rgba(256, 1, 1, 0.3)");
-            AssertErrorMessage("Color value 256 must be between 0 and 255 inclusive for `rgba'",
-                                 "rgba(1, 256, 1, 0.3)");
-            AssertErrorMessage("Color value 256 must be between 0 and 255 inclusive for `rgba'",
-                                 "rgba(1, 1, 256, 0.3)");
-            AssertErrorMessage("Color value 256 must be between 0 and 255 inclusive for `rgba'",
-                                 "rgba(1, 256, 257, 0.3)");
-            AssertErrorMessage("Color value -1 must be between 0 and 255 inclusive for `rgba'",
-                                 "rgba(-1, 1, 1, 0.3)");
-            AssertErrorMessage("Alpha channel -0.2 must be between 0 and 1 inclusive for `rgba'",
-                                 "rgba(1, 1, 1, -0.2)");
-            AssertErrorMessage("Alpha channel 1.2 must be between 0 and 1 inclusive for `rgba'",
-                                 "rgba(1, 1, 1, 1.2)");
+            AssertExpression("rgba(255, 1, 1, .3)", "rgba(256, 1, 1, 0.3)");
+            AssertExpression("rgba(1, 1, 255, .3)", "rgba(1, 1, 256, 0.3)");
+            AssertExpression("rgba(1, 255, 255, .3)", "rgba(1, 256, 257, 0.3)");
+            AssertExpression("rgba(0, 1, 1, .3)", "rgba(-1, 1, 1, 0.3)");
+            AssertExpression("rgba(1, 1, 1, 0)", "rgba(1, 1, 1, -0.2)");
+            AssertExpression("#010101", "rgba(1, 1, 1, 1.2)");
         }
 
         [Test]
@@ -435,13 +429,12 @@ namespace dotless.Test.Spec.Functions
             AssertExpression("rgba(34, 0, 0, .5)", "lightness(rgba(136, 0, 0, .5), -20%)");
         }
 
-        [Test, Ignore]
-        public void TestEditLightnessTestsBounds()
+        [Test]
+        public void TestEditLightnessOverflow()
         {
-            AssertErrorMessage("Amount -0.001 must be between 0% and 100% for `lighten'",
-                                 "lightness(#123, -0.001)");
-            AssertErrorMessage("Amount 100.001 must be between 0% and 100% for `lighten'",
-                                 "lightness(#123, 100.001)");
+            AssertExpression("#ffffff", "lightness(#000000, 101%)");
+            AssertExpression("#000000", "lightness(#ffffff, -101%)");
+
         }
 
         [Test]
@@ -473,13 +466,11 @@ namespace dotless.Test.Spec.Functions
             AssertExpression("rgba(114, 107, 107, .5)", "saturation(rgba(136, 85, 85, .5), -20%)");
         }
 
-        [Test, Ignore]
-        public void TestEditSaturationTestsBounds()
+        [Test]
+        public void TestEditSaturationOverflow()
         {
-            AssertErrorMessage("Amount -0.001 must be between 0% and 100% for `saturate'",
-                                 "saturate(#123, -0.001)");
-            AssertErrorMessage("Amount 100.001 must be between 0% and 100% for `saturate'",
-                                 "saturate(#123, 100.001)");
+            AssertExpression("#33ff33", "saturation(#8a8, 101%)");
+            AssertExpression("#999999", "saturation(#8a8, -101%)");
         }
 
         [Test]
@@ -536,13 +527,11 @@ namespace dotless.Test.Spec.Functions
             AssertErrorMessage("Expected number in function 'mix', found \"foo\"", "mix(#f00, #baf, \"foo\")");
         }
 
-        [Test, Ignore]
+        [Test]
         public void TestMixTestsBounds()
         {
-            AssertErrorMessage("Weight -0.001 must be between 0% and 100% for `mix'",
-                                 "mix(#123, #456, -0.001)");
-            AssertErrorMessage("Weight 100.001 must be between 0% and 100% for `mix'",
-                                 "mix(#123, #456, 100.001)");
+            AssertExpression("#445566", "mix(#123, #456, -0.001)");
+            AssertExpression("#112233", "mix(#123, #456, 100.001)");
         }
 
         [Test]
