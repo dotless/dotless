@@ -16,22 +16,22 @@ namespace dotless.Test.Spec.Functions
         [Test]
         public void TestExpressionsAsArguments()
         {
-            Assert.AreEqual("#03070b", Evaluate("rgb((1+2), (3+4), (5+6))"));
-            Assert.AreEqual("#03070b", Evaluate("rgb(1+2, 3+4, 5+6)"));
-            Assert.AreEqual("#33cccc", Evaluate("hsl((100 + 80), 60%, 50%)"));
-            Assert.AreEqual("#33cccc", Evaluate("hsl(100 + 80, 60%, 50%)"));
+            AssertExpression("#03070b", "rgb((1+2), (3+4), (5+6))");
+            AssertExpression("#03070b", "rgb(1+2, 3+4, 5+6)");
+            AssertExpression("#33cccc", "hsl((100 + 80), 60%, 50%)");
+            AssertExpression("#33cccc", "hsl(100 + 80, 60%, 50%)");
         }
 
         [Test]
         public void TestVariablesAsArguments()
         {
-            Assert.AreEqual("#123456", Evaluate("rgba(@c, 1)"));
+            AssertExpression("#123456", "rgba(@c, 1)");
         }
 
         [Test]
         public void TestHsl()
         {
-            Assert.AreEqual("#33cccc", Evaluate("hsl(180, 60%, 50%)"));
+            AssertExpression("#33cccc", "hsl(180, 60%, 50%)");
         }
 
         [Test, Ignore]
@@ -52,9 +52,9 @@ namespace dotless.Test.Spec.Functions
         [Test]
         public void TestHsla()
         {
-            Assert.AreEqual("rgba(51, 204, 204, .4)", Evaluate("hsla(180, 60%, 50%, .4)"));
-            Assert.AreEqual("#33cccc", Evaluate("hsla(180, 60%, 50%, 1)"));
-            Assert.AreEqual("rgba(51, 204, 204, 0)", Evaluate("hsla(180, 60%, 50%, 0)"));
+            AssertExpression("rgba(51, 204, 204, .4)", "hsla(180, 60%, 50%, .4)");
+            AssertExpression("#33cccc", "hsla(180, 60%, 50%, 1)");
+            AssertExpression("rgba(51, 204, 204, 0)", "hsla(180, 60%, 50%, 0)");
         }
 
         [Test, Ignore]
@@ -78,11 +78,11 @@ namespace dotless.Test.Spec.Functions
         [Test]
         public void TestPercentage()
         {
-            Assert.AreEqual("25%", Evaluate("percentage(25%)"));
-            Assert.AreEqual("2500%", Evaluate("percentage(25)"));
-            Assert.AreEqual("50%", Evaluate("percentage(.5)"));
-            Assert.AreEqual("100%", Evaluate("percentage(1)"));
-            //      Assert.AreEqual("25%", Evaluate("percentage(25px / 100px)"));
+            AssertExpression("25%", "percentage(25%)");
+            AssertExpression("2500%", "percentage(25)");
+            AssertExpression("50%", "percentage(.5)");
+            AssertExpression("100%", "percentage(1)");
+            //      AssertExpression("25%", "percentage(25px / 100px)");
         }
 
         [Test]
@@ -96,11 +96,11 @@ namespace dotless.Test.Spec.Functions
         [Test]
         public void TestRound()
         {
-            Assert.AreEqual("4", Evaluate("round(4)"));
-            Assert.AreEqual("5", Evaluate("round(4.8)"));
-            Assert.AreEqual("5px", Evaluate("round(4.8px)"));
-            Assert.AreEqual("5px", Evaluate("round(5.49px)"));
-            Assert.AreEqual("50%", Evaluate("round(50.1%)"));
+            AssertExpression("4", "round(4)");
+            AssertExpression("5", "round(4.8)");
+            AssertExpression("5px", "round(4.8px)");
+            AssertExpression("5px", "round(5.49px)");
+            AssertExpression("50%", "round(50.1%)");
 
             AssertErrorMessage("Expected number in function 'round', found #cccccc", "round(#ccc)");
         }
@@ -108,10 +108,10 @@ namespace dotless.Test.Spec.Functions
         [Test]
         public void TestFloor()
         {
-            Assert.AreEqual("4", Evaluate("floor(4.8)"));
-            Assert.AreEqual("4px", Evaluate("floor(4.8px)"));
-            Assert.AreEqual("5px", Evaluate("floor(5.49px)"));
-            Assert.AreEqual("50%", Evaluate("floor(50.1%)"));
+            AssertExpression("4", "floor(4.8)");
+            AssertExpression("4px", "floor(4.8px)");
+            AssertExpression("5px", "floor(5.49px)");
+            AssertExpression("50%", "floor(50.1%)");
 
             AssertErrorMessage("Expected number in function 'floor', found \"foo\"", "floor(\"foo\")");
         }
@@ -119,11 +119,11 @@ namespace dotless.Test.Spec.Functions
         [Test]
         public void TestCeil()
         {
-            Assert.AreEqual("4", Evaluate("ceil(4)"));
-            Assert.AreEqual("5", Evaluate("ceil(4.8)"));
-            Assert.AreEqual("5px", Evaluate("ceil(4.8px)"));
-            Assert.AreEqual("6px", Evaluate("ceil(5.49px)"));
-            Assert.AreEqual("51%", Evaluate("ceil(50.1%)"));
+            AssertExpression("4", "ceil(4)");
+            AssertExpression("5", "ceil(4.8)");
+            AssertExpression("5px", "ceil(4.8px)");
+            AssertExpression("6px", "ceil(5.49px)");
+            AssertExpression("51%", "ceil(50.1%)");
 
             AssertErrorMessage("Expected number in function 'ceil', found \"a\"", "ceil(\"a\")");
         }
@@ -131,10 +131,10 @@ namespace dotless.Test.Spec.Functions
         [Test]
         public void TestAbs()
         {
-            Assert.AreEqual("5", Evaluate("abs(-5)"));
-            Assert.AreEqual("5", Evaluate("abs(5)"));
-            Assert.AreEqual("5px", Evaluate("abs(-5px)"));
-            Assert.AreEqual("5px", Evaluate("abs(5px)"));
+            AssertExpression("5", "abs(-5)");
+            AssertExpression("5", "abs(5)");
+            AssertExpression("5px", "abs(-5px)");
+            AssertExpression("5px", "abs(5px)");
 
             AssertErrorMessage("Expected number in function 'abs', found #aaaaaa", "abs(#aaa)");
         }
@@ -142,18 +142,18 @@ namespace dotless.Test.Spec.Functions
         [Test]
         public void TestRgb()
         {
-            Assert.AreEqual("#123456", Evaluate("rgb(18, 52, 86)"));
-            Assert.AreEqual("#beaded", Evaluate("rgb(190, 173, 237)"));
-            Assert.AreEqual("#00ff7f", Evaluate("rgb(0, 255, 127)"));
+            AssertExpression("#123456", "rgb(18, 52, 86)");
+            AssertExpression("#beaded", "rgb(190, 173, 237)");
+            AssertExpression("#00ff7f", "rgb(0, 255, 127)");
         }
 
         [Test]
         public void TestRgbPercent()
         {
-            Assert.AreEqual("#123456", Evaluate("rgb(7.1%, 20.4%, 33.7%)"));
-            Assert.AreEqual("#beaded", Evaluate("rgb(74.7%, 173, 93%)"));
-            Assert.AreEqual("#beaded", Evaluate("rgb(190, 68%, 237)"));
-            Assert.AreEqual("#00ff80", Evaluate("rgb(0%, 100%, 50%)"));
+            AssertExpression("#123456", "rgb(7.1%, 20.4%, 33.7%)");
+            AssertExpression("#beaded", "rgb(74.7%, 173, 93%)");
+            AssertExpression("#beaded", "rgb(190, 68%, 237)");
+            AssertExpression("#00ff80", "rgb(0%, 100%, 50%)");
         }
 
         [Test, Ignore]
@@ -193,9 +193,9 @@ namespace dotless.Test.Spec.Functions
         [Test]
         public void TestRgba()
         {
-            Assert.AreEqual("rgba(18, 52, 86, .5)", Evaluate("rgba(18, 52, 86, .5)"));
-            Assert.AreEqual("#beaded", Evaluate("rgba(190, 173, 237, 1)"));
-            Assert.AreEqual("rgba(0, 255, 127, 0)", Evaluate("rgba(0, 255, 127, 0)"));
+            AssertExpression("rgba(18, 52, 86, .5)", "rgba(18, 52, 86, .5)");
+            AssertExpression("#beaded", "rgba(190, 173, 237, 1)");
+            AssertExpression("rgba(0, 255, 127, 0)", "rgba(0, 255, 127, 0)");
         }
 
         [Test, Ignore]
@@ -229,8 +229,8 @@ namespace dotless.Test.Spec.Functions
         [Test]
         public void TestRgbaWithColor()
         {
-            Assert.AreEqual("rgba(16, 32, 48, .5)", Evaluate("rgba(#102030, .5)"));
-            // Assert.AreEqual("rgba(0, 0, 255, 0.5)", Evaluate("rgba(blue, 0.5)"));  // color keywords are not evaluated
+            AssertExpression("rgba(16, 32, 48, .5)", "rgba(#102030, .5)");
+            // AssertExpression("rgba(0, 0, 255, 0.5)", "rgba(blue, 0.5)");  // color keywords are not evaluated
         }
 
         [Test]
@@ -252,7 +252,7 @@ namespace dotless.Test.Spec.Functions
         [Test]
         public void TestRed()
         {
-            Assert.AreEqual("18", Evaluate("red(#123456)"));
+            AssertExpression("18", "red(#123456)");
         }
 
         [Test]
@@ -264,7 +264,7 @@ namespace dotless.Test.Spec.Functions
         [Test]
         public void TestGreen()
         {
-            Assert.AreEqual("52", Evaluate("green(#123456)"));
+            AssertExpression("52", "green(#123456)");
         }
 
         [Test]
@@ -276,7 +276,7 @@ namespace dotless.Test.Spec.Functions
         [Test]
         public void TestBlue()
         {
-            Assert.AreEqual("86", Evaluate("blue(#123456)"));
+            AssertExpression("86", "blue(#123456)");
         }
 
         [Test]
@@ -288,7 +288,7 @@ namespace dotless.Test.Spec.Functions
         [Test]
         public void TestHue()
         {
-            Assert.AreEqual("18", Evaluate("hue(hsl(18, 50%, 20%))"));
+            AssertExpression("18", "hue(hsl(18, 50%, 20%))");
         }
 
         [Test]
@@ -300,8 +300,8 @@ namespace dotless.Test.Spec.Functions
         [Test]
         public void TestSaturation()
         {
-            Assert.AreEqual("52%", Evaluate("saturation(hsl(20, 52%, 20%))"));
-            Assert.AreEqual("52%", Evaluate("saturation(hsl(20, 52, 20%))"));
+            AssertExpression("52%", "saturation(hsl(20, 52%, 20%))");
+            AssertExpression("52%", "saturation(hsl(20, 52, 20%))");
         }
 
         [Test]
@@ -313,8 +313,8 @@ namespace dotless.Test.Spec.Functions
         [Test]
         public void TestLightness()
         {
-            Assert.AreEqual("86%", Evaluate("lightness(hsl(120, 50%, 86%))"));
-            Assert.AreEqual("86%", Evaluate("lightness(hsl(120, 50%, 86))"));
+            AssertExpression("86%", "lightness(hsl(120, 50%, 86%))");
+            AssertExpression("86%", "lightness(hsl(120, 50%, 86))");
         }
 
         [Test]
@@ -326,15 +326,15 @@ namespace dotless.Test.Spec.Functions
         [Test]
         public void TestAlpha()
         {
-            Assert.AreEqual("1", Evaluate("alpha(#123456)"));
-            Assert.AreEqual(".34", Evaluate("alpha(rgba(0, 1, 2, 0.34))"));
-            Assert.AreEqual("0", Evaluate("alpha(hsla(0, 1, 2, 0))"));
+            AssertExpression("1", "alpha(#123456)");
+            AssertExpression(".34", "alpha(rgba(0, 1, 2, 0.34))");
+            AssertExpression("0", "alpha(hsla(0, 1, 2, 0))");
         }
 
         [Test]
         public void TestAlphaOpacityHack()
         {
-            Assert.AreEqual("ALPHA(Opacity=75)", Evaluate("alpha(Opacity=75)"));
+            AssertExpression("ALPHA(Opacity=75)", "alpha(Opacity=75)");
         }
 
         [Test]
@@ -346,7 +346,7 @@ namespace dotless.Test.Spec.Functions
         [Test]
         public void TestEditRed()
         {
-            Assert.AreEqual("#1c3456", Evaluate("red(#123456, 10)"));
+            AssertExpression("#1c3456", "red(#123456, 10)");
         }
 
         [Test]
@@ -358,7 +358,7 @@ namespace dotless.Test.Spec.Functions
         [Test]
         public void TestEditGreen()
         {
-            Assert.AreEqual("#123e56", Evaluate("green(#123456, 10)"));
+            AssertExpression("#123e56", "green(#123456, 10)");
         }
 
         [Test]
@@ -370,7 +370,7 @@ namespace dotless.Test.Spec.Functions
         [Test]
         public void TestEditBlue()
         {
-            Assert.AreEqual("#123460", Evaluate("blue(#123456, 10)"));
+            AssertExpression("#123460", "blue(#123456, 10)");
         }
 
         [Test]
@@ -383,28 +383,28 @@ namespace dotless.Test.Spec.Functions
         public void TestEditAlpha()
         {
             // Opacify / Fade In
-            Assert.AreEqual("rgba(0, 0, 0, .75)", Evaluate("alpha(rgba(0, 0, 0, 0.5), .25)"));
-            Assert.AreEqual("rgba(0, 0, 0, .3)", Evaluate("alpha(rgba(0, 0, 0, 0.2), .1)"));
-            Assert.AreEqual("rgba(0, 0, 0, .7)", Evaluate("alpha(rgba(0, 0, 0, 0.2), .5px)"));
-            Assert.AreEqual("#000000", Evaluate("alpha(rgba(0, 0, 0, 0.2), 0.8)"));
-            Assert.AreEqual("#000000", Evaluate("alpha(rgba(0, 0, 0, 0.2), 1)"));
-            Assert.AreEqual("rgba(0, 0, 0, .2)", Evaluate("alpha(rgba(0, 0, 0, 0.2), 0)"));
+            AssertExpression("rgba(0, 0, 0, .75)", "alpha(rgba(0, 0, 0, 0.5), .25)");
+            AssertExpression("rgba(0, 0, 0, .3)", "alpha(rgba(0, 0, 0, 0.2), .1)");
+            AssertExpression("rgba(0, 0, 0, .7)", "alpha(rgba(0, 0, 0, 0.2), .5px)");
+            AssertExpression("#000000", "alpha(rgba(0, 0, 0, 0.2), 0.8)");
+            AssertExpression("#000000", "alpha(rgba(0, 0, 0, 0.2), 1)");
+            AssertExpression("rgba(0, 0, 0, .2)", "alpha(rgba(0, 0, 0, 0.2), 0)");
 
             // Transparentize / Fade Out
-            Assert.AreEqual("rgba(0, 0, 0, .3)", Evaluate("alpha(rgba(0, 0, 0, 0.5), -.2)"));
-            Assert.AreEqual("rgba(0, 0, 0, .1)", Evaluate("alpha(rgba(0, 0, 0, 0.2), -.1)"));
-            Assert.AreEqual("rgba(0, 0, 0, .2)", Evaluate("alpha(rgba(0, 0, 0, 0.5), -.3px)"));
-            Assert.AreEqual("rgba(0, 0, 0, 0)", Evaluate("alpha(rgba(0, 0, 0, 0.2), -0.2)"));
-            Assert.AreEqual("rgba(0, 0, 0, 0)", Evaluate("alpha(rgba(0, 0, 0, 0.2), -1)"));
-            Assert.AreEqual("rgba(0, 0, 0, .2)", Evaluate("alpha(rgba(0, 0, 0, 0.2), 0)"));
+            AssertExpression("rgba(0, 0, 0, .3)", "alpha(rgba(0, 0, 0, 0.5), -.2)");
+            AssertExpression("rgba(0, 0, 0, .1)", "alpha(rgba(0, 0, 0, 0.2), -.1)");
+            AssertExpression("rgba(0, 0, 0, .2)", "alpha(rgba(0, 0, 0, 0.5), -.3px)");
+            AssertExpression("rgba(0, 0, 0, 0)", "alpha(rgba(0, 0, 0, 0.2), -0.2)");
+            AssertExpression("rgba(0, 0, 0, 0)", "alpha(rgba(0, 0, 0, 0.2), -1)");
+            AssertExpression("rgba(0, 0, 0, .2)", "alpha(rgba(0, 0, 0, 0.2), 0)");
         }
 
         [Test]
         public void TestEditAlphaPercent()
         {
-            Assert.AreEqual("rgba(0, 0, 0, .5)", Evaluate("alpha(rgba(0, 0, 0, 0.5), 0%)"));
-            Assert.AreEqual("rgba(0, 0, 0, .75)", Evaluate("alpha(rgba(0, 0, 0, 0.5), 25%)"));
-            Assert.AreEqual("rgba(0, 0, 0, .25)", Evaluate("alpha(rgba(0, 0, 0, 0.5), -25%)"));
+            AssertExpression("rgba(0, 0, 0, .5)", "alpha(rgba(0, 0, 0, 0.5), 0%)");
+            AssertExpression("rgba(0, 0, 0, .75)", "alpha(rgba(0, 0, 0, 0.5), 25%)");
+            AssertExpression("rgba(0, 0, 0, .25)", "alpha(rgba(0, 0, 0, 0.5), -25%)");
         }
 
 
@@ -419,20 +419,20 @@ namespace dotless.Test.Spec.Functions
         public void TestEditLightness()
         {
             //Lighten
-            Assert.AreEqual("#4c4c4c", Evaluate("lightness(hsl(0, 0, 0), 30%)"));
-            Assert.AreEqual("#ee0000", Evaluate("lightness(#800, 20%)"));
-            Assert.AreEqual("#ffffff", Evaluate("lightness(#fff, 20%)"));
-            Assert.AreEqual("#ffffff", Evaluate("lightness(#800, 100%)"));
-            Assert.AreEqual("#880000", Evaluate("lightness(#800, 0%)"));
-            Assert.AreEqual("rgba(238, 0, 0, .5)", Evaluate("lightness(rgba(136, 0, 0, .5), 20%)"));
+            AssertExpression("#4c4c4c", "lightness(hsl(0, 0, 0), 30%)");
+            AssertExpression("#ee0000", "lightness(#800, 20%)");
+            AssertExpression("#ffffff", "lightness(#fff, 20%)");
+            AssertExpression("#ffffff", "lightness(#800, 100%)");
+            AssertExpression("#880000", "lightness(#800, 0%)");
+            AssertExpression("rgba(238, 0, 0, .5)", "lightness(rgba(136, 0, 0, .5), 20%)");
 
             //Darken
-            Assert.AreEqual("#ff6a00", Evaluate("lightness(hsl(25, 100, 80), -30%)"));
-            Assert.AreEqual("#220000", Evaluate("lightness(#800, -20%)"));
-            Assert.AreEqual("#000000", Evaluate("lightness(#000, -20%)"));
-            Assert.AreEqual("#000000", Evaluate("lightness(#800, -100%)"));
-            Assert.AreEqual("#880000", Evaluate("lightness(#800, 0%)"));
-            Assert.AreEqual("rgba(34, 0, 0, .5)", Evaluate("lightness(rgba(136, 0, 0, .5), -20%)"));
+            AssertExpression("#ff6a00", "lightness(hsl(25, 100, 80), -30%)");
+            AssertExpression("#220000", "lightness(#800, -20%)");
+            AssertExpression("#000000", "lightness(#000, -20%)");
+            AssertExpression("#000000", "lightness(#800, -100%)");
+            AssertExpression("#880000", "lightness(#800, 0%)");
+            AssertExpression("rgba(34, 0, 0, .5)", "lightness(rgba(136, 0, 0, .5), -20%)");
         }
 
         [Test, Ignore]
@@ -455,22 +455,22 @@ namespace dotless.Test.Spec.Functions
         public void TestEditSaturation()
         {
             //Saturate
-            Assert.AreEqual("#d9f2d9", Evaluate("saturation(hsl(120, 30, 90), 20%)"));
-            Assert.AreEqual("#9e3f3f", Evaluate("saturation(#855, 20%)"));
-            Assert.AreEqual("#000000", Evaluate("saturation(#000, 20%)"));
-            Assert.AreEqual("#ffffff", Evaluate("saturation(#fff, 20%)"));
-            Assert.AreEqual("#33ff33", Evaluate("saturation(#8a8, 100%)"));
-            Assert.AreEqual("#88aa88", Evaluate("saturation(#8a8, 0%)"));
-            Assert.AreEqual("rgba(158, 63, 63, .5)", Evaluate("saturation(rgba(136, 85, 85, 0.5), 20%)"));
+            AssertExpression("#d9f2d9", "saturation(hsl(120, 30, 90), 20%)");
+            AssertExpression("#9e3f3f", "saturation(#855, 20%)");
+            AssertExpression("#000000", "saturation(#000, 20%)");
+            AssertExpression("#ffffff", "saturation(#fff, 20%)");
+            AssertExpression("#33ff33", "saturation(#8a8, 100%)");
+            AssertExpression("#88aa88", "saturation(#8a8, 0%)");
+            AssertExpression("rgba(158, 63, 63, .5)", "saturation(rgba(136, 85, 85, 0.5), 20%)");
 
             // Desaturate
-            Assert.AreEqual("#e3e8e3", Evaluate("saturation(hsl(120, 30, 90), -20%)"));
-            Assert.AreEqual("#726b6b", Evaluate("saturation(#855, -20%)"));
-            Assert.AreEqual("#000000", Evaluate("saturation(#000, -20%)"));
-            Assert.AreEqual("#ffffff", Evaluate("saturation(#fff, -20%)"));
-            Assert.AreEqual("#999999", Evaluate("saturation(#8a8, -100%)"));
-            Assert.AreEqual("#88aa88", Evaluate("saturation(#8a8, 0%)"));
-            Assert.AreEqual("rgba(114, 107, 107, .5)", Evaluate("saturation(rgba(136, 85, 85, .5), -20%)"));
+            AssertExpression("#e3e8e3", "saturation(hsl(120, 30, 90), -20%)");
+            AssertExpression("#726b6b", "saturation(#855, -20%)");
+            AssertExpression("#000000", "saturation(#000, -20%)");
+            AssertExpression("#ffffff", "saturation(#fff, -20%)");
+            AssertExpression("#999999", "saturation(#8a8, -100%)");
+            AssertExpression("#88aa88", "saturation(#8a8, 0%)");
+            AssertExpression("rgba(114, 107, 107, .5)", "saturation(rgba(136, 85, 85, .5), -20%)");
         }
 
         [Test, Ignore]
@@ -493,14 +493,14 @@ namespace dotless.Test.Spec.Functions
         [Test]
         public void TestEditHue()
         {
-            Assert.AreEqual("#deeded", Evaluate("hue(hsl(120, 30, 90), 60)"));
-            Assert.AreEqual("#ededde", Evaluate("hue(hsl(120, 30, 90), -60)"));
-            Assert.AreEqual("#886a11", Evaluate("hue(#811, 45)"));
-            Assert.AreEqual("#000000", Evaluate("hue(#000, 45)"));
-            Assert.AreEqual("#ffffff", Evaluate("hue(#fff, 45)"));
-            Assert.AreEqual("#88aa88", Evaluate("hue(#8a8, 360)"));
-            Assert.AreEqual("#88aa88", Evaluate("hue(#8a8, 0)"));
-            Assert.AreEqual("rgba(136, 106, 17, .5)", Evaluate("hue(rgba(136, 17, 17, .5), 45)"));
+            AssertExpression("#deeded", "hue(hsl(120, 30, 90), 60)");
+            AssertExpression("#ededde", "hue(hsl(120, 30, 90), -60)");
+            AssertExpression("#886a11", "hue(#811, 45)");
+            AssertExpression("#000000", "hue(#000, 45)");
+            AssertExpression("#ffffff", "hue(#fff, 45)");
+            AssertExpression("#88aa88", "hue(#8a8, 360)");
+            AssertExpression("#88aa88", "hue(#8a8, 0)");
+            AssertExpression("rgba(136, 106, 17, .5)", "hue(rgba(136, 17, 17, .5), 45)");
         }
 
         [Test]
@@ -513,19 +513,19 @@ namespace dotless.Test.Spec.Functions
         [Test]
         public void TestMix()
         {
-            Assert.AreEqual("#800080", Evaluate("mix(#f00, #00f)"));
-            Assert.AreEqual("#808080", Evaluate("mix(#f00, #0ff)"));
-            Assert.AreEqual("#809055", Evaluate("mix(#f70, #0aa)"));
-            Assert.AreEqual("#4000bf", Evaluate("mix(#f00, #00f, 25%)"));
-            Assert.AreEqual("rgba(64, 0, 191, .75)", Evaluate("mix(rgba(255, 0, 0, .5), #00f)"));
-            Assert.AreEqual("#ff0000", Evaluate("mix(#f00, #00f, 100%)"));
-            Assert.AreEqual("#0000ff", Evaluate("mix(#f00, #00f, 0%)"));
-            Assert.AreEqual("rgba(255, 0, 0, .5)", Evaluate("mix(#f00, rgba(#00f, 0))"));
-            Assert.AreEqual("rgba(0, 0, 255, .5)", Evaluate("mix(rgba(#f00, 0), #00f)"));
-            Assert.AreEqual("#ff0000", Evaluate("mix(#f00, rgba(#00f, 0), 100%)"));
-            Assert.AreEqual("#0000ff", Evaluate("mix(rgba(#f00, 0), #00f, 0%)"));
-            Assert.AreEqual("rgba(0, 0, 255, 0)", Evaluate("mix(#f00, rgba(#00f, 0), 0%)"));
-            Assert.AreEqual("rgba(255, 0, 0, 0)", Evaluate("mix(rgba(#f00, 0), #00f, 100%)"));
+            AssertExpression("#800080", "mix(#f00, #00f)");
+            AssertExpression("#808080", "mix(#f00, #0ff)");
+            AssertExpression("#809055", "mix(#f70, #0aa)");
+            AssertExpression("#4000bf", "mix(#f00, #00f, 25%)");
+            AssertExpression("rgba(64, 0, 191, .75)", "mix(rgba(255, 0, 0, .5), #00f)");
+            AssertExpression("#ff0000", "mix(#f00, #00f, 100%)");
+            AssertExpression("#0000ff", "mix(#f00, #00f, 0%)");
+            AssertExpression("rgba(255, 0, 0, .5)", "mix(#f00, rgba(#00f, 0))");
+            AssertExpression("rgba(0, 0, 255, .5)", "mix(rgba(#f00, 0), #00f)");
+            AssertExpression("#ff0000", "mix(#f00, rgba(#00f, 0), 100%)");
+            AssertExpression("#0000ff", "mix(rgba(#f00, 0), #00f, 0%)");
+            AssertExpression("rgba(0, 0, 255, 0)", "mix(#f00, rgba(#00f, 0), 0%)");
+            AssertExpression("rgba(255, 0, 0, 0)", "mix(rgba(#f00, 0), #00f, 100%)");
         }
 
         [Test]
@@ -548,11 +548,11 @@ namespace dotless.Test.Spec.Functions
         [Test]
         public void TestGrayscale()
         {
-            Assert.AreEqual("#bbbbbb", Evaluate("grayscale(#abc)"));
-            Assert.AreEqual("#808080", Evaluate("grayscale(#f00)"));
-            Assert.AreEqual("#808080", Evaluate("grayscale(#00f)"));
-            Assert.AreEqual("#ffffff", Evaluate("grayscale(#fff)"));
-            Assert.AreEqual("#000000", Evaluate("grayscale(#000)"));
+            AssertExpression("#bbbbbb", "grayscale(#abc)");
+            AssertExpression("#808080", "grayscale(#f00)");
+            AssertExpression("#808080", "grayscale(#00f)");
+            AssertExpression("#ffffff", "grayscale(#fff)");
+            AssertExpression("#000000", "grayscale(#000)");
         }
 
         [Test]
@@ -564,11 +564,11 @@ namespace dotless.Test.Spec.Functions
         [Test]
         public void TestComplement()
         {
-            Assert.AreEqual("#ccbbaa", Evaluate("complement(#abc)"));
-            Assert.AreEqual("#00ffff", Evaluate("complement(#f00)"));
-            Assert.AreEqual("#ff0000", Evaluate("complement(#0ff)"));
-            Assert.AreEqual("#ffffff", Evaluate("complement(#fff)"));
-            Assert.AreEqual("#000000", Evaluate("complement(#000)"));
+            AssertExpression("#ccbbaa", "complement(#abc)");
+            AssertExpression("#00ffff", "complement(#f00)");
+            AssertExpression("#ff0000", "complement(#0ff)");
+            AssertExpression("#ffffff", "complement(#fff)");
+            AssertExpression("#000000", "complement(#000)");
         }
 
         [Test]
