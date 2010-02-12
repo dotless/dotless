@@ -1,0 +1,268 @@
+<?xml version="1.0"?>
+<project default="run">
+
+<property name="config" value="debug" unless="${property::exists('config')}" />
+<property name="showtestresult" value="false" unless="${property::exists('showtestresult')}" />
+<property name="base_dir" value="${directory::get-current-directory()}" />
+<property name="lib_dir" value="${path::combine(base_dir, 'lib')}" />
+<property name="build_dir" value="${path::combine(base_dir, 'build')}" />
+<property name="release_dir" value="${path::combine(base_dir, 'release')}" />
+<property name="source_dir" value="${path::combine(base_dir, 'src')}" />
+
+<target name="run" depends="Release" />
+
+<target name="Clean">
+  <delete dir="${build_dir}" failonerror="false" />
+  <delete dir="${release_dir}" failonerror="false" />
+</target>
+
+<target name="Init" depends="Clean, Load-Git-Properties">
+
+  <echo>${version}</echo>
+
+  <property name="file" value="${source_dir}\dotless.Core\Properties\AssemblyInfo.cs" />
+  <property name="title" value="dotless ${version}" />
+  <property name="description" value="Dynamic CSS for .net" />
+  <property name="company" value="dotless project" />
+  <property name="product" value="dotless" />
+  <property name="copyright" value="Copyright &#169; or &#xA9; dotless project 2009" />
+
+  <call target="Generate-Assembly-Info" />
+
+  <property name="file" value="${source_dir}\dotless.Test\Properties\AssemblyInfo.cs" />
+  <property name="title" value="dotless Tests ${version}" />
+
+  <call target="Generate-Assembly-Info" />
+
+  <property name="file" value="${source_dir}\dotless.Compiler\Properties\AssemblyInfo.cs" />
+  <property name="title" value="dotless Compiler ${version}" />
+
+  <call target="Generate-Assembly-Info" />
+
+  <mkdir dir="${build_dir}" />
+  <mkdir dir="${release_dir}" />
+</target>
+
+<target name="Build" depends="Init">
+  <trycatch>
+    <try>
+      <msbuild project="${source_dir}\dotless.Compiler\dotless.Compiler.csproj">
+        <arg value="/p:Configuration=${config}" />
+        <arg value="/p:OutDir=${build_dir}\" />
+      </msbuild>
+    </try>
+    <catch>
+      <fail>Error: compile failed</fail>
+    </catch>
+  </trycatch>
+</target>
+
+<target name="Test" depends="Build">
+  <trycatch>
+    <try>
+      <msbuild project="${source_dir}\dotless.Test\dotless.Test.csproj">
+        <arg value="/p:Configuration=${config}" />
+        <arg value="/p:OutDir=${build_dir}\" />
+      </msbuild>
+    </try>
+    <catch>
+      <fail>Error: Test compile failed</fail>
+    </catch>
+  </trycatch>
+
+
+  <trycatch>
+    <try>
+    <exec program="nunit-console-x86.exe" basedir="${lib_dir}\NUnit" workingdir="${build_dir}">
+      <arg file="${build_dir}\dotless.Test.dll" />
+    </exec>
+    </try>
+    <catch>
+      <if test="${showtestresult}">
+        <exec program="start">
+          <arg file="${build_dir}\TestResults.xml" />
+        </exec>
+      </if>
+      <fail>Error: failed to execute tests</fail>
+    </catch>
+  </trycatch>
+</target>
+
+<target name="Merge" depends="Build" >
+
+	<property name="filename" value="dotless.Compiler.exe" />
+  
+	<delete file="${build_dir}\${filename}-partial.exe" failonerror="false" />
+	<move file="${build_dir}\${filename}" tofile="${build_dir}\${filename}-partial.exe" />
+  <trycatch>
+    <try>
+      <exec program="ILMerge.exe" basedir="${lib_dir}\ilmerge" workingdir="${build_dir}">
+        <arg file="${build_dir}\${filename}-partial.exe" />
+        <arg file="${build_dir}\Pandora.dll" />
+        <arg file="${build_dir}\dotless.Core.dll" />
+        <arg file="${build_dir}\Microsoft.Practices.ServiceLocation.dll" />
+        <arg file="${build_dir}\PegBase.dll" />
+        <arg file="${build_dir}\Yahoo.Yui.Compressor.dll" />
+        <arg value="/out:${filename}" />
+        <arg value="/internalize" />
+        <arg value="/t:exe" />
+      </exec>
+    </try>
+    <catch>
+      <fail>Error: Failed to merge compiler assemblies</fail>
+    </catch> 
+  </trycatch>
+
+	<delete file="${build_dir}\${filename}-partial.exe" failonerror="false" />
+  
+  
+	<property name="filename" value="dotless.Core.dll" />
+  
+	<delete file="${build_dir}\${filename}-partial.dll" failonerror="false" />
+	<move file="${build_dir}\${filename}" tofile="${build_dir}\${filename}-partial.dll" />
+  <trycatch>
+    <try>
+      <exec program="ILMerge.exe" basedir="${lib_dir}\ilmerge" workingdir="${build_dir}">
+        <arg file="${build_dir}\${filename}-partial.dll" />
+        <arg file="${build_dir}\Pandora.dll" />
+        <arg file="${build_dir}\Microsoft.Practices.ServiceLocation.dll" />
+        <arg file="${build_dir}\PegBase.dll" />
+        <arg file="${build_dir}\Yahoo.Yui.Compressor.dll" />
+        <arg value="/out:${filename}" />
+        <arg value="/internalize" />
+        <arg value="/t:library" />
+      </exec>
+    </try>
+    <catch>
+      <fail>Error: Failed to merge assemblies</fail>
+    </catch>
+  </trycatch>
+
+	<delete file="${build_dir}\${filename}-partial.exe" failonerror="false" />
+	
+</target>
+
+<target name="Release-NoTest" depends="Merge, Load-Git-Properties">
+
+  <exec program="7za.exe" basedir="${lib_dir}\7zip">
+    <arg line="a ${release_dir}\dotless-${commit}.zip" />
+    <arg file="${build_dir}\dotless.core.dll" />
+    <arg file="${build_dir}\dotless.core.pdb" />
+    <arg file="${build_dir}\dotless.compiler.exe" />
+    <arg file="acknowledgements.txt" />
+    <arg file="license.txt" />
+    <!-- <arg file="${build_dir}\Testresult.xml" /> -->
+  </exec>
+    
+  <echo>Please note that no tests where run during release process!</echo>
+  <echo>-----------------------------</echo>
+  <echo>dotless ${version} was successfully compiled and packaged.</echo>
+  <echo>The release bits can be found in "${release_dir}"</echo>
+  <echo>Thank you for using dotless!</echo>
+</target>
+
+<target name="t4css" depends="Merge, Load-Git-Properties">
+
+  <property name="target" value="${build_dir}\t4css" />
+
+  <mkdir dir="${build_dir}\t4css\T4CssWeb\Css" failonerror="false" />
+  <copy todir="${target}" file="${build_dir}\dotless.Core.dll" />
+  <copy todir="${target}" file="${base_dir}\t4less\T4Css.sln" />
+  <copy todir="${target}\T4CssWeb" file="${base_dir}\t4less\T4CssWeb\T4CssWeb.csproj" />
+  <copy todir="${target}\T4CssWeb\Css">
+    <fileset>
+      <include name="${base_dir}\t4less\T4CssWeb\Css\T4CSS.tt" />
+      <include name="${base_dir}\t4less\T4CssWeb\Css\*.less" />
+      <include name="${base_dir}\t4less\T4CssWeb\Css\*.css" />
+      <include name="${base_dir}\t4less\T4CssWeb\Css\*.log" />
+    </fileset>
+  </copy>
+
+  <exec program="7za.exe" basedir="${lib_dir}\7zip">
+    <arg line="a ${release_dir}\t4css-${commit}.zip" />
+    <arg file="${build_dir}\t4css" />
+  </exec>
+</target>
+
+<target name="Release" depends="Test, Merge, t4css, Load-Git-Properties">
+
+  <exec program="7za.exe" basedir="${lib_dir}\7zip">
+    <arg line="a ${release_dir}\dotless-${commit}.zip" />
+    <arg file="${build_dir}\dotless.core.dll" />
+    <arg file="${build_dir}\dotless.core.pdb" />
+    <arg file="${build_dir}\Testresult.xml" />
+    <arg file="${build_dir}\dotless.compiler.exe" />
+    <arg file="acknowledgements.txt" />
+    <arg file="license.txt" />
+  </exec>
+
+  <echo>-----------------------------</echo>
+  <echo>dotless ${version} was successfully compiled and packaged.</echo>
+  <echo>The release bits can be found in "${release_dir}"</echo>
+  <echo>Thank you for using dotless!</echo>
+</target>
+
+
+<script language="C#" prefix="process">
+  <code>
+    <![CDATA[
+      [Function("git")]
+      public static string RunGitCommand(string args) {
+        System.Diagnostics.Process process = new System.Diagnostics.Process();
+
+        process.StartInfo.FileName = "git";
+
+        process.StartInfo.Arguments = args;
+        process.StartInfo.UseShellExecute = false;
+        process.StartInfo.RedirectStandardOutput = true;
+
+        process.Start();
+
+        StreamReader reader = process.StandardOutput;
+        string output = reader.ReadToEnd();
+
+        return output.Trim();
+      }
+    ]]>
+  </code>
+</script>
+ 
+<target name="Load-Git-Properties">
+  <trycatch>
+    <try>
+      <property name="commit" value="${process::git('describe')}" />
+      <property name="version" value="${process::git('describe --abbrev=0')}" />
+      <property name="version" value="${string::replace(version, 'v', '')}" />
+    </try>
+    <catch>
+      <fail>Unable to execute git-describe in folder '${directory::get-current-directory()}'. Please make sure that git is installed in your PATH</fail>
+    </catch> 
+  </trycatch>
+
+</target>
+
+<target name="Generate-Assembly-Info" depends="Load-Git-Properties">
+
+  <mkdir dir="${path::get-directory-name(file)}" />
+
+  <asminfo output="${file}" language="CSharp">
+    <imports>
+        <import namespace="System.Reflection" />
+        <import namespace="System.Runtime.CompilerServices" />
+        <import namespace="System.Runtime.InteropServices" />
+    </imports>
+    <attributes>
+        <attribute type="ComVisibleAttribute" value="false" />
+        <attribute type="AssemblyTitleAttribute" value="${title}" />
+        <attribute type="AssemblyDescriptionAttribute" value="${description}" />
+        <attribute type="AssemblyCompanyAttribute" value="${company}" />
+        <attribute type="AssemblyProductAttribute" value="${product} ${commit}" />
+        <attribute type="AssemblyCopyrightAttribute" value="${copyright}" />
+        <attribute type="AssemblyVersionAttribute" value="${version}" />
+        <attribute type="AssemblyInformationalVersionAttribute" value="${version}" />
+        <attribute type="AssemblyFileVersionAttribute" value="${version}" />
+        <attribute type="AssemblyDelaySignAttribute" value="false" />
+    </attributes>
+  </asminfo>
+</target>
+</project>
