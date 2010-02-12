@@ -207,7 +207,7 @@
   <code>
     <![CDATA[
       [Function("git")]
-      public static string RunGitCommand(string args) {
+      public string RunGitCommand(string args) {
         System.Diagnostics.Process process = new System.Diagnostics.Process();
 
         process.StartInfo.FileName = "git";
@@ -215,6 +215,7 @@
         process.StartInfo.Arguments = args;
         process.StartInfo.UseShellExecute = false;
         process.StartInfo.RedirectStandardOutput = true;
+        process.StartInfo.WorkingDirectory = Project.Properties["base_dir"];
 
         process.Start();
 
