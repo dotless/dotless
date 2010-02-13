@@ -46,6 +46,7 @@ namespace dotless.Core
             return new CommonServiceLocatorAdapter(RegisterCoreServices(new PandoraContainer(), configuration));
         }
 
+        
         private PandoraContainer RegisterCoreServices(PandoraContainer container, DotlessConfiguration configuration)
         {
             container.Register(p =>
@@ -63,6 +64,11 @@ namespace dotless.Core
             return container;
         }
 
+        /// <summary>
+        /// Used to create the Container for the HttpHandler. Not used by Console Compiler and T4CSS
+        /// </summary>
+        /// <param name="configuration">Configuration for the HttpHandler</param>
+        /// <returns></returns>
         private PandoraContainer CreateContainer(DotlessConfiguration configuration)
         {
             var container = new PandoraContainer();
@@ -74,11 +80,16 @@ namespace dotless.Core
                                            .Implementor<CssCache>();
                                        p.Service<IRequest>()
                                            .Implementor<Request>();
-                                       p.Service<IResponse>()
-                                           .Implementor<CssResponse>();
 
-                                       if (configuration.CacheEnabled)
+                                       if (!configuration.CacheEnabled)
                                        {
+                                           p.Service<IResponse>()
+                                               .Implementor<CssResponse>();
+                                       }
+                                       else
+                                       {
+                                           p.Service<IResponse>()
+                                               .Implementor<CachedCssResponse>();
                                            p.Service<ILessEngine>()
                                                .Implementor<AspCacheDecorator>();
                                        }
