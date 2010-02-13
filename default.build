@@ -29,7 +29,7 @@
   <property name="description" value="Dynamic CSS for .net" />
   <property name="company" value="dotless project" />
   <property name="product" value="dotless" />
-  <property name="copyright" value="Copyright &#169; or &#xA9; dotless project 2009" />
+  <property name="copyright" value="Copyright &#169; dotless project 2009" />
 
   <call target="Generate-Assembly-Info" />
 
