@@ -338,7 +338,7 @@ namespace dotless.Core.parser
         private INode Function(PegNode node, ElementBlock element)
         {
             var funcName = node.child_.GetAsString(Src);
-            var arguments = Arguments(node, element);
+            var arguments = Arguments(node.child_.next_, element);
             return new Function(funcName, arguments.ToList());
         }
 
@@ -351,7 +351,7 @@ namespace dotless.Core.parser
         /// <returns></returns>
         private IEnumerable<INode> Arguments(PegNode node, ElementBlock element)
         {
-            foreach (var argument in node.AsEnumerable().Skip(1))
+            foreach (var argument in node.AsEnumerable())
             {
                 if (argument.child_ == null)
                     yield return new Anonymous(argument.GetAsString(Src));
@@ -513,25 +513,74 @@ namespace dotless.Core.parser
             var rules = new List<INode>();
             foreach (var mixins in node.AsEnumerable())
             {
-                var selectors = Selectors(mixins, els => els);
+                var selectors = Selectors(mixins, els => els).ToList();
                 if (selectors.Count() > 1)
                 {
                     foreach (var el in selectors)
                         root = root.Descend(el.Selector, el);
-                    if (root.Children != null) rules.AddRange(root.Children); 
+                    if (root.Children != null)
+                        rules.AddRange(root.Children);
                 }
                 else
                 {
                     var el = selectors.First();
                     foreach (var mixinElement in root.Nearests(el.Name))
                     {
-                        if (mixinElement.Children != null) rules.AddRange(mixinElement.Children);
+                        if (mixinElement.Children == null) 
+                            continue;
+
+                        var children = GetMixinChildren(elementBlock, el.Variables, mixinElement.Children);
+
+                        rules.AddRange(children);
+
+                        el.Parent = elementBlock;
                     }
                 }
                 
             }
 
             elementBlock.Children.AddRange(rules);
+        }
+
+        private static IEnumerable<INode> GetMixinChildren(ElementBlock elementBlock, IEnumerable<Variable> variables, IEnumerable<INode> mixinChildren)
+        {
+            var detatchedElementBlock = new ElementBlock(elementBlock.Name + "_detatched");
+            detatchedElementBlock.Parent = elementBlock;
+
+            var clonedChildren = mixinChildren.Select(n => n.AdoptClone(detatchedElementBlock)).ToList();
+
+            var rules = new List<INode>();
+            var clonedVariables = clonedChildren.Where(n => n is Variable).Cast<Variable>().ToList();
+            var otherChildren = clonedChildren.Where(n => !(n is Variable));
+
+            rules.AddRange(otherChildren);
+
+            foreach (var variable in variables)
+            {
+                int position;
+                Variable newVariable = null;
+                if( int.TryParse(variable.Key, out position) )
+                {
+                    if(position < clonedVariables.Count)
+                        newVariable = clonedVariables[position];
+                }
+                else
+                {
+                    newVariable = clonedVariables.FirstOrDefault(v => v.Key == variable.Key);
+                }
+
+                if (newVariable == null) 
+                    // throw
+                    continue;
+
+                newVariable.Value = variable.Value;
+            }
+
+            detatchedElementBlock.Children.AddRange(clonedVariables.Cast<INode>());
+
+            rules.AddRange(clonedVariables.Cast<INode>());
+
+            return rules;
         }
 
         /// <summary>
@@ -575,11 +624,71 @@ namespace dotless.Core.parser
             var enumerator = node.AsEnumerable().GetEnumerator();
             while(enumerator.MoveNext())
             {
+                ElementBlock block;
+
                 var selector = enumerator.Current.GetAsString(Src).Trim();
                 enumerator.MoveNext();
                 var name = enumerator.Current.GetAsString(Src);
-                yield return new ElementBlock(name, selector);
+
+                var next = enumerator.Current.next_;
+                var isMixinWithArgs = next != null && next.ToEnLess() == EnLess.arguments;
+
+                if (isMixinWithArgs)
+                    block = new PureMixinBlock(name, selector);
+                else
+                    block = new ElementBlock(name, selector);
+
+                if (isMixinWithArgs)
+                {
+                    var arguments = GetMixinArguments(next, block);
+                    enumerator.MoveNext();
+
+                    foreach (var argument in arguments)
+                        block.Add(argument);
+                }
+
+                yield return block;
             }
+        }
+
+
+        private IEnumerable<Variable> GetMixinArguments(PegNode arguments, ElementBlock block)
+        {
+            var enumerator = arguments.AsEnumerable().GetEnumerator();
+            var variables = new List<Variable>();
+            var position = 0;
+
+            while (enumerator.MoveNext())
+            {
+                var node = enumerator.Current;
+
+                string name;
+                IEnumerable<INode> value;
+                if (node.child_.ToEnLess() == EnLess.variable) // expect "@variable: expression"
+                {
+                    name = node.child_.GetAsString(Src);
+                    value = Expressions(node.child_.next_, block);
+                }
+                else  // expect "expresion"
+                {
+                    // HACK: to make Arguments return as expected.
+                    var tmpNode = new PegNode(null, (int) EnLess.arguments);
+                    tmpNode.child_ = new PegNode(tmpNode, (int)EnLess.argument);
+                    tmpNode.child_.child_ = node.child_;
+
+                    name = position.ToString();
+                    value = Arguments(tmpNode, block).ToList();
+                }
+
+                variables.Add(new Variable(name, value));
+
+                if(node.next_ == null || node.next_.ToEnLess() != EnLess.argument)
+                    break;
+
+                position++;
+            }
+
+            return variables;
         }
     }
 }

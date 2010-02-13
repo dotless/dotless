@@ -55,15 +55,14 @@ namespace dotless.Core.engine
 
         public List<IBlock> SubBlocks
         {
-            get { return Children.Where(c => c is IBlock).Select(c => (IBlock) c).ToList(); }
+            get { return Children.Where(c => c is IBlock).Cast<IBlock>().ToList(); }
         }
 
         public IList<Property> Properties
         {
             get
             {
-                return Children.Where(r => r.GetType() == typeof (Property))
-                    .Select(r => (Property) r).ToList();
+                return Children.Where(r => r is Property && !(r is Variable)).Cast<Property>().ToList();
             }
         }
 
@@ -71,8 +70,7 @@ namespace dotless.Core.engine
         {
             get
             {
-                return Children.Where(r => r.GetType() == typeof (Variable))
-                    .Select(r => (Variable) r).ToList();
+                return Children.Where(r => r is Variable).Cast<Variable>().ToList();
             }
         }
 
@@ -80,8 +78,7 @@ namespace dotless.Core.engine
         {
             get
             {
-                return Children.Where(r => r.GetType() == typeof (ElementBlock))
-                    .Select(r => (ElementBlock) r).ToList();
+                return Children.Where(r => r is ElementBlock).Cast<ElementBlock>().ToList();
             }
         }
 
@@ -89,8 +86,7 @@ namespace dotless.Core.engine
         {
             get
             {
-                return Children.Where(r => r.GetType() == typeof (Insert))
-                    .Select(r => (Insert) r).ToList();
+                return Children.Where(r => r is Insert).Cast<Insert>().ToList();
             }
         }
 
@@ -102,6 +98,16 @@ namespace dotless.Core.engine
         public IList<INode> Path()
         {
             return Path(this);
+        }
+
+        public virtual INode AdoptClone(INode newParent)
+        {
+            var children = Children.Select(n => n.AdoptClone(newParent)).ToList();
+
+            var clone = (NodeBlock)MemberwiseClone();
+            clone.Children = children;
+
+            return clone;
         }
     }
 }

@@ -25,7 +25,8 @@ namespace dotless.Test.Spec.Functions
         [Test]
         public void TestVariablesAsArguments()
         {
-            AssertExpression("#123456", "rgba(@c, 1)");
+            var variables = new Dictionary<string, string> {{"c", "#123456"}};
+            AssertExpression("#123456", "rgba(@c, 1)", variables);
         }
 
         [Test]

@@ -76,7 +76,7 @@ namespace dotless.Test.Spec.ExtensibleEngine
         {
             SpecHelper.ShouldEqual("mixins"); 
         }
-        [Test, Ignore(Upcoming)]
+        [Test]
         public void ShouldParseMixinsWithArguments()
         {
             SpecHelper.ShouldEqual("mixins-args"); 

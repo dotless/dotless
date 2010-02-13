@@ -7,11 +7,7 @@
   width: 15px;
   height: 49%;
 }
-.no-parens {
-  width: 5px;
-  height: 49%;
-}
-.no-args {
+.no-parens, .no-args {
   width: 5px;
   height: 49%;
 }

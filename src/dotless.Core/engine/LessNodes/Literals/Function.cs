@@ -66,5 +66,14 @@ namespace dotless.Core.engine
                 return string.Join(", ", Args.Select(arg => arg.ToCss()).ToArray());
             }
         }
+
+        public override INode AdoptClone(INode newParent)
+        {
+            var clone = (Function) base.AdoptClone(newParent);
+
+            clone.Args = Args.Select(a => a.AdoptClone(newParent)).ToList();
+
+            return clone;
+        }
     }
 }

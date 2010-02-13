@@ -115,5 +115,10 @@ namespace dotless.Core.engine
             }
             return this.Count() == 1 ? this.First() : this;
         }
+
+        public virtual INode AdoptClone(INode newParent)
+        {
+            return new Expression(this.Select(n => n.AdoptClone(newParent)), newParent);
+        }
     }
 }

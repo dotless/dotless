@@ -1,4 +1,4 @@
-/* created on 08/02/2010 19:37:21 from peg generator V1.0 using '' as input*/
+/* created on 15/02/2010 08:03:08 from peg generator V1.0 using '' as input*/
 
 using Peg.Base;
 using System;
@@ -201,14 +201,15 @@ namespace nLess
                   && Char(';')
                   && ws() );
 		}
-        public bool ident()    /*^^ident: '*'? '-'? [-_a-zA-Z0-9]+;*/
+        public bool ident()    /*^^ident: '*'? '-'? [-_a-zA-Z] [-_a-zA-Z0-9]*;*/
         {
 
            return TreeNT((int)EnLess.ident,()=>
                 And(()=>  
                      Option(()=> Char('*') )
                   && Option(()=> Char('-') )
-                  && PlusRepeat(()=>    
+                  && (In('a','z', 'A','Z')||OneOf("-_"))
+                  && OptRepeat(()=>    
                       (In('a','z', 'A','Z', '0','9')||OneOf("-_")) ) ) );
 		}
         public bool variable()    /*^^variable: '@' [-_a-zA-Z0-9]+;*/
@@ -331,19 +332,21 @@ namespace nLess
                       And(()=>    s() && Char(',') && ws() && selector() ) )
                   && ws() ) );
 		}
-        public bool selector()    /*^^selector : (s select element s)+ arguments? ;*/
+        public bool selector()    /*^^selector : (s select element s)+ ws arguments? ;*/
         {
 
            return TreeNT((int)EnLess.selector,()=>
                 And(()=>  
                      PlusRepeat(()=>    
                       And(()=>    s() && select() && element() && s() ) )
+                  && ws()
                   && Option(()=> arguments() ) ) );
 		}
-        public bool arguments()    /*arguments : '(' s (argument s (',' s argument s)*)? ')';*/
+        public bool arguments()    /*^^arguments : '(' s (argument s (',' s argument s)*)? ')';*/
         {
 
-           return And(()=>  
+           return TreeNT((int)EnLess.arguments,()=>
+                And(()=>  
                      Char('(')
                   && s()
                   && Option(()=>    
@@ -356,9 +359,9 @@ namespace nLess
                                               && s()
                                               && argument()
                                               && s() ) ) ) )
-                  && Char(')') );
+                  && Char(')') ) );
 		}
-        public bool argument()    /*^^argument : color &na / number unit &na / string &na / [a-zA-Z]+ '=' dimension &na / function &na / expressions &na / keyword (S keyword)* &na / [-a-zA-Z0-9_%$/.&=:;#+?]+ &na;*/
+        public bool argument()    /*^^argument : color &na / number unit &na / string &na / [a-zA-Z]+ '=' dimension &na / function &na / expressions &na / keyword (S keyword)* &na / variable s ':' s expressions &na / [-a-zA-Z0-9_%$/.&=:;#+?]+ &na;*/
         {
 
            return TreeNT((int)EnLess.argument,()=>
@@ -378,10 +381,17 @@ namespace nLess
                       && OptRepeat(()=> And(()=>    S() && keyword() ) )
                       && Peek(()=> na() ) )
                   || And(()=>    
+                         variable()
+                      && s()
+                      && Char(':')
+                      && s()
+                      && expressions()
+                      && Peek(()=> na() ) )
+                  || And(()=>    
                          PlusRepeat(()=> OneOf(optimizedCharset2) )
                       && Peek(()=> na() ) ) );
 		}
-        public bool element()    /*^^element : (class_id / tag / ident) attribute* ('(' ident? attribute* ')')? / attribute+ / '@media' / '@font-face';*/
+        public bool element()    /*^^element : (class_id / tag / ident) attribute* ('(' (ident attribute* / attribute+) ')')? / attribute+ / '@media' / '@font-face';*/
         {
 
            return TreeNT((int)EnLess.element,()=>
@@ -392,8 +402,11 @@ namespace nLess
                       && Option(()=>      
                             And(()=>        
                                        Char('(')
-                                    && Option(()=> ident() )
-                                    && OptRepeat(()=> attribute() )
+                                    && (          
+                                                 And(()=>            
+                                                             ident()
+                                                          && OptRepeat(()=> attribute() ) )
+                                              || PlusRepeat(()=> attribute() ))
                                     && Char(')') ) ) )
                   || PlusRepeat(()=> attribute() )
                   || Char('@','m','e','d','i','a')

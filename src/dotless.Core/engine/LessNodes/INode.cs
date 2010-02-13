@@ -21,5 +21,6 @@ namespace dotless.Core.engine
         INode Parent { get; set; }
         string ToCss();
         IList<INode> Path(INode node);
+        INode AdoptClone(INode newParent);
     }
 }

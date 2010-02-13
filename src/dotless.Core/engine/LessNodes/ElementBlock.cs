@@ -144,10 +144,9 @@ namespace dotless.Core.engine
         public INode Nearest(string ident)
         {
             INode node = null;
-            foreach (var el in Path().Where(n => n is ElementBlock).Select(n => (ElementBlock)n))
-            {
-                var ary = ident.IsIdent() ? el.Elements.Select(n => (INode)n).ToList() : el.Variables.Select(n => (INode)n).ToList();
-                node = ary.Where(i => i.ToString() == ident).FirstOrDefault();
+            foreach (var el in Path().Where(n => n is ElementBlock).Cast<ElementBlock>())
+            {   
+                node = GetNodesByIdent(ident, el).FirstOrDefault();
                 if (node != null) break;
             }
             if (node == null) throw new VariableNameException(ident);
@@ -157,15 +156,35 @@ namespace dotless.Core.engine
         public IList<ElementBlock> Nearests(string ident)
         {
             IList<ElementBlock> nodes = null;
-            foreach (var el in Path().Where(n => n is ElementBlock).Select(n => (ElementBlock)n))
+            foreach (var el in Path().Where(n => n is ElementBlock).Cast<ElementBlock>())
             {
-                var ary = !ident.IsVariable() ? el.Elements.Select(n => (INode)n).ToList() : el.Variables.Select(n => (INode)n).ToList();
-                nodes = ary.Where(i => i.ToString() == ident).Select(e => (ElementBlock)e).ToList();
+                nodes = GetNodesByIdent(ident, el).Cast<ElementBlock>().ToList();
             }
             if (nodes == null || nodes.Count == 0) throw new VariableNameException(ident);
             return nodes;
         }
-        public T NearestAs<T>(string ident) { return (T)Nearest(ident); }
+        public T NearestAs<T>(string ident) { return (T)Nearest(ident); } 
+        
+        private IEnumerable<INode> GetNodesByIdent(string ident, ElementBlock el)
+        {
+            IEnumerable<INode> ary;
+            if (ident.IsVariable())
+                ary = el.Variables.Cast<INode>();
+            else
+                ary = el.Elements.Cast<INode>();
 
+            return ary.Where(i => i.ToString() == ident);
+        }
+    }
+
+    public class PureMixinBlock : ElementBlock
+    {
+        public PureMixinBlock(string name, string selector) : base(name, selector)
+        {
+        }
+
+        public PureMixinBlock(string name) : base(name)
+        {
+        }
     }
 }
