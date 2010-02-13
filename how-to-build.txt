@@ -1,4 +1,7 @@
-dotless usese PSake by James Kovacs to compile.
+
+==== Powershell ====
+
+dotless uses PSake by James Kovacs to compile.
 PSake is a powershell based build tool and is packed with the source (psake.ps1).
 
 To build simply execute psake.ps1.
@@ -18,3 +21,17 @@ Note:
 You may need to execute the following command before being able to execute the script:
 Set-ExecutionPolicy remotesigned
 (Make sure you run this as administrator)
+
+
+
+==== NAnt ====
+
+dotless also provides a NAnt build script for those who don't have powershell installed.
+Please ensure that the lastet version of NAnt and NAntContrib are installed and included in the path.
+
+To build simply execute nant.
+
+The NAnt script contains the same possible build targets as above.
+
+To run another build targert simply run:
+nant <target>

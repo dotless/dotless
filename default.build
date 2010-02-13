@@ -1,6 +1,10 @@
 <?xml version="1.0"?>
 <project default="run">
 
+<fail unless="${task::exists('trycatch') and task::exists('msbuild')}">
+  Error: nantcontrib is required. Please visit http://nantcontrib.sourceforge.net/ to download the latest version.
+</fail>
+
 <property name="config" value="debug" unless="${property::exists('config')}" />
 <property name="showtestresult" value="false" unless="${property::exists('showtestresult')}" />
 <property name="base_dir" value="${directory::get-current-directory()}" />
@@ -73,14 +77,14 @@
 
   <trycatch>
     <try>
-    <exec program="nunit-console-x86.exe" basedir="${lib_dir}\NUnit" workingdir="${build_dir}">
-      <arg file="${build_dir}\dotless.Test.dll" />
-    </exec>
+      <exec program="nunit-console-x86.exe" basedir="${lib_dir}\NUnit" workingdir="${build_dir}">
+        <arg file="${build_dir}\dotless.Test.dll" />
+      </exec>
     </try>
     <catch>
       <if test="${showtestresult}">
         <exec program="start">
-          <arg file="${build_dir}\TestResults.xml" />
+          <arg file="${build_dir}\TestResult.xml" />
         </exec>
       </if>
       <fail>Error: failed to execute tests</fail>
@@ -151,7 +155,7 @@
     <arg file="${build_dir}\dotless.compiler.exe" />
     <arg file="acknowledgements.txt" />
     <arg file="license.txt" />
-    <!-- <arg file="${build_dir}\Testresult.xml" /> -->
+    <!-- <arg file="${build_dir}\TestResult.xml" /> -->
   </exec>
     
   <echo>Please note that no tests where run during release process!</echo>
@@ -190,7 +194,7 @@
     <arg line="a ${release_dir}\dotless-${commit}.zip" />
     <arg file="${build_dir}\dotless.core.dll" />
     <arg file="${build_dir}\dotless.core.pdb" />
-    <arg file="${build_dir}\Testresult.xml" />
+    <arg file="${build_dir}\TestResult.xml" />
     <arg file="${build_dir}\dotless.compiler.exe" />
     <arg file="acknowledgements.txt" />
     <arg file="license.txt" />
@@ -228,7 +232,7 @@
   </code>
 </script>
  
-<target name="Load-Git-Properties">
+<target name="Load-Git-Properties" unless="${target::has-executed('Load-Git-Properties')}">
   <trycatch>
     <try>
       <property name="commit" value="${process::git('describe')}" />
@@ -266,4 +270,5 @@
     </attributes>
   </asminfo>
 </target>
+
 </project>
