@@ -24,12 +24,22 @@ namespace dotless.Test.Spec.ExtensibleEngine
     [TestFixture("fr-FR")]
     public class SpecEngine
     {
+        public string Locale { get; set; }
+
         public SpecEngine(string locale)
         {
-            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(locale);
+            // System.Console.WriteLine(locale);
+            Locale = locale;
         }
 
         public SpecEngine() { }
+
+        [SetUp]
+        public void Setup()
+        {
+            if(!string.IsNullOrEmpty(Locale))
+                Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(Locale);
+        }
 
         private const string Upcoming = "Upcoming functionality";
 
