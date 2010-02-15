@@ -38,7 +38,7 @@ namespace dotless.Test.Spec.ExtensibleEngine
             var css = Css(filename);
 
             var mismatch = css.Split('\n').Zip(less.Split('\n'))
-                .Select((p, i) => new { LineNumber = i, CssLine = p.First.ToLower(), LessLine = p.Second.ToLower() })
+                .Select((p, i) => new { LineNumber = i + 1, CssLine = p.First.ToLower(), LessLine = p.Second.ToLower() })
                 .FirstOrDefault(x => x.CssLine != x.LessLine);
 
             if (mismatch == null)
