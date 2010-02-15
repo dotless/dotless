@@ -45,7 +45,7 @@ namespace dotless.Core.engine
             if (Value == 0)
                 return "0";
 
-            return string.Format("{0:#.##}", Value);
+            return Value.ToString("#.##", NumberFormatInfo.InvariantInfo);
         }
         public override string ToCss()
         {

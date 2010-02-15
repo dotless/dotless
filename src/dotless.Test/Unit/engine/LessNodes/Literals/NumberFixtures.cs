@@ -27,5 +27,13 @@ namespace dotless.Test.Unit.engine.Literals
             number += 100;
             Assert.AreEqual("200%", number.ToCss());
         }
+
+        [Test, Culture("de", Reason = "German locale has different comma delimiter")]
+        public void DoesNotBreakOnGermanLocale()
+        {
+            var number = new Number(10.5);
+            string css = number.ToCss();
+            Assert.AreEqual("10.5", css);
+        }
     }
 }
