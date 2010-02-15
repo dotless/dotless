@@ -12,13 +12,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
+using System.Globalization;
+using System.Threading;
 using NUnit.Framework;
 
 namespace dotless.Test.Spec.ExtensibleEngine
 {
     [TestFixture]
+    [TestFixture("en-GB")]
+    [TestFixture("de-DE")]
+    [TestFixture("fr-FR")]
     public class SpecEngine
     {
+        public SpecEngine(string locale)
+        {
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(locale);
+        }
+
+        public SpecEngine() { }
+
         private const string Upcoming = "Upcoming functionality";
 
         [Test]

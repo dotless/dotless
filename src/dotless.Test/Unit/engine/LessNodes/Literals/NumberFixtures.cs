@@ -12,10 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
+using System;
+
 namespace dotless.Test.Unit.engine.Literals
 {
     using Core.engine;
     using NUnit.Framework;
+    using System.Threading;
+    using System.Globalization;
 
     [TestFixture]
     public class NumberFixture
@@ -28,12 +32,16 @@ namespace dotless.Test.Unit.engine.Literals
             Assert.AreEqual("200%", number.ToCss());
         }
 
-        [Test, Culture("de", Reason = "German locale has different comma delimiter")]
-        public void DoesNotBreakOnGermanLocale()
+        [TestCase("en-GB")]
+        [TestCase("de-DE")]
+        [TestCase("fr-FR")]
+        public void DoesNotBreakOnDifferentLocale(string locale)
         {
-            var number = new Number(10.5);
-            string css = number.ToCss();
-            Assert.AreEqual("10.5", css);
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(locale);
+
+            var number = new Number(1234.5);
+            var css = number.ToCss();
+            Assert.AreEqual("1234.5", css);
         }
     }
 }
