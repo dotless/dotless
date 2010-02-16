@@ -507,7 +507,7 @@ namespace dotless.Test.Spec.Functions
         {
             AssertExpression("#800080", "mix(#f00, #00f)");
             AssertExpression("#808080", "mix(#f00, #0ff)");
-            AssertExpression("#809055", "mix(#f70, #0aa)");
+            AssertExpression("#809155", "mix(#f70, #0aa)");
             AssertExpression("#4000bf", "mix(#f00, #00f, 25%)");
             AssertExpression("rgba(64, 0, 191, .75)", "mix(rgba(255, 0, 0, .5), #00f)");
             AssertExpression("#ff0000", "mix(#f00, #00f, 100%)");

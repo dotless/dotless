@@ -95,14 +95,14 @@ namespace dotless.Core.engine
             var rgb = RGB.Select(x => action(x, other))
                 .ToArray();
 
-            return new Color(rgb[0], rgb[1], rgb[2]);
+            return new Color(rgb[0], rgb[1], rgb[2], A);
         }
         public Color Operate(Func<double, double, double> action, Color other)
         {
             var rgb = RGB.Select((x, i) => action(x, other.RGB[i]))
                 .ToArray();
 
-            return new Color(rgb[0], rgb[1], rgb[2]);
+            return new Color(rgb[0], rgb[1], rgb[2], A);
         }
         public List<double> RGB
         {
@@ -117,7 +117,7 @@ namespace dotless.Core.engine
         }
         public override string ToString()
         {
-            var rgb = RGB.Select(x => (int) Math.Round(x)).ToArray();
+            var rgb = RGB.Select(x => (int) Math.Round(x, MidpointRounding.AwayFromZero)).ToArray();
 
 
             string result;
