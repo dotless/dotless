@@ -33,11 +33,11 @@ namespace dotless.Compiler
         private void SetupWatcher(string inputFilePath)
         {
             var fileInfo = new FileInfo(inputFilePath);
-            FileSystemWatcher fsWatcher;
             if (fileInfo.Directory == null)
                 throw new IOException("File Path has no directory to watch");
-            fsWatcher = new FileSystemWatcher(fileInfo.Directory.FullName, inputFilePath)
-                            {NotifyFilter = NotifyFilters.LastWrite};
+            
+            var fsWatcher = new FileSystemWatcher(fileInfo.Directory.FullName, inputFilePath)
+                                              {NotifyFilter = NotifyFilters.LastWrite};
             fsWatcher.Changed += FsWatcherChanged;
             fsWatcher.EnableRaisingEvents = true;
         }
@@ -54,7 +54,7 @@ namespace dotless.Compiler
                     compilationDelegate();
                     completed = true;
                 }
-                catch(IOException ex)
+                catch(IOException)
                 {
                     Thread.Sleep(100);
                     Console.WriteLine("[Failed]");
