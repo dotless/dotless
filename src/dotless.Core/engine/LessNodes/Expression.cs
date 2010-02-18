@@ -97,20 +97,36 @@ namespace dotless.Core.engine
                 
                 INode returnNode;
 
-                var unit = Literals.Where(l => !string.IsNullOrEmpty(l.Unit)).Select(l => l.Unit).Distinct().ToArray();
-                if (unit.Count() > 1 && Operators.Count() != 0) throw new MixedUnitsException(); 
-                var entity = Literals.Where(e => unit.Contains(e.Unit)).FirstOrDefault() ?? Entities.First();
+                var unit = Literals
+                    .Where(l => !string.IsNullOrEmpty(l.Unit))
+                    .Select(l => l.Unit)
+                    .Distinct()
+                    .ToArray();
 
-                if (result is Entity) returnNode = (INode)result;
-                else if (result.GetType()==typeof(string)) returnNode = new Literal(string.Format("{0}",result));
+                if (unit.Count() > 1 && Operators.Count() != 0) 
+                    throw new MixedUnitsException(); 
+                
+                if (result is Entity)
+                {
+                    returnNode = (INode)result;
+                }
+                else if (result is string)
+                {
+                    returnNode = new Literal(string.Format("{0}",result));
+                }
                 else if (result is Expression)
+                {
                     returnNode = ((Expression)result).Count() == 1
                                      ? ((Expression)result).First()
                                      : (Expression)result;
-
-                else returnNode = entity is Number && unit.Count() > 0
-                                      ? new Number(unit.First(), float.Parse(result.ToString()))
-                                      : new Number(float.Parse(result.ToString()));
+                }
+                else
+                {
+                    var entity = Literals.Where(e => unit.Contains(e.Unit)).FirstOrDefault() ?? Entities.First();
+                    returnNode = entity is Number && unit.Count() > 0
+                                     ? new Number(unit.First(), float.Parse(result.ToString()))
+                                     : new Number(float.Parse(result.ToString()));
+                }
                 return returnNode;
             }
             return this.Count() == 1 ? this.First() : this;
