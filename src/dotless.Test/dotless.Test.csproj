@@ -72,11 +72,11 @@
     <Compile Include="PointInTime\PointInTimeFixture.cs" />
     <Compile Include="Spec\ExtensibleEngine\SpecEngine.cs" />
     <Compile Include="Spec\ExtensibleEngine\SpecHelper.cs" />
-    <Compile Include="Spec\MixinFixture.cs" />
+    <Compile Include="Spec\Mixin\MixinFixture.cs" />
     <Compile Include="Spec\Operations\OperationsFixture.cs" />
     <Compile Include="Spec\SpecFixtureBase.cs" />
     <Compile Include="Spec\SpecExtensions.cs" />
-    <Compile Include="Spec\VariablesFixture.cs" />
+    <Compile Include="Spec\Variables\VariablesFixture.cs" />
     <Compile Include="Unit\configuration\XmlConfigurationFixture.cs" />
     <Compile Include="Unit\ConsoleRunner\CompilerFixture.cs" />
     <Compile Include="Unit\engine\AltEngineFixture.cs" />
@@ -273,7 +273,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
-    <Folder Include="Spec\Variables\" />
     <Folder Include="Unit\parser\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
