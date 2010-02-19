@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using dotless.Core.engine.CssNodes;
+using dotless.Core.utils;
 
 namespace dotless.Core.engine.Pipeline
 {
@@ -13,34 +14,21 @@ namespace dotless.Core.engine.Pipeline
             return document;
         }
 
-        private IEnumerable<CssElement> MergeElements(List<CssElement> elements)
+        private static IEnumerable<CssElement> MergeElements(IEnumerable<CssElement> elements)
         {
-            while (elements.Count != 0)
-            {
-                var element = elements[0];
-                var allProperties = (from e in elements
-                                     from property in e.Properties
-                                     where e.Identifiers == element.Identifiers
-                                     select property).Reverse().Distinct(new CssPropertyComparer()).Reverse();
-
-
-                yield return new CssElement(element.Identifiers) { Properties = new HashSet<CssProperty>(allProperties), InsertContent = element.InsertContent};
-
-                elements.RemoveAll(e => e.Identifiers == element.Identifiers);
-            }
-        }
-
-        class CssPropertyComparer : IEqualityComparer<CssProperty>
-        {
-            public bool Equals(CssProperty x, CssProperty y)
-            {
-                return x.Key == y.Key;
-            }
-
-            public int GetHashCode(CssProperty obj)
-            {
-                return obj.Key.GetHashCode();
-            }
+            return from e in elements
+                   group e by e.Identifiers
+                   into g
+                       let uniqueProperties = g.SelectMany(a => a.Properties).Reverse().Distinct(a => a.Key).Reverse()
+                       select
+                       new CssElement
+                           {
+                               Identifiers = g.Key,
+                               Properties = new HashSet<CssProperty>(uniqueProperties),
+                               // Note: There is no test requiring the InsertContent to be set here. Please create a failing test and uncomment.
+                               //       Also shouldn't we need to join all insert contents together? (assuming it's required at all)
+                               // InsertContent = g.First().InsertContent
+                           };
         }
     }
 }

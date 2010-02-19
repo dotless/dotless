@@ -142,6 +142,7 @@
     <Compile Include="StringSource.cs" />
     <Compile Include="utils\CSEval.cs" />
     <Compile Include="utils\Guard.cs" />
+    <Compile Include="utils\LinqHelpers.cs" />
     <Compile Include="utils\NumberExtensions.cs" />
     <Compile Include="utils\RegexExtentions.cs" />
     <Compile Include="VirtualPathSource.cs" />
