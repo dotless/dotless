@@ -12,10 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using dotless.Core.engine.CssNodes;
+using dotless.Core.utils;
 
 namespace dotless.Core.engine.Pipeline
 {
@@ -47,16 +49,6 @@ namespace dotless.Core.engine.Pipeline
         }
 
         /// <summary>
-        /// Get ruleset string i.e. "a .hello, d.test"
-        /// </summary>
-        /// <param name="ruleset"></param>
-        /// <returns></returns>
-        private static string GetRuleSetString(IEnumerable<CssElement> ruleset)
-        {
-            return string.Join(", ", ruleset.Select(x => x.Identifiers).ToArray());
-        }
-
-        /// <summary>
         /// Build properties css string
         /// </summary>
         /// <param name="properties"></param>
@@ -76,22 +68,14 @@ namespace dotless.Core.engine.Pipeline
             return propertyStringBuilder.ToString();
         }
 
-        private IEnumerable<CssElement> GroupElements(IList<CssElement> elements)
+        private static IEnumerable<CssElement> GroupElements(IEnumerable<CssElement> elements)
         {
-            while (elements.Count != 0)
-            {
-                var comparisonElement = elements[0];
-                var similarElements = elements.Where(x => x.IsEquiv(comparisonElement)).ToList();
-                var matchingElements = new List<CssElement>();
+            var grouped = elements.GroupBy(e => e.Properties, e => e.Identifiers, new CssPropertyComparer());
 
-                foreach (var el in similarElements)
-                {
-                    matchingElements.Add(el);
-                    elements.Remove(el);
-                }
-                var rulesetString = GetRuleSetString(similarElements);
-                yield return new CssElement(rulesetString) { Properties = comparisonElement.Properties, InsertContent = comparisonElement.InsertContent};
-            }
+            var result = from g in grouped
+                         select new CssElement { Identifiers = string.Join(", ", g.ToArray()), Properties = g.Key };
+
+            return result;
         }
     }
 }
