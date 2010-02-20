@@ -26,7 +26,7 @@ namespace dotless.Core.engine
             Add("+", () => new Adjacent());
             Add(":", () => new PseudoClass());
             Add("::", () => new PseudoElement());
-            //Add("~", () => new Sibling());
+            Add("~", () => new Sibling());
         }
     }
 
@@ -52,7 +52,7 @@ namespace dotless.Core.engine
     {
         public override string ToCss()
         {
-            return string.Format(" > ");
+            return " > ";
         }
     }
 
@@ -60,7 +60,15 @@ namespace dotless.Core.engine
     {
         public override string ToCss()
         {
-            return string.Format(" + ");
+            return " + ";
+        }
+    }
+
+    public class Sibling : Selector
+    {
+        public override string ToCss()
+        {
+            return " ~ ";
         }
     }
 
