@@ -39,7 +39,7 @@ namespace dotless.Test.Spec.Functions
         public void TestHslOverflows()
         {
             AssertExpression("#1f1f1f", "hsl(10, -114, 12)");
-            AssertExpression("#ffffff", "hsl(10, 10, 256%)");
+            AssertExpression("white", "hsl(10, 10, 256%)");
 
             AssertExpression("350", "hue(hsl(-10, 10, 10))");
             AssertExpression("40", "hue(hsl(400, 10, 10))");
@@ -67,7 +67,7 @@ namespace dotless.Test.Spec.Functions
         public void TestHslaOverflows()
         {
             AssertExpression("#1f1f1f", "hsla(10, -114, 12, 1)");
-            AssertExpression("#ffffff", "hsla(10, 10, 256%, 1)");
+            AssertExpression("white", "hsla(10, 10, 256%, 1)");
             AssertExpression("rgba(28, 24, 23, 0)", "hsla(10, 10, 10, -0.1)");
             AssertExpression("#1c1817", "hsla(10, 10, 10, 1.1)");
 
@@ -180,9 +180,9 @@ namespace dotless.Test.Spec.Functions
         [Test]
         public void TestRgbTestPercentBounds()
         {
-            AssertExpression("#ff0000", "rgb(100.1%, 0, 0)");
-            AssertExpression("#000000", "rgb(0, -0.1%, 0)");
-            AssertExpression("#0000ff", "rgb(0, 0, 101%)");
+            AssertExpression("red", "rgb(100.1%, 0, 0)");
+            AssertExpression("black", "rgb(0, -0.1%, 0)");
+            AssertExpression("blue", "rgb(0, 0, 101%)");
         }
 
         [Test]
@@ -225,7 +225,7 @@ namespace dotless.Test.Spec.Functions
         public void TestRgbaWithColor()
         {
             AssertExpression("rgba(16, 32, 48, .5)", "rgba(#102030, .5)");
-            // AssertExpression("rgba(0, 0, 255, 0.5)", "rgba(blue, 0.5)");  // color keywords are not evaluated
+            AssertExpression("rgba(0, 0, 255, .5)", "rgba(blue, 0.5)");
         }
 
         [Test]
@@ -381,8 +381,8 @@ namespace dotless.Test.Spec.Functions
             AssertExpression("rgba(0, 0, 0, .75)", "alpha(rgba(0, 0, 0, 0.5), .25)");
             AssertExpression("rgba(0, 0, 0, .3)", "alpha(rgba(0, 0, 0, 0.2), .1)");
             AssertExpression("rgba(0, 0, 0, .7)", "alpha(rgba(0, 0, 0, 0.2), .5px)");
-            AssertExpression("#000000", "alpha(rgba(0, 0, 0, 0.2), 0.8)");
-            AssertExpression("#000000", "alpha(rgba(0, 0, 0, 0.2), 1)");
+            AssertExpression("black", "alpha(rgba(0, 0, 0, 0.2), 0.8)");
+            AssertExpression("black", "alpha(rgba(0, 0, 0, 0.2), 1)");
             AssertExpression("rgba(0, 0, 0, .2)", "alpha(rgba(0, 0, 0, 0.2), 0)");
 
             // Transparentize / Fade Out
@@ -416,16 +416,16 @@ namespace dotless.Test.Spec.Functions
             //Lighten
             AssertExpression("#4c4c4c", "lightness(hsl(0, 0, 0), 30%)");
             AssertExpression("#ee0000", "lightness(#800, 20%)");
-            AssertExpression("#ffffff", "lightness(#fff, 20%)");
-            AssertExpression("#ffffff", "lightness(#800, 100%)");
+            AssertExpression("white", "lightness(#fff, 20%)");
+            AssertExpression("white", "lightness(#800, 100%)");
             AssertExpression("#880000", "lightness(#800, 0%)");
             AssertExpression("rgba(238, 0, 0, .5)", "lightness(rgba(136, 0, 0, .5), 20%)");
 
             //Darken
             AssertExpression("#ff6a00", "lightness(hsl(25, 100, 80), -30%)");
             AssertExpression("#220000", "lightness(#800, -20%)");
-            AssertExpression("#000000", "lightness(#000, -20%)");
-            AssertExpression("#000000", "lightness(#800, -100%)");
+            AssertExpression("black", "lightness(#000, -20%)");
+            AssertExpression("black", "lightness(#800, -100%)");
             AssertExpression("#880000", "lightness(#800, 0%)");
             AssertExpression("rgba(34, 0, 0, .5)", "lightness(rgba(136, 0, 0, .5), -20%)");
         }
@@ -433,8 +433,8 @@ namespace dotless.Test.Spec.Functions
         [Test]
         public void TestEditLightnessOverflow()
         {
-            AssertExpression("#ffffff", "lightness(#000000, 101%)");
-            AssertExpression("#000000", "lightness(#ffffff, -101%)");
+            AssertExpression("white", "lightness(#000000, 101%)");
+            AssertExpression("black", "lightness(#ffffff, -101%)");
 
         }
 
@@ -451,8 +451,8 @@ namespace dotless.Test.Spec.Functions
             //Saturate
             AssertExpression("#d9f2d9", "saturation(hsl(120, 30, 90), 20%)");
             AssertExpression("#9e3f3f", "saturation(#855, 20%)");
-            AssertExpression("#000000", "saturation(#000, 20%)");
-            AssertExpression("#ffffff", "saturation(#fff, 20%)");
+            AssertExpression("black", "saturation(#000, 20%)");
+            AssertExpression("white", "saturation(#fff, 20%)");
             AssertExpression("#33ff33", "saturation(#8a8, 100%)");
             AssertExpression("#88aa88", "saturation(#8a8, 0%)");
             AssertExpression("rgba(158, 63, 63, .5)", "saturation(rgba(136, 85, 85, 0.5), 20%)");
@@ -460,8 +460,8 @@ namespace dotless.Test.Spec.Functions
             // Desaturate
             AssertExpression("#e3e8e3", "saturation(hsl(120, 30, 90), -20%)");
             AssertExpression("#726b6b", "saturation(#855, -20%)");
-            AssertExpression("#000000", "saturation(#000, -20%)");
-            AssertExpression("#ffffff", "saturation(#fff, -20%)");
+            AssertExpression("black", "saturation(#000, -20%)");
+            AssertExpression("white", "saturation(#fff, -20%)");
             AssertExpression("#999999", "saturation(#8a8, -100%)");
             AssertExpression("#88aa88", "saturation(#8a8, 0%)");
             AssertExpression("rgba(114, 107, 107, .5)", "saturation(rgba(136, 85, 85, .5), -20%)");
@@ -488,8 +488,8 @@ namespace dotless.Test.Spec.Functions
             AssertExpression("#deeded", "hue(hsl(120, 30, 90), 60)");
             AssertExpression("#ededde", "hue(hsl(120, 30, 90), -60)");
             AssertExpression("#886a11", "hue(#811, 45)");
-            AssertExpression("#000000", "hue(#000, 45)");
-            AssertExpression("#ffffff", "hue(#fff, 45)");
+            AssertExpression("black", "hue(#000, 45)");
+            AssertExpression("white", "hue(#fff, 45)");
             AssertExpression("#88aa88", "hue(#8a8, 360)");
             AssertExpression("#88aa88", "hue(#8a8, 0)");
             AssertExpression("rgba(136, 106, 17, .5)", "hue(rgba(136, 17, 17, .5), 45)");
@@ -505,17 +505,17 @@ namespace dotless.Test.Spec.Functions
         [Test]
         public void TestMix()
         {
-            AssertExpression("#800080", "mix(#f00, #00f)");
-            AssertExpression("#808080", "mix(#f00, #0ff)");
+            AssertExpression("purple", "mix(#f00, #00f)");
+            AssertExpression("gray", "mix(#f00, #0ff)");
             AssertExpression("#809155", "mix(#f70, #0aa)");
             AssertExpression("#4000bf", "mix(#f00, #00f, 25%)");
             AssertExpression("rgba(64, 0, 191, .75)", "mix(rgba(255, 0, 0, .5), #00f)");
-            AssertExpression("#ff0000", "mix(#f00, #00f, 100%)");
-            AssertExpression("#0000ff", "mix(#f00, #00f, 0%)");
+            AssertExpression("red", "mix(#f00, #00f, 100%)");
+            AssertExpression("blue", "mix(#f00, #00f, 0%)");
             AssertExpression("rgba(255, 0, 0, .5)", "mix(#f00, rgba(#00f, 0))");
             AssertExpression("rgba(0, 0, 255, .5)", "mix(rgba(#f00, 0), #00f)");
-            AssertExpression("#ff0000", "mix(#f00, rgba(#00f, 0), 100%)");
-            AssertExpression("#0000ff", "mix(rgba(#f00, 0), #00f, 0%)");
+            AssertExpression("red", "mix(#f00, rgba(#00f, 0), 100%)");
+            AssertExpression("blue", "mix(rgba(#f00, 0), #00f, 0%)");
             AssertExpression("rgba(0, 0, 255, 0)", "mix(#f00, rgba(#00f, 0), 0%)");
             AssertExpression("rgba(255, 0, 0, 0)", "mix(rgba(#f00, 0), #00f, 100%)");
         }
@@ -539,10 +539,10 @@ namespace dotless.Test.Spec.Functions
         public void TestGrayscale()
         {
             AssertExpression("#bbbbbb", "grayscale(#abc)");
-            AssertExpression("#808080", "grayscale(#f00)");
-            AssertExpression("#808080", "grayscale(#00f)");
-            AssertExpression("#ffffff", "grayscale(#fff)");
-            AssertExpression("#000000", "grayscale(#000)");
+            AssertExpression("gray", "grayscale(#f00)");
+            AssertExpression("gray", "grayscale(#00f)");
+            AssertExpression("white", "grayscale(#fff)");
+            AssertExpression("black", "grayscale(#000)");
         }
 
         [Test]
@@ -555,10 +555,10 @@ namespace dotless.Test.Spec.Functions
         public void TestComplement()
         {
             AssertExpression("#ccbbaa", "complement(#abc)");
-            AssertExpression("#00ffff", "complement(#f00)");
-            AssertExpression("#ff0000", "complement(#0ff)");
-            AssertExpression("#ffffff", "complement(#fff)");
-            AssertExpression("#000000", "complement(#000)");
+            AssertExpression("aqua", "complement(#f00)");
+            AssertExpression("red", "complement(#0ff)");
+            AssertExpression("white", "complement(#fff)");
+            AssertExpression("black", "complement(#000)");
         }
 
         [Test]

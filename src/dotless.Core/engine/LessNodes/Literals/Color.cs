@@ -22,6 +22,33 @@ namespace dotless.Core.engine
 
     public class Color : Literal
     {
+        private static readonly Dictionary<int, string> Html4ColorsReverse;
+
+        private static readonly Dictionary<string, int> Html4Colors =
+            new Dictionary<string, int>
+                {
+                    {"black",   0x000000},
+                    {"silver",  0xc0c0c0},
+                    {"gray",    0x808080},
+                    {"white",   0xffffff},
+                    {"maroon",  0x800000},
+                    {"red",     0xff0000},
+                    {"purple",  0x800080},
+                    {"fuchsia", 0xff00ff},
+                    {"green",   0x008000},
+                    {"lime",    0x00ff00},
+                    {"olive",   0x808000},
+                    {"yellow",  0xffff00},
+                    {"navy",    0x000080},
+                    {"blue",    0x0000ff},
+                    {"teal",    0x008080},
+                    {"aqua",    0x00ffff}
+                };
+        static Color()
+        {
+            Html4ColorsReverse = Html4Colors.ToDictionary(x => x.Value, x => x.Key);
+        }
+
         public double R { get; set; }
         public double G { get; set; }
         public double B { get; set; }
@@ -37,6 +64,16 @@ namespace dotless.Core.engine
             G = NumberExtensions.Normalize(g, 0, 255);
             B = NumberExtensions.Normalize(b, 0, 255);
             A = NumberExtensions.Normalize(a);
+        }
+
+        public Color(int i)
+        {
+            B = i & 0xff;
+            i >>= 8;
+            G = i & 0xff;
+            i >>= 8;
+            R = i & 0xff;
+            A = 1;
         }
 
         #region operator overrides
@@ -119,7 +156,6 @@ namespace dotless.Core.engine
         {
             var rgb = RGB.Select(x => (int) Math.Round(x, MidpointRounding.AwayFromZero)).ToArray();
 
-
             string result;
             if (A < 1)
             {
@@ -127,7 +163,11 @@ namespace dotless.Core.engine
                 result = string.Format("rgba({0}, {1}, {2}, {3})", rgb[0], rgb[1], rgb[2], alpha.ToCss());
             }
             else
-                result = string.Format("#{0:X2}{1:X2}{2:X2}", rgb[0], rgb[1], rgb[2]);
+            {
+                result = GetKeyword();
+                if(string.IsNullOrEmpty(result))
+                    result = string.Format("#{0:X2}{1:X2}{2:X2}", rgb[0], rgb[1], rgb[2]);
+            }
 
             return result.ToLower();
         }
@@ -135,6 +175,29 @@ namespace dotless.Core.engine
         public override string ToCss()
         {
             return ToString();
+        }
+
+        public string GetKeyword()
+        {
+            var rgb = RGB.Select(x => (int)Math.Round(x, MidpointRounding.AwayFromZero)).ToArray();
+
+            int color = (rgb[0] << 16) + (rgb[1] << 8) + rgb[2];
+            string keyword;
+
+            if (Html4ColorsReverse.TryGetValue(color, out keyword))
+                return keyword;
+
+            return null;
+        }
+
+        public static Color GetColorFromKeyword(string keyword)
+        {
+            int color;
+
+            if (Html4Colors.TryGetValue(keyword, out color))
+                return new Color(color);
+
+            return null;
         }
     }
 }

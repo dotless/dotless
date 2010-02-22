@@ -1,4 +1,4 @@
-/* created on 15/02/2010 08:03:08 from peg generator V1.0 using '' as input*/
+/* created on 22/02/2010 14:11:15 from peg generator V1.0 using '' as input*/
 
 using Peg.Base;
 using System;
@@ -686,10 +686,10 @@ namespace nLess
 
            return PlusRepeat(()=> OneOf(" ") );
 		}
-        public bool ns()    /*ns: ![ ;\n] .;*/
+        public bool ns()    /*ns: ![ ;,)}\n] .;*/
         {
 
-           return And(()=>    Not(()=> OneOf(" ;\n") ) && Any() );
+           return And(()=>    Not(()=> OneOf(" ;,)}\n") ) && Any() );
 		}
         public bool na()    /*na: s (',' / ')');*/
         {

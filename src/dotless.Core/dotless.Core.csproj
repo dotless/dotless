@@ -92,6 +92,7 @@
     <Compile Include="engine\LessNodes\IReferenceableNode.cs" />
     <Compile Include="engine\LessNodes\Literals\Bool.cs" />
     <Compile Include="engine\LessNodes\Literals\HslColor.cs" />
+    <Compile Include="engine\LessNodes\Literals\Keyword.cs" />
     <Compile Include="engine\LessNodes\NodeBlock.cs" />
     <Compile Include="engine\LessNodes\MixinBlock.cs" />
     <Compile Include="engine\Pipeline\CssBuilder.cs" />

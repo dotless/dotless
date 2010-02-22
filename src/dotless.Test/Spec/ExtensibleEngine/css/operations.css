@@ -20,7 +20,7 @@
 .colors {
   color: #112233;
   border-color: #334455;
-  background-color: #000000;
+  background-color: black;
 }
 .colors .other {
   color: #222222;
