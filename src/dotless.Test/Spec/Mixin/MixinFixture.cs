@@ -146,6 +146,47 @@ namespace dotless.Test.Spec.Mixin
         }
 
 
+        [Test, Ignore("Unsupported")]
+        public void NestedParameterizedMixins()
+        {
+            var less =
+@".outer(@a: 5) {
+  .inner (@b: 10) {
+    width: @a + @b;
+  }
+}
+
+.class1 {
+  .outer;
+}
+
+.class2 {
+  .outer;
+  .inner;
+}
+
+.class3 {
+  .outer .inner;
+}
+
+.class4 {
+  .outer(1);
+  .inner(2);
+}
+
+.class5 {
+  .outer(2) .inner(4);
+}";
+
+            var css =
+@".class2 .class3 { width: 15; }
+.class4 { width: 3; }
+.class5 { width: 6; }";
+
+            AssertLess(css, less);
+        }
+        
+        
         [Test]
         public void CanUseVariablesAsDefaultArgumentValues()
         {
