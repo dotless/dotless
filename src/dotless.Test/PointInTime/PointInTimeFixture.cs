@@ -37,8 +37,8 @@ namespace dotless.Test.PointInTime
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             var engine = new ExtensibleEngineImpl(query);
-            Console.WriteLine("Time elapsed: " + stopwatch.ElapsedMilliseconds);
-            Console.WriteLine(engine.Css);
+            //Console.WriteLine("Time elapsed: " + stopwatch.ElapsedMilliseconds);
+            //Console.WriteLine(engine.Css);
             
         }
         [Test]
@@ -48,8 +48,8 @@ namespace dotless.Test.PointInTime
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             var engine = new ExtensibleEngineImpl(File.ReadAllText(@"PointInTime/TestData.less"));
-            Console.WriteLine("Time elapsed: " + stopwatch.ElapsedMilliseconds);
-            Console.WriteLine(engine.Css);
+            //Console.WriteLine("Time elapsed: " + stopwatch.ElapsedMilliseconds);
+            //Console.WriteLine(engine.Css);
         }
     }
 }

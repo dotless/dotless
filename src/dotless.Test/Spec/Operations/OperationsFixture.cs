@@ -41,7 +41,7 @@ namespace dotless.Test.Spec.Operations
             AssertExpression("#81ff81", "hsl(120, 100%, 75%) + #010001");
         }
 
-        [Test, Ignore]
+        [Test, Ignore("Boolean Expressions")]
         public void TestStringOps()
         {
             AssertExpression("foo bar", "'foo' 'bar'");
@@ -68,7 +68,7 @@ namespace dotless.Test.Spec.Operations
             AssertExpression("false", "false");
         }
 
-        [Test, Ignore]
+        [Test, Ignore("Boolean Expressions")]
         public void TestBooleanOps()
         {
             AssertExpression("true", "true and true");
@@ -90,7 +90,7 @@ namespace dotless.Test.Spec.Operations
             AssertExpression("3", "2 and 3");
         }
 
-        [Test, Ignore]
+        [Test, Ignore("Boolean Expressions")]
         public void TestInequalities()
         {
             AssertExpression("false", "1 > 2");
@@ -110,7 +110,7 @@ namespace dotless.Test.Spec.Operations
             AssertExpression("false", "3 <= 2");
         }
 
-        [Test, Ignore]
+        [Test, Ignore("Boolean Expressions")]
         public void TestEquality()
         {
             var variables = new Dictionary<string, string> { { "foo", "bar" } };
@@ -122,7 +122,7 @@ namespace dotless.Test.Spec.Operations
             AssertExpression("false", "12 != 12");
         }
 
-        [Test, Ignore]
+        [Test, Ignore("Boolean Expressions")]
         public void TestOperationPrecedence()
         {
             AssertExpression("false true", "true and false false or true");
@@ -133,7 +133,7 @@ namespace dotless.Test.Spec.Operations
             AssertExpression("11", "1 + 2 * 3 + 4");
         }
 
-        [Test, Ignore]
+        [Test, Ignore("Unit Conversion")]
         public void TestOperatorUnitConversion()
         {
             AssertExpression("1.1cm", "1cm + 1mm");
