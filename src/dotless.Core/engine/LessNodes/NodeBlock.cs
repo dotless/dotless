@@ -4,9 +4,9 @@ using System.Linq;
 
 namespace dotless.Core.engine
 {
-    public class NodeBlock : IBlock
+    public abstract class NodeBlock : IBlock
     {
-        public NodeBlock()
+        protected NodeBlock()
         {
             Children = new List<INode>();
         }

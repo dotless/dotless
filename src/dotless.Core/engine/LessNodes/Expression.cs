@@ -27,6 +27,11 @@ namespace dotless.Core.engine
             return string.Join(" ", this.Select(x => x.ToCss()).ToArray());
         }
 
+        public override string ToString()
+        {
+            return string.Join(" ", this.Select(x => x.ToString()).ToArray());
+        }
+
         public IList<INode> Path(INode node)
         {
             var path = new List<INode>();

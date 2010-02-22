@@ -18,7 +18,7 @@ namespace dotless.Core.engine
     using System.Collections;
     using System.Collections.Generic;
 
-    public class Variable : Property, IEvaluatable
+    public class Variable : Property, IEvaluatable, IReferenceableNode
     {
         protected bool Declaration;
 
@@ -48,7 +48,15 @@ namespace dotless.Core.engine
         }
         public override string  ToString()
         {
-            return "@" + Key;
+            if (Declaration)
+                return string.Format("@{0}: {1}", Key, Value);
+
+            return Name;
+        }
+
+        public string Name
+        {
+            get { return "@" + Key; }
         }
 
         /// <summary>
@@ -62,14 +70,15 @@ namespace dotless.Core.engine
                 _eval = _eval ?? Value.Evaluate();
             else
                 _eval = _eval ?? (ParentAs<INearestResolver>()
-                                     .NearestAs<IEvaluatable>(ToString()))
+                                     .NearestAs<IEvaluatable>(Name))
                                      .Evaluate();
             return _eval;
         }
-        public override string  ToCss()
+        public override string ToCss()
         {
-            return Evaluate()==null ? "" : Evaluate().ToCss(); ;
-        } 
-         
+            var evaluated = Evaluate();
+            return evaluated == null ? "" : evaluated.ToCss();
+        }
+
     }
 }

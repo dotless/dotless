@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace dotless.Test.Spec
+namespace dotless.Test.Spec.Variables
 {
     [TestFixture]
     public class VariablesFixture : SpecFixtureBase

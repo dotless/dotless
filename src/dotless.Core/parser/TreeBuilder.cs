@@ -518,22 +518,23 @@ namespace dotless.Core.parser
                 {
                     foreach (var el in selectors)
                         root = root.Descend(el.Selector, el);
-                    if (root.Children != null)
-                        rules.AddRange(root.Children);
+
+                    var last = selectors.Last();
+
+                    var children = GetMixinChildren(elementBlock, last, root);
+
+                    if(children != null)
+                        rules.AddRange(children);
                 }
                 else
                 {
                     var el = selectors.First();
                     foreach (var mixinElement in root.Nearests(el.Name))
                     {
-                        if (mixinElement.Children == null) 
-                            continue;
+                        var children = GetMixinChildren(elementBlock, el, mixinElement);
 
-                        var children = GetMixinChildren(elementBlock, el.Variables, mixinElement.Children);
-
-                        rules.AddRange(children);
-
-                        el.Parent = elementBlock;
+                        if(children != null)
+                            rules.AddRange(children);
                     }
                 }
                 
@@ -542,45 +543,27 @@ namespace dotless.Core.parser
             elementBlock.Children.AddRange(rules);
         }
 
-        private static IEnumerable<INode> GetMixinChildren(ElementBlock elementBlock, IEnumerable<Variable> variables, IEnumerable<INode> mixinChildren)
+        private static IEnumerable<INode> GetMixinChildren(ElementBlock newParentBlock, ElementBlock mixinRule, ElementBlock mixinBlock)
         {
-            var detatchedElementBlock = new ElementBlock(elementBlock.Name + "_detatched");
-            detatchedElementBlock.Parent = elementBlock;
 
-            var clonedChildren = mixinChildren.Select(n => n.AdoptClone(detatchedElementBlock)).ToList();
+            if (mixinBlock.Children == null)
+                return null;
 
-            var rules = new List<INode>();
-            var clonedVariables = clonedChildren.Where(n => n is Variable).Cast<Variable>().ToList();
-            var otherChildren = clonedChildren.Where(n => !(n is Variable));
-
-            rules.AddRange(otherChildren);
-
-            foreach (var variable in variables)
+            IEnumerable<INode> children;
+            if (mixinBlock is MixinBlock)
             {
-                int position;
-                Variable newVariable = null;
-                if( int.TryParse(variable.Key, out position) )
-                {
-                    if(position < clonedVariables.Count)
-                        newVariable = clonedVariables[position];
-                }
-                else
-                {
-                    newVariable = clonedVariables.FirstOrDefault(v => v.Key == variable.Key);
-                }
+                var mixin = ((MixinBlock)mixinBlock);
 
-                if (newVariable == null) 
-                    // throw
-                    continue;
+                List<Variable> arguments = null;
+                if (mixinRule is MixinBlock)
+                    arguments = (mixinRule as MixinBlock).Arguments;
 
-                newVariable.Value = variable.Value;
+                children = mixin.GetClonedChildren(newParentBlock, arguments ?? new List<Variable>());
             }
+            else
+                children = mixinBlock.Children;
 
-            detatchedElementBlock.Children.AddRange(clonedVariables.Cast<INode>());
-
-            rules.AddRange(clonedVariables.Cast<INode>());
-
-            return rules;
+            return children;
         }
 
         /// <summary>
@@ -634,18 +617,18 @@ namespace dotless.Core.parser
                 var isMixinWithArgs = next != null && next.ToEnLess() == EnLess.arguments;
 
                 if (isMixinWithArgs)
-                    block = new PureMixinBlock(name, selector);
-                else
-                    block = new ElementBlock(name, selector);
-
-                if (isMixinWithArgs)
                 {
+                    var mixinBlock = new MixinBlock(name, selector);
+                    block = mixinBlock;
+
                     var arguments = GetMixinArguments(next, block);
                     enumerator.MoveNext();
 
                     foreach (var argument in arguments)
-                        block.Add(argument);
+                        mixinBlock.Arguments.Add(argument);
                 }
+                else
+                    block = new ElementBlock(name, selector);
 
                 yield return block;
             }

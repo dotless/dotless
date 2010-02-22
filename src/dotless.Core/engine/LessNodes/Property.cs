@@ -12,10 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
+using System;
+
 namespace dotless.Core.engine
 {
     using System.Collections.Generic;
-    public class Property : Entity, INearestResolver
+    public class Property : Entity, INearestResolver, IReferenceableNode
     {
         public INode _eval { get; set; }
 
@@ -96,7 +98,12 @@ namespace dotless.Core.engine
 
         public override string ToString()
         {
-            return Key;
+            return string.Format("{0}: {1};", Key, Value);;
+        }
+
+        public string Name
+        {
+            get { return Key; }
         }
 
         public INode Nearest(string ident)

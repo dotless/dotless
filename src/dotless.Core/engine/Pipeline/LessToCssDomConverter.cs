@@ -52,7 +52,7 @@ namespace dotless.Core.engine.Pipeline
         private void BuildCssDocumentImpl(IBlock node, ICollection<string> path)
         {
             bool processChildNodes = true;
-            if (node is ElementBlock && !(node is PureMixinBlock))
+            if (node is ElementBlock && !(node is MixinBlock))
                 BuildElement((ElementBlock) node, path);
             if (node is IfBlock)
                 processChildNodes = ((IfBlock) node).Expression.Evaluate().Value;

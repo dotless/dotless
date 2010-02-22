@@ -18,8 +18,9 @@ namespace dotless.Core.engine
     using System.Linq;
     using exceptions;
     using utils;
+    using LessNodes;
 
-    public class ElementBlock : NodeBlock, INearestResolver
+    public class ElementBlock : NodeBlock, INearestResolver, IReferenceableNode
     {
         public string Name { get; set; }
         public Selector Selector { get; set; }
@@ -50,14 +51,19 @@ namespace dotless.Core.engine
         }
 
         /// <summary>
-        /// Gets a specific node based upon its ToString value
+        /// Gets a specific node based upon its Name value
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
         private INode Get(string key){
-            var rules = All().SelectMany(e => e.Children);
-            foreach(var rule in rules){
-                if (rule.ToString() == key)
+            var rules = All()
+                .SelectMany(e => e.Children)
+                .Where( e => e is IReferenceableNode )
+                .Cast<IReferenceableNode>();
+            
+            foreach(var rule in rules)
+            {
+                if (rule.Name == key)
                     return rule;
             }
             return null;
@@ -149,7 +155,8 @@ namespace dotless.Core.engine
                 node = GetNodesByIdent(ident, el).FirstOrDefault();
                 if (node != null) break;
             }
-            if (node == null) throw new VariableNameException(ident);
+            if (node == null) 
+                throw new VariableNameException(ident);
             return node;
         }
 
@@ -167,24 +174,13 @@ namespace dotless.Core.engine
         
         private IEnumerable<INode> GetNodesByIdent(string ident, ElementBlock el)
         {
-            IEnumerable<INode> ary;
+            IEnumerable<IReferenceableNode> ary;
             if (ident.IsVariable())
-                ary = el.Variables.Cast<INode>();
+                ary = el.Variables.Cast<IReferenceableNode>();
             else
-                ary = el.Elements.Cast<INode>();
+                ary = el.Elements.Cast<IReferenceableNode>();
 
-            return ary.Where(i => i.ToString() == ident);
-        }
-    }
-
-    public class PureMixinBlock : ElementBlock
-    {
-        public PureMixinBlock(string name, string selector) : base(name, selector)
-        {
-        }
-
-        public PureMixinBlock(string name) : base(name)
-        {
+            return ary.Where(i => i.Name == ident).Cast<INode>();
         }
     }
 }

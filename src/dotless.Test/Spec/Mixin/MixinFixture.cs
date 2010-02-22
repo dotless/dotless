@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace dotless.Test.Spec
+namespace dotless.Test.Spec.Mixin
 {
     [TestFixture]
     public class MixinFixture : SpecFixtureBase
@@ -75,7 +75,7 @@ namespace dotless.Test.Spec
             AssertLess(css, less);
         }
 
-        [Test, Ignore]
+        [Test]
         public void PositionalArgumentsMustAppearBeforeAllNamedArguments()
         {
             var less =
@@ -89,10 +89,10 @@ namespace dotless.Test.Spec
   .mixin(@c: 100, 3px);
 }";
 
-            Assert.That(() => Evaluate(less), Throws.Exception.Message.EqualTo("Positional arguments must appear before all named arguments. \".mixin(@c: 100, 3px)\""));
+            Assert.That(() => Evaluate(less), Throws.Exception.Message.EqualTo("Positional arguments must appear before all named arguments. in '.mixin(@c: 100, 3px)'"));
         }
 
-        [Test, Ignore]
+        [Test]
         public void ThrowsIfArumentNotFound()
         {
             var less =
@@ -105,11 +105,23 @@ namespace dotless.Test.Spec
   .mixin(@var: 6);
 }";
 
-            Assert.That(() => Evaluate(less), Throws.Exception.Message.EqualTo("Argument \"@var\" not found. \".mixin(@var: 6)\""));
+            Assert.That(() => Evaluate(less), Throws.Exception.Message.EqualTo("Argument '@var' not found. in '.mixin(@var: 6)'"));
+        }
+
+        [Test]
+        public void ThrowsIfTooManyArguments()
+        {
+            var less =
+                @"
+.mixin (@a: 5) {  width: @a * 5; }
+
+.class { .mixin(1, 2, 3); }";
+
+            Assert.That(() => Evaluate(less), Throws.Exception.Message.EqualTo("Expected at most 1 arguments in '.mixin(1, 2, 3)', found 3"));
         }
 
 
-        [Test, Ignore]
+        [Test]
         public void MixinWithArgsInsideNamespace()
         {
             var less =
@@ -126,6 +138,82 @@ namespace dotless.Test.Spec
 
             var css =
 @".namespace-mixin {
+  width: 25px;
+  height: 49%;
+}";
+
+            AssertLess(css, less);
+        }
+
+
+        [Test]
+        public void CanUseVariablesAsDefaultArgumentValues()
+        {
+            var less =
+@"@var: 5px;
+
+.mixin (@a: @var, @b: 50%) {
+  width: @a * 5;
+  height: @b - 1%;
+}
+
+
+.class {
+  .mixin;
+}";
+
+            var css =
+@".class {
+  width: 25px;
+  height: 49%;
+}";
+
+            AssertLess(css, less);
+        }
+
+        [Test]
+        public void ArgumentsOverridesVariableInSameScope()
+        {
+            var less =
+@"@a: 10px;
+
+.mixin (@a: 5px, @b: 50%) {
+  width: @a * 5;
+  height: @b - 1%;
+}
+
+
+.class {
+  .mixin;
+}";
+
+            var css =
+@".class {
+  width: 25px;
+  height: 49%;
+}";
+
+            AssertLess(css, less);
+        }
+
+        [Test]
+        public void CanUseArgumentsWithSameNameAsVariable()
+        {
+            var less =
+@"@a: 5px;
+
+.mixin (@a: @a, @b: 50%) {
+  width: @a * 5;
+  height: @b - 1%;
+}
+
+
+.class {
+  .mixin;
+}";
+
+            var css =
+@".class {
   width: 25px;
   height: 49%;
 }";

@@ -89,9 +89,11 @@
     <Compile Include="engine\LessNodes\IfBlock.cs" />
     <Compile Include="engine\LessNodes\IBlock.cs" />
     <Compile Include="engine\LessNodes\Insert.cs" />
+    <Compile Include="engine\LessNodes\IReferenceableNode.cs" />
     <Compile Include="engine\LessNodes\Literals\Bool.cs" />
     <Compile Include="engine\LessNodes\Literals\HslColor.cs" />
     <Compile Include="engine\LessNodes\NodeBlock.cs" />
+    <Compile Include="engine\LessNodes\MixinBlock.cs" />
     <Compile Include="engine\Pipeline\CssBuilder.cs" />
     <Compile Include="engine\CssNodes\CssDocument.cs" />
     <Compile Include="engine\CssNodes\CssElement.cs" />
