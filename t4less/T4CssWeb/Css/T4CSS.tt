@@ -29,9 +29,9 @@
 /*-------------------------------------------------*/
 // Settings      
 /*-------------------------------------------------*/
-bool _minimize = true;
-bool _runOnBuild = false;
-bool _useCssExtension = false;
+_minimize = false;
+_runOnBuild = false;
+_useCssExtension = false;
 #>
 
 T4.Less Log
@@ -59,8 +59,10 @@ foreach(var cssFile in cssFiles)
     manager.StartNewFile(GetCssFileName(cssFile));
     try
     {
-	var fs = new FileSource();
-	var lso = fs.GetSource(cssFile);
+
+	 
+		var fs = new FileSource();
+		var lso = fs.GetSource(cssFile);
         string css = dotLess.TransformToCss(lso);
         Write(css);
     }
@@ -80,6 +82,9 @@ if(_runOnBuild)
 #>
 
 <#+
+
+bool _minimize, _runOnBuild, _useCssExtension;
+
 /*
     This MarkDirty code is based on T4MVC by David Ebbo. Concept explained here: http://blogs.msdn.com/davidebb/archive/2009/06/26/the-mvc-t4-template-is-now-up-on-codeplex-and-it-does-change-your-code-a-bit.aspx
 */
@@ -302,6 +307,7 @@ class Manager
 */
 
 public string GetCssFileName(string dotLessFileName) {
-    return Path.GetFileNameWithoutExtension(dotLessFileName.Replace(".less","")) + ".css"; 
+	return (_useCssExtension) ? Path.GetFileNameWithoutExtension(dotLessFileName.Replace(".less","")) + ".css"
+							  : Path.GetFileNameWithoutExtension(dotLessFileName) + ".css";
 }
 #>
