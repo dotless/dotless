@@ -15,10 +15,8 @@
 namespace dotless.Core.engine
 {
     using exceptions;
-    using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
     using utils;
 
     public class Expression : List<INode>, INode, IEvaluatable
@@ -28,15 +26,12 @@ namespace dotless.Core.engine
         {
             return string.Join(" ", this.Select(x => x.ToCss()).ToArray());
         }
-        public string ToCSharp()
+
+        public override string ToString()
         {
-            var sb = new StringBuilder();
-            foreach (var node in this)
-            {
-                sb.AppendFormat(" {0} ", node.ToCSharp());
-            }
-            return sb.ToString();
+            return string.Join(" ", this.Select(x => x.ToString()).ToArray());
         }
+
         public IList<INode> Path(INode node)
         {
             var path = new List<INode>();
@@ -97,33 +92,54 @@ namespace dotless.Core.engine
         }
         public INode Evaluate()
         {
+            for(var i = 0; i < Count; i++)
+                this[i] = this[i] is IEvaluatable ? ((IEvaluatable)this[i]).Evaluate() : this[i];
 
             if(this.Count() > 2 || !Terminal)
             {
-                for (var i=0; i<Count; i++){
-                    this[i] = this[i] is IEvaluatable ? ((IEvaluatable)this[i]).Evaluate() : this[i];
-                }
                 object result;
                 result = Operators.Count == 0 ? this : CsEval.StackEval(this);
                 
                 INode returnNode;
 
-                var unit = Literals.Where(l => !string.IsNullOrEmpty(l.Unit)).Select(l => l.Unit).Distinct().ToArray();
-                if (unit.Count() > 1 && Operators.Count() != 0) throw new MixedUnitsException(); 
-                var entity = Literals.Where(e => unit.Contains(e.Unit)).FirstOrDefault() ?? Entities.First();
+                var unit = Literals
+                    .Where(l => !string.IsNullOrEmpty(l.Unit))
+                    .Select(l => l.Unit)
+                    .Distinct()
+                    .ToArray();
 
-                if (result is Entity) returnNode = (INode)result;
-                else if (result.GetType()==typeof(string)) returnNode = new Literal(string.Format("{0}",result));
+                if (unit.Count() > 1 && Operators.Count() != 0) 
+                    throw new MixedUnitsException(); 
+                
+                if (result is Entity)
+                {
+                    returnNode = (INode)result;
+                }
+                else if (result is string)
+                {
+                    returnNode = new Literal(string.Format("{0}",result));
+                }
                 else if (result is Expression)
+                {
                     returnNode = ((Expression)result).Count() == 1
                                      ? ((Expression)result).First()
                                      : (Expression)result;
-                else returnNode = entity is Number && unit.Count() > 0
-                                      ? (INode)Activator.CreateInstance(entity.GetType(), unit.First(), float.Parse(result.ToString()))
-                                      : (INode)Activator.CreateInstance(entity.GetType(), float.Parse(result.ToString()));
+                }
+                else
+                {
+                    var entity = Literals.Where(e => unit.Contains(e.Unit)).FirstOrDefault() ?? Entities.First();
+                    returnNode = entity is Number && unit.Count() > 0
+                                     ? new Number(unit.First(), float.Parse(result.ToString()))
+                                     : new Number(float.Parse(result.ToString()));
+                }
                 return returnNode;
             }
             return this.Count() == 1 ? this.First() : this;
+        }
+
+        public virtual INode AdoptClone(INode newParent)
+        {
+            return new Expression(this.Select(n => n.AdoptClone(newParent)), newParent);
         }
     }
 }

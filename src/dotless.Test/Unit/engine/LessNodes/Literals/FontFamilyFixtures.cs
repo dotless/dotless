@@ -25,7 +25,8 @@ namespace dotless.Test.Unit.engine.Literals
         public void CanGetCss()
         {
             var fontFamily = new FontFamily("Arial", "\"Summit\"");
-            Console.WriteLine(fontFamily.ToCss());
+
+            Assert.That(fontFamily.ToCss(), Is.EqualTo("Arial, \"Summit\""));
         }
 
         

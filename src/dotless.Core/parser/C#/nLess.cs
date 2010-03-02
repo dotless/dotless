@@ -1,4 +1,4 @@
-/* created on 19/12/2009 15:41:11 from peg generator V1.0 using '' as input*/
+/* created on 22/02/2010 14:11:15 from peg generator V1.0 using '' as input*/
 
 using Peg.Base;
 using System;
@@ -12,14 +12,14 @@ namespace nLess
                    catchall_declaration= 12, ident= 13, variable= 14, expressions= 15, 
                    operation_expressions= 16, space_delimited_expressions= 17, important= 18, 
                    expression= 19, @operator= 20, ruleset= 21, standard_ruleset= 22, 
-                   mixin_ruleset= 23, selectors= 24, selector= 25, arguments= 26, 
-                   argument= 27, element= 28, class_id= 29, attribute= 30, @class= 31, 
-                   id= 32, tag= 33, select= 34, function= 35, function_name= 36, 
-                   entity= 37, accessor= 38, accessor_name= 39, accessor_key= 40, 
-                   cursors= 41, cursor= 42, fonts= 43, font= 44, literal= 45, dimension_list= 46, 
-                   keyword= 47, @string= 48, dimension= 49, number= 50, unit= 51, 
-                   color= 52, rgb= 53, rgb_node= 54, hex= 55, WS= 56, ws= 57, s= 58, 
-                   S= 59, ns= 60};
+                   mixin_ruleset= 23, mixin_descendant= 24, selectors= 25, selector= 26, 
+                   arguments= 27, argument= 28, element= 29, class_id= 30, attribute= 31, 
+                   @class= 32, id= 33, tag= 34, select= 35, function= 36, function_name= 37, 
+                   entity= 38, accessor= 39, accessor_name= 40, accessor_key= 41, 
+                   cursors= 42, cursor= 43, fonts= 44, font= 45, literal= 46, dimension_list= 47, 
+                   keyword= 48, @string= 49, dimension= 50, number= 51, unit= 52, 
+                   color= 53, rgb= 54, rgb_node= 55, hex= 56, WS= 57, ws= 58, s= 59, 
+                   S= 60, ns= 61, na= 62};
       class nLess : PegCharParser 
       {
         
@@ -201,14 +201,15 @@ namespace nLess
                   && Char(';')
                   && ws() );
 		}
-        public bool ident()    /*^^ident: '*'? '-'? [-_a-zA-Z0-9]+;*/
+        public bool ident()    /*^^ident: '*'? '-'? [-_a-zA-Z] [-_a-zA-Z0-9]*;*/
         {
 
            return TreeNT((int)EnLess.ident,()=>
                 And(()=>  
                      Option(()=> Char('*') )
                   && Option(()=> Char('-') )
-                  && PlusRepeat(()=>    
+                  && (In('a','z', 'A','Z')||OneOf("-_"))
+                  && OptRepeat(()=>    
                       (In('a','z', 'A','Z', '0','9')||OneOf("-_")) ) ) );
 		}
         public bool variable()    /*^^variable: '@' [-_a-zA-Z0-9]+;*/
@@ -293,11 +294,32 @@ namespace nLess
                   && OneOf("}")
                   && ws() ) );
 		}
-        public bool mixin_ruleset()    /*^^mixin_ruleset :  ws selectors ';' ws;*/
+        public bool mixin_ruleset()    /*^^mixin_ruleset :  ws mixin_descendant (s ',' ws mixin_descendant)* ws ';' ws;*/
         {
 
            return TreeNT((int)EnLess.mixin_ruleset,()=>
-                And(()=>    ws() && selectors() && Char(';') && ws() ) );
+                And(()=>  
+                     ws()
+                  && mixin_descendant()
+                  && OptRepeat(()=>    
+                      And(()=>      
+                               s()
+                            && Char(',')
+                            && ws()
+                            && mixin_descendant() ) )
+                  && ws()
+                  && Char(';')
+                  && ws() ) );
+		}
+        public bool mixin_descendant()    /*^^mixin_descendant: ws selector (WS selector)* ws ;*/
+        {
+
+           return TreeNT((int)EnLess.mixin_descendant,()=>
+                And(()=>  
+                     ws()
+                  && selector()
+                  && OptRepeat(()=> And(()=>    WS() && selector() ) )
+                  && ws() ) );
 		}
         public bool selectors()    /*^^selectors :  ws selector (s ',' ws selector)* ws ;*/
         {
@@ -310,46 +332,66 @@ namespace nLess
                       And(()=>    s() && Char(',') && ws() && selector() ) )
                   && ws() ) );
 		}
-        public bool selector()    /*^^selector : (s select element s)+ arguments? ;*/
+        public bool selector()    /*^^selector : (s select element s)+ ws arguments? ;*/
         {
 
            return TreeNT((int)EnLess.selector,()=>
                 And(()=>  
                      PlusRepeat(()=>    
                       And(()=>    s() && select() && element() && s() ) )
+                  && ws()
                   && Option(()=> arguments() ) ) );
 		}
-        public bool arguments()    /*arguments : '(' s argument s (',' s argument s)* ')';*/
+        public bool arguments()    /*^^arguments : '(' s (argument s (',' s argument s)*)? ')';*/
         {
 
-           return And(()=>  
+           return TreeNT((int)EnLess.arguments,()=>
+                And(()=>  
                      Char('(')
                   && s()
-                  && argument()
-                  && s()
-                  && OptRepeat(()=>    
-                      And(()=>    Char(',') && s() && argument() && s() ) )
-                  && Char(')') );
+                  && Option(()=>    
+                      And(()=>      
+                               argument()
+                            && s()
+                            && OptRepeat(()=>        
+                                    And(()=>          
+                                                 Char(',')
+                                              && s()
+                                              && argument()
+                                              && s() ) ) ) )
+                  && Char(')') ) );
 		}
-        public bool argument()    /*^^argument : color / number unit / string / [a-zA-Z]+ '=' dimension / [-a-zA-Z0-9_%$/.&=:;#+?]+ / function / keyword (S keyword)*;*/
+        public bool argument()    /*^^argument : color &na / number unit &na / string &na / [a-zA-Z]+ '=' dimension &na / function &na / expressions &na / keyword (S keyword)* &na / variable s ':' s expressions &na / [-a-zA-Z0-9_%$/.&=:;#+?]+ &na;*/
         {
 
            return TreeNT((int)EnLess.argument,()=>
                   
-                     color()
-                  || And(()=>    number() && unit() )
-                  || @string()
+                     And(()=>    color() && Peek(()=> na() ) )
+                  || And(()=>    number() && unit() && Peek(()=> na() ) )
+                  || And(()=>    @string() && Peek(()=> na() ) )
                   || And(()=>    
                          PlusRepeat(()=> In('a','z', 'A','Z') )
                       && Char('=')
-                      && dimension() )
-                  || PlusRepeat(()=> OneOf(optimizedCharset2) )
-                  || function()
+                      && dimension()
+                      && Peek(()=> na() ) )
+                  || And(()=>    function() && Peek(()=> na() ) )
+                  || And(()=>    expressions() && Peek(()=> na() ) )
                   || And(()=>    
                          keyword()
-                      && OptRepeat(()=> And(()=>    S() && keyword() ) ) ) );
+                      && OptRepeat(()=> And(()=>    S() && keyword() ) )
+                      && Peek(()=> na() ) )
+                  || And(()=>    
+                         variable()
+                      && s()
+                      && Char(':')
+                      && s()
+                      && expressions()
+                      && Peek(()=> na() ) )
+                  || And(()=>    
+                         PlusRepeat(()=> OneOf(optimizedCharset2) )
+                      && Peek(()=> na() ) ) );
 		}
-        public bool element()    /*^^element : (class_id / tag / ident) attribute* ('(' ident? attribute* ')')? / attribute+ / '@media' / '@font-face';*/
+        public bool element()    /*^^element : (class_id / tag / ident) attribute* ('(' (ident attribute* / attribute+) ')')? / attribute+ / '@media' / '@font-face';*/
         {
 
            return TreeNT((int)EnLess.element,()=>
@@ -360,8 +402,11 @@ namespace nLess
                       && Option(()=>      
                             And(()=>        
                                        Char('(')
-                                    && Option(()=> ident() )
-                                    && OptRepeat(()=> attribute() )
+                                    && (          
+                                                 And(()=>            
+                                                             ident()
+                                                          && OptRepeat(()=> attribute() ) )
+                                              || PlusRepeat(()=> attribute() ))
                                     && Char(')') ) ) )
                   || PlusRepeat(()=> attribute() )
                   || Char('@','m','e','d','i','a')
@@ -449,18 +494,18 @@ namespace nLess
            return TreeNT((int)EnLess.function_name,()=>
                 PlusRepeat(()=> (In('a','z', 'A','Z')||OneOf("-_")) ) );
 		}
-        public bool entity()    /*^^entity :  fonts / cursors /  function /  accessor / keyword  / variable / literal  ;*/
+        public bool entity()    /*^^entity :  fonts / function / accessor / keyword / variable / literal / cursors ;*/
         {
 
            return TreeNT((int)EnLess.entity,()=>
                   
                      fonts()
-                  || cursors()
                   || function()
                   || accessor()
                   || keyword()
                   || variable()
-                  || literal() );
+                  || literal()
+                  || cursors() );
 		}
         public bool accessor()    /*^^accessor: accessor_name '[' accessor_key ']';*/
         {
@@ -641,10 +686,15 @@ namespace nLess
 
            return PlusRepeat(()=> OneOf(" ") );
 		}
-        public bool ns()    /*ns: ![ ;\n] .;*/
+        public bool ns()    /*ns: ![ ;,)}\n] .;*/
         {
 
-           return And(()=>    Not(()=> OneOf(" ;\n") ) && Any() );
+           return And(()=>    Not(()=> OneOf(" ;,)}\n") ) && Any() );
+		}
+        public bool na()    /*na: s (',' / ')');*/
+        {
+
+           return And(()=>    s() && (    Char(',') || Char(')')) );
 		}
 		#endregion Grammar Rules
 

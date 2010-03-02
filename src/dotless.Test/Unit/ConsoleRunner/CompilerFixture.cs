@@ -17,6 +17,7 @@ namespace dotless.Test.Unit.ConsoleRunner
     using System.IO;
     using Compiler;
     using NUnit.Framework;
+    [TestFixture]
     public class CompilerFixture
     {
         [Test]
@@ -27,8 +28,17 @@ namespace dotless.Test.Unit.ConsoleRunner
             if (File.Exists(outputFile))
                 File.Delete(outputFile);
             string[] args = { inputFile };
+
+            var writer = new StringWriter();
+            System.Console.SetOut(writer);
+
             Program.Main(args);
+
             Assert.True(File.Exists(outputFile));
+
+            var consoleOutput = writer.ToString();
+
+            Assert.That(consoleOutput.Trim(), Is.StringEnding("[Done]"));
         }
     }
 }

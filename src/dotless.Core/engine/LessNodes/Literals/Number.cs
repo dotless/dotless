@@ -40,32 +40,16 @@ namespace dotless.Core.engine
             return string.Format("{0}{1}", Value, Unit);
         }
 
-        public override string ToCSharp()
-        {
-
-            return Value.ToString("N2", CultureInfo.InvariantCulture);
-        }
-
-
-        /// <summary>
-        /// Ugly hack to make spec pass.
-        /// </summary>
-        /// <returns></returns>
         private string FormatValue()
         {
+            if (Value == 0)
+                return "0";
 
-            string value = Decimal.Round((Decimal)Value, 2).ToString(NumberFormatInfo.InvariantInfo);
-            if (value.StartsWith("0."))
-                value = value.Remove(0, 1);
-            if (value.StartsWith("-0."))
-                value = value.Remove(1, 1);
-            if (value.Contains(".") && value.EndsWith("0"))
-                value = value.Substring(0, value.Length - 1);
-            return value;
+            return Value.ToString("#.##", NumberFormatInfo.InvariantInfo);
         }
         public override string ToCss()
         {
-            return string.Format("{0}{1}",FormatValue(), Unit ?? "");
+            return string.Format("{0}{1}", FormatValue(), Unit ?? "");
         }
 
 
@@ -114,8 +98,14 @@ namespace dotless.Core.engine
         }
         public static Number operator /(Number number1, Number number2)
         {
-            if (number1.Unit != number2.Unit && !string.IsNullOrEmpty(number1.Unit) && !string.IsNullOrEmpty(number2.Unit)) throw new MixedUnitsException();
-            var unit = number1.Unit != "" ? number1.Unit : number2.Unit;
+            string unit;
+            if (number1.Unit == number2.Unit)
+                unit = "";  // if the units are the same, devision creates unitless number
+            else if (string.IsNullOrEmpty(number1.Unit) || string.IsNullOrEmpty(number2.Unit))
+                unit = number1.Unit + number2.Unit;
+            else
+                throw new MixedUnitsException();
+
             return new Number(number1.Value / number2.Value) { Unit = unit };
         }
         public static Number operator /(Number number1, double number2)

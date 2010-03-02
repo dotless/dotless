@@ -42,15 +42,20 @@ namespace dotless.Core.engine
 
         public INode Evaluate()
         {
-            // RGB color hack
-
             Type functionType = Type.GetType("dotless.Core.engine.Functions." + Value + "Function", false, true);
             if(functionType == null)
             {
                 return new Literal(string.Format("{0}({1})", Value.ToUpper(), ArgsString));                
             }
             var function = (FunctionBase)Activator.CreateInstance(functionType);
-            function.SetArguments(Args.ToArray());
+
+            var args = Args
+              .Select(a => a is IEvaluatable ? (a as IEvaluatable).Evaluate() : a)
+              .ToArray();
+
+            function.SetArguments(args);
+            function.Name = Value.ToLowerInvariant();
+
             return function.Evaluate();
         }
 
@@ -58,12 +63,17 @@ namespace dotless.Core.engine
         {
             get
             {
-                var sb = new StringBuilder();
-                foreach (var arg in Args)
-                    sb.AppendFormat("{0},", arg.ToCss());
-                var args = sb.ToString();
-                return args.Substring(0, args.Length - 1);
+                return string.Join(", ", Args.Select(arg => arg.ToCss()).ToArray());
             }
+        }
+
+        public override INode AdoptClone(INode newParent)
+        {
+            var clone = (Function) base.AdoptClone(newParent);
+
+            clone.Args = Args.Select(a => a.AdoptClone(newParent)).ToList();
+
+            return clone;
         }
     }
 }

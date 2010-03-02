@@ -3,7 +3,7 @@ html { background: #1f9ec9; }
   color: #333333;
   min-width: 974px;
 }
-#bd, .csButton:hover, ul.blue-separator li.adHover:hover, #detailDeal .cs-deal, #nearbyUpcomingEvents, ul.blue-bg li:hover, ol.blue-bg li:hover { background: #ffffff; }
+#bd, .csButton:hover, ul.blue-separator li.adHover:hover, #detailDeal .cs-deal, #nearbyUpcomingEvents, ul.blue-bg li:hover, ol.blue-bg li:hover { background: white; }
 #yui-main { padding-top: .5em; }
 #cs-main { margin: 0 .5em; }
 .yui-t6 .yui-b { margin-right: .5em; }
@@ -16,7 +16,7 @@ html { background: #1f9ec9; }
 .js #location-navigation-form .form-submit, .js #business-listing-form .form-submit, .js #detailTabs ul, .js #detailsEnhanced #addTags, .js #locationSearchList, .js #moreHoods, .hide, .juliesTables br, .cs-block .fivestar-container .description, form #edit-cs-firstname, form #edit-cs-lastname, form #edit-cs-firstname.form-text, form #edit-cs-lastname.form-text, #userLogin .form-required, html.js fieldset.collapsed *, #blocks thead { display: none; }
 #navListLeft {
   display: none;
-  background: #ffffff;
+  background: white;
   border: 1px solid #d9eab0;
   position: relative;
 }
@@ -47,17 +47,17 @@ html { background: #1f9ec9; }
 .pad { padding-top: .75em; }
 .indent, #headerSearch .item .location, .box-bg { padding-left: .5em; }
 .bigText { font-size: 123%; }
-.warning { color: red; }
+.warning, a.remove_amenity:hover { color: red; }
 .separator {
   display: inline;
   overflow: hidden;
   width: 0;
   padding: 0;
   border-left: 1px solid #6acbe8;
-  border-right: 1px solid #ffffff;
+  border-right: 1px solid white;
 }
 .loading, #map { background: URL("http://static.csimg.com/img/loaders/cs-largeLoader.20081130.1.gif") no-repeat 50% 50%; }
-.formThrobbing { background: #ffffff URL("http://static.csimg.com/img/single/cs-smallBlueLoader.20081130.1.gif") no-repeat 99% 50%; }
+.formThrobbing { background: white URL("http://static.csimg.com/img/single/cs-smallBlueLoader.20081130.1.gif") no-repeat 99% 50%; }
 div.messages {
   margin: .5em;
   padding: .5em;
@@ -219,13 +219,13 @@ h6 {
   padding-bottom: .4em;
   padding-right: .4em;
   width: auto;
-  background-color: #ffffff;
+  background-color: white;
   border: 1px solid #69c8e7;
 }
 #headerSearch span.item { padding: .45em .5em 0 .5em; }
 #headerSearch .item .term { color: #156782; }
 #headerSearch .termBG {
-  background: #ffffff URL("http://static.csimg.com/img/cs-iconSprite.20090316.4.png") no-repeat -623px 2px;
+  background: white URL("http://static.csimg.com/img/cs-iconSprite.20090316.4.png") no-repeat -623px 2px;
   border: 1px solid #69c8e7;
   padding-left: 22px;
 }
@@ -238,7 +238,7 @@ h6 {
   border-left: 1px solid #ff9933;
   padding: .4em .5em .25em;
   margin: 0 0 0 .5em;
-  color: #ffffff;
+  color: white;
   background: #ff9933;
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
@@ -325,7 +325,7 @@ h6 {
 }
 #navBar ul li a:hover, #navBar ul li.current a, #navBar .navBackground {
   color: #666666;
-  background: #ffffff;
+  background: white;
 }
 .lavaLamp, .spyWrapper {
   position: relative;
@@ -344,7 +344,7 @@ h6 {
 }
 #navBar ul li.navSeparator {
   border-left: 1px solid #c1de74;
-  border-right: 1px solid #ffffff;
+  border-right: 1px solid white;
   margin: .8em .5em 0 .5em;
   display: inline;
   width: 0px;
@@ -392,7 +392,7 @@ h6 {
   border-bottom: 1px solid #608235;
   border-left: 1px solid #ff9933;
   padding: .4em .5em .4em;
-  color: #ffffff;
+  color: white;
   background: #ff9933;
 }
 .form-submit:hover, .pointer:hover, #showChart { cursor: pointer; }
@@ -423,7 +423,7 @@ a, .cs-block .hot-biz-name { color: #1f9ec9; }
 a:hover, .cleanLinks a, .cs-buttonset a, #detailsStandard ul#buttonList li a, .review .photo a, a.remove_amenity { text-decoration: none; }
 .cleanLinks a:hover, #detailPhotos a:hover { text-decoration: underline; }
 .greenLinks a, #hoodNavList a, #moreHoods a { color: #557d33; }
-.whiteLinks a { color: #ffffff; }
+.whiteLinks a { color: white; }
 .darkBlueLinks a { color: #166c89; }
 #findLogin a {
   float: right;
@@ -469,7 +469,7 @@ p.date {
   display: block;
 }
 p.date span.month {
-  color: #ffffff;
+  color: white;
   text-transform: uppercase;
   display: block;
   line-height: 18px;
@@ -501,20 +501,20 @@ hr.blue {
 hr.grey { background: #e1e1e1; }
 hr.fade {
   border-top: 1px solid #c0e9f5;
-  border-bottom: 1px solid #ffffff;
+  border-bottom: 1px solid white;
 }
 hr.darkFade {
   border-top: 1px solid #7edaf1;
-  border-bottom: 1px solid #ffffff;
+  border-bottom: 1px solid white;
 }
 hr.greyFade {
   border-top: 1px solid #d9d7d5;
-  border-bottom: 1px solid #ffffff;
+  border-bottom: 1px solid white;
 }
 .csButton {
   border: 1px solid;
-  border-left-color: #ffffff;
-  border-top-color: #ffffff;
+  border-left-color: white;
+  border-top-color: white;
   border-right-color: #61c6e7;
   border-bottom-color: #61c6e7;
   padding: .3em .5em;
@@ -640,7 +640,7 @@ button.cs-button, button.cs-button-small {
 }
 .ui-state-hover-grey, .ui-widget-content-grey .ui-state-hover-grey, .ui-state-focus-grey, .ui-widget-content-grey .ui-state-focus-grey, .ui-state-default-grey:hover {
   border: 1px solid #e3e1df;
-  background: #ffffff;
+  background: white;
   color: #666666;
   outline: none;
 }
@@ -651,7 +651,7 @@ button.cs-button, button.cs-button-small {
 }
 .ui-state-active-grey, .ui-widget-content-grey .ui-state-active-grey {
   border: 1px solid #e3e1df;
-  background: #ffffff;
+  background: white;
   font-weight: bold;
   color: #666666;
   outline: none;
@@ -706,13 +706,13 @@ button.cs-button, button.cs-button-small {
 }
 .ui-state-hover-green, .ui-widget-content-green .ui-state-hover-green, .ui-state-focus-green, .ui-widget-content-green .ui-state-focus-green, .ui-state-default-green:hover {
   border: 1px solid #d3e8a4;
-  background: #ffffff;
+  background: white;
   color: #666666;
   outline: none;
 }
 .ui-state-active-green, .ui-widget-content-green .ui-state-active-green {
   border: 1px solid #d3e8a4;
-  background: #ffffff;
+  background: white;
   font-weight: bold;
   color: #666666;
   outline: none;
@@ -785,7 +785,7 @@ a.add {
 }
 .icon-number {
   background-position: -550px 0;
-  color: #ffffff;
+  color: white;
   font-size: 11px;
   font-weight: bold;
   text-align: center;
@@ -1010,7 +1010,7 @@ a.green-close {
   right: .75em;
   display: block;
   padding: .5em .75em;
-  background: #ffffff;
+  background: white;
   -moz-border-radius-bottomleft: 3px;
   -moz-border-radius-bottomright: 3px;
   -webkit-border-bottom-left-radius: 3px;
@@ -1021,7 +1021,7 @@ a.green-close {
   padding: .75em;
   margin-top: .5em;
 }
-#detailsGeneral .yui-g, #detailsStandard #mainBizContent, span.pager-list a.active:hover { background-color: #ffffff; }
+#detailsGeneral .yui-g, #detailsStandard #mainBizContent, span.pager-list a.active:hover { background-color: white; }
 .detailsAmenities .title, #detailsHours .title { color: #a5a5a5; }
 #detailsHours .head {
   padding-bottom: .5em;
@@ -1112,7 +1112,7 @@ a.green-close {
 #addTags {
   padding: .5em .5em;
   margin-top: .5em;
-  background: #ffffff;
+  background: white;
   border: 1px solid #dddddd;
 }
 #tagCloudWrap, .pad-block { margin-top: .5em; }
@@ -1171,7 +1171,7 @@ a.green-close {
   height: 45px;
 }
 #overlayText {
-  color: #ffffff;
+  color: white;
   text-align: center;
   background: transparent;
   position: relative;
@@ -1258,7 +1258,7 @@ a.green-close {
   padding: .5em 1em;
 }
 #editBiz .title h4 {
-  color: #ffffff;
+  color: white;
   font-size: 123.1%;
 }
 #editBiz .content { padding: 1.5em 1em 1em 1em; }
@@ -1284,7 +1284,7 @@ a.green-close {
   color: #c0a316;
 }
 #ccNewsletter .content {
-  background: #ffffff;
+  background: white;
   color: #666666;
   padding: .5em;
 }
@@ -1306,7 +1306,7 @@ a.green-close {
 }
 #ftBottom {
   background: #5fc5e7;
-  color: #ffffff;
+  color: white;
 }
 #ftBottom span {
   font-weight: bold;
@@ -1324,7 +1324,7 @@ a.green-close {
 }
 #findLogin {
   padding: 1em .5em 1em;
-  background: #ffffff;
+  background: white;
   text-indent: -9999em;
   border-bottom: 1px solid #eeeeee;
   margin: 0 .5em;
@@ -1368,7 +1368,7 @@ a.green-close {
   border: 1px solid #707070;
   padding: 1em 1em .8em;
   margin: 0 0 0 .5em;
-  color: #000000;
+  color: black;
   background: #f0f0f0;
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
@@ -1383,7 +1383,7 @@ a.green-close {
 #homeMain #owner {
   height: 268px;
   width: 455px;
-  background: #ffffff URL("http://static.csimg.com/img/cs-homeOwner.20090403.1.png") no-repeat;
+  background: white URL("http://static.csimg.com/img/cs-homeOwner.20090403.1.png") no-repeat;
   margin: 0 auto;
   position: relative;
 }
@@ -1405,7 +1405,7 @@ a.green-close {
   position: absolute;
   top: 215px;
   left: 15px;
-  color: #ffffff;
+  color: white;
   font-weight: bold;
 }
 #homeMain #new {
@@ -1414,7 +1414,7 @@ a.green-close {
   margin-top: 18px;
 }
 #homeMain #new #list {
-  background: #ffffff;
+  background: white;
   padding: .5em;
 }
 #homeLocations { margin: 1.5em 0 1em .5em; }
@@ -1437,13 +1437,13 @@ a.green-close {
   margin-top: 225px;
   margin-left: auto;
   margin-right: auto;
-  color: #ffffff;
+  color: white;
   font-size: 182%;
   font-weight: bold;
   padding: 15px;
 }
 #cityOverlay a {
-  color: #ffffff;
+  color: white;
   text-decoration: none;
 }
 #picInfo {
@@ -1482,7 +1482,7 @@ a.green-close {
   padding: .5em;
 }
 #business-add-form fieldset fieldset, #eventful-add-event-form fieldset fielset {
-  background: #ffffff;
+  background: white;
   border: 3px double #c2e2ec;
   width: 95%;
 }
@@ -1658,7 +1658,7 @@ li.business .cs-blogo {
 li.business .cs-blogo img {
   border: 1px solid #dddddd;
   padding: 6px;
-  background: #ffffff;
+  background: white;
 }
 li.business .cs-sblogo {
   float: left;
@@ -1681,7 +1681,7 @@ li.business .cs-sblogo a {
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
   padding-top: 5px;
-  background: #ffffff;
+  background: white;
 }
 li.business a.name {
   font-size: 116%;
@@ -1851,7 +1851,7 @@ div.fivestar-container .hover { background-position: -575px -32px; }
 .review-header img {
   border: 1px solid #dddddd;
   padding: 2px;
-  background: #ffffff;
+  background: white;
   float: left;
   display: inline;
   margin: 0 .5em 0 0;
@@ -1953,7 +1953,7 @@ div.fivestar-container .hover { background-position: -575px -32px; }
 }
 #root-cta {
   font: bold 18px Arial, Helvetica, sans-serif;
-  color: #ffffff;
+  color: white;
   width: 926px;
   height: 128px;
   background: URL("http://static.csimg.com/v2/img/root-cta-background.png") no-repeat;
@@ -2035,7 +2035,7 @@ div.fivestar-container .hover { background-position: -575px -32px; }
 }
 #root-search #edit-search-term {
   border: 1px solid #cdcdcd;
-  background: #ffffff URL("http://static.csimg.com/v2/img/root-search-text-bar-bg.gif") repeat-x top left;
+  background: white URL("http://static.csimg.com/v2/img/root-search-text-bar-bg.gif") repeat-x top left;
   display: inline;
   height: 20px;
   padding-top: 5px;
@@ -2048,7 +2048,7 @@ div.fivestar-container .hover { background-position: -575px -32px; }
 .form-text .root-form-input { background: URL("http://static.csimg.com/v2/img/root-search-magicon.gif") no-repeat left; }
 .root-search-button {
   background: URL("http://static.csimg.com/v2/img/root-search-button.gif") repeat-x;
-  color: #ffffff;
+  color: white;
   font: bold 10px Tahoma;
   letter-spacing: -.01em;
   border: 2px solid #ff8c26;
@@ -2064,7 +2064,7 @@ div.fivestar-container .hover { background-position: -575px -32px; }
 }
 #root-search .form-text {
   border: 1px solid #cdcdcd;
-  background: #ffffff URL("http://static.csimg.com/v2/img/root-search-input-bg.png") repeat-x top left;
+  background: white URL("http://static.csimg.com/v2/img/root-search-input-bg.png") repeat-x top left;
   display: inline;
   height: 20px;
   padding-top: 5px;
@@ -2085,7 +2085,7 @@ div.fivestar-container .hover { background-position: -575px -32px; }
   position: absolute;
   top: 24;
   right: 0;
-  background: #ffffff;
+  background: white;
   width: 300px;
   z-index: 9999;
   border: 1px solid #cdcdcd;
@@ -2097,7 +2097,7 @@ div.fivestar-container .hover { background-position: -575px -32px; }
 #region-list h1 {
   height: 20px;
   width: 266px;
-  background: #ffffff URL("http://static.csimg.com/v2/img/root-region-bg.png") repeat-x bottom left;
+  background: white URL("http://static.csimg.com/v2/img/root-region-bg.png") repeat-x bottom left;
   font: bold 14px Arial, Helvetica, sans-serif;
   padding: 5px;
   border-bottom: 1px solid #c0e9f8;
@@ -2121,7 +2121,7 @@ div.fivestar-container .hover { background-position: -575px -32px; }
 }
 #region-list ul li {
   padding: 5px;
-  border: 1px solid #ffffff;
+  border: 1px solid white;
   margin-bottom: 2px;
 }
 #region-list ul li:hover, #region-list .city-highlight {
@@ -2158,7 +2158,7 @@ div.fivestar-container .hover { background-position: -575px -32px; }
 .sort-selected {
   text-decoration: none;
   background: #209fca;
-  color: #ffffff;
+  color: white;
 }
 #region-city-sort-options { margin: 5px 0 5px 0; }
 .root-add-image {
@@ -2189,17 +2189,17 @@ div.fivestar-container .hover { background-position: -575px -32px; }
   background: URL("http://static.csimg.com/v2/img/root-vote-now-sprite.gif") no-repeat top left;
   margin-top: 4px;
   width: 56px;
-  color: #ffffff;
+  color: white;
 }
 .root-add-image-link:hover, .root-vote-now-link:hover { background-position: 0 -17px; }
 .root-add-image-link a {
-  color: #ffffff;
+  color: white;
   display: block;
   height: 17px;
   width: 52px;
 }
 .root-vote-now-link a {
-  color: #ffffff;
+  color: white;
   display: block;
   height: 17px;
   width: 56px;
@@ -2226,7 +2226,7 @@ div.fivestar-container .hover { background-position: -575px -32px; }
 }
 #root-state-list a.selected {
   text-decoration: none;
-  color: #ffffff;
+  color: white;
   background: #6b9e41;
   font-weight: bold;
 }
@@ -2248,7 +2248,7 @@ div.fivestar-container .hover { background-position: -575px -32px; }
   list-style: none;
 }
 ul.region-list li {
-  background: #ffffff URL("http://static.csimg.com/v2/img/root-region-bg.png") repeat-x bottom left;
+  background: white URL("http://static.csimg.com/v2/img/root-region-bg.png") repeat-x bottom left;
   padding: 5px;
 }
 ul.region-list li h3 {
@@ -2369,7 +2369,7 @@ ul.city-list li {
 }
 #quick-look-navigation a.selected {
   text-decoration: none;
-  color: #ffffff;
+  color: white;
   background: #2685a4;
   font-weight: bold;
 }
@@ -2480,8 +2480,8 @@ ul.root-featured p.rate span.stars {
   border-top: 1px solid #c0e9f8;
 }
 #root-tabs .active a {
-  border-bottom: 1px solid #ffffff;
-  background: #ffffff;
+  border-bottom: 1px solid white;
+  background: white;
 }
 #root-tabs .navigate {
   font: 11px Arial, Helvetica, sans-serif;
@@ -2496,7 +2496,7 @@ ul.root-featured p.rate span.stars {
   margin-left: 10px;
 }
 #user-edit fieldset, #node-form fieldset {
-  background: #ffffff;
+  background: white;
   border: 3px double #c2e2ec;
 }
 .user-form-off {
@@ -2649,7 +2649,6 @@ ul.root-featured p.rate span.stars {
 }
 * html #details div.amenities dl dd, * + html #details div.amenities dl dd { float: none; }
 #details div.amenities span.yes, #details div.amenities span.no { margin-top: 3px; }
-a.remove_amenity:hover { color: #ff0000; }
 .amenity_content {
   margin: 10px;
   display: inline;
@@ -2825,7 +2824,7 @@ div.message-send textarea {
   padding: 0;
   color: #4d4d4d;
   display: block;
-  background-color: #ffffff;
+  background-color: white;
   height: 105px;
 }
 div.comments { background: none !important; }
@@ -2861,7 +2860,7 @@ ul.clist div.icon {
 ul.clist div.icon img {
   padding: 3px;
   border: 1px solid #b7d2df;
-  background-color: #ffffff;
+  background-color: white;
   margin-top: 3px;
 }
 ul.clist p.date {
@@ -2970,7 +2969,7 @@ ul.blue-bg, ol.blue-bg {
   border-top: 6px solid #1f9ec9;
 }
 ul.blue-bg li, ol.blue-bg li {
-  border-bottom: 1px solid #ffffff;
+  border-bottom: 1px solid white;
   background: #edf8fc;
   padding: .8em .5em;
   margin: 0;
@@ -2993,7 +2992,7 @@ ul.spacer li, ol.spacer li { padding: .2em 0; }
   padding: 4px 4px 0 4px;
   border: 2px solid #c0e9f5;
   margin: 3px 10px;
-  background: #ffffff;
+  background: white;
 }
 html.js fieldset.collapsed {
   border-bottom-width: 0;
@@ -3019,14 +3018,14 @@ html.js fieldset.collapsible .fieldset-wrapper { overflow: auto; }
   z-index: 100;
 }
 #autocomplete li {
-  background: #ffffff;
-  color: #000000;
+  background: white;
+  color: black;
   white-space: pre;
   cursor: default;
 }
 #autocomplete li.selected {
   background: #0072b9;
-  color: #ffffff;
+  color: white;
 }
 .resizable-textarea { width: 95%; }
 .resizable-textarea .grippie {

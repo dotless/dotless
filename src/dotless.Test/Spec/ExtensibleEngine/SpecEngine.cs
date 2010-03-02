@@ -12,13 +12,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
+using System.Globalization;
+using System.Threading;
 using NUnit.Framework;
 
 namespace dotless.Test.Spec.ExtensibleEngine
 {
     [TestFixture]
+    [TestFixture("en-GB")]
+    [TestFixture("de-DE")]
+    [TestFixture("fr-FR")]
     public class SpecEngine
     {
+        public string Locale { get; set; }
+
+        public SpecEngine(string locale)
+        {
+            // System.Console.WriteLine(locale);
+            Locale = locale;
+        }
+
+        public SpecEngine() { }
+
+        [SetUp]
+        public void Setup()
+        {
+            if(!string.IsNullOrEmpty(Locale))
+                Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(Locale);
+        }
+
         private const string Upcoming = "Upcoming functionality";
 
         [Test]
@@ -71,13 +93,12 @@ namespace dotless.Test.Spec.ExtensibleEngine
         {
             SpecHelper.ShouldEqual("lazy-eval"); 
         }
-        [Test, Ignore(Upcoming)]
+        [Test]
         public void ShouldParseMixins()
         {
-            //Comma seperated mixins not working
             SpecHelper.ShouldEqual("mixins"); 
         }
-        [Test, Ignore(Upcoming)]
+        [Test]
         public void ShouldParseMixinsWithArguments()
         {
             SpecHelper.ShouldEqual("mixins-args"); 

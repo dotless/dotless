@@ -12,10 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
+using System;
+
 namespace dotless.Test.Unit.engine.Literals
 {
     using Core.engine;
     using NUnit.Framework;
+    using System.Threading;
+    using System.Globalization;
 
     [TestFixture]
     public class NumberFixture
@@ -26,6 +30,18 @@ namespace dotless.Test.Unit.engine.Literals
             var number = new Number("%", 100);
             number += 100;
             Assert.AreEqual("200%", number.ToCss());
+        }
+
+        [TestCase("en-GB")]
+        [TestCase("de-DE")]
+        [TestCase("fr-FR")]
+        public void DoesNotBreakOnDifferentLocale(string locale)
+        {
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(locale);
+
+            var number = new Number(1234.5);
+            var css = number.ToCss();
+            Assert.AreEqual("1234.5", css);
         }
     }
 }

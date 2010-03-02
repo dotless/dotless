@@ -44,11 +44,6 @@ namespace dotless.Core.engine
             return Value;
         }
 
-        public virtual string ToCSharp()
-        {
-            return Value;
-        }
-
         /// <summary>
         /// Returns the path from any given node, to the root
         /// </summary>
@@ -66,9 +61,14 @@ namespace dotless.Core.engine
             return path;
         }
         public IList<INode> Path(){ return Path(this); }
-        public virtual string Inspect()
+        
+        public virtual INode AdoptClone(INode newParent)
         {
-            return Value;
+            var clone = (Entity) MemberwiseClone();
+
+            clone.Parent = newParent;
+
+            return clone;
         }
     }
 }

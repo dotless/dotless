@@ -12,6 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
+using System;
+
 namespace dotless.Core.engine
 {
     using System.Text;
@@ -21,17 +23,6 @@ namespace dotless.Core.engine
     {
         public Font(string value) : base(value)
         {
-        }
-    }
-
-    public class Keyword : Literal
-    {
-        public Keyword(string value) : base(value)
-        {
-        }
-        public override string Inspect()
-        {
-            return string.Format("#{0}", this);
         }
     }
 

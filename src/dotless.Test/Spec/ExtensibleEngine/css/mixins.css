@@ -1,0 +1,18 @@
+﻿.mixin { border: 1px solid black; }
+.mixout { border-color: orange; }
+.borders, #header #cookie { border-style: dashed; }
+#namespace .borders, #header #cookie .chips, .direct { border-style: dotted; }
+#namespace .biohazard { content: "death"; }
+#namespace .biohazard .man, .secure-zone { color: transparent; }
+#theme > .mixin { background-color: grey; }
+#container, #header #cookie .chips .calories {
+  color: black;
+  border: 1px solid black;
+  border-color: orange;
+  background-color: grey;
+}
+#header .milk {
+  color: white;
+  border: 1px solid black;
+  background-color: grey;
+}

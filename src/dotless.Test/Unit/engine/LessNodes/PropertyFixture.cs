@@ -15,7 +15,6 @@
 namespace dotless.Test.Unit.engine
 {
     using Core.engine;
-    using System;
     using NUnit.Framework;
 
     [TestFixture]
@@ -29,11 +28,15 @@ namespace dotless.Test.Unit.engine
             prop.Add(new Color(1, 1, 1));
             prop.Add(new Operator("*"));
             prop.Add(new Number(20));
+
+            Assert.That(prop.ToCss(), Is.EqualTo("background-color: #151515;"));
+
             var newColor = prop.Evaluate();
-            Console.WriteLine(newColor.ToString());
-            Assert.AreEqual(newColor.GetType(), typeof(Color));
-            Console.WriteLine(prop.ToCss());
+
+            Assert.That(newColor.ToString(), Is.EqualTo("#151515"));
+            Assert.That(newColor, Is.TypeOf<Color>());
         }
+
         [Test]
         public void CanEvaluateExpressionNumberProperties()
         {
@@ -42,10 +45,14 @@ namespace dotless.Test.Unit.engine
             prop.Add(new Number("px", 2));
             prop.Add(new Operator("*"));
             prop.Add(new Number(20));
+
+            Assert.That(prop.ToCss(), Is.EqualTo("height: 41px;"));
+
             var newNumber = prop.Evaluate();
-            Assert.AreEqual(newNumber.GetType(), typeof(Number));
-            Console.WriteLine(prop.ToCss());
+
+            Assert.That(newNumber, Is.TypeOf<Number>());
         }
+
         [Test]
         public void CanEvaluateSeveralPropertiesWithoutOperators()
         {
@@ -53,7 +60,8 @@ namespace dotless.Test.Unit.engine
             prop.Add(new Number("px", 2));
             prop.Add(new Number("px", 2));
             prop.Add(new Number("px", 2));
-            Console.WriteLine(prop.ToCss());
+
+            Assert.That(prop.ToCss(), Is.EqualTo("border: 1px 2px 2px 2px;"));
         }
     }
 }

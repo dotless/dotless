@@ -15,9 +15,7 @@
 namespace dotless.Test.Unit.engine
 {
     using Core.engine;
-    using System;
     using NUnit.Framework;
-    using System.Collections.Generic;
 
     [TestFixture]
     public class ElementFixture
@@ -25,17 +23,17 @@ namespace dotless.Test.Unit.engine
         [Test]
         public void CanInstansiateElement()
         {
-            var element = new Element("El");
+            var element = new ElementBlock("El");
             Assert.AreEqual(element.Name, "El");
-            element = new Element("El", ">");
+            element = new ElementBlock("El", ">");
             Assert.AreEqual(element.Name, "El");
             Assert.That(element.Selector is Child);
         }
         [Test]
         public void CanAddSubElements()
         {
-            var e2 = new Element("E2");
-            var element = new Element("El");
+            var e2 = new ElementBlock("E2");
+            var element = new ElementBlock("El");
             element.Add(e2);
             Assert.That(element.Elements.Contains(e2));
         }
@@ -43,9 +41,9 @@ namespace dotless.Test.Unit.engine
         [Test]
         public void CanRetrieveElementPath()
         {
-            var e2 = new Element("E2");
-            var e3 = new Element("E3");
-            var element = new Element("El");
+            var e2 = new ElementBlock("E2");
+            var e3 = new ElementBlock("E3");
+            var element = new ElementBlock("El");
             element.Add(e2);
             e2.Add(e3);
             Assert.That(e3.Path().Contains(element));

@@ -65,6 +65,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abstractions\CachedCssResponse.cs" />
     <Compile Include="Abstractions\ICache.cs" />
     <Compile Include="Abstractions\IRequest.cs" />
     <Compile Include="Abstractions\IResponse.cs" />
@@ -78,15 +79,28 @@
     <Compile Include="EngineFactory.cs" />
     <Compile Include="engine\ExtensibleEngineImpl.cs" />
     <Compile Include="engine\Functions\AddFunction.cs" />
-    <Compile Include="engine\Functions\ColorFunction.cs" />
+    <Compile Include="engine\Functions\ColorFunctions.cs" />
     <Compile Include="engine\Functions\FunctionBase.cs" />
-    <Compile Include="engine\Functions\IncrementFunction.cs" />
+    <Compile Include="engine\Functions\HslColorFunctions.cs" />
+    <Compile Include="engine\Functions\HslFunction.cs" />
+    <Compile Include="engine\Functions\MixFunction.cs" />
+    <Compile Include="engine\Functions\NumberFunctions.cs" />
     <Compile Include="engine\Functions\RgbFunction.cs" />
+    <Compile Include="engine\LessNodes\IfBlock.cs" />
+    <Compile Include="engine\LessNodes\IBlock.cs" />
+    <Compile Include="engine\LessNodes\Insert.cs" />
+    <Compile Include="engine\LessNodes\IReferenceableNode.cs" />
+    <Compile Include="engine\LessNodes\Literals\Bool.cs" />
+    <Compile Include="engine\LessNodes\Literals\HslColor.cs" />
+    <Compile Include="engine\LessNodes\Literals\Keyword.cs" />
+    <Compile Include="engine\LessNodes\NodeBlock.cs" />
+    <Compile Include="engine\LessNodes\MixinBlock.cs" />
     <Compile Include="engine\Pipeline\CssBuilder.cs" />
     <Compile Include="engine\CssNodes\CssDocument.cs" />
     <Compile Include="engine\CssNodes\CssElement.cs" />
     <Compile Include="engine\CssNodes\CssProperty.cs" />
     <Compile Include="engine\Pipeline\CssPropertyMerger.cs" />
+    <Compile Include="utils\CssPropertyComparer.cs" />
     <Compile Include="engine\Pipeline\ICssBuilder.cs" />
     <Compile Include="engine\Pipeline\ICssDomPreprocessor.cs" />
     <Compile Include="engine\Pipeline\ILessDomPreprocessor.cs" />
@@ -94,7 +108,7 @@
     <Compile Include="engine\Pipeline\LessToCssDomConverter.cs" />
     <Compile Include="engine\Pipeline\PipelineFactory.cs" />
     <Compile Include="engine\LessNodes\Anonymous.cs" />
-    <Compile Include="engine\LessNodes\Element.cs" />
+    <Compile Include="engine\LessNodes\ElementBlock.cs" />
     <Compile Include="engine\LessNodes\Entity.cs" />
     <Compile Include="engine\LessNodes\Expression.cs" />
     <Compile Include="engine\LessNodes\IEvaluatable.cs" />
@@ -129,9 +143,11 @@
     <Compile Include="exceptions\ParsingException.cs" />
     <Compile Include="parser\TreeBuilder.cs" />
     <Compile Include="parser\TreeBuilderExtensions.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringSource.cs" />
     <Compile Include="utils\CSEval.cs" />
+    <Compile Include="utils\Guard.cs" />
+    <Compile Include="utils\LinqHelpers.cs" />
+    <Compile Include="utils\NumberExtensions.cs" />
     <Compile Include="utils\RegexExtentions.cs" />
     <Compile Include="VirtualPathSource.cs" />
   </ItemGroup>
@@ -140,6 +156,9 @@
       <Link>dotless-open-source.snk</Link>
     </None>
     <None Include="parser\Less.gram" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

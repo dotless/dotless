@@ -20,11 +20,13 @@ namespace dotless.Compiler
     using System.Reflection;
     using Core;
     using Core.configuration;
+    using System.Linq;
 
     public class Program
     {
         public static void Main(string[] args)
         {
+            bool watch = false;
             var arguments = new List<string>();
             arguments.AddRange(args);
 
@@ -37,7 +39,8 @@ namespace dotless.Compiler
             DotlessConfiguration configuration;
             try
             {
-                configuration = GetConfigurationFromArguments(arguments);
+                watch = arguments.Any(p => p == "-w" || p == "--watch");
+                configuration = GetConfigurationFromArguments(arguments);                
             }
             catch (HelpRequestedException)
             {
@@ -56,12 +59,37 @@ namespace dotless.Compiler
             }
             if (File.Exists(inputFilePath))
             {
-                var factory = new EngineFactory();
-                ILessEngine engine = factory.GetEngine(configuration);
-                Console.Write("Compiling {0} -> {1} ", inputFilePath, outputFilePath);
-                string css = engine.TransformToCss(new FileSource().GetSource(inputFilePath));
-                File.WriteAllText(outputFilePath, css);
-                Console.WriteLine("[Done]");
+                Action compilationDelegate = () =>
+                                                 {
+                                                     var factory = new EngineFactory();
+                                                     ILessEngine engine = factory.GetEngine(configuration);
+                                                     Console.Write("Compiling {0} -> {1} ", inputFilePath, outputFilePath);
+                                                     try 
+                                                     {
+                                                         string css =
+                                                             engine.TransformToCss(new FileSource().GetSource(inputFilePath));
+                                                         File.WriteAllText(outputFilePath, css);
+                                                         Console.WriteLine("[Done]");
+                                                     } catch(Exception ex)
+                                                     {
+                                                         if (ex is IOException) throw; //Rethrow
+
+                                                         Console.WriteLine("[FAILED]");
+                                                         Console.WriteLine("Compilation failed: {0}", ex.Message);
+                                                         Console.WriteLine(ex.StackTrace);
+                                                     }
+                                                     
+                                                 };
+                compilationDelegate();
+                if (watch)
+                {
+                    var watcher = new Watcher(inputFilePath, compilationDelegate);
+                    while(Console.ReadLine() != "")
+                    {
+                        Console.WriteLine("Hit Enter to stop watching");
+                    }
+                    Console.WriteLine("Stopped watching file. Exiting");
+                }
             }
             else
             {
@@ -87,6 +115,7 @@ namespace dotless.Compiler
             Console.WriteLine("Usage: dotless.Compiler.exe [-switches] <inputfile> [outputfile]");
             Console.WriteLine("\tSwitches:");
             Console.WriteLine("\t\t-m --minify - Output CSS will be compressed");
+            Console.WriteLine("\t\t-w --watch - Watches .less file for changes");
             Console.WriteLine("\t\t-h --help - Displays this dialog");
             Console.WriteLine("\tinputfile: .less file dotless should compile to CSS");
             Console.WriteLine("\toutputfile: (optional) desired filename for .css output");

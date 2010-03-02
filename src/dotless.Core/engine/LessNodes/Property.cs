@@ -12,10 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
+using System;
+
 namespace dotless.Core.engine
 {
     using System.Collections.Generic;
-    public class Property : Entity, INearestResolver
+    public class Property : Entity, INearestResolver, IReferenceableNode
     {
         public INode _eval { get; set; }
 
@@ -29,7 +31,7 @@ namespace dotless.Core.engine
         {
         }
 
-        public Property(string key, INode value, Element parent)
+        public Property(string key, INode value, ElementBlock parent)
             : this(key, new List<INode> {value}, parent)
         {
         }
@@ -39,7 +41,7 @@ namespace dotless.Core.engine
         {
         }
 
-        public Property(string key, IEnumerable<INode> value, Element parent)
+        public Property(string key, IEnumerable<INode> value, ElementBlock parent)
         {
             Key = key;
             foreach (var node in value){
@@ -96,12 +98,17 @@ namespace dotless.Core.engine
 
         public override string ToString()
         {
-            return Key;
+            return string.Format("{0}: {1};", Key, Value);;
+        }
+
+        public string Name
+        {
+            get { return Key; }
         }
 
         public INode Nearest(string ident)
         {
-            return ParentAs<Element>().Nearest(ident);
+            return ParentAs<ElementBlock>().Nearest(ident);
         }
 
         public T NearestAs<T>(string ident)
@@ -119,6 +126,15 @@ namespace dotless.Core.engine
         public override int GetHashCode()
         {
             return (Key != null ? Key.GetHashCode() : 0);
+        }
+
+        public override INode AdoptClone(INode newParent)
+        {
+            var clone = (Property) base.AdoptClone(newParent);
+
+            clone.Value = (Expression) Value.AdoptClone(clone);
+
+            return clone;
         }
     }
 }

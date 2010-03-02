@@ -13,7 +13,7 @@
 ^^declaration:  standard_declaration / catchall_declaration ;
 standard_declaration: ws (ident / variable)  ws (comment)* ':' ws (comment)* expressions (comment)* ws (';'/ ws &'}') ws ;
 catchall_declaration:  ws ident s ':' s ';' ws ;
-^^ident: '*'? '-'? [-_a-zA-Z0-9]+; 
+^^ident: '*'? '-'? [-_a-zA-Z] [-_a-zA-Z0-9]*; 
 ^^variable: '@' [-_a-zA-Z0-9]+; 
 ^^expressions: operation_expressions / space_delimited_expressions / [-a-zA-Z0-9_%*/.&=:,#+? \[\]()]+ ;
 ^^operation_expressions:  expression (operator expression)+;
@@ -23,12 +23,13 @@ catchall_declaration:  ws ident s ':' s ';' ws ;
 ^^operator: S [-+*/] S / [-+*/] ;
 ruleset : standard_ruleset / mixin_ruleset;
 ^^standard_ruleset: ws selectors [{] ws primary ws [}] ws;
-^^mixin_ruleset :  ws selectors ';' ws; 
+^^mixin_ruleset :  ws mixin_descendant (s ',' ws mixin_descendant)* ws ';' ws;
+^^mixin_descendant: ws selector (WS selector)* ws ;
 ^^selectors :  ws selector (s ',' ws selector)* ws ;
-^^selector : (s select element s)+ arguments? ;
-arguments : '(' s argument s (',' s argument s)* ')';
-^^argument : color / number unit / string / [a-zA-Z]+ '=' dimension / [-a-zA-Z0-9_%$/.&=:;#+?]+ / function / keyword (S keyword)*;
-^^element : (class_id / tag / ident) attribute* ('(' ident? attribute* ')')? / attribute+ / '@media' / '@font-face';
+^^selector : (s select element s)+ ws arguments? ;
+^^arguments : '(' s (argument s (',' s argument s)*)? ')';
+^^argument : color &na / number unit &na / string &na / [a-zA-Z]+ '=' dimension &na / function &na / expressions &na / keyword (S keyword)* &na / variable s ':' s expressions &na / [-a-zA-Z0-9_%$/.&=:;#+?]+ &na;
+^^element : (class_id / tag / ident) attribute* ('(' (ident attribute* / attribute+) ')')? / attribute+ / '@media' / '@font-face';
 ^^class_id : tag? (class / id)+;
 ^^attribute :  '[' tag ([|~*$^]? '=') (tag / string) ']' / '[' (tag / string) ']';
 ^^class:  '.' [_a-zA-Z] [-a-zA-Z0-9_]*;
@@ -39,7 +40,7 @@ arguments : '(' s argument s (',' s argument s)* ')';
 ^^function_name: [-a-zA-Z_]+;
 
 //******************************************** Entity
-^^entity :  fonts / cursors /  function /  accessor / keyword  / variable / literal  ;
+^^entity :  fonts / function / accessor / keyword / variable / literal / cursors ;
 ^^accessor: accessor_name '[' accessor_key ']'; 
 ^^accessor_name: (class_id / tag) ; 
 ^^accessor_key: (string / variable) ; 
@@ -64,5 +65,6 @@ WS: [ \r\n\t]+;
 ws: [ \r\n\t]*;
 s:  [ ]*;
 S:  [ ]+;
-ns: ![ ;\n] .;
+ns: ![ ;,)}\n] .;
+na: s (',' / ')');
 <</Grammar>>

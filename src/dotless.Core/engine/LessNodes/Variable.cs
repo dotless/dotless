@@ -18,7 +18,7 @@ namespace dotless.Core.engine
     using System.Collections;
     using System.Collections.Generic;
 
-    public class Variable : Property, IEvaluatable
+    public class Variable : Property, IEvaluatable, IReferenceableNode
     {
         protected bool Declaration;
 
@@ -31,7 +31,7 @@ namespace dotless.Core.engine
             : this(key, value, null)
         {
         }
-        public Variable(string key, INode value, Element parent)
+        public Variable(string key, INode value, ElementBlock parent)
             :this(key, new List<INode>{value}, parent)
         {
         }
@@ -40,7 +40,7 @@ namespace dotless.Core.engine
         {
 
         }
-        public Variable(string key, IEnumerable<INode> value, Element parent)
+        public Variable(string key, IEnumerable<INode> value, ElementBlock parent)
             : base(key, value, parent)
         {
             Declaration = (value==null || ((IList)value).Count == 0)? false : true;
@@ -48,7 +48,15 @@ namespace dotless.Core.engine
         }
         public override string  ToString()
         {
-            return "@" + Key;
+            if (Declaration)
+                return string.Format("@{0}: {1}", Key, Value);
+
+            return Name;
+        }
+
+        public string Name
+        {
+            get { return "@" + Key; }
         }
 
         /// <summary>
@@ -62,18 +70,15 @@ namespace dotless.Core.engine
                 _eval = _eval ?? Value.Evaluate();
             else
                 _eval = _eval ?? (ParentAs<INearestResolver>()
-                                     .NearestAs<IEvaluatable>(ToString()))
+                                     .NearestAs<IEvaluatable>(Name))
                                      .Evaluate();
             return _eval;
         }
-        public override string  ToCSharp()
+        public override string ToCss()
         {
-            return Evaluate() == null ? "" : Evaluate().ToCSharp(); ;
+            var evaluated = Evaluate();
+            return evaluated == null ? "" : evaluated.ToCss();
         }
-        public override string  ToCss()
-        {
-            return Evaluate()==null ? "" : Evaluate().ToCss(); ;
-        } 
-         
+
     }
 }
