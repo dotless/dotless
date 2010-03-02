@@ -52,7 +52,7 @@ task Init -depends Clean {
 }
 
 task Build -depends Init {
-    msbuild $source_dir\dotless.Compiler\dotless.Compiler.csproj /p:OutDir=$build_dir /p:Configuration=$config
+    msbuild $source_dir\dotless.Compiler\dotless.Compiler.csproj /p:OutDir=$build_dir /p:Configuration=$config /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=../dotless-open-source.snk
     if ($lastExitCode -ne 0) {
         throw "Error: compile failed"
     }
@@ -91,6 +91,7 @@ task Merge -depends Build {
         Yahoo.Yui.Compressor.dll `
         /out:$filename `
         /internalize `
+        /keyfile:../src/dotless-open-source.snk `
         /t:exe
 	if ($lastExitCode -ne 0) {
         throw "Error: Failed to merge compiler assemblies"
@@ -108,6 +109,7 @@ task Merge -depends Build {
         Yahoo.Yui.Compressor.dll `
         /out:$filename `
         /internalize `
+        /keyfile:../src/dotless-open-source.snk `
         /t:library
     if ($lastExitCode -ne 0) {
         throw "Error: Failed to merge assemblies"
