@@ -35,9 +35,9 @@ namespace dotless.Compiler
             var fileInfo = new FileInfo(inputFilePath);
             if (fileInfo.Directory == null)
                 throw new IOException("File Path has no directory to watch");
-            
-            var fsWatcher = new FileSystemWatcher(fileInfo.Directory.FullName, inputFilePath)
-                                              {NotifyFilter = NotifyFilters.LastWrite};
+
+            string directoryFullName = fileInfo.Directory.FullName;
+            var fsWatcher = new FileSystemWatcher(directoryFullName, inputFilePath);
             fsWatcher.Changed += FsWatcherChanged;
             fsWatcher.EnableRaisingEvents = true;
         }
@@ -57,7 +57,7 @@ namespace dotless.Compiler
                 catch(IOException)
                 {
                     Thread.Sleep(100);
-                    Console.WriteLine("[Failed]");
+                    Console.WriteLine("[Waiting]");
                     Console.WriteLine("File still locked, waiting 100ms");
                 }
             }

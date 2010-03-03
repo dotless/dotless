@@ -83,10 +83,11 @@ namespace dotless.Compiler
                 compilationDelegate();
                 if (watch)
                 {
+                    WriteAbortInstructions();
                     var watcher = new Watcher(inputFilePath, compilationDelegate);
                     while(Console.ReadLine() != "")
                     {
-                        Console.WriteLine("Hit Enter to stop watching");
+                        WriteAbortInstructions();
                     }
                     Console.WriteLine("Stopped watching file. Exiting");
                 }
@@ -95,6 +96,11 @@ namespace dotless.Compiler
             {
                 Console.WriteLine("Input file {0} does not exist", inputFilePath);
             }
+        }
+
+        private static void WriteAbortInstructions()
+        {
+            Console.WriteLine("Hit Enter to stop watching");
         }
 
         private static string GetAssemblyVersion()
@@ -137,6 +143,11 @@ namespace dotless.Compiler
                     {
                         WriteHelp();
                         throw new HelpRequestedException();
+                    }
+                    else if (arg == "-w" || arg == "--watch")
+                    {
+                        //Ignore this since it already gets handled. 
+                        //TODO: Introduce a run-configuration class for Compiler only (sublcassing DotlessConfiguration?)
                     }
                     else
                     {
