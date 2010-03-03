@@ -53,6 +53,8 @@
       <msbuild project="${source_dir}\dotless.Compiler\dotless.Compiler.csproj">
         <arg value="/p:Configuration=${config}" />
         <arg value="/p:OutDir=${build_dir}\" />
+        <arg value="/p:SignAssembly=true" />
+        <arg value="/p:AssemblyOriginatorKeyFile=../dotless-open-source.snk" />
       </msbuild>
     </try>
     <catch>
@@ -94,10 +96,10 @@
 
 <target name="Merge" depends="Build" >
 
-	<property name="filename" value="dotless.Compiler.exe" />
+  <property name="filename" value="dotless.Compiler.exe" />
   
-	<delete file="${build_dir}\${filename}-partial.exe" failonerror="false" />
-	<move file="${build_dir}\${filename}" tofile="${build_dir}\${filename}-partial.exe" />
+  <delete file="${build_dir}\${filename}-partial.exe" failonerror="false" />
+  <move file="${build_dir}\${filename}" tofile="${build_dir}\${filename}-partial.exe" />
   <trycatch>
     <try>
       <exec program="ILMerge.exe" basedir="${lib_dir}\ilmerge" workingdir="${build_dir}">
@@ -109,6 +111,7 @@
         <arg file="${build_dir}\Yahoo.Yui.Compressor.dll" />
         <arg value="/out:${filename}" />
         <arg value="/internalize" />
+        <arg value="/keyfile:../src/dotless-open-source.snk" />
         <arg value="/t:exe" />
       </exec>
     </try>
@@ -117,13 +120,13 @@
     </catch> 
   </trycatch>
 
-	<delete file="${build_dir}\${filename}-partial.exe" failonerror="false" />
+  <delete file="${build_dir}\${filename}-partial.exe" failonerror="false" />
   
   
-	<property name="filename" value="dotless.Core.dll" />
+  <property name="filename" value="dotless.Core.dll" />
   
-	<delete file="${build_dir}\${filename}-partial.dll" failonerror="false" />
-	<move file="${build_dir}\${filename}" tofile="${build_dir}\${filename}-partial.dll" />
+  <delete file="${build_dir}\${filename}-partial.dll" failonerror="false" />
+  <move file="${build_dir}\${filename}" tofile="${build_dir}\${filename}-partial.dll" />
   <trycatch>
     <try>
       <exec program="ILMerge.exe" basedir="${lib_dir}\ilmerge" workingdir="${build_dir}">
@@ -134,6 +137,7 @@
         <arg file="${build_dir}\Yahoo.Yui.Compressor.dll" />
         <arg value="/out:${filename}" />
         <arg value="/internalize" />
+        <arg value="/keyfile:../src/dotless-open-source.snk" />
         <arg value="/t:library" />
       </exec>
     </try>
@@ -142,7 +146,7 @@
     </catch>
   </trycatch>
 
-	<delete file="${build_dir}\${filename}-partial.exe" failonerror="false" />
+  <delete file="${build_dir}\${filename}-partial.exe" failonerror="false" />
 	
 </target>
 
