@@ -37,7 +37,7 @@ namespace dotless.Compiler
                 throw new IOException("File Path has no directory to watch");
 
             string directoryFullName = fileInfo.Directory.FullName;
-            var fsWatcher = new FileSystemWatcher(directoryFullName, inputFilePath);
+            var fsWatcher = new FileSystemWatcher(directoryFullName, fileInfo.Name);
             fsWatcher.Changed += FsWatcherChanged;
             fsWatcher.EnableRaisingEvents = true;
         }
