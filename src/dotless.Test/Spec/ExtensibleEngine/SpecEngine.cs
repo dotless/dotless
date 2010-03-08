@@ -137,7 +137,7 @@ namespace dotless.Test.Spec.ExtensibleEngine
         }
 
         [Test]
-        public void ShouldMergeSameElement()
+        public void ShouldNotMergeSameElement()
         {
             SpecHelper.ShouldEqual("merge-same");
         }

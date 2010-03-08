@@ -19,7 +19,7 @@ namespace dotless.Core.engine.Pipeline
             return from e in elements
                    group e by e.Identifiers
                    into g
-                       let uniqueProperties = g.SelectMany(a => a.Properties).Reverse().Distinct(a => a.Key).Reverse()
+                       let uniqueProperties = g.SelectMany(a => a.Properties)
                        select
                        new CssElement
                            {

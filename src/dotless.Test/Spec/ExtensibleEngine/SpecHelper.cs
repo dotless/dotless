@@ -19,6 +19,8 @@ using NUnit.Framework;
 
 namespace dotless.Test.Spec.ExtensibleEngine
 {
+    using System;
+
     public class SpecHelper
     {
         public static string Lessify(string fileName)
@@ -44,7 +46,7 @@ namespace dotless.Test.Spec.ExtensibleEngine
             if (mismatch == null)
                 return;
 
-            Assert.That(mismatch.LessLine, Is.EqualTo(mismatch.CssLine), "First mismatch on line {0}", mismatch.LineNumber);
+            Assert.That(mismatch.LessLine, Is.EqualTo(mismatch.CssLine), "First mismatch on line {0}\n Output: \n{1}\n-----------------------------------------------\nExpected: \n{2}", mismatch.LineNumber, less, css);
         }
     }
 }

@@ -95,12 +95,13 @@ div.status li {
   line-height: 24px;
 }
 .cs-blue-fade {
-  font-size: 12px;
-  margin: .5em;
   border: 1px solid #b6e6f3;
-  background: #e6f7fb;
+  background: #e6f7fb URL("http://static.csimg.com/v2/img/cs-blueFadeUpBG.gif") repeat-x bottom left;
   padding: .5em;
   color: #1a85a8;
+  font-size: 12px;
+  margin: .5em;
+  background: #e6f7fb;
 }
 .cs-blue-fade p, #addPhotoContainer { padding: .5em 0; }
 .cs-blue-fade img {
@@ -109,12 +110,13 @@ div.status li {
   display: inline;
 }
 .cs-green-solid {
-  font-size: 12px;
-  margin: .5em;
   border: 4px solid #bdd685;
   background: #e2edc9;
-  padding: .5em;
+  padding: 1em;
   color: #647836;
+  font-size: 12px;
+  margin: .5em;
+  padding: .5em;
 }
 .cs-green-solid .pricing {
   font-size: 9px;
@@ -138,6 +140,7 @@ h1 {
   color: #166c89;
 }
 h2 {
+  font-size: 153.9%;
   font-weight: bold;
   color: #166c89;
   font-size: 123.1%;
@@ -145,16 +148,20 @@ h2 {
 h3 {
   font-size: 153.9%;
   font-weight: bold;
+  color: #166c89;
   color: #1f9ec9;
   margin: .5em 0;
 }
 h4 {
   font-size: 153.9%;
   font-weight: bold;
+  color: #166c89;
   color: #666666;
 }
 h5 {
+  font-size: 153.9%;
   font-weight: bold;
+  color: #166c89;
   text-transform: uppercase;
   font-size: 116%;
   color: #666666;
@@ -360,8 +367,11 @@ h6 {
 }
 #homeNavigation h1, #homeNavigation h2 {
   margin: 0;
+  padding: .65em 0 0 .5em;
   color: #608235;
+  font-size: 123.1%;
   float: left;
+  font-weight: bold;
   padding: .65em 0 .65em .5em;
   font-size: 100%;
   font-weight: normal;
@@ -845,6 +855,7 @@ a.green-close {
 .icon-dropdownUp {
   background-image: URL("http://static.csimg.com/img/cs-iconSprite.20090316.4.png");
   background-repeat: no-repeat;
+  background-position: -600px -25px;
   height: 15px;
   width: 15px;
   float: left;
@@ -1629,7 +1640,9 @@ span.pager-list a.active {
   background-color: #e9f8fc;
 }
 span.pager-list .pager-current {
+  padding: .4em .5em;
   text-decoration: none;
+  margin: 0 .25em;
   text-transform: uppercase;
   font-size: 153.9%;
   color: #333333;
@@ -1761,9 +1774,9 @@ div.fivestar-container .hover { background-position: -575px -32px; }
   float: left;
 }
 #location-status {
-  float: left;
   display: none;
   margin-left: .5em;
+  float: left;
   margin-top: .25em;
 }
 .hot-title {
@@ -1920,6 +1933,7 @@ div.fivestar-container .hover { background-position: -575px -32px; }
 .content-item {
   width: 100%;
   border: 1px #999999 solid;
+  margin: 1em 0 1em 0;
   padding: .5em;
   margin: .5em;
 }
@@ -1931,9 +1945,9 @@ div.fivestar-container .hover { background-position: -575px -32px; }
   text-transform: capitalize;
 }
 .content-item .phone {
+  color: #666666;
   padding: 0;
   margin: 0;
-  color: #666666;
 }
 .content-item .alt-phone {
   padding: 0;
@@ -2340,6 +2354,7 @@ ul.city-list li {
   padding-left: 8px;
   background: URL("http://static.csimg.com/v2/img/tiny-right-arrow.gif") no-repeat;
   background-position: 0% 50%;
+  font-size: 11px;
   font-size: 12px;
 }
 #quick-look .biz-count {
