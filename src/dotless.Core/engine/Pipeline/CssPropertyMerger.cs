@@ -19,12 +19,12 @@ namespace dotless.Core.engine.Pipeline
             return from e in elements
                    group e by e.Identifiers
                    into g
-                       let uniqueProperties = g.SelectMany(a => a.Properties)
+                       let properties = g.SelectMany(a => a.Properties)
                        select
                        new CssElement
                            {
                                Identifiers = g.Key,
-                               Properties = new HashSet<CssProperty>(uniqueProperties),
+                               Properties = new HashSet<CssProperty>(properties),
                                // Note: There is no test requiring the InsertContent to be set here. Please create a failing test and uncomment.
                                //       Also shouldn't we need to join all insert contents together? (assuming it's required at all)
                                // InsertContent = g.First().InsertContent
