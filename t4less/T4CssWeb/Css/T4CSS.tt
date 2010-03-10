@@ -42,6 +42,7 @@ var filespec = _useCssExtension ? "*.less.css" : "*.less";
 var cssFiles = Directory.GetFiles(currentDirectory, filespec);
 #>
 
+Converted at: <#= DateTime.Now.ToShortDateString() #> <#= DateTime.Now.ToShortTimeString() #>
 Template File: <#=Host.TemplateFile #>
 Template Directory: <#= currentDirectory #>
 .Less Files Found: <#= cssFiles.Length #>
