@@ -99,7 +99,7 @@
     <Compile Include="engine\CssNodes\CssDocument.cs" />
     <Compile Include="engine\CssNodes\CssElement.cs" />
     <Compile Include="engine\CssNodes\CssProperty.cs" />
-    <Compile Include="engine\Pipeline\CssPropertyMerger.cs" />
+    <Compile Include="engine\Pipeline\CssPropertyGrouper.cs" />
     <Compile Include="utils\CssPropertyComparer.cs" />
     <Compile Include="engine\Pipeline\ICssBuilder.cs" />
     <Compile Include="engine\Pipeline\ICssDomPreprocessor.cs" />
