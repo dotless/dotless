@@ -15,9 +15,14 @@
 namespace dotless.Core
 {
     using engine;
+    using engine.Pipeline;
 
     public class ExtensibleEngine : ILessEngine
     {
+        public ExtensibleEngine()
+        {
+        }
+
         public string TransformToCss(string filename)
         {
             var fileSource = new FileSource().GetSource(filename);

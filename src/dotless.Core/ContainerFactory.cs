@@ -16,6 +16,8 @@ namespace dotless.Core
 {
     using Abstractions;
     using configuration;
+    using engine;
+    using engine.Pipeline;
     using Microsoft.Practices.ServiceLocation;
     using Pandora;
 

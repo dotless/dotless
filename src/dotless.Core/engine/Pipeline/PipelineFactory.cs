@@ -20,10 +20,10 @@ namespace dotless.Core.engine.Pipeline
     /// <summary>
     /// Pipeline factory to grab the different parts of required engine process. 
     /// </summary>
-    public static class PipelineFactory
+    public class PipelineFactory
     {
-        private static ILessParser _lessParser = new LessParser();
-        public static ILessParser LessParser
+        private ILessParser _lessParser = new LessParser();
+        public ILessParser LessParser
         {
             get
             {
@@ -35,8 +35,8 @@ namespace dotless.Core.engine.Pipeline
             }
         }
 
-        private static ILessToCssDomConverter _lessToCssDomConverter = new LessToCssDomConverter();
-        public static ILessToCssDomConverter LessToCssDomConverter
+        private ILessToCssDomConverter _lessToCssDomConverter = new LessToCssDomConverter();
+        public ILessToCssDomConverter LessToCssDomConverter
         {
             get
             {
@@ -48,8 +48,8 @@ namespace dotless.Core.engine.Pipeline
             }
         }
 
-        private static List<ILessDomPreprocessor> _lessDomPreprocessors = new List<ILessDomPreprocessor>();
-        public static List<ILessDomPreprocessor> LessDomPreprocessors
+        private List<ILessDomPreprocessor> _lessDomPreprocessors = new List<ILessDomPreprocessor>();
+        public List<ILessDomPreprocessor> LessDomPreprocessors
         {
             get
             {
@@ -61,8 +61,8 @@ namespace dotless.Core.engine.Pipeline
             }
         }
 
-        private static List<ICssDomPreprocessor> _cssDomPreprocessors = new List<ICssDomPreprocessor>{ new CssPropertyMerger()};
-        public static List<ICssDomPreprocessor> CssDomPreprocessors
+        private List<ICssDomPreprocessor> _cssDomPreprocessors = new List<ICssDomPreprocessor>{ new CssPropertyMerger()};
+        public List<ICssDomPreprocessor> CssDomPreprocessors
         {
             get
             {
@@ -74,8 +74,8 @@ namespace dotless.Core.engine.Pipeline
             }
         }
 
-        private static ICssBuilder _cssBuilder = new CssBuilder();
-        public static ICssBuilder CssBuilder
+        private ICssBuilder _cssBuilder = new CssBuilder();
+        public ICssBuilder CssBuilder
         {
             get
             {

@@ -19,22 +19,24 @@ namespace dotless.Core.engine
 {
     public class ExtensibleEngineImpl
     {
+        private readonly PipelineFactory pipelineFactory;
         public ElementBlock LessDom { get; set; }
         public CssDocument CssDom { get; set; }
         public string Css { get; set; }
 
         public ExtensibleEngineImpl(string source, ElementBlock tail)
         {
+            pipelineFactory = new PipelineFactory();
             //Parse the source file and run any Less preprocessors set
-            LessDom = PipelineFactory.LessParser.Parse(source, tail);
+            LessDom = pipelineFactory.LessParser.Parse(source, tail);
             RunLessDomPreprocessors();
 
             //Convert the LessDom to the CssDom and run any CSS Dom preprocessors set
-            CssDom = PipelineFactory.LessToCssDomConverter.BuildCssDocument(LessDom);
+            CssDom = pipelineFactory.LessToCssDomConverter.BuildCssDocument(LessDom);
             RunCssDomPreprocessors();
 
             //Convert the CssDom to Css
-            Css = PipelineFactory.CssBuilder.ToCss(CssDom); 
+            Css = pipelineFactory.CssBuilder.ToCss(CssDom); 
         }
 
         /// <summary>
@@ -43,7 +45,6 @@ namespace dotless.Core.engine
         /// <param name="source"></param>
         public ExtensibleEngineImpl(string source) : this(source, null)
         {
-
         }
 
         /// <summary>
@@ -51,8 +52,8 @@ namespace dotless.Core.engine
         /// </summary>
         private void RunLessDomPreprocessors()
         {
-            if (PipelineFactory.LessDomPreprocessors != null)
-                foreach (var lessPreprocessor in PipelineFactory.LessDomPreprocessors)
+            if (pipelineFactory.LessDomPreprocessors != null)
+                foreach (var lessPreprocessor in pipelineFactory.LessDomPreprocessors)
                     LessDom = lessPreprocessor.Process(LessDom);
         }
 
@@ -61,8 +62,8 @@ namespace dotless.Core.engine
         /// </summary>
         private void RunCssDomPreprocessors()
         {
-            if (PipelineFactory.CssDomPreprocessors != null)
-                foreach (var cssPreprocessor in PipelineFactory.CssDomPreprocessors)
+            if (pipelineFactory.CssDomPreprocessors != null)
+                foreach (var cssPreprocessor in pipelineFactory.CssDomPreprocessors)
                     CssDom = cssPreprocessor.Process(CssDom);
         }
 
