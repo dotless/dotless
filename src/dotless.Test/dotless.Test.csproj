@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="PointInTime\PointInTimeFixture.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Spec\ExtensibleEngine\SpecEngine.cs" />
     <Compile Include="Spec\ExtensibleEngine\SpecHelper.cs" />
     <Compile Include="Spec\Mixin\MixinFixture.cs" />
@@ -272,7 +273,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Properties\" />
     <Folder Include="Unit\parser\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
