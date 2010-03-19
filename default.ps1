@@ -52,7 +52,7 @@ task Init -depends Clean {
 }
 
 task Build -depends Init {
-    msbuild $source_dir\dotless.Compiler\dotless.Compiler.csproj /p:OutDir=$build_dir /p:Configuration=$config /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=../dotless-open-source.snk
+    msbuild $source_dir\dotless.Compiler\dotless.Compiler.csproj /p:OutDir=$build_dir /p:Configuration=$config
     if ($lastExitCode -ne 0) {
         throw "Error: compile failed"
     }
