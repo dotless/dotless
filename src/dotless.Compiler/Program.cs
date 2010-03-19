@@ -30,12 +30,7 @@ namespace dotless.Compiler
             var arguments = new List<string>();
             arguments.AddRange(args);
 
-            if (arguments.Count == 0)
-            {
-                WriteHelp();
-                return;
-            }
-
+            
             DotlessConfiguration configuration;
             try
             {
@@ -46,6 +41,11 @@ namespace dotless.Compiler
             {
                 return;
             }
+
+			if (arguments.Count == 0) {
+				WriteHelp();
+				return;
+			}
 
             var inputFilePath = arguments[0];
             string outputFilePath;
