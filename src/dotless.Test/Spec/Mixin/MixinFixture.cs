@@ -14,12 +14,12 @@ namespace dotless.Test.Spec.Mixin
   height: @b - 1%;
 }
  
-.named-arg {
+.mixin-arg {
   .mixin(4px, 21%);
 }";
 
             var css =
-@".named-arg {
+@".mixin-arg {
   width: 20px;
   height: 20%;
 }";
@@ -46,6 +46,52 @@ namespace dotless.Test.Spec.Mixin
   color: blue;
   width: 5px;
   height: 99%;
+}";
+
+            AssertLess(css, less);
+        }
+
+        [Test]
+        public void CanPassVariablesAsPositionalArgs()
+        {
+            var less =
+@".mixin (@a: 1px, @b: 50%) {
+  width: @a * 5;
+  height: @b - 1%;
+}
+ 
+.class {
+  @var: 20px;
+  .mixin(@var);
+}";
+
+            var css =
+@".class {
+  width: 100px;
+  height: 49%;
+}";
+
+            AssertLess(css, less);
+        }
+
+        [Test]
+        public void CanPassVariablesAsNamedArgs()
+        {
+            var less =
+@".mixin (@a: 1px, @b: 50%) {
+  width: @a * 5;
+  height: @b - 1%;
+}
+ 
+.class {
+  @var: 20%;
+  .mixin(@b: @var);
+}";
+
+            var css =
+@".class {
+  width: 5px;
+  height: 19%;
 }";
 
             AssertLess(css, less);
