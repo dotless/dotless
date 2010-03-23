@@ -80,6 +80,7 @@
     <Compile Include="engine\ExtensibleEngineImpl.cs" />
     <Compile Include="engine\Functions\AddFunction.cs" />
     <Compile Include="engine\Functions\ColorFunctions.cs" />
+    <Compile Include="engine\Functions\FormatFunction.cs" />
     <Compile Include="engine\Functions\FunctionBase.cs" />
     <Compile Include="engine\Functions\HslColorFunctions.cs" />
     <Compile Include="engine\Functions\HslFunction.cs" />

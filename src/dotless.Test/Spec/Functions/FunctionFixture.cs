@@ -566,5 +566,24 @@ namespace dotless.Test.Spec.Functions
         {
             AssertErrorMessage("Expected color in function 'complement', found \"foo\"", "complement(\"foo\")");
         }
+
+        [Test]
+        public void TestFormat()
+        {
+            AssertExpression("abc", "format('abc')");
+            AssertExpression("abc", "format(\"abc\")");
+            AssertExpression("'abc'", @"format('\'abc\'')");
+            AssertExpression("\"abc\"", @"format('\""abc\""')");
+
+            AssertExpression("abc", "format('abc', 'd', 'e')");
+            AssertExpression("abc d", "format('abc {0}', 'd', 'e')");
+            AssertExpression("abc d e", "format('abc {0} {1}', 'd', 'e')");
+            AssertExpression("abc e d", "format('abc {1} {0}', 'd', 'e')");
+
+            var variables = new Dictionary<string, string> {{"x", "def"}, {"y", "ghi"}, {"z", "'jkl'"}};
+
+            AssertExpression("abc def ghi", "format('abc {0} {1}', @x, @y)", variables);
+            AssertExpression("abc def ghi 'jkl'", "format('abc {0} {1} {2}', @x, @y, @z)", variables);
+        }
     }
 }

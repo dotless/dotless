@@ -51,7 +51,7 @@ ruleset : standard_ruleset / mixin_ruleset;
 ^^literal: color / dimension_list / number unit / string ;
 ^^dimension_list:  (dimension / [-a-z]+) '/' dimension; 
 ^^keyword: [-a-zA-Z]+ !ns;
-^string: ['] (!['] . )* ['] / ["] (!["] . )* ["] ;
+^string: ['] ( [\\]['] / !['] . )* ['] / ["] ( [\\]["] / !["] . )* ["] ;
 ^^dimension: number unit;
 ^^number: '-'? [0-9]* '.' [0-9]+ / '-'? [0-9]+;
 ^^unit: ('px'/'em'/'pc'/'%'/'ex'/'s'/'pt'/'cm'/'mm')?;

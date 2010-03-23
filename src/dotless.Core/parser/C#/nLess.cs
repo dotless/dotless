@@ -1,4 +1,4 @@
-/* created on 22/02/2010 14:11:15 from peg generator V1.0 using '' as input*/
+/* created on 23/03/2010 21:57:06 from peg generator V1.0 using '' as input*/
 
 using Peg.Base;
 using System;
@@ -596,7 +596,7 @@ namespace nLess
                      PlusRepeat(()=> (In('a','z', 'A','Z')||OneOf("-")) )
                   && Not(()=> ns() ) ) );
 		}
-        public bool @string()    /*^string: ['] (!['] . )* ['] / ["] (!["] . )* ["] ;*/
+        public bool @string()    /*^string: ['] ( [\\]['] / !['] . )* ['] / ["] ( [\\]["] / !["] . )* ["] ;*/
         {
 
            return TreeAST((int)EnLess.@string,()=>
@@ -604,12 +604,16 @@ namespace nLess
                      And(()=>    
                          OneOf("'")
                       && OptRepeat(()=>      
-                            And(()=>    Not(()=> OneOf("'") ) && Any() ) )
+                                    
+                                       And(()=>    OneOf("\\") && OneOf("'") )
+                                    || And(()=>    Not(()=> OneOf("'") ) && Any() ) )
                       && OneOf("'") )
                   || And(()=>    
                          OneOf("\"")
                       && OptRepeat(()=>      
-                            And(()=>    Not(()=> OneOf("\"") ) && Any() ) )
+                                    
+                                       And(()=>    OneOf("\\") && OneOf("\"") )
+                                    || And(()=>    Not(()=> OneOf("\"") ) && Any() ) )
                       && OneOf("\"") ) );
 		}
         public bool dimension()    /*^^dimension: number unit;*/

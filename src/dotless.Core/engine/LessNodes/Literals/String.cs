@@ -12,47 +12,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
+using System.Text.RegularExpressions;
+
 namespace dotless.Core.engine
 {
     public class String : Literal
     {
         public string Content { get; set; }
         public string Quotes { get; set; }
-        
+
+        private readonly Regex pattern = new Regex(@"
+^
+(?<quotes> "" (?<double>) | ' (?<single>) | )
+(?<content>(?>
+    "" (?(double)(?!))    # allow double quotes if not inside double quotes
+  | 
+    ' (?(single)(?!))     # allow single quotes if not inside single quotes
+  |
+    [^\\]                 # anything but escape character
+  |
+    \\.                   # escape sequence
+)*)
+( "" (?(single)(?!)) | ' (?(double)(?!)) | (?(double)(?!)) (?(single)(?!)) )
+$", RegexOptions.IgnorePatternWhitespace);
+
+        private readonly Regex unescape = new Regex(@"(^|[^\\])\\(.)");
+
+
         public String(string str)
         {
-            
-            switch(str.Substring(0,1))
-            {
-                case "\"":
-                    Quotes = "\"";
-                    Content = str.Replace("\"", "");
-                    break;
-                case "'":
-                    Quotes = "'";
-                    Content = str.Replace("'", "");
-                    break;
-                default:
-                    Quotes = string.Empty;
-                    Content = string.Empty;
-                    break;
-            }
-            Value = Content;
-            //TODO: learn bloody RegEx
-            //var pattern = new Regex(@"('|"")(.*?)()");
-            //var match = pattern.Matches(str);
-            //if (match.Count <= 1) return;
-            //Quotes = match[0].Value;
-            //Content = match[1].Value;
+            var match = pattern.Match(str);
+
+            Quotes = match.Groups["quotes"].ToString();
+            Content = match.Groups["content"].ToString();
         }
 
         public override string ToString()
         {
-            return Content;
+            return unescape.Replace(Content, @"$1$2");
         }
         public override string ToCss()
         {
-            return string.Format("{0}{1}{0}", Quotes, Content);
+            return string.Format("{0}{1}{0}", Quotes, ToString());
         }
     }
 }
