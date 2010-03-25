@@ -28,9 +28,9 @@ namespace dotless.Compiler
         {
             bool watch = false;
             var arguments = new List<string>();
+
             arguments.AddRange(args);
 
-            
             DotlessConfiguration configuration;
             try
             {
@@ -61,6 +61,10 @@ namespace dotless.Compiler
             {
                 Action compilationDelegate = () =>
                                                  {
+                                                     var currentDir = Directory.GetCurrentDirectory();
+                                                     SetCurrentDirectory(inputFilePath);
+                                                     inputFilePath = GetFileName(inputFilePath);
+                                                     outputFilePath = GetFileName(outputFilePath);
                                                      var factory = new EngineFactory();
                                                      ILessEngine engine = factory.GetEngine(configuration);
                                                      Console.Write("Compiling {0} -> {1} ", inputFilePath, outputFilePath);
@@ -77,6 +81,10 @@ namespace dotless.Compiler
                                                          Console.WriteLine("[FAILED]");
                                                          Console.WriteLine("Compilation failed: {0}", ex.Message);
                                                          Console.WriteLine(ex.StackTrace);
+                                                     }
+                                                     finally
+                                                     {
+                                                         Directory.SetCurrentDirectory(currentDir);
                                                      }
                                                      
                                                  };
@@ -96,6 +104,19 @@ namespace dotless.Compiler
             {
                 Console.WriteLine("Input file {0} does not exist", inputFilePath);
             }
+        }
+
+        private static string GetFileName(string path)
+        {
+            var info = new FileInfo(path);
+            return info.Name;
+        }
+
+        private static void SetCurrentDirectory(string inputFilePath)
+        {
+            var info = new FileInfo(inputFilePath);
+            if (info.Directory != null)
+                Directory.SetCurrentDirectory(info.Directory.FullName);
         }
 
         private static void WriteAbortInstructions()

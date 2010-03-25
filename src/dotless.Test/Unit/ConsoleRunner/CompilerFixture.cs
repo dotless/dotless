@@ -23,10 +23,9 @@ namespace dotless.Test.Unit.ConsoleRunner
         [Test]
         public void TransformsFileCorrectly()
         {
-            string inputFile = @"Spec\ExtensibleEngine\less\variables.less";
+            string inputFile = @"Unit\ConsoleRunner\variables.less";
             string outputFile = inputFile + ".css";
-            if (File.Exists(outputFile))
-                File.Delete(outputFile);
+            RemoveIfFileExists(outputFile);
             string[] args = { inputFile };
 
             var writer = new StringWriter();
@@ -39,6 +38,25 @@ namespace dotless.Test.Unit.ConsoleRunner
             var consoleOutput = writer.ToString();
 
             Assert.That(consoleOutput.Trim(), Is.StringEnding("[Done]"));
+        }
+
+        private void RemoveIfFileExists(string outputFile)
+        {
+            if (File.Exists(outputFile))
+                File.Delete(outputFile);
+        }
+
+        [Test]
+        public void CorrectlyHandlesImportWorkingDirectories()
+        {
+            string inputFile = @"Unit\ConsoleRunner\import.less";
+            string outputFile = inputFile + ".css";
+            RemoveIfFileExists(outputFile);
+            string[] args = {inputFile};
+            var writer = new StringWriter();
+            System.Console.SetOut(writer);
+
+            Program.Main(args);
         }
     }
 }
