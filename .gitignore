@@ -5,12 +5,11 @@
 AssemblyInfo.cs
 *.suo
 Portal.4.1.resharper
-*.resharper.user
 _ReSharper.*
 App_Data/Tmp/Uploads/
 App_Data/Thumbnails
 Portal.Web/App_Data/Indexes/
 Log/
 Uploads/
-*.csproj.user
+*.user
 Thumbs.db
