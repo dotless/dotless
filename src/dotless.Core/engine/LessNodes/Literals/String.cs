@@ -53,7 +53,7 @@ $", RegexOptions.IgnorePatternWhitespace);
         }
         public override string ToCss()
         {
-            return string.Format("{0}{1}{0}", Quotes, ToString());
+            return string.Format("{0}{1}{0}", Quotes, Content);
         }
     }
 }

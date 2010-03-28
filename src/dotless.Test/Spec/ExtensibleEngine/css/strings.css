@@ -10,3 +10,8 @@
   content: '""#!&""';
   empty: '';
 }
+#escaping-quotes {
+  content: "\"";
+  content: '\'';
+  content: '\'\"';
+}

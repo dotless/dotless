@@ -303,6 +303,8 @@ namespace dotless.Core.parser
                     return Function(node, elementBlock);
                 case EnLess.cursors:
                     return Cursors(node);
+                case EnLess.@string:
+                    return new String(node.GetAsString(Src));
                 default:
                     return new Anonymous(node.GetAsString(Src));
             }
