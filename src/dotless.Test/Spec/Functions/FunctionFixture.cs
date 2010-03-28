@@ -580,7 +580,7 @@ namespace dotless.Test.Spec.Functions
             AssertExpression("abc d e", "format('abc {0} {1}', 'd', 'e')");
             AssertExpression("abc e d", "format('abc {1} {0}', 'd', 'e')");
 
-            var variables = new Dictionary<string, string> {{"x", "def"}, {"y", "ghi"}, {"z", "'jkl'"}};
+            var variables = new Dictionary<string, string> {{"x", "'def'"}, {"y", "'ghi'"}, {"z", @"'\'jkl\''"}};
 
             AssertExpression("abc def ghi", "format('abc {0} {1}', @x, @y)", variables);
             AssertExpression("abc def ghi 'jkl'", "format('abc {0} {1} {2}', @x, @y, @z)", variables);
