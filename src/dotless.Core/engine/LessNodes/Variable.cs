@@ -13,6 +13,8 @@
  * limitations under the License. */
 
 
+using System.Linq;
+
 namespace dotless.Core.engine
 {
     using System.Collections;
@@ -43,7 +45,7 @@ namespace dotless.Core.engine
         public Variable(string key, IEnumerable<INode> value, ElementBlock parent)
             : base(key, value, parent)
         {
-            Declaration = (value==null || ((IList)value).Count == 0)? false : true;
+            Declaration = (value==null || value.Count() == 0)? false : true;
             Key = key.Replace("@", "");
         }
         public override string  ToString()
@@ -54,7 +56,7 @@ namespace dotless.Core.engine
             return Name;
         }
 
-        public string Name
+        public new string Name
         {
             get { return "@" + Key; }
         }
