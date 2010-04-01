@@ -12,6 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
+using System;
+
 namespace dotless.Core.engine
 {
     using System.Collections.Generic;
@@ -67,6 +69,21 @@ namespace dotless.Core.engine
             var clone = (Entity) MemberwiseClone();
 
             clone.Parent = newParent;
+
+            return clone;
+        }
+
+        public virtual INode AdoptClone(INode newParent, INode oldParent)
+        {
+            var clone = (Entity) MemberwiseClone();
+
+            // HACK: This is a hack to prevent orphaning detached parents.
+            var node = (INode)clone;
+            while (node.Parent != null && oldParent != null && node.Parent != oldParent)
+                node = node.Parent;
+
+            if (node.Parent != null)
+                node.Parent = newParent;
 
             return clone;
         }

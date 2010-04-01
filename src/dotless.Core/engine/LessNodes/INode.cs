@@ -22,5 +22,6 @@ namespace dotless.Core.engine
         string ToCss();
         IList<INode> Path(INode node);
         INode AdoptClone(INode newParent);
+        INode AdoptClone(INode newParent, INode oldParent);
     }
 }

@@ -12,6 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
+using System;
+
 namespace dotless.Core.engine
 {
     using exceptions;
@@ -139,7 +141,12 @@ namespace dotless.Core.engine
 
         public virtual INode AdoptClone(INode newParent)
         {
-            return new Expression(this.Select(n => n.AdoptClone(newParent)), newParent);
+            return AdoptClone(newParent, null);
+        }
+
+        public INode AdoptClone(INode newParent, INode oldParent)
+        {
+            return new Expression(this.Select(n => n.AdoptClone(newParent, oldParent)), newParent);
         }
     }
 }

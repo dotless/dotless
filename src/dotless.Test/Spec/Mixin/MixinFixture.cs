@@ -307,5 +307,84 @@ namespace dotless.Test.Spec.Mixin
 
             AssertLess(css, less);
         }
+
+        [Test]
+        public void CanNestParameterizedMixins()
+        {
+            var less = @"
+.inner(@size: 12px) {
+  font-size: @size;
+}
+
+.outer(@width: 20px) {
+  width: @width;
+  .inner(10px);
+}
+
+.class {
+ .outer(12px);
+}";
+
+            var css = @"
+.class {
+  width: 12px;
+  font-size: 10px;
+}";
+        
+            AssertLess(css, less);
+        }
+
+        [Test]
+        public void CanNestParameterizedMixinsWithDefaults()
+        {
+            var less = @"
+.inner(@size: 12px) {
+  font-size: @size;
+}
+
+.outer(@width: 20px) {
+  width: @width;
+  .inner();
+}
+
+.class {
+ .outer();
+}";
+
+            var css = @"
+.class {
+  width: 20px;
+  font-size: 12px;
+}";
+
+            AssertLess(css, less);
+        }
+
+
+        [Test]
+        public void CanNestParameterizedMixinsWithSameParameterNames()
+        {
+            var less = @"
+.inner(@size: 12px) {
+  font-size: @size;
+}
+
+.outer(@size: 20px) {
+  width: @size;
+  .inner(14px);
+}
+
+.class {
+ .outer(16px);
+}";
+
+            var css = @"
+.class {
+  width: 16px;
+  font-size: 14px;
+}";
+
+            AssertLess(css, less);
+        }
     }
 }

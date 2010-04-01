@@ -20,7 +20,7 @@ namespace dotless.Core.engine
 
         public List<Variable> Arguments { get; set; }
 
-        public List<INode> GetClonedChildren(ElementBlock newParent, IEnumerable<Variable> arguments)
+        public IEnumerable<INode> GetClonedChildren(ElementBlock newParent, IEnumerable<Variable> arguments)
         {
             Guard.ExpectMaxArguments(Arguments.Count, arguments.Count(), GetMixinString(arguments));
 
@@ -29,7 +29,7 @@ namespace dotless.Core.engine
 
             var rules = new List<INode>();
 
-            var clonedChildren = Children.Select(n => n.AdoptClone(rulesBlock)).ToList();
+            var clonedChildren = Children.Select(n => n.AdoptClone(rulesBlock, this)).ToList();
             rules.AddRange(clonedChildren);
 
             var clonedArguments = Arguments.Select(n => n.AdoptClone(argumentBlock)).Cast<Variable>().ToList();

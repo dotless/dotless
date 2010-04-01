@@ -136,5 +136,14 @@ namespace dotless.Core.engine
 
             return clone;
         }
+
+        public override INode AdoptClone(INode newParent, INode oldParent)
+        {
+            var clone = (Property) base.AdoptClone(newParent, oldParent);
+
+            clone.Value = (Expression) Value.AdoptClone(clone);
+
+            return clone;
+        }
     }
 }
