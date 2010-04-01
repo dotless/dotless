@@ -36,7 +36,7 @@ namespace dotless.Core.engine
 
         public static Selector Get(string key)
         {
-            return Selectors[key].Invoke();
+            return Selectors[key]();
         }
     }
 
