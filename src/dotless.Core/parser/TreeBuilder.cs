@@ -27,11 +27,12 @@ namespace dotless.Core.parser
     using Peg.Base;
     using String=engine.String;
 
-    public class TreeBuilder
+    internal class TreeBuilder
     {
-        public PegNode Root { get; set; }
+        public LessPegRootNode Root { get; set; }
         public string Src { get; set; }
-        public TreeBuilder(PegNode root, string src)
+
+        public TreeBuilder(LessPegRootNode root, string src)
         {
             Root = root;
             Src = src;
@@ -43,7 +44,7 @@ namespace dotless.Core.parser
         /// <returns></returns>
         public ElementBlock Build()
         {
-            return Primary(Root.child_);
+            return Primary(Root.Child);
         }
 
         /// <summary>
@@ -52,10 +53,10 @@ namespace dotless.Core.parser
         /// <returns></returns>
         public ElementBlock Build(ElementBlock tail)
         {
-            return tail == null ? Build() : Primary(Root.child_, tail);
+            return tail == null ? Build() : Primary(Root.Child, tail);
         }
 
-        private ElementBlock Primary(PegNode node)
+        private ElementBlock Primary(LessPegNode node)
         {
             var element = new ElementBlock("");
             return Primary(node, element);
@@ -66,18 +67,18 @@ namespace dotless.Core.parser
         /// </summary>
         /// <param name="node"></param>
         /// <param name="elementBlock"></param>
-        private ElementBlock Primary(PegNode node, ElementBlock elementBlock)
+        private ElementBlock Primary(LessPegNode node, ElementBlock elementBlock)
         {
-            foreach (var nextPrimary in node.AsEnumerable())
+            foreach (var nextPrimary in node.Children())
             {
-                switch (nextPrimary.id_.ToEnLess())
+                switch (nextPrimary.Type())
                 {
                     case EnLess.import:
-                        Import(nextPrimary.child_, elementBlock);
+                        Import(nextPrimary.Child, elementBlock);
                         //element.Children.AddRange(import);
                         break;
                     case EnLess.insert:
-                        Insert(nextPrimary.child_, elementBlock);
+                        Insert(nextPrimary.Child, elementBlock);
                         //element.Children.AddRange(import);
                         break;
                     case EnLess.standard_ruleset:
@@ -87,7 +88,7 @@ namespace dotless.Core.parser
                         Mixin(nextPrimary,elementBlock);
                         break;
                     case EnLess.declaration:
-                        Declaration(nextPrimary.child_, elementBlock);
+                        Declaration(nextPrimary.Child, elementBlock);
                         break;
                 }
             }
@@ -98,9 +99,9 @@ namespace dotless.Core.parser
         /// import :  ws '@import'  S import_url medias? s ';' ;
         /// </summary>
         /// <param name="node"></param>
-        private IEnumerable<INode> Import(PegNode node, ElementBlock elementBlock)
+        private IEnumerable<INode> Import(LessPegNode node, ElementBlock elementBlock)
         {
-            node = (node.child_ ?? node);
+            node = (node.Child ?? node);
 //
 //            var path = "";
 //            if(node.ToEnLess()==EnLess.expressions)
@@ -132,9 +133,9 @@ namespace dotless.Core.parser
         }
 
 
-        private IEnumerable<INode> Insert(PegNode node, ElementBlock elementBlock)
+        private IEnumerable<INode> Insert(LessPegNode node, ElementBlock elementBlock)
         {
-            node = (node.child_ ?? node);
+            node = (node.Child ?? node);
             var path = (node).GetAsString(Src)
                 .Replace("\"", "").Replace("'", "");
 
@@ -155,17 +156,17 @@ namespace dotless.Core.parser
         /// </summary>
         /// <param name="node"></param>
         /// <param name="elementBlock"></param>
-        private void Declaration(PegNode node, ElementBlock elementBlock)
+        private void Declaration(LessPegNode node, ElementBlock elementBlock)
         {
             var name = node.GetAsString(Src).Replace(" ", "");
-            var nextNode = node.next_;
+            var nextNode = node.Next;
 
             if(nextNode == null){
                 // TODO: emit warning: empty declaration //
                 return;
             }
-            if (nextNode.ToEnLess() == EnLess.comment)
-                nextNode = nextNode.next_; 
+            if (nextNode.Type() == EnLess.comment)
+                nextNode = nextNode.Next; 
 
             var values = Expressions(nextNode, elementBlock);
             var property = name.StartsWith("@") ? new Variable(name, values) : new Property(name, values);
@@ -178,22 +179,22 @@ namespace dotless.Core.parser
         /// <param name="node"></param>
         /// <param name="elementBlock"></param>
         /// <returns></returns>
-        private IEnumerable<INode> Expressions(PegNode node, ElementBlock elementBlock)
+        private IEnumerable<INode> Expressions(LessPegNode node, ElementBlock elementBlock)
         {
             // Expression
-            switch (node.id_.ToEnLess())
+            switch (node.Type())
             {
                 case EnLess.operation_expressions:
-                    return OperationExpressions(node.child_, elementBlock).ToList();
+                    return OperationExpressions(node.Child, elementBlock).ToList();
                 case EnLess.space_delimited_expressions:
-                    return SpaceDelimitedExpressions(node.child_, elementBlock).ToList();
+                    return SpaceDelimitedExpressions(node.Child, elementBlock).ToList();
                 default:
-                    if (node.child_ == null) //CatchAll
+                    if (node.Child == null) //CatchAll
                         return new List<INode>
                                    {
                                        new Anonymous(node.GetAsString(Src))
                                    };
-                    return Expressions(node.child_, elementBlock);
+                    return Expressions(node.Child, elementBlock);
             }
         }
 
@@ -203,27 +204,27 @@ namespace dotless.Core.parser
         /// <param name="node"></param>
         /// <param name="elementBlock"></param>
         /// <returns></returns>
-        private IEnumerable<INode> OperationExpressions(PegNode node, ElementBlock elementBlock)
+        private IEnumerable<INode> OperationExpressions(LessPegNode node, ElementBlock elementBlock)
         {
-            yield return Expression(node.child_, elementBlock);
-            node = node.next_;            
+            yield return Expression(node.Child, elementBlock);
+            node = node.Next;            
             
             //Tail
             while (node != null)
             {
-                switch (node.id_.ToEnLess())
+                switch (node.Type())
                 {
                     case EnLess.@operator:
                         yield return new Operator(node.GetAsString(Src), elementBlock);
                         break;
                     case EnLess.expression:
-                        yield return Expression(node.child_, elementBlock);
+                        yield return Expression(node.Child, elementBlock);
                         break;
                     case EnLess.comment:
                         node.ToString();
                         break;
                 }
-                node = node.next_;
+                node = node.Next;
             }
         }
 
@@ -233,24 +234,24 @@ namespace dotless.Core.parser
         /// <param name="node"></param>
         /// <param name="elementBlock"></param>
         /// <returns></returns>
-        private IEnumerable<INode> SpaceDelimitedExpressions(PegNode node, ElementBlock elementBlock)
+        private IEnumerable<INode> SpaceDelimitedExpressions(LessPegNode node, ElementBlock elementBlock)
         {
-            yield return Expression(node.child_, elementBlock);
-            node = node.next_;
+            yield return Expression(node.Child, elementBlock);
+            node = node.Next;
 
             //Tail
             while (node != null)
             {
-                switch (node.id_.ToEnLess())
+                switch (node.Type())
                 {
                     case EnLess.expression:
-                        yield return Expression(node.child_, elementBlock);
+                        yield return Expression(node.Child, elementBlock);
                         break;
                     case EnLess.important:
                         yield return new Keyword("!important");
                         break;
                 }
-                node = node.next_;
+                node = node.Next;
             }
         }
 
@@ -260,14 +261,14 @@ namespace dotless.Core.parser
         /// <param name="node"></param>
         /// <param name="elementBlock"></param>
         /// <returns></returns>
-        private INode Expression(PegNode node, ElementBlock elementBlock)
+        private INode Expression(LessPegNode node, ElementBlock elementBlock)
         {
-            switch (node.id_.ToEnLess())
+            switch (node.Type())
             {
                 case EnLess.expressions:
                     return new Expression(Expressions(node, elementBlock), elementBlock);
                 case EnLess.entity:
-                    var entity  = Entity(node.child_, elementBlock);
+                    var entity  = Entity(node.Child, elementBlock);
                     entity.Parent = elementBlock;
                     return entity;
                 default:
@@ -281,12 +282,12 @@ namespace dotless.Core.parser
         /// <param name="node"></param>
         /// <param name="elementBlock"></param>
         /// <returns></returns>
-        private INode Entity(PegNode node, ElementBlock elementBlock)
+        private INode Entity(LessPegNode node, ElementBlock elementBlock)
         {
-            switch (node.id_.ToEnLess())
+            switch (node.Type())
             {
                 case EnLess.literal:
-                    return Entity(node.child_, elementBlock);
+                    return Entity(node.Child, elementBlock);
                 case EnLess.number:
                     return Number(node);
                 case EnLess.color:
@@ -294,7 +295,7 @@ namespace dotless.Core.parser
                 case EnLess.variable:
                     return Variable(node);
                 case EnLess.accessor:
-                    return Accessor(node.child_, elementBlock);
+                    return Accessor(node.Child, elementBlock);
                 case EnLess.fonts:
                     return Fonts(node);
                 case EnLess.keyword:
@@ -318,10 +319,10 @@ namespace dotless.Core.parser
         /// <param name="node"></param>
         /// <param name="elementBlock"></param>
         /// <returns></returns>
-        private INode Accessor(PegNode node, ElementBlock elementBlock)
+        private INode Accessor(LessPegNode node, ElementBlock elementBlock)
         {
             var ident = node.GetAsString(Src);
-            var key = node.next_.GetAsString(Src).Replace("'", "");
+            var key = node.Next.GetAsString(Src).Replace("'", "");
             var el = elementBlock.NearestAs<ElementBlock>(ident);
             if (el != null)
             {
@@ -337,10 +338,10 @@ namespace dotless.Core.parser
         /// <param name="node"></param>
         /// <param name="element"></param>
         /// <returns></returns>
-        private INode Function(PegNode node, ElementBlock element)
+        private INode Function(LessPegNode node, ElementBlock element)
         {
-            var funcName = node.child_.GetAsString(Src);
-            var arguments = Arguments(node.child_.next_, element);
+            var funcName = node.Child.GetAsString(Src);
+            var arguments = Arguments(node.Child.Next, element);
             return new Function(funcName, arguments.ToList());
         }
 
@@ -351,27 +352,27 @@ namespace dotless.Core.parser
         /// <param name="node"></param>
         /// <param name="element"></param>
         /// <returns></returns>
-        private IEnumerable<INode> Arguments(PegNode node, ElementBlock element)
+        private IEnumerable<INode> Arguments(LessPegNode node, ElementBlock element)
         {
-            foreach (var argument in node.AsEnumerable())
+            foreach (var argument in node.Children())
             {
-                if (argument.child_ == null)
+                if (argument.Child == null)
                     yield return new Anonymous(argument.GetAsString(Src));
                 else
                 {
-                    switch (argument.child_.id_.ToEnLess())
+                    switch (argument.Child.Type())
                     {
                         case EnLess.color:
-                            yield return Color(argument.child_);
+                            yield return Color(argument.Child);
                             break;
                         case EnLess.number:
-                            yield return Number(argument.child_);
+                            yield return Number(argument.Child);
                             break;
                         case EnLess.function:
-                            yield return Function(argument.child_, element);
+                            yield return Function(argument.Child, element);
                             break;
                         case EnLess.expressions:
-                            yield return Expression(argument.child_, element);
+                            yield return Expression(argument.Child, element);
                             break;
                         case EnLess.@string:
                             yield return new String(argument.GetAsString(Src));
@@ -392,7 +393,7 @@ namespace dotless.Core.parser
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
-        private INode Keyword(PegNode node)
+        private INode Keyword(LessPegNode node)
         {
             return new Keyword(node.GetAsString(Src));
         }
@@ -402,10 +403,10 @@ namespace dotless.Core.parser
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
-        private INode Fonts(PegNode node)
+        private INode Fonts(LessPegNode node)
         {
-            var fonts = from childNode in node.AsEnumerable()
-                        select (childNode.child_ ?? childNode).GetAsString(Src);
+            var fonts = from childNode in node.Children()
+                        select (childNode.Child ?? childNode).GetAsString(Src);
             return new FontFamily(fonts.ToArray());
         }
 
@@ -414,10 +415,10 @@ namespace dotless.Core.parser
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
-        private INode Cursors(PegNode node)
+        private INode Cursors(LessPegNode node)
         {
-            var set = from childNode in node.AsEnumerable()
-                        select (childNode.child_ ?? childNode).GetAsString(Src);
+            var set = from childNode in node.Children()
+                        select (childNode.Child ?? childNode).GetAsString(Src);
             return new CursorSet(set.ToArray());
         }
 
@@ -427,12 +428,12 @@ namespace dotless.Core.parser
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
-        private INode Number(PegNode node)
+        private INode Number(LessPegNode node)
         {
             var val = float.Parse(node.GetAsString(Src), NumberFormatInfo.InvariantInfo);
             var unit = "";
-            node = node.next_;
-            if (node != null && node.id_.ToEnLess() == EnLess.unit) unit = node.GetAsString(Src);
+            node = node.Next;
+            if (node != null && node.Type() == EnLess.unit) unit = node.GetAsString(Src);
             return new Number(unit, val);
         }
 
@@ -441,9 +442,9 @@ namespace dotless.Core.parser
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
-        private INode Color(PegNode node)
+        private INode Color(LessPegNode node)
         {
-            return RGB(node.child_);
+            return RGB(node.Child);
         }
 
         /// <summary>
@@ -451,22 +452,22 @@ namespace dotless.Core.parser
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
-        private INode RGB(PegNode node)
+        private INode RGB(LessPegNode node)
         {
             int r = 0, g = 0, b = 0;
             string tmp;
 
-            var rgbNode = node.child_; //Fisrt node;
+            var rgbNode = node.Child; //Fisrt node;
             if (rgbNode != null)
             {
                 tmp = rgbNode.GetAsString(Src);
                 r = int.Parse(tmp.Length==1 ? tmp+tmp : tmp, NumberStyles.HexNumber);
-                rgbNode = rgbNode.next_;
+                rgbNode = rgbNode.Next;
                 if (rgbNode != null)
                 {
                     tmp = rgbNode.GetAsString(Src);
                     g = int.Parse(tmp.Length == 1 ? tmp + tmp : tmp, NumberStyles.HexNumber);
-                    rgbNode = rgbNode.next_;
+                    rgbNode = rgbNode.Next;
                     if (rgbNode != null)
                     {
                         tmp = rgbNode.GetAsString(Src);
@@ -482,7 +483,7 @@ namespace dotless.Core.parser
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
-        private INode Variable(PegNode node)
+        private INode Variable(LessPegNode node)
         {
             return new Variable(node.GetAsString(Src));
         }
@@ -492,28 +493,28 @@ namespace dotless.Core.parser
         /// </summary>
         /// <param name="node"></param>
         /// <param name="elementBlock"></param>
-        private void RuleSet(PegNode node, ElementBlock elementBlock)
+        private void RuleSet(LessPegNode node, ElementBlock elementBlock)
         {
-            foreach (var el in Selectors(node.child_, els => StandardSelectors(elementBlock, els)))
-                Primary(node.child_.next_, el);
+            foreach (var el in Selectors(node.Child, els => StandardSelectors(elementBlock, els)))
+                Primary(node.Child.Next, el);
         }
         /// <summary>
         /// TODO: Added quick fix for multipule mixins, but need to add mixins with variables which will changes things a bit
         /// </summary>
         /// <param name="node"></param>
         /// <param name="elementBlock"></param>
-//        private void OldMixin(PegNode node, Element element)
+//        private void OldMixin(LessPegNode node, Element element)
 //        {
 //            var root = element.GetRoot();
-//            foreach (var el in Selectors(node.child_, els => els))
+//            foreach (var el in Selectors(node.Child, els => els))
 //                root = root.Descend(el.Selector, el);
 //            if (root.Children != null) element.Children.AddRange(root.Children);
 //        }
-        private void Mixin(PegNode node, ElementBlock elementBlock)
+        private void Mixin(LessPegNode node, ElementBlock elementBlock)
         {
             var root = elementBlock.GetRoot();
             var rules = new List<INode>();
-            foreach (var mixins in node.AsEnumerable())
+            foreach (var mixins in node.Children())
             {
                 var selectors = Selectors(mixins, els => els).ToList();
                 if (selectors.Count() > 1)
@@ -590,9 +591,9 @@ namespace dotless.Core.parser
         /// <param name="node"></param>
         /// <param name="action"></param>
         /// <returns></returns>
-        private IEnumerable<ElementBlock> Selectors(PegNode node, Func<IEnumerable<ElementBlock>, IEnumerable<ElementBlock>> action)
+        private IEnumerable<ElementBlock> Selectors(LessPegNode node, Func<IEnumerable<ElementBlock>, IEnumerable<ElementBlock>> action)
         {
-            foreach(var selector in node.AsEnumerable(x => x.id_.ToEnLess() == EnLess.selector))
+            foreach(var selector in node.Children(x => x.Type() == EnLess.selector))
             {
                 var selectors = Selector(selector);
                 foreach(var s in action(selectors)) yield return s;
@@ -604,9 +605,9 @@ namespace dotless.Core.parser
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
-        private IEnumerable<ElementBlock> Selector(PegNode node)
+        private IEnumerable<ElementBlock> Selector(LessPegNode node)
         {
-            var enumerator = node.AsEnumerable().GetEnumerator();
+            var enumerator = node.Children().GetEnumerator();
             while(enumerator.MoveNext())
             {
                 ElementBlock block;
@@ -615,8 +616,8 @@ namespace dotless.Core.parser
                 enumerator.MoveNext();
                 var name = enumerator.Current.GetAsString(Src);
 
-                var next = enumerator.Current.next_;
-                var isMixinWithArgs = next != null && next.ToEnLess() == EnLess.arguments;
+                var next = enumerator.Current.Next;
+                var isMixinWithArgs = next != null && next.Type() == EnLess.arguments;
 
                 if (isMixinWithArgs)
                 {
@@ -637,9 +638,9 @@ namespace dotless.Core.parser
         }
 
 
-        private IEnumerable<Variable> GetMixinArguments(PegNode arguments, ElementBlock block)
+        private IEnumerable<Variable> GetMixinArguments(LessPegNode arguments, ElementBlock block)
         {
-            var enumerator = arguments.AsEnumerable().GetEnumerator();
+            var enumerator = arguments.Children().GetEnumerator();
             var variables = new List<Variable>();
             var position = 0;
 
@@ -649,17 +650,17 @@ namespace dotless.Core.parser
 
                 string name;
                 IEnumerable<INode> value;
-                if (node.child_.ToEnLess() == EnLess.variable) // expect "@variable: expression"
+                if (node.Child.Type() == EnLess.variable) // expect "@variable: expression"
                 {
-                    name = node.child_.GetAsString(Src);
-                    value = Expressions(node.child_.next_, block);
+                    name = node.Child.GetAsString(Src);
+                    value = Expressions(node.Child.Next, block);
                 }
                 else  // expect "expresion"
                 {
                     // HACK: to make Arguments return as expected.
-                    var tmpNode = new PegNode(null, (int) EnLess.arguments);
-                    tmpNode.child_ = new PegNode(tmpNode, (int)EnLess.argument);
-                    tmpNode.child_.child_ = node.child_;
+                    var tmpNode = new LessPegNode(null, (int) EnLess.arguments, Root);
+                    tmpNode.Child = new LessPegNode(tmpNode, (int)EnLess.argument, Root);
+                    tmpNode.Child.Child = node.Child;
 
                     name = position.ToString();
                     value = Arguments(tmpNode, block).ToList();
@@ -667,7 +668,7 @@ namespace dotless.Core.parser
 
                 variables.Add(new Variable(name, value));
 
-                if(node.next_ == null || node.next_.ToEnLess() != EnLess.argument)
+                if(node.Next == null || node.Next.Type() != EnLess.argument)
                     break;
 
                 position++;

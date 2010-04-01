@@ -101,6 +101,9 @@
     <Compile Include="engine\CssNodes\CssElement.cs" />
     <Compile Include="engine\CssNodes\CssProperty.cs" />
     <Compile Include="engine\Pipeline\CssPropertyGrouper.cs" />
+    <Compile Include="parser\C#\LessImpl.cs" />
+    <Compile Include="parser\C#\LessPegNode.cs" />
+    <Compile Include="parser\C#\LessPegRootNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="utils\CssPropertyComparer.cs" />
     <Compile Include="engine\Pipeline\ICssBuilder.cs" />
@@ -144,7 +147,6 @@
     <Compile Include="parser\NodePrinter.cs" />
     <Compile Include="exceptions\ParsingException.cs" />
     <Compile Include="parser\TreeBuilder.cs" />
-    <Compile Include="parser\TreeBuilderExtensions.cs" />
     <Compile Include="StringSource.cs" />
     <Compile Include="utils\CSEval.cs" />
     <Compile Include="utils\Guard.cs" />

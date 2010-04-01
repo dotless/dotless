@@ -28,7 +28,7 @@ namespace dotless.Core.parser
 
         public ElementBlock Parse(string source, ElementBlock tail)
         {
-            var parser = new nLess.nLess(source, Console.Out);
+            var parser = new nLess.LessImpl(source, Console.Out);
             if (!parser.Parse()) throw new ParsingException("FAILURE: Parser did not match input file");
             return new TreeBuilder(parser.GetRoot(), source).Build(tail);
         }
@@ -44,7 +44,7 @@ namespace dotless.Core.parser
 
         public ElementBlock Parse(string source, ElementBlock tail)
         {
-            var parser = new nLess.nLess(source, Console.Out);
+            var parser = new nLess.LessImpl(source, Console.Out);
             if (!parser.Parse()) throw new ParsingException("FAILURE: Parser did not match input file");
             new TreePrint(Console.Out, source, 60, new NodePrinter(parser).GetNodeName, false)
                 .PrintTree(parser.GetRoot(), 0, 0);
