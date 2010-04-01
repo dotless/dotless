@@ -31,5 +31,10 @@ namespace dotless.Core.utils
                 return PropertySelector(obj).GetHashCode();
             }
         }
+
+        public static string JoinStrings(this IEnumerable<string> source, string separator)
+        {
+            return string.Join(separator, source.ToArray());
+        }
     }
 }

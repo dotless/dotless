@@ -60,7 +60,7 @@ namespace dotless.Core.engine
         {
             get
             {
-                return string.Join(", ", Args.Select(arg => arg.ToCss()).ToArray());
+                return Args.Select(arg => arg.ToCss()).JoinStrings(", ");
             }
         }
 

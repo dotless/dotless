@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using dotless.Core.engine.CssNodes;
 using dotless.Core.engine.LessNodes;
+using dotless.Core.utils;
 
 namespace dotless.Core.engine.Pipeline
 {
@@ -39,7 +40,7 @@ namespace dotless.Core.engine.Pipeline
                         cssProperties.Add(new CssProperty(property.Key, property.Evaluate().ToCss()));
 
                     //Get path content i.e. "p > a:Hover"
-                    var pathContent = string.Join(string.Empty, path.Where(p => !string.IsNullOrEmpty(p)).ToArray());
+                    var pathContent = path.Where(p => !string.IsNullOrEmpty(p)).JoinStrings(string.Empty);
                     pathContent = pathContent.StartsWith(" ") ? pathContent.Substring(1) : pathContent;
                     document.Elements.Add(new CssElement(pathContent, cssProperties));
                 }
@@ -98,7 +99,7 @@ namespace dotless.Core.engine.Pipeline
                         cssProperties.Add(new CssProperty(property.Key, property.Evaluate().ToCss()));
 
                     //Get path content i.e. "p > a:Hover"
-                    var pathContent = string.Join(string.Empty, path.Where(p => !string.IsNullOrEmpty(p)).ToArray());
+                    var pathContent = path.Where(p => !string.IsNullOrEmpty(p)).JoinStrings(string.Empty);
                     pathContent = pathContent.StartsWith(" ") ? pathContent.Substring(1) : pathContent;
                     _cssDocument.Elements.Add(new CssElement(pathContent, cssProperties));
                 }

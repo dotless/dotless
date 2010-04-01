@@ -18,6 +18,7 @@ namespace dotless.Core.engine
 {
     using System.Text;
     using System.Linq;
+    using dotless.Core.utils;
 
     public class Font : Literal
     {
@@ -42,10 +43,7 @@ namespace dotless.Core.engine
 
         public override string ToCss()
         {
-            var sb = new StringBuilder();
-            foreach (var family in Family)
-                sb.AppendFormat("{0}, ", family.ToCss());
-            return sb.ToString(0, sb.Length - 2);
+            return Family.Select(f => f.ToCss()).JoinStrings(", ");
         }
     }
 

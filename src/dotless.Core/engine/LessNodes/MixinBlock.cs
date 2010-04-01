@@ -82,7 +82,7 @@ namespace dotless.Core.engine
         {
             Func<Variable, string> argString = a => char.IsNumber(a.Key[0]) ? a.Value.ToString() : a.ToString();
 
-            return string.Join(", ", arguments.Select(argString).ToArray());
+            return arguments.Select(argString).JoinStrings(", ");
         }
     }
 }

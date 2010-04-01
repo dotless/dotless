@@ -26,12 +26,12 @@ namespace dotless.Core.engine
         public INode Parent { get; set; }
         public string ToCss()
         {
-            return string.Join(" ", this.Select(x => x.ToCss()).ToArray());
+            return this.Select(x => x.ToCss()).JoinStrings(" ");
         }
 
         public override string ToString()
         {
-            return string.Join(" ", this.Select(x => x.ToString()).ToArray());
+            return this.Select(x => x.ToString()).JoinStrings(" ");
         }
 
         public IList<INode> Path(INode node)

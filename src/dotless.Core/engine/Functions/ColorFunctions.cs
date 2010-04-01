@@ -14,6 +14,7 @@
 
 using System.Linq;
 using dotless.Core.exceptions;
+using dotless.Core.utils;
 
 namespace dotless.Core.engine.Functions
 {
@@ -107,7 +108,7 @@ namespace dotless.Core.engine.Functions
                 if(!Arguments[0].ToCss().ToLowerInvariant().Contains("opacity"))
                     throw;
 
-                var argumentString = string.Join(", ", Arguments.Select(x => x.ToCss()).ToArray());
+                var argumentString = Arguments.Select(x => x.ToCss()).JoinStrings(", ");
                 return new Literal(string.Format("ALPHA({0})", argumentString));
             }
         }

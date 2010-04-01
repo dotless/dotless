@@ -73,7 +73,7 @@ namespace dotless.Core.engine.Pipeline
             var grouped = elements.GroupBy(e => e.Properties, e => e.Identifiers, new CssPropertyComparer());
 
             var result = from g in grouped
-                         select new CssElement { Identifiers = string.Join(", ", g.ToArray()), Properties = g.Key };
+                         select new CssElement { Identifiers = g.JoinStrings(", "), Properties = g.Key };
 
             return result;
         }
