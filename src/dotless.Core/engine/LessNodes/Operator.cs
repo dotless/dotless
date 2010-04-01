@@ -27,5 +27,10 @@ namespace dotless.Core.engine
         public Operator(string value, INode parent) : base(value, parent)
         {
         }
+
+        public override string ToString()
+        {
+            return Value;
+        }
     }
 }
