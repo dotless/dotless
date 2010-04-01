@@ -23,5 +23,13 @@ namespace dotless.Core.exceptions
         {
             Ident = ident;
         }
+
+        public override string Message
+        {
+            get
+            {
+                return string.Format("Variable or Mixin '{0}' not found.", Ident);
+            }
+        }
     }
 }
