@@ -39,5 +39,6 @@ h2[title] { font-size: 100%; }
   width: .1em;
   background-color: #009998;
   color: red !important;
+  border: none !important;
   background-image: URL(images/image.jpg);
 }
