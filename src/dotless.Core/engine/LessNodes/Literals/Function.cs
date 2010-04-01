@@ -25,12 +25,9 @@ namespace dotless.Core.engine
 
     public class Function : Literal, IEvaluatable
     {
-        public IList<INode> Args
-        {
-            get; set;
-        }
+        public IEnumerable<INode> Args { get; set; }
 
-        public Function(string value, IList<INode> args)
+        public Function(string value, IEnumerable<INode> args)
             : base(value)
         {
             Args = args;
