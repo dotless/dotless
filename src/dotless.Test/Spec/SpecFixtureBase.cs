@@ -7,9 +7,14 @@ namespace dotless.Test.Spec
 {
     public class SpecFixtureBase
     {
-        protected static void AssertLess(string output, string less)
+        protected static void AssertLess(string css, string less)
         {
-            Assert.That(Evaluate(less).Trim(), Is.EqualTo(output.Trim()));
+            var output = Evaluate(less);
+
+            output = output.Replace("\r\n", "\n").Trim();
+            css = css.Replace("\r\n", "\n").Trim();
+
+            Assert.That(output, Is.EqualTo(css));
         }
 
         protected static void AssertExpression(string output, string expression)
