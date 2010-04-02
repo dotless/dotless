@@ -59,10 +59,11 @@ namespace dotless.Compiler
             }
             if (File.Exists(inputFilePath))
             {
+                var currentDir = Directory.GetCurrentDirectory();
+                SetCurrentDirectory(inputFilePath);
+                
                 Action compilationDelegate = () =>
                                                  {
-                                                     var currentDir = Directory.GetCurrentDirectory();
-                                                     SetCurrentDirectory(inputFilePath);
                                                      inputFilePath = GetFileName(inputFilePath);
                                                      outputFilePath = GetFileName(outputFilePath);
                                                      var factory = new EngineFactory();
@@ -82,10 +83,6 @@ namespace dotless.Compiler
                                                          Console.WriteLine("Compilation failed: {0}", ex.Message);
                                                          Console.WriteLine(ex.StackTrace);
                                                      }
-                                                     finally
-                                                     {
-                                                         Directory.SetCurrentDirectory(currentDir);
-                                                     }
                                                      
                                                  };
                 compilationDelegate();
@@ -99,6 +96,8 @@ namespace dotless.Compiler
                     }
                     Console.WriteLine("Stopped watching file. Exiting");
                 }
+
+                Directory.SetCurrentDirectory(currentDir);
             }
             else
             {
