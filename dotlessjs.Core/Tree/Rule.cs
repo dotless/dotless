@@ -1,0 +1,26 @@
+﻿using dotless.Infrastructure;
+
+namespace dotless.Tree
+{
+  public class Rule : Node
+  {
+    public string Name { get; set; }
+    public Node Value { get; set; }
+    public bool Variable { get; set; }
+
+    public Rule(string name, Node value)
+    {
+      Name = name;
+      Value = value;
+      Variable = name[0] == '@';
+    }
+
+    public override string ToCSS(Env env)
+    {
+      if (Variable)
+        return "";
+      
+      return Name + ": " + Value.ToCSS(env) + ";";
+    }
+  }
+}
