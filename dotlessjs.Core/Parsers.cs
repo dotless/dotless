@@ -18,8 +18,8 @@
 //
 //     Ruleset (Selector '.class', [
 //         Rule ("color",  Value ([Expression [Color #fff]]))
-//         Rule ("border", Value ([Expression [Dimension 1px][Keyword "solid"][Color #000]]))
-//         Rule ("width",  Value ([Expression [Operation "+" [Variable "@w"][Dimension 4px]]]))
+//         Rule ("border", Value ([Expression [Number 1px][Keyword "solid"][Color #000]]))
+//         Rule ("width",  Value ([Expression [Operation "+" [Variable "@w"][Number 4px]]]))
 //         Ruleset (Selector [Element '>', '.child'], [...])
 //     ])
 //
@@ -235,7 +235,7 @@ namespace dotless
 
         var value = parser.Match(@"(-?[0-9]*\.?[0-9]+)(px|%|em|pc|ex|in|deg|s|ms|pt|cm|mm)?");
         if (value)
-          return new Dimension(value[1], value[2]);
+          return new Number(value[1], value[2]);
 
         return null;
       }

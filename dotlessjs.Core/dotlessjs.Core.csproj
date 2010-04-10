@@ -69,7 +69,7 @@
     <Compile Include="Tree\Call.cs" />
     <Compile Include="Tree\Color.cs" />
     <Compile Include="Tree\Combinator.cs" />
-    <Compile Include="Tree\Dimension.cs" />
+    <Compile Include="Tree\Number.cs" />
     <Compile Include="Tree\Element.cs" />
     <Compile Include="Tree\Keyword.cs" />
     <Compile Include="Tree\Mixin.cs" />

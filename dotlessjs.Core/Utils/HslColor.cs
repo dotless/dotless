@@ -53,7 +53,7 @@ namespace dotless.Utils
       Alpha = alpha;
     }
 
-    public HslColor(Dimension hue, Dimension saturation, Dimension lightness, Dimension alpha)
+    public HslColor(Number hue, Number saturation, Number lightness, Number alpha)
     {
       Hue = (hue.ToNumber()/360d)%1d;
       Saturation = saturation.Normalize(100d)/100d;
@@ -139,17 +139,17 @@ namespace dotless.Utils
       return (v1);
     }
 
-    public Dimension GetHueInDegrees()
+    public Number GetHueInDegrees()
     {
-      return new Dimension(Hue * 360, "deg");
+      return new Number(Hue * 360, "deg");
     }
-    public Dimension GetSaturation()
+    public Number GetSaturation()
     {
-      return new Dimension(Saturation * 100, "%");
+      return new Number(Saturation * 100, "%");
     }
-    public Dimension GetLightness()
+    public Number GetLightness()
     {
-      return new Dimension(Lightness * 100, "%");
+      return new Number(Lightness * 100, "%");
     }
   }
 }

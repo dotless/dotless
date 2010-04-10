@@ -21,7 +21,7 @@ namespace dotless.Tree
       var a = First.Evaluate(env);
       var b = Second.Evaluate(env);
 
-      if (a is Dimension && b is Color) {
+      if (a is Number && b is Color) {
         if (Operator == "*" || Operator == "+")
         {
           var temp = b;

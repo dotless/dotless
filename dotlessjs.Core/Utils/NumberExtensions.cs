@@ -4,17 +4,17 @@ namespace dotless.Utils
 {
   public static class NumberExtensions
   {
-    public static double Normalize(this Dimension value)
+    public static double Normalize(this Number value)
     {
       return value.Normalize(1d);
     }
 
-    public static double Normalize(this Dimension value, double max)
+    public static double Normalize(this Number value, double max)
     {
       return value.Normalize(0d, max);
     }
 
-    public static double Normalize(this Dimension value, double min, double max)
+    public static double Normalize(this Number value, double min, double max)
     {
       var val = value.ToNumber(max);
       return Normalize(val, min, max);

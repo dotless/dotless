@@ -22,7 +22,7 @@ namespace dotless.Tree
       Alpha = alpha;
     }
 
-    public Color(IEnumerable<Dimension> rgb, Dimension alpha)
+    public Color(IEnumerable<Number> rgb, Number alpha)
     {
       RGB = rgb
         .Select(d => d.Normalize(255d))
