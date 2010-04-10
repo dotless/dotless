@@ -114,7 +114,7 @@ body {
 }
 body {
   padding: 30px;
-  color: #ff0000;
+  color: red;
 }
 .scope-mix {
   width: 8;

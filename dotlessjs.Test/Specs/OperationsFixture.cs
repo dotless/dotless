@@ -42,7 +42,7 @@ namespace dotless.Tests.Specs
 .colors {
   color: #123; // #112233
   border-color: #234 + #111111; // #334455
-  background-color: #222222 - #fff; // #000000
+  background-color: #222222 - #fff; // black
   .other {
     color: 2 * #111; // #222222
     border-color: #333333 / 3 + #111; // #222222
@@ -75,7 +75,7 @@ namespace dotless.Tests.Specs
 .colors {
   color: #123;
   border-color: #334455;
-  background-color: #000000;
+  background-color: black;
 }
 .colors .other {
   color: #222222;

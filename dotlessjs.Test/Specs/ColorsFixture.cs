@@ -33,9 +33,9 @@ namespace dotless.Tests.Specs
 }
 
 #overflow {
-  .a { color: #111111 - #444444; } // #000000
-  .b { color: #eee + #fff; }       // #ffffff
-  .c { color: #aaa * 3; }          // #ffffff
+  .a { color: #111111 - #444444; } // black
+  .b { color: #eee + #fff; }       // white
+  .c { color: #aaa * 3; }          // white
   .d { color: #00ee00 + #009900; } // #00ff00
 }
 
@@ -65,20 +65,20 @@ namespace dotless.Tests.Specs
   color: rgba(0, 0, 255, 0.1);
 }
 #overflow .a {
-  color: #000000;
+  color: black;
 }
 #overflow .b {
-  color: #ffffff;
+  color: white;
 }
 #overflow .c {
-  color: #ffffff;
+  color: white;
 }
 #overflow .d {
-  color: #00ff00;
+  color: lime;
 }
 #grey {
   color: #c8c8c8;
-  background-color: #808080;
+  background-color: gray;
 }
 ";
 
