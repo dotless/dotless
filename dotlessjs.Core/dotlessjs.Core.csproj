@@ -62,6 +62,8 @@
     <Compile Include="Tree\Expression.cs" />
     <Compile Include="Infrastructure\IEvaluatable.cs" />
     <Compile Include="Infrastructure\IOperable.cs" />
+    <Compile Include="Infrastructure\FileImporter.cs" />
+    <Compile Include="Infrastructure\Importer.cs" />
     <Compile Include="Tree\Operation.cs" />
     <Compile Include="Tree\Directive.cs" />
     <Compile Include="Tree\Import.cs" />

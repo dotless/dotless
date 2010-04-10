@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using dotless.Infrastructure;
@@ -57,26 +56,6 @@ namespace dotless.Tree
       Root.Rules = new NodeList(rules);
 
       return Root.Rules;
-    }
-  }
-
-  public abstract class Importer
-  {
-    public void Import(Import import)
-    {
-      var contents = GetImportContents(import.Path);
-
-      import.Root = new Parser {Importer = this}.Parse(contents);
-    }
-
-    protected abstract string GetImportContents(string path);
-  }
-
-  public class FileImporter : Importer
-  {
-    protected override string GetImportContents(string path)
-    {
-      return File.ReadAllText(path);
     }
   }
 }

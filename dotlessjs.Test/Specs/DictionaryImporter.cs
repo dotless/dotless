@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using dotless.Tree;
+using dotless.Infrastructure;
 
 namespace dotless.Tests.Specs
 {
