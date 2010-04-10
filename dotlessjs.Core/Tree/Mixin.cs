@@ -2,6 +2,7 @@
 using System.Linq;
 using dotless.Exceptions;
 using dotless.Infrastructure;
+using dotless.Utils;
 
 // ReSharper disable RedundantNameQualifier
 
@@ -24,6 +25,7 @@ namespace dotless.Tree
 
       public Ruleset Evaluate(NodeList<Expression> args, Env env)
       {
+        Guard.ExpectMaxArguments(Params.Count, args.Count, string.Format("'{0}'", Name));
         var frame = new Ruleset(null, new NodeList());
 
         for (var i = 0; i < Params.Count; i++)
@@ -43,23 +45,30 @@ namespace dotless.Tree
         var frames = new[] {this, frame}.Concat(env.Frames).Reverse();
         var context = new Env{ Frames = new Stack<Ruleset>(frames) };
 
-        var newRules = Rules.Select(rule =>
-                                      {
-                                        if (rule is Ruleset)
-                                        {
-                                          var ruleset = (rule as Ruleset);
-                                          var rules = ruleset.Rules
-                                            .Where(r => r is Rule)
-                                            .Cast<Rule>()
-                                            .Select(r => (Node) new Rule(r.Name, r.Value.Evaluate(context)));
+        var newRules = new NodeList();
 
-                                          return (Node) new Ruleset(ruleset.Selectors, new NodeList(rules));
-                                        }
-                                        var r2 = (Rule) rule;
-                                        return new Rule(r2.Name, r2.Value.Evaluate(context));
-                                      });
-             
-        return new Ruleset(null, new NodeList(newRules));
+        foreach (var rule in Rules)
+        {
+          if(rule is Mixin.Definition)
+            newRules.Add(rule);
+
+          else if (rule is Ruleset)
+          {
+            var ruleset = (rule as Ruleset);
+            var rules = ruleset.Rules
+              .Select(r => r.Evaluate(context));
+
+            newRules.Add(new Ruleset(ruleset.Selectors, new NodeList(rules)));
+          }
+
+          else if (rule is Mixin.Call)
+            newRules.AddRange((NodeList) rule.Evaluate(context));
+          
+          else
+            newRules.Add(rule.Evaluate(context));
+        }
+
+        return new Ruleset(null, newRules);
       }
 
       public override string ToCSS(List<IEnumerable<Selector>> list, Env env)

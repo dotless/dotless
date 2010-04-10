@@ -16,14 +16,16 @@ namespace dotless.Tree
     private List<Ruleset> _rulesets;
 
     public Ruleset(NodeList<Selector> selectors, NodeList rules)
+      : this()
     {
       Selectors = selectors;
       Rules = rules;
-      _lookups = new Dictionary<string, NodeList>();
     }
 
     protected Ruleset()
-    {}
+    {
+      _lookups = new Dictionary<string, NodeList>();
+    }
 
     public List<Rule> Variables()
     {

@@ -148,6 +148,37 @@ namespace dotless.Tests.Specs
     }
 
     [Test]
+    public void MixinNestedRules()
+    {
+      var input =
+        @"
+.bundle() {
+  p {
+    padding: 20px;
+    color: purple;
+    a { margin: 0; }
+  }
+}
+
+#header {
+  .bundle;
+}
+";
+
+      var expected = @"
+#header p {
+  padding: 20px;
+  color: purple;
+}
+#header p a {
+  margin: 0;
+}
+";
+
+      AssertLess(input, expected);
+    }
+
+    [Test]
     public void MultipleMixins()
     {
       var input = @"
@@ -397,9 +428,15 @@ namespace dotless.Tests.Specs
 }";
 
       var expected =
-@".class2 .class3 { width: 15; }
-.class4 { width: 3; }
-.class5 { width: 6; }";
+@".class2, .class3 {
+  width: 15;
+}
+.class4 {
+  width: 3;
+}
+.class5 {
+  width: 6;
+}";
 
       AssertLess(input, expected);
     }

@@ -15,6 +15,11 @@ namespace dotless.Tree
       Variable = name[0] == '@';
     }
 
+    public override Node Evaluate(Env env)
+    {
+      return new Rule(Name, Value.Evaluate(env));
+    }
+
     public override string ToCSS(Env env)
     {
       if (Variable)
