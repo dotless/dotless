@@ -143,17 +143,13 @@ namespace dotless
         }
         start++;
         
-        var regex = new Regex("/n", RegexOptions.Multiline);
+        var regex = new Regex(@"\n", RegexOptions.Multiline);
         var line = regex.Matches(input.Substring(0, i)).Count + 1;
 
         var end = input.Substring(i).IndexOf('\n');
         end = end == -1 ? input.Length - i - 1 : end + i;
 
-        var zone =
-          Stylizer.Stylize(input.Substring(start, i - 1), "green") +
-          Stylizer.Stylize(
-            Stylizer.Stylize(input[i].ToString(), "inverse") + input.Substring(i + 1, end), "yellow") +
-          Stylizer.Stylize("", "reset");
+        var zone = Stylizer.Stylize(input.Substring(start, end - start), i - start);
 
         var message = "Parse Error on line " + line + ":\n" + zone;
         throw new ParsingException(message);

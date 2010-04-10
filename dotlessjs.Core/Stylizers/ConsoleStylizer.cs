@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace dotless.Stylizers
 {
@@ -20,10 +21,18 @@ namespace dotless.Stylizers
                  };
     }
 
-    public string Stylize(string str, string style)
+    private string Stylize(string str, string style)
     {
-      return "\033[" + styles[style][0] + "m" + str +
-             "\033[" + styles[style][1] + "m";
+      return "\x1b[" + styles[style][0] + "m" + str +
+             "\x1b[" + styles[style][1] + "m";
+    }
+
+    public string Stylize(string str, int errorPosition)
+    {
+      return Stylize(str.Substring(0, errorPosition), "green") +
+             Stylize(
+               Stylize(str[errorPosition].ToString(), "inverse") + str.Substring(errorPosition + 1), "yellow") +
+             Stylize("", "reset");
     }
   }
 }
