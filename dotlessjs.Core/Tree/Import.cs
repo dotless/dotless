@@ -5,12 +5,12 @@ using dotless.Infrastructure;
 
 namespace dotless.Tree
 {
-  public class Import : Node, IEvaluatable
+  public class Import : Directive, IEvaluatable
   {
     public string Path { get; set; }
     protected Node OriginalPath { get; set; }
     protected bool Css { get; set; }
-    public Ruleset Root { get; set; }
+    public Ruleset InnerRoot { get; set; }
 
     public Import(Quoted path, Importer importer)
       : this(path.Contents, importer)
@@ -37,7 +37,7 @@ namespace dotless.Tree
         importer.Import(this);
     }
 
-    public override string  ToCSS(Env env)
+    public override string ToCSS(List<IEnumerable<Selector>> context, Env env)
     {
       if (Css)
         return "@import " + OriginalPath.ToCSS(env) + ";\n";
@@ -50,12 +50,12 @@ namespace dotless.Tree
       if (Css)
         return new NodeList(this);
 
-      var rules = Root.Rules
+      var rules = InnerRoot.Rules
         .SelectMany(r => r is Import ? r.Evaluate(env) as IEnumerable<Node> : new[] {r});
 
-      Root.Rules = new NodeList(rules);
+      InnerRoot.Rules = new NodeList(rules);
 
-      return Root.Rules;
+      return InnerRoot.Rules;
     }
   }
 }

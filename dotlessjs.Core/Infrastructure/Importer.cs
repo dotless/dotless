@@ -8,7 +8,7 @@ namespace dotless.Infrastructure
     {
       var contents = GetImportContents(import.Path);
 
-      import.Root = new Parser {Importer = this}.Parse(contents);
+      import.InnerRoot = new Parser {Importer = this}.Parse(contents);
     }
 
     protected abstract string GetImportContents(string path);

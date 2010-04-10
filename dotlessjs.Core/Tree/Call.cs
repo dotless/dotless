@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using dotless.Infrastructure;
 using dotless.Utils;
 
@@ -7,12 +8,16 @@ namespace dotless.Tree
   public class Call : Node, IEvaluatable
   {
     public string Name { get; set; }
-    public NodeList Arguments { get; set; }
+    public NodeList<Expression> Arguments { get; set; }
 
-    public Call(string name, NodeList arguments)
+    public Call(string name, NodeList<Expression> arguments)
     {
       Name = name;
       Arguments = arguments;
+    }
+
+    protected Call()
+    {
     }
 
     public override Node Evaluate(Env env)

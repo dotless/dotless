@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using dotless.Infrastructure;
 using dotless.Utils;
@@ -20,6 +21,10 @@ namespace dotless.Tree
     {
       Name = name;
       Value = value;
+    }
+
+    protected Directive()
+    {
     }
 
     public override string ToCSS(List<IEnumerable<Selector>> context, Env env)

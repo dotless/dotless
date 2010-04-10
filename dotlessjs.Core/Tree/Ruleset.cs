@@ -51,7 +51,7 @@ namespace dotless.Tree
 
       foreach (var rule in Rulesets().Where(rule => rule != self))
       {
-        if (rule.Selectors.Any(selector.Match))
+        if (rule.Selectors && rule.Selectors.Any(selector.Match))
         {
           if (selector.Elements.Count > 1)
           {

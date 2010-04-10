@@ -2,13 +2,18 @@
 
 namespace dotless.Tree
 {
-  public class Alpha : Node
+  public class Alpha : Call
   {
     public Node Value { get; set; }
 
     public Alpha(Node value)
     {
       Value = value;
+    }
+
+    public override Node Evaluate(Env env)
+    {
+      return this;
     }
 
     public override string ToCSS(Env env)

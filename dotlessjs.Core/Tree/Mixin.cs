@@ -22,7 +22,7 @@ namespace dotless.Tree
         Selectors = new NodeList<Selector> {new Selector(new NodeList<Element>(new Element(null, name)))};
       }
 
-      public Ruleset eval(NodeList args, Env env)
+      public Ruleset Evaluate(NodeList<Expression> args, Env env)
       {
         var frame = new Ruleset(null, new NodeList());
 
@@ -70,10 +70,10 @@ namespace dotless.Tree
 
     public class Call : Node, IEvaluatable
     {
-      public NodeList Arguments { get; set; }
+      public NodeList<Expression> Arguments { get; set; }
       protected Selector Selector { get; set; }
 
-      public Call(NodeList<Element> elements, NodeList arguments)
+      public Call(NodeList<Element> elements, NodeList<Expression> arguments)
       {
         Selector = new Selector(elements);
         Arguments = arguments;
@@ -93,12 +93,13 @@ namespace dotless.Tree
             if (node is Mixin.Definition)
             {
               var mixin = node as Mixin.Definition;
-              rules.AddRange(mixin.eval(Arguments, env).Rules);
+              rules.AddRange(mixin.Evaluate(Arguments, env).Rules);
             }
             else if (node is Ruleset)
             {
               var ruleset = node as Ruleset;
-              rules.AddRange(ruleset.Rules);
+              if (ruleset.Rules != null)
+                rules.AddRange(ruleset.Rules);
             }
             // todo fix for other Ruleset types?
           }
