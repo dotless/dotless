@@ -136,7 +136,11 @@ namespace dotless
           return null;
 
         if (name[1].ToLowerInvariant() == "alpha")
-          return Parsers.alpha(parser);
+        {
+          var alpha = Parsers.alpha(parser);
+          if (alpha != null)
+            return alpha;
+        }
 
         var args = Parsers.entities.arguments(parser);
 
