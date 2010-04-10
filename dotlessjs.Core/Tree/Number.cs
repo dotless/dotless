@@ -1,4 +1,5 @@
-﻿using dotless.Infrastructure;
+﻿using System.Globalization;
+using dotless.Infrastructure;
 
 namespace dotless.Tree
 {
@@ -19,10 +20,21 @@ namespace dotless.Tree
       Unit = unit;
     }
 
+    public Number(double value)
+      : this(value, "")
+    {
+    }
+
+    private string FormatValue()
+    {
+      if (Value == 0)
+        return "0";
+
+      return Value.ToString("0.##", CultureInfo.InvariantCulture);
+    }
     public override string ToCSS(Env env)
     {
-      var css = Value + Unit;
-      return css;
+      return FormatValue() + Unit;
     }
     
 
@@ -37,9 +49,15 @@ namespace dotless.Tree
       var dim = (Number) other;
 
       var unit = Unit;
-      if (string.IsNullOrEmpty(unit))
-        unit = dim.Unit;
-      else if(!string.IsNullOrEmpty(dim.Unit))
+      var otherUnit = dim.Unit;
+
+      if (unit == otherUnit && op == "/")
+        unit = "";
+
+      else if (string.IsNullOrEmpty(unit))
+        unit = otherUnit;
+      
+      else if(!string.IsNullOrEmpty(otherUnit))
       {
         // convert units
       }
