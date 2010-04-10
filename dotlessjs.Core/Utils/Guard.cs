@@ -1,40 +1,68 @@
 using System.Collections.Generic;
-using System.Linq;
 using dotless.Exceptions;
 using dotless.Infrastructure;
 
 namespace dotless.Utils
 {
-  public class Guard
+  public static class Guard
   {
-    public static void ExpectNode<TNode>(Node node)
+    public static void Expect(string expected, string actual, object @in)
     {
-      if (node is TNode)
+      if (actual == expected)
         return;
 
-      var message = string.Format("Expected '{0}', found '{1}'.", typeof(TNode).Name, node.GetType().Name);
+      var message = string.Format("Expected '{0}' in {1}, found '{2}'", expected, @in, actual);
+
+      throw new ParsingException(message);
+    }
+    
+    public static void ExpectNode<TExpected>(Node actual, object @in) where TExpected : Node
+    {
+      if (actual is TExpected)
+        return;
+
+      var expected = typeof(TExpected).Name.ToLowerInvariant();
+
+      var message = string.Format("Expected {0} in {1}, found {2}", expected, @in, actual.ToCSS(null));
 
       throw new ParsingException(message);
     }
 
-    public static void ExpectNodes<TNode>(IEnumerable<Node> nodes)
+    public static void ExpectAllNodes<TExpected>(IEnumerable<Node> actual, object @in) where TExpected : Node
     {
-      if (nodes.All(n => n is TNode))
+      foreach (var node in actual)
+      {
+        ExpectNode<TExpected>(node, @in);
+      }
+    }
+
+
+    public static void ExpectNumArguments(int expected, int actual, object @in)
+    {
+      if (actual == expected)
         return;
 
-      var node = nodes.First(n => !(n is TNode));
-
-      var message = string.Format("Expected '{0}', found '{1}'.", typeof(TNode).Name, node.GetType().Name);
+      var message = string.Format("Expected {0} arguments in {1}, found {2}", expected, @in, actual);
 
       throw new ParsingException(message);
     }
 
-    public static void ExpectNumArguments(IEnumerable<Node> arguments, int expected)
+    public static void ExpectMinArguments(int expected, int actual, object @in)
     {
-      if(arguments.Count() == expected)
+      if (actual >= expected)
         return;
 
-      var message = string.Format("Expected {0} arguments, found {1}.", expected, arguments.Count());
+      var message = string.Format("Expected at least {0} arguments in {1}, found {2}", expected, @in, actual);
+
+      throw new ParsingException(message);
+    }
+
+    public static void ExpectMaxArguments(int expected, int actual, object @in)
+    {
+      if (actual <= expected)
+        return;
+
+      var message = string.Format("Expected at most {0} arguments in {1}, found {2}", expected, @in, actual);
 
       throw new ParsingException(message);
     }

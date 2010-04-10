@@ -76,5 +76,28 @@ namespace dotless.Tests.Specs
 
       AssertLess(input, expected);
     }
+
+    [Test]
+    public void ImplicitPseudoClass()
+    {
+      var input = @"
+a {
+  color: black;
+  :hover {
+    text-decoration: underline;
+  }
+}
+";
+      var expected = @"
+a {
+  color: black;
+}
+a:hover {
+  text-decoration: underline;
+}
+";
+
+      AssertLess(input, expected);
+    }
   }
 }

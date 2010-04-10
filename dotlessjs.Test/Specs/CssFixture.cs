@@ -308,5 +308,80 @@ p + h1 {
       AssertLess(input, expected);
     }
 
+    [Test]
+    public void AttributeEquals()
+    {
+      var input = @"
+input[type=""text""] {
+  font-weight: normal;
+}
+";
+
+      var expected = @"
+input[type=""text""] {
+  font-weight: normal;
+}
+";
+
+      AssertLess(input, expected);
+    }
+
+    [Test]
+    public void AttributeExists()
+    {
+      var input = @"
+h2[title] {
+  font-size: 100%;
+}
+
+[disabled] {
+  color: transparent;
+}
+";
+
+      var expected = @"
+h2[title] {
+  font-size: 100%;
+}
+[disabled] {
+  color: transparent;
+}
+";
+
+      AssertLess(input, expected);
+    }
+
+    [Test]
+    public void CssAttributes()
+    {
+      var input = @"
+input[type=""text""] {
+  font-weight: normal;
+}
+
+h2[title] {
+  font-size: 100%;
+}
+
+[disabled] {
+  color: transparent;
+}
+";
+
+      var expected = @"
+input[type=""text""] {
+  font-weight: normal;
+}
+h2[title] {
+  font-size: 100%;
+}
+[disabled] {
+  color: transparent;
+}
+";
+
+      AssertLess(input, expected);
+    }
+
   }
 }

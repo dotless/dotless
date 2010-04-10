@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace dotless.Infrastructure
@@ -17,5 +16,10 @@ namespace dotless.Infrastructure
     }
 
     protected abstract Node Evaluate();
+
+    public override string ToString()
+    {
+      return string.Format("function '{0}'", Name.ToLowerInvariant());
+    }
   }
 }

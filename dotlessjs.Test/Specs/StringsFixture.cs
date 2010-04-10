@@ -73,5 +73,48 @@ namespace dotless.Tests.Specs
       AssertLess(input, expected);
     }
 
+    [Test]
+    public void EscapingQuotes()
+    {
+      var input =
+        @"
+#escaping-quotes {
+  content: ""\"""";
+  content: '\'';
+  content: '\'\""';
+}
+";
+
+      var expected =
+        @"
+#escaping-quotes {
+  content: ""\"""";
+  content: '\'';
+  content: '\'\""';
+}";
+
+      AssertLess(input, expected);
+    }
+
+
+    [Test]
+    public void BracesInQuotes()
+    {
+      var input =
+        @"
+#single-quote {
+  quotes: ""{"" ""}"";
+}
+";
+
+      var expected =
+        @"
+#single-quote {
+  quotes: ""{"" ""}"";
+}
+";
+
+      AssertLess(input, expected);
+    }
   }
 }

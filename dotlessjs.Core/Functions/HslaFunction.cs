@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using dotless.Infrastructure;
 using dotless.Tree;
 using dotless.Utils;
@@ -10,8 +9,8 @@ namespace dotless.Functions
   {
     protected override Node Evaluate()
     {
-      Guard.ExpectNumArguments(Arguments, 4);
-      Guard.ExpectNodes<Number>(Arguments);
+      Guard.ExpectNumArguments(4, Arguments.Count, this);
+      Guard.ExpectAllNodes<Number>(Arguments, this);
 
       var args = Arguments.Cast<Number>().ToArray();
 

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using dotless.Infrastructure;
 using dotless.Tree;
@@ -10,9 +9,17 @@ namespace dotless.Functions
   {
     protected override Node Evaluate()
     {
-      Guard.ExpectNumArguments(Arguments, 4);
-      Guard.ExpectNodes<Number>(Arguments);
+      if (Arguments.Count == 2)
+      {
+        Guard.ExpectNode<Color>(Arguments[0], this);
+        Guard.ExpectNode<Number>(Arguments[1], this);
 
+        return new Color(((Color) Arguments[0]).RGB, ((Number) Arguments[1]).Value);
+      }
+
+      Guard.ExpectNumArguments(4, Arguments.Count, this);
+      Guard.ExpectAllNodes<Number>(Arguments, this);
+      
       var args = Arguments.Cast<Number>();
 
       var rgb = args.Take(3);

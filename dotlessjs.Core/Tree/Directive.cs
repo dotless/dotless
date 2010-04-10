@@ -32,7 +32,7 @@ namespace dotless.Tree
       if (Rules)
         return Name + " {\n  " + Rules.Select(r => r.ToCSS(env)).JoinStrings("\n  ") + "\n}\n";
 
-      return Name + ' ' + Value.ToCSS(env) + ";\n";
+      return Name + " " + Value.ToCSS(env) + ";\n";
     }
   }
 }

@@ -47,6 +47,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Functions\AddFunction.cs" />
+    <Compile Include="Functions\AlphaFunction.cs" />
+    <Compile Include="Functions\BlueFunction.cs" />
+    <Compile Include="Infrastructure\ColorFunctionBase.cs" />
+    <Compile Include="Functions\GrayscaleFunction.cs" />
+    <Compile Include="Functions\FormatFunction.cs" />
+    <Compile Include="Infrastructure\NumberFunctionBase.cs" />
+    <Compile Include="Functions\GreenFunction.cs" />
+    <Compile Include="Infrastructure\HslColorFunctionBase.cs" />
+    <Compile Include="Functions\HslColorFunctions.cs" />
+    <Compile Include="Functions\MixFunction.cs" />
+    <Compile Include="Functions\NumberFunctions.cs" />
+    <Compile Include="Functions\RedFunction.cs" />
     <Compile Include="Infrastructure\CharMatchResult.cs" />
     <Compile Include="Infrastructure\Env.cs" />
     <Compile Include="Infrastructure\Function.cs" />

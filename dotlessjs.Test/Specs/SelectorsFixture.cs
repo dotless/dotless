@@ -5,7 +5,7 @@ namespace dotless.Tests.Specs
   public class SelectorsFixture : SpecFixtureBase
   {
     [Test]
-    public void SelfSelector()
+    public void SelfSelector1()
     {
       var input =
         @"
@@ -26,6 +26,40 @@ h1 p:hover,
 h2 p:hover,
 h3 p:hover {
   color: red;
+}
+";
+
+      AssertLess(input, expected);
+    }
+
+    [Test]
+    public void SelfSelector2()
+    {
+      var input =
+        @"
+a {
+  color: red;
+
+  &:hover { color: blue; }
+
+  div & { color: green; }
+
+  p & span { color: yellow; }
+}
+";
+
+      var expected = @"
+a {
+  color: red;
+}
+a:hover {
+  color: blue;
+}
+div a {
+  color: green;
+}
+p a span {
+  color: yellow;
 }
 ";
 

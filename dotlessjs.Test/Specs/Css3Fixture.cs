@@ -208,5 +208,23 @@ a[href$=""http://""] {
       AssertLess(input, expected);
     }
 
+    [Test]
+    public void SiblingSelector()
+    {
+      var input = @"
+a ~ p {
+  background: red;
+}
+";
+
+      var expected = @"
+a ~ p {
+  background: red;
+}
+";
+
+      AssertLess(input, expected);
+    }
+
   }
 }

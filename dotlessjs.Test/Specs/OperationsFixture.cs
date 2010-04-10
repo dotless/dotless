@@ -15,7 +15,7 @@ namespace dotless.Tests.Specs
   width: 2 * 4 - 5em; // 3em
   .spacing {
     height: 10px / 2px+6px-1px*2;
-    width: 2  * 4-5em;
+    width: 2  * 4-5em; 
   }
 }
 
@@ -80,6 +80,25 @@ namespace dotless.Tests.Specs
 .colors .other {
   color: #222222;
   border-color: #222222;
+}
+";
+
+      AssertLess(input, expected);
+    }
+
+    [Test]
+    public void Rounding()
+    {
+      var input = @"
+@base: 16em; 
+.navigation {
+  height: 60/@base;
+}
+";
+
+      var expected = @"
+.navigation {
+  height: 3.75em;
 }
 ";
 
