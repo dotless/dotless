@@ -13,7 +13,11 @@ namespace dotless.Infrastructure
 
     public string this[int index]
     {
-      get { return Match.Groups[index].Value; }
+      get
+      {
+        var value = Match.Groups[index].Value;
+        return string.IsNullOrEmpty(value) ? null : value;
+      }
     }
   }
 }

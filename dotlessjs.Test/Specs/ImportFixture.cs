@@ -14,7 +14,7 @@ namespace dotless.Tests.Specs
 @a: 20%;
 ";
       imports["import-test-b.less"] = @"
-@import ""import-test-c"";
+@import 'import-test-c';
 
 @b: 100%;
 
