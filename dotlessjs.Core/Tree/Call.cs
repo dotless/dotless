@@ -21,7 +21,10 @@ namespace dotless.Tree
       var function = env.GetFunction(Name);
 
       if (function != null)
+      {
+        function.Name = Name;
         return function.Call(args).ToCSS(env);
+      }
 
       return Name + "(" + args.Select(a => a.ToCSS(env) ).JoinStrings(", ") + ")";
     }

@@ -8,11 +8,13 @@ namespace dotless.Functions
 {
   public class HslFunction : HslaFunction
   {
-    public override Node Call(IEnumerable<Node> arguments)
+    protected override Node Evaluate()
     {
-      Guard.ExpectNumArguments(arguments, 3);
+      Guard.ExpectNumArguments(Arguments, 3);
 
-      return base.Call(arguments.Concat(new[] { new Dimension(1d, "") }));
+      Arguments.Add(new Number(1d, ""));
+
+      return base.Evaluate();
     }
   }
 }

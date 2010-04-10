@@ -8,12 +8,12 @@ namespace dotless.Functions
 {
   public class RgbaFunction : Function
   {
-    public override Node Call(IEnumerable<Node> arguments)
+    protected override Node Evaluate()
     {
-      Guard.ExpectNumArguments(arguments, 4);
-      Guard.ExpectNodes<Dimension>(arguments);
+      Guard.ExpectNumArguments(Arguments, 4);
+      Guard.ExpectNodes<Number>(Arguments);
 
-      var args = arguments.Cast<Dimension>();
+      var args = Arguments.Cast<Number>();
 
       var rgb = args.Take(3);
 
