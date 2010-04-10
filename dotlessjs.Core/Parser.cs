@@ -147,7 +147,7 @@ namespace dotless
         var line = regex.Matches(input.Substring(0, i)).Count + 1;
 
         var end = input.Substring(i).IndexOf('\n');
-        end = end == -1 ? input.Length - i - 1 : end + i;
+        end = end == -1 ? input.Length - start + 1 : end + i;
 
         var zone = Stylizer.Stylize(input.Substring(start, end - start), i - start);
 
@@ -201,9 +201,11 @@ namespace dotless
       if (i >= current + chunks[j].Length && j < chunks.Count - 1)
         current += chunks[j++].Length;
 
-      // TODO: case insensitive
+      var options = RegexOptions.None;
+      if (caseInsensitive)
+        options |= RegexOptions.IgnoreCase;
 
-      var regex = new Regex(tok);
+      var regex = new Regex(tok, options);
 
       var match = regex.Match(chunks[j], i - current);
 
