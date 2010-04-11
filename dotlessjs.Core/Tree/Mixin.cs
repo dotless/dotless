@@ -13,20 +13,22 @@ namespace dotless.Tree
     public class Definition : Ruleset
     {
       public string Name { get; set; }
-      public Dictionary<string, Node> Params { get; set; }
+      public NodeList<Rule> Params { get; set; }
 
-      public Definition(string name, Dictionary<string, Node> @params, NodeList rules)
+      public Definition(string name, NodeList<Rule> parameters, List<Node> rules)
       {
         Name = name;
-        Params = @params;
+        Params = parameters;
         Rules = rules;
         Selectors = new NodeList<Selector> {new Selector(new NodeList<Element>(new Element(null, name)))};
       }
 
       public Ruleset Evaluate(NodeList<Expression> args, Env env)
       {
-        Guard.ExpectMaxArguments(Params.Count, args.Count, string.Format("'{0}'", Name));
-        var frame = new Ruleset(null, new NodeList());
+        if(args)
+          Guard.ExpectMaxArguments(Params.Count, args.Count, string.Format("'{0}'", Name));
+        
+        var frame = new Ruleset(null, new List<Node>());
 
         for (var i = 0; i < Params.Count; i++)
         {
@@ -34,10 +36,10 @@ namespace dotless.Tree
           if (args && i < args.Count)
             val = args[i];
           else
-            val = Params.ElementAt(i).Value;
+            val = Params[i].Value;
 
           if (val)
-            frame.Rules.Insert(0, new Rule(Params.ElementAt(i).Key, val));
+            frame.Rules.Add(new Rule(Params[i].Name, val));
           else
             throw new ParsingException("wrong number of arguments for " + Name);
         }
@@ -45,27 +47,33 @@ namespace dotless.Tree
         var frames = new[] {this, frame}.Concat(env.Frames).Reverse();
         var context = new Env{ Frames = new Stack<Ruleset>(frames) };
 
-        var newRules = new NodeList();
+        var newRules = new List<Node>();
 
         foreach (var rule in Rules)
         {
-          if(rule is Mixin.Definition)
-            newRules.Add(rule);
-
+          if (rule is Mixin.Definition)
+          {
+            var mixin = rule as Mixin.Definition;
+            var parameters = mixin.Params.Concat(frame.Rules.Cast<Rule>());
+            newRules.Add(new Mixin.Definition(mixin.Name, new NodeList<Rule>(parameters), mixin.Rules));
+          }
           else if (rule is Ruleset)
           {
             var ruleset = (rule as Ruleset);
             var rules = ruleset.Rules
-              .Select(r => r.Evaluate(context));
+              .Select(r => r.Evaluate(context))
+              .ToList();
 
-            newRules.Add(new Ruleset(ruleset.Selectors, new NodeList(rules)));
+            newRules.Add(new Ruleset(ruleset.Selectors, rules));
           }
-
           else if (rule is Mixin.Call)
-            newRules.AddRange((NodeList) rule.Evaluate(context));
-          
+          {
+            newRules.AddRange((NodeList)rule.Evaluate(context));
+          }
           else
+          {
             newRules.Add(rule.Evaluate(context));
+          }
         }
 
         return new Ruleset(null, newRules);

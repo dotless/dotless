@@ -55,10 +55,10 @@ namespace dotless
     // Only at one point is the primary rule not called from the
     // block rule: at the root level.
     //
-    public static NodeList primary(Parser parser)
+    public static List<Node> primary(Parser parser)
     {
       Node node;
-      var root = new NodeList();
+      var root = new List<Node>();
 
       while (node = Parsers.Mixin.definition(parser) || Parsers.ruleset(parser) || Parsers.rule(parser) ||
                     Parsers.Mixin.call(parser) || Parsers.comment(parser) ||
@@ -269,7 +269,6 @@ namespace dotless
     //
     public static Shorthand shorthand(Parser parser)
     {
-
       if (! parser.Peek(@"[@\w.-]+\/[@\w.-]+"))
         return null;
 
@@ -342,41 +341,42 @@ namespace dotless
       // Once we've got our params list, and a closing `)`, we parse
       // the `{...}` block.
       //
-      public static Tree.Mixin.Definition definition(Parser parser) {
-        var @params = new Dictionary<string, Node>();
-
+      public static Tree.Mixin.Definition definition(Parser parser)
+      {
         if (parser.CurrentChar != '.' || parser.Peek(@"[^{]*(;|})"))
           return null;
 
         var match = parser.Match(@"([#.][a-zA-Z0-9_-]+)\s*\(");
-        if (match) {
-          var name = match[1];
+        if (!match)
+          return null;
+        
+        var name = match[1];
 
-          RegexMatchResult param;
-          while (param = parser.Match(@"@[\w-]+"))
+        var parameters = new NodeList<Rule>();
+        RegexMatchResult param;
+        while (param = parser.Match(@"@[\w-]+"))
+        {
+          if (parser.Match(':'))
           {
-            if (parser.Match(':'))
-            {
-              var value = Parsers.expression(parser);
-              if (value)
-                @params.Add(param.Value, value);
-              else
-                throw new ParsingException("Expected value");
-            }
+            var value = Parsers.expression(parser);
+            if (value)
+              parameters.Add(new Rule(param.Value, value));
             else
-              @params.Add(param.Value, null);
-
-            if (! parser.Match(','))
-              break;
+              throw new ParsingException("Expected value");
           }
-          if (! parser.Match(')')) 
-            throw new ParsingException("Expected )");
+          else
+            parameters.Add(new Rule(param.Value, null));
 
-          var rules = Parsers.block(parser);
-
-          if (rules)
-            return new Tree.Mixin.Definition(name, @params, rules);
+          if (!parser.Match(','))
+            break;
         }
+        if (! parser.Match(')'))
+          throw new ParsingException("Expected ')'");
+
+        var rules = Parsers.block(parser);
+
+        if (rules != null)
+          return new Tree.Mixin.Definition(name, parameters, rules);
 
         return null;
       }
@@ -524,12 +524,18 @@ namespace dotless
     // The `block` rule is used by `ruleset` and `mixin.definition`.
     // It's a wrapper around the `primary` rule, with added `{}`.
     //
-    public static NodeList block(Parser parser)
+    public static List<Node> block(Parser parser)
     {
-      NodeList content = null;
+      if (!parser.Match('{'))
+        return null;
 
-      if (parser.Match('{') && (content = Parsers.primary(parser)) && parser.Match('}'))
+      var content = Parsers.primary(parser);
+
+      if (content != null && parser.Match('}'))
         return content;
+
+      if (content != null)
+        throw new ParsingException("Expected '}'");
 
       return null;
     }
@@ -563,7 +569,7 @@ namespace dotless
 
       var rules = Parsers.block(parser);
 
-      if (selectors.Count > 0 && rules)
+      if (selectors.Count > 0 && rules != null)
         return new Ruleset(selectors, rules);
 
       return null;
@@ -591,7 +597,7 @@ namespace dotless
       return null;
     }
 
-//
+    //
     // An @import directive
     //
     //     @import "lib";
@@ -631,12 +637,13 @@ namespace dotless
       if (import)
         return import;
 
-      NodeList rules;
+      List<Node> rules;
       var name = parser.MatchString(@"@media|@page");
       if (!string.IsNullOrEmpty(name))
       {
         var types = parser.MatchString(@"[a-z:, ]+").Trim();
-        if (rules = Parsers.block(parser))
+        rules = Parsers.block(parser);
+        if (rules != null)
           return new Directive(name + " " + types, rules);
       }
       else
@@ -644,7 +651,8 @@ namespace dotless
         name = parser.MatchString(@"@[-a-z]+");
         if (name == "@font-face")
         {
-          if (rules = Parsers.block(parser))
+          rules = Parsers.block(parser);
+          if (rules != null)
             return new Directive(name, rules);
         }
         else

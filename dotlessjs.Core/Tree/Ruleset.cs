@@ -8,14 +8,15 @@ namespace dotless.Tree
   public class Ruleset : Node
   {
     public NodeList<Selector> Selectors { get; set; }
-    public NodeList Rules { get; set; }
+    public List<Node> Rules { get; set; }
     public bool Root { get; set; }
 
     private Dictionary<string, NodeList> _lookups;
     private List<Rule> _variables;
     private List<Ruleset> _rulesets;
 
-    public Ruleset(NodeList<Selector> selectors, NodeList rules)
+
+    public Ruleset(NodeList<Selector> selectors, List<Node> rules)
       : this()
     {
       Selectors = selectors;
@@ -37,8 +38,9 @@ namespace dotless.Tree
 
     public List<Ruleset> Rulesets()
     {
-      if (_rulesets != null)
-        return _rulesets;
+      // Note: No noticable slow down by caching ruleset. Removing this allows dynamic parameterised mixins.
+//      if (_rulesets != null)
+//        return _rulesets;
 
       return _rulesets = Rules.Where(r => r is Ruleset).Cast<Ruleset>().ToList();
     }
@@ -79,7 +81,7 @@ namespace dotless.Tree
 
     public virtual string ToCSS(List<IEnumerable<Selector>> context, Env env)
     {
-      if(Rules.Count == 0)
+      if(!Rules.Any())
         return "";
 
       var css = new List<string>();                   // The CSS output
@@ -103,16 +105,14 @@ namespace dotless.Tree
       {
         env = env ?? new Env();
 
-        var importRules = Rules.SelectMany(r => r is Import ? (IEnumerable<Node>) r.Evaluate(env) : new[] {r});
-        Rules = new NodeList(importRules);
+        NodeHelper.ExpandNodes<Import>(env, this);
       }
 
       // push the current ruleset to the frames stack
       env.Frames.Push(this);
 
       // Evaluate mixins
-      var mixinRules = Rules.SelectMany(r => r is Mixin.Call ? (IEnumerable<Node>) r.Evaluate(env) : new[] {r});
-      Rules = new NodeList(mixinRules);
+      NodeHelper.ExpandNodes<Mixin.Call>(env, this);
 
       // Evaluate rules and rulesets
       foreach (var rule in Rules)
@@ -166,6 +166,14 @@ namespace dotless.Tree
       env.Frames.Pop();
 
       return css.JoinStrings("");
+    }
+
+    public override string ToString()
+    {
+      var format = "{0}{{{1}}}";
+      return Selectors != null && Selectors.Count > 0
+               ? string.Format(format, Selectors.Select(s => s.ToCSS(null)).JoinStrings(""), Rules.Count)
+               : string.Format(format, "*", Rules.Count);
     }
   }
 }

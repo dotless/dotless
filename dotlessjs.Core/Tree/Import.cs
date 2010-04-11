@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using dotless.Infrastructure;
+using dotless.Utils;
 
 namespace dotless.Tree
 {
@@ -50,12 +51,9 @@ namespace dotless.Tree
       if (Css)
         return new NodeList(this);
 
-      var rules = InnerRoot.Rules
-        .SelectMany(r => r is Import ? r.Evaluate(env) as IEnumerable<Node> : new[] {r});
+      NodeHelper.ExpandNodes<Import>(env, InnerRoot);
 
-      InnerRoot.Rules = new NodeList(rules);
-
-      return InnerRoot.Rules;
+      return new NodeList(InnerRoot.Rules);
     }
   }
 }

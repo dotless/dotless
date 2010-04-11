@@ -368,7 +368,7 @@ namespace dotless.Tests.Specs
 
 .class { .mixin(1, 2, 3); }";
 
-      AssertError("Expected at most 1 arguments in '.mixin(1, 2, 3)', found 3", input);
+      AssertError("Expected at most 1 arguments in '.mixin', found 3", input);
     }
     
     [Test]
@@ -396,51 +396,122 @@ namespace dotless.Tests.Specs
     }
 
     [Test]
-    public void NestedParameterizedMixins()
+    public void NestedParameterizedMixins1()
     {
-      var input =
-@".outer(@a: 5) {
+      var input = @"
+.outer(@a: 5) {
   .inner (@b: 10) {
     width: @a + @b;
   }
 }
 
-.class1 {
+.class {
   .outer;
 }
+";
 
-.class2 {
-  .outer;
-  .inner;
-}
-
-.class3 {
-  .outer .inner;
-}
-
-.class4 {
-  .outer(1);
-  .inner(2);
-}
-
-.class5 {
-  .outer(2) .inner(4);
-}";
-
-      var expected =
-@".class2, .class3 {
-  width: 15;
-}
-.class4 {
-  width: 3;
-}
-.class5 {
-  width: 6;
-}";
+      var expected = "";
 
       AssertLess(input, expected);
     }
 
+    [Test]
+    public void NestedParameterizedMixins2()
+    {
+      var input = @"
+.outer(@a: 5) {
+  .inner (@b: 10) {
+    width: @a + @b;
+  }
+}
+
+.class {
+  .outer;
+  .inner;
+}
+";
+
+      var expected = @"
+.class {
+  width: 15;
+}
+";
+
+      AssertLess(input, expected);
+    }
+
+    [Test]
+    public void NestedParameterizedMixins3()
+    {
+      var input = @"
+.outer(@a: 5) {
+  .inner (@b: 10) {
+    width: @a + @b;
+  }
+}
+
+.class {
+  .outer .inner;
+}
+";
+
+      var expected = @"
+.class {
+  width: 15;
+}
+";
+
+      AssertLess(input, expected);
+    }
+
+    [Test]
+    public void NestedParameterizedMixins4()
+    {
+      var input = @"
+.outer(@a: 5) {
+  .inner (@b: 10) {
+    width: @a + @b;
+  }
+}
+
+.class {
+  .outer(1);
+  .inner(2);
+}
+";
+
+      var expected = @"
+.class {
+  width: 3;
+}
+";
+
+      AssertLess(input, expected);
+    }
+
+    [Test]
+    public void NestedParameterizedMixins5()
+    {
+      var input = @"
+.outer(@a: 5) {
+  .inner (@b: 10) {
+    width: @a + @b;
+  }
+}
+
+.class {
+  .outer(2) .inner(4);
+}
+";
+
+      var expected = @"
+.class {
+  width: 6;
+}
+";
+
+      AssertLess(input, expected);
+    }
 
     [Test]
     public void CanUseVariablesAsDefaultArgumentValues()
