@@ -77,9 +77,11 @@ namespace dotless.Tests.Specs
       AssertLess(input, expected);
     }
 
-    [Test]
-    public void ImplicitPseudoClass()
+    [Test, Ignore("Unsupported")]
+    public void ImplicitParentSelectorPseudoClass()
     {
+      // Note: http://github.com/cloudhead/less.js/issues/issue/7
+
       var input = @"
 a {
   color: black;

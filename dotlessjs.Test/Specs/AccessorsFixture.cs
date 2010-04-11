@@ -4,9 +4,11 @@ namespace dotless.Tests.Specs
 {
   public class AccessorsFixture : SpecFixtureBase
   {
-    [Test]
+    [Test, Ignore("Unsupported")]
     public void Accessors()
     {
+      // Note: http://github.com/cloudhead/less.js/issues/issue/6
+
       var input = @"
 .magic-box {
   @trim: orange;

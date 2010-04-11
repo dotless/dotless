@@ -5,7 +5,7 @@ namespace dotless.Tests.Specs
   public class SelectorsFixture : SpecFixtureBase
   {
     [Test]
-    public void SelfSelector1()
+    public void ParentSelector1()
     {
       var input =
         @"
@@ -33,7 +33,7 @@ h3 p:hover {
     }
 
     [Test]
-    public void SelfSelector2()
+    public void ParentSelector2()
     {
       var input =
         @"

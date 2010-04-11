@@ -39,7 +39,6 @@ namespace dotless.Tests.Specs
 #header {
   .milk {
     color: white;
-//    .mixin, #theme > .mixin;   // comma separated mixins not yet supported.
     .mixin;
     #theme > .mixin;
   }
@@ -114,6 +113,36 @@ namespace dotless.Tests.Specs
 ";
 
       AssertLess(input, expected);
+    }
+
+    [Test, Ignore("Unsupported")]
+    public void CommaSeparatedMixins()
+    {
+      // Note: http://github.com/cloudhead/less.js/issues/issue/8
+
+      var input =
+        @"
+.mixina() {
+  color: red;
+}
+.mixinb() {
+  color: green;
+}
+
+.class {
+  .mixina, .mixinb;
+}
+";
+
+      var expected = @"
+.class {
+  color: red;
+  color: green;
+}
+";
+
+      AssertLess(input, expected);
+      
     }
 
     [Test]
