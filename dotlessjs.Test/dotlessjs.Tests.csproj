@@ -53,7 +53,7 @@
     <Compile Include="Specs\CommentsFixture.cs" />
     <Compile Include="Specs\ColorsFixture.cs" />
     <Compile Include="Specs\AccessorsFixture.cs" />
-    <Compile Include="Specs\DictionaryImporter.cs" />
+    <Compile Include="DictionaryImporter.cs" />
     <Compile Include="Specs\Functions\AbsFixture.cs" />
     <Compile Include="Specs\Functions\AlphaFixture.cs" />
     <Compile Include="Specs\Functions\BlueFixture.cs" />

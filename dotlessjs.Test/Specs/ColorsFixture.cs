@@ -7,6 +7,7 @@ namespace dotless.Tests.Specs
     [Test]
     public void Colors()
     {
+      // Todo: split into separate atomic tests.
       var input = @"
 #yelow {
   #short {

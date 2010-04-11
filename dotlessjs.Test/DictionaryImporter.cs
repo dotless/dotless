@@ -2,7 +2,7 @@
 using System.IO;
 using dotless.Infrastructure;
 
-namespace dotless.Tests.Specs
+namespace dotless.Tests
 {
   public class DictionaryImporter : Importer
   {

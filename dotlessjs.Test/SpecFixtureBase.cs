@@ -32,6 +32,11 @@ namespace dotless.Tests
       Assert.That(EvaluateExpression(expression, variables), Is.EqualTo(output));
     }
 
+    protected void AssertExpressionUnchanged(string expression)
+    {
+      AssertExpression(expression, expression);
+    }
+
     protected static void AssertError(string message, string input)
     {
       Assert.That(() => Evaluate(input), Throws.Exception.Message.EqualTo(message));
