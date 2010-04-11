@@ -61,7 +61,7 @@ namespace dotless
 
       while (node = Parsers.Mixin.Definition(parser) || Parsers.Ruleset(parser) || Parsers.Rule(parser) ||
                     Parsers.Mixin.Call(parser) || Parsers.Comment(parser) ||
-                    parser.Match(@"[\n\s]+") || Parsers.Directive(parser))
+                    parser.Tokenizer.Match(@"[\n\s]+") || Parsers.Directive(parser))
       {
         root.Add(node);
       }
@@ -72,14 +72,14 @@ namespace dotless
     // but keep the LeSS comments `//` silent, by just skipping
     // over them.
     public static Node Comment(Parser parser) {
-      if (parser.CurrentChar != '/') 
+      if (parser.Tokenizer.CurrentChar != '/') 
         return null;
 
-      var comment = parser.Match(@"\/\*(?:[^*]|\*+[^\/*])*\*+\/\n?");
+      var comment = parser.Tokenizer.Match(@"\/\*(?:[^*]|\*+[^\/*])*\*+\/\n?");
       if (comment)
         return new Comment(comment.Value);
 
-      return parser.Match(@"\/\/.*");
+      return parser.Tokenizer.Match(@"\/\/.*");
     }
 
     //
@@ -93,10 +93,10 @@ namespace dotless
       //
       public static Quoted Quoted(Parser parser)
       {
-        if (parser.CurrentChar != '"' && parser.CurrentChar != '\'')
+        if (parser.Tokenizer.CurrentChar != '"' && parser.Tokenizer.CurrentChar != '\'')
           return null;
 
-        var str = parser.Match(@"""((?:[^""\\\r\n]|\\.)*)""|'((?:[^'\\\r\n]|\\.)*)'");
+        var str = parser.Tokenizer.Match(@"""((?:[^""\\\r\n]|\\.)*)""|'((?:[^'\\\r\n]|\\.)*)'");
         if (str)
           return new Quoted(str[0], str[1] ?? str[2]);
 
@@ -110,7 +110,7 @@ namespace dotless
       //
       public static Keyword Keyword(Parser parser)
       {
-        var k = parser.Match(@"[A-Za-z-]+");
+        var k = parser.Tokenizer.Match(@"[A-Za-z-]+");
         if (k)
           return new Keyword(k.Value);
 
@@ -129,7 +129,7 @@ namespace dotless
       //
       public static Call Call(Parser parser)
       {
-        var name = parser.Match(@"([a-zA-Z0-9_-]+)\(");
+        var name = parser.Tokenizer.Match(@"([a-zA-Z0-9_-]+)\(");
 
         if (!name)
           return null;
@@ -143,7 +143,7 @@ namespace dotless
 
         var args = Parsers.Entities.Arguments(parser);
 
-        if (! parser.Match(')')) 
+        if (! parser.Tokenizer.Match(')')) 
           return null;
 
         return new Call(name[1], args);
@@ -157,7 +157,7 @@ namespace dotless
         while (arg = Parsers.Expression(parser))
         {
           args.Add(arg);
-          if (! parser.Match(','))
+          if (! parser.Tokenizer.Match(','))
             break;
         }
         return args;
@@ -179,12 +179,12 @@ namespace dotless
       //
       public static Url Url(Parser parser) 
       {
-        if (parser.CurrentChar != 'u' || !parser.Match(@"url\(")) 
+        if (parser.Tokenizer.CurrentChar != 'u' || !parser.Tokenizer.Match(@"url\(")) 
           return null;
       
-        var value = Parsers.Entities.Quoted(parser) || parser.Match(@"[-a-zA-Z0-9_%@$\/.&=:;#+?]+");
+        var value = Parsers.Entities.Quoted(parser) || parser.Tokenizer.Match(@"[-a-zA-Z0-9_%@$\/.&=:;#+?]+");
       
-        if (! parser.Match(')')) 
+        if (! parser.Tokenizer.Match(')')) 
           throw new ParsingException("missing closing ) for url()");
 
         return new Url(value);
@@ -202,7 +202,7 @@ namespace dotless
       {
         RegexMatchResult name;
 
-        if (parser.CurrentChar == '@' && (name = parser.Match(@"@[a-zA-Z0-9_-]+")))
+        if (parser.Tokenizer.CurrentChar == '@' && (name = parser.Tokenizer.Match(@"@[a-zA-Z0-9_-]+")))
           return new Variable(name.Value);
 
         return null;
@@ -219,7 +219,7 @@ namespace dotless
       {
         RegexMatchResult rgb;
 
-        if (parser.CurrentChar == '#' && (rgb = parser.Match(@"#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})")))
+        if (parser.Tokenizer.CurrentChar == '#' && (rgb = parser.Tokenizer.Match(@"#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})")))
           return new Color(rgb[1]);
 
         return null;
@@ -232,11 +232,11 @@ namespace dotless
       //
       public static Number Dimension(Parser parser)
       {
-        var c = parser.CurrentChar;
+        var c = parser.Tokenizer.CurrentChar;
         if ((c > 57 || c < 45) || c == 47)
           return null;
 
-        var value = parser.Match(@"(-?[0-9]*\.?[0-9]+)(px|%|em|pc|ex|in|deg|s|ms|pt|cm|mm)?");
+        var value = parser.Tokenizer.Match(@"(-?[0-9]*\.?[0-9]+)(px|%|em|pc|ex|in|deg|s|ms|pt|cm|mm)?");
         if (value)
           return new Number(value[1], value[2]);
 
@@ -253,7 +253,7 @@ namespace dotless
     {
       RegexMatchResult name;
 
-      if (parser.CurrentChar == '@' && (name = parser.Match(@"(@[a-zA-Z0-9_-]+)\s*:")))
+      if (parser.Tokenizer.CurrentChar == '@' && (name = parser.Tokenizer.Match(@"(@[a-zA-Z0-9_-]+)\s*:")))
         return name[1];
 
       return null;
@@ -268,12 +268,12 @@ namespace dotless
     //
     public static Shorthand Shorthand(Parser parser)
     {
-      if (! parser.Peek(@"[@\w.-]+\/[@\w.-]+"))
+      if (! parser.Tokenizer.Peek(@"[@\w.-]+\/[@\w.-]+"))
         return null;
 
       Node a = null;
       Node b = null;
-      if ((a = Parsers.Entity(parser)) && parser.Match('/') && (b = Parsers.Entity(parser)))
+      if ((a = Parsers.Entity(parser)) && parser.Tokenizer.Match('/') && (b = Parsers.Entity(parser)))
         return new Shorthand(a, b);
 
       return null;
@@ -301,21 +301,21 @@ namespace dotless
         RegexMatchResult e;
         Combinator c = null;
 
-        while (e = parser.Match(@"[#.]?[a-zA-Z0-9_-]+"))
+        while (e = parser.Tokenizer.Match(@"[#.]?[a-zA-Z0-9_-]+"))
         {
           elements.Add(new Element(c, e.Value));
-          var match = parser.Match('>');
+          var match = parser.Tokenizer.Match('>');
 
           c = match != null ? new Combinator(match.Value) : null;
         }
 
         NodeList<Expression> args = null;
-        if(parser.Match('(') && (args = Parsers.Entities.Arguments(parser)) && parser.Match(')'))
+        if(parser.Tokenizer.Match('(') && (args = Parsers.Entities.Arguments(parser)) && parser.Tokenizer.Match(')'))
         {
           // arguments optional
         }
 
-        if (elements.Count > 0 && (parser.Match(';') || parser.Peek('}')))
+        if (elements.Count > 0 && (parser.Tokenizer.Match(';') || parser.Tokenizer.Peek('}')))
           return new Tree.Mixin.Call(elements, args);
 
         return null;
@@ -342,10 +342,10 @@ namespace dotless
       //
       public static Tree.Mixin.Definition Definition(Parser parser)
       {
-        if (parser.CurrentChar != '.' || parser.Peek(@"[^{]*(;|})"))
+        if (parser.Tokenizer.CurrentChar != '.' || parser.Tokenizer.Peek(@"[^{]*(;|})"))
           return null;
 
-        var match = parser.Match(@"([#.][a-zA-Z0-9_-]+)\s*\(");
+        var match = parser.Tokenizer.Match(@"([#.][a-zA-Z0-9_-]+)\s*\(");
         if (!match)
           return null;
         
@@ -353,9 +353,9 @@ namespace dotless
 
         var parameters = new NodeList<Rule>();
         RegexMatchResult param;
-        while (param = parser.Match(@"@[\w-]+"))
+        while (param = parser.Tokenizer.Match(@"@[\w-]+"))
         {
-          if (parser.Match(':'))
+          if (parser.Tokenizer.Match(':'))
           {
             var value = Parsers.Expression(parser);
             if (value)
@@ -366,10 +366,10 @@ namespace dotless
           else
             parameters.Add(new Rule(param.Value, null));
 
-          if (!parser.Match(','))
+          if (!parser.Tokenizer.Match(','))
             break;
         }
-        if (! parser.Match(')'))
+        if (! parser.Tokenizer.Match(')'))
           throw new ParsingException("Expected ')'");
 
         var rules = Parsers.Block(parser);
@@ -396,7 +396,7 @@ namespace dotless
     // it's there, if ';' was ommitted.
     //
     public static bool End(Parser parser) {
-      return parser.Match(';') || parser.Peek('}');
+      return parser.Tokenizer.Match(';') || parser.Tokenizer.Peek('}');
     }
 
     //
@@ -408,12 +408,12 @@ namespace dotless
     {
       Node value;
 
-      if (! parser.Match(@"opacity=", true))
+      if (! parser.Tokenizer.Match(@"opacity=", true))
         return null;
 
-      if (value = parser.Match(@"[0-9]+") || Parsers.Entities.Variable(parser))
+      if (value = parser.Tokenizer.Match(@"[0-9]+") || Parsers.Entities.Variable(parser))
       {
-        if (! parser.Match(')')) 
+        if (! parser.Tokenizer.Match(')')) 
           throw new ParsingException("missing closing ) for alpha()");
       
         return new Alpha(value);
@@ -437,8 +437,8 @@ namespace dotless
     public static Element Element(Parser parser)
     {
       var c = Parsers.Combinator(parser);
-      var e = parser.Match(@"[.#:]?[a-zA-Z0-9_-]+") || parser.Match('*') || Parsers.Attribute(parser) ||
-              parser.Match(@"\([^)@]+\)");
+      var e = parser.Tokenizer.Match(@"[.#:]?[a-zA-Z0-9_-]+") || parser.Tokenizer.Match('*') || Parsers.Attribute(parser) ||
+              parser.Tokenizer.Match(@"\([^)@]+\)");
 
       if (e)
         return new Element(c, e.Value);
@@ -458,10 +458,10 @@ namespace dotless
     public static Combinator Combinator(Parser parser)
     {
       Node match;
-      if (match = parser.Match(@"[+>~]") || parser.Match('&') || parser.Match(@"::"))
+      if (match = parser.Tokenizer.Match(@"[+>~]") || parser.Tokenizer.Match('&') || parser.Tokenizer.Match(@"::"))
         return new Combinator(match.ToString());
 
-      return new Combinator(parser.PreviousChar == ' ' ? " " : null);
+      return new Combinator(parser.Tokenizer.PreviousChar == ' ' ? " " : null);
     }
 
     //
@@ -488,7 +488,7 @@ namespace dotless
 
     public static Node Tag(Parser parser)
     {
-      return parser.Match(@"[a-zA-Z][a-zA-Z-]*[0-9]?") || parser.Match('*');
+      return parser.Tokenizer.Match(@"[a-zA-Z][a-zA-Z-]*[0-9]?") || parser.Tokenizer.Match('*');
     }
 
     public static TextNode Attribute(Parser parser)
@@ -497,20 +497,20 @@ namespace dotless
       Node key;
       Node val = null;
 
-      if (! parser.Match('['))
+      if (! parser.Tokenizer.Match('['))
         return null;
 
-      if (key = parser.Match(@"[a-z]+") || Parsers.Entities.Quoted(parser))
+      if (key = parser.Tokenizer.Match(@"[a-z]+") || Parsers.Entities.Quoted(parser))
       {
         Node op;
-        if ((op = parser.Match(@"[|~*$^]?=")) &&
-            (val = Parsers.Entities.Quoted(parser) || parser.Match(@"[\w-]+")))
+        if ((op = parser.Tokenizer.Match(@"[|~*$^]?=")) &&
+            (val = Parsers.Entities.Quoted(parser) || parser.Tokenizer.Match(@"[\w-]+")))
           attr = string.Format("{0}{1}{2}", key, op, val.ToCSS(null));
         else
           attr = key.ToString();
       }
 
-      if (! parser.Match(']'))
+      if (! parser.Tokenizer.Match(']'))
         return null;
 
       if (!string.IsNullOrEmpty(attr))
@@ -525,12 +525,12 @@ namespace dotless
     //
     public static List<Node> Block(Parser parser)
     {
-      if (!parser.Match('{'))
+      if (!parser.Tokenizer.Match('{'))
         return null;
 
       var content = Parsers.Primary(parser);
 
-      if (content != null && parser.Match('}'))
+      if (content != null && parser.Tokenizer.Match('}'))
         return content;
 
       if (content != null)
@@ -546,12 +546,12 @@ namespace dotless
     {
       var selectors = new NodeList<Selector>();
 
-      if (parser.Peek(@"[^{]+[@;}]"))
+      if (parser.Tokenizer.Peek(@"[^{]+[@;}]"))
         return null;
 
-      if (parser.Peek(@"([a-z.#: _-]+)[\s\n]*\{"))
+      if (parser.Tokenizer.Peek(@"([a-z.#: _-]+)[\s\n]*\{"))
       {
-        var match = parser.Match(@"[a-z.#: _-]+");
+        var match = parser.Tokenizer.Match(@"[a-z.#: _-]+");
         selectors = new NodeList<Selector>(new Selector(new NodeList<Element>(new Element(null, match.Value))));
       }
       else
@@ -560,7 +560,7 @@ namespace dotless
         while (s = Parsers.Selector(parser))
         {
           selectors.Add(s);
-          if (! parser.Match(','))
+          if (! parser.Tokenizer.Match(','))
             break;
         }
         if (s) Parsers.Comment(parser);
@@ -582,8 +582,8 @@ namespace dotless
       {
         Node value;
 
-        if ((name[0] != '@') && (parser.Peek(@"([^@+\/*(;{}-]*);")))
-          value = parser.Match(@"[^@+\/*(;{}-]*");
+        if ((name[0] != '@') && (parser.Tokenizer.Peek(@"([^@+\/*(;{}-]*);")))
+          value = parser.Tokenizer.Match(@"[^@+\/*(;{}-]*");
         else if (name == "font")
           value = Parsers.Font(parser);
         else
@@ -610,7 +610,7 @@ namespace dotless
     {
       Node path = null;
 
-      if (parser.Match(@"@import\s+") && (path = Parsers.Entities.Quoted(parser) || Parsers.Entities.Url(parser)) && parser.Match(';'))
+      if (parser.Tokenizer.Match(@"@import\s+") && (path = Parsers.Entities.Quoted(parser) || Parsers.Entities.Url(parser)) && parser.Tokenizer.Match(';'))
       {
         if (path is Quoted)
           return new Import(path as Quoted, parser.Importer);
@@ -629,7 +629,7 @@ namespace dotless
     //
     public static Directive Directive(Parser parser) {
 
-      if (parser.CurrentChar != '@') 
+      if (parser.Tokenizer.CurrentChar != '@') 
         return null;
 
       var import = Parsers.Import(parser);
@@ -637,17 +637,17 @@ namespace dotless
         return import;
 
       List<Node> rules;
-      var name = parser.MatchString(@"@media|@page");
+      var name = parser.Tokenizer.MatchString(@"@media|@page");
       if (!string.IsNullOrEmpty(name))
       {
-        var types = parser.MatchString(@"[a-z:, ]+").Trim();
+        var types = parser.Tokenizer.MatchString(@"[a-z:, ]+").Trim();
         rules = Parsers.Block(parser);
         if (rules != null)
           return new Directive(name + " " + types, rules);
       }
       else
       {
-        name = parser.MatchString(@"@[-a-z]+");
+        name = parser.Tokenizer.MatchString(@"@[-a-z]+");
         if (name == "@font-face")
         {
           rules = Parsers.Block(parser);
@@ -657,7 +657,7 @@ namespace dotless
         else
         {
           Node value;
-          if ((value = Parsers.Entity(parser)) && parser.Match(';'))
+          if ((value = Parsers.Entity(parser)) && parser.Tokenizer.Match(';'))
             return new Directive(name, value);
         }
       }
@@ -677,12 +677,12 @@ namespace dotless
       }
       value.Add(new Expression(expression));
 
-      if (parser.Match(','))
+      if (parser.Tokenizer.Match(','))
       {
         while (e = Parsers.Expression(parser))
         {
           value.Add(e);
-          if (! parser.Match(','))
+          if (! parser.Tokenizer.Match(','))
             break;
         }
       }
@@ -705,7 +705,7 @@ namespace dotless
       while (e = Parsers.Expression(parser))
       {
         expressions.Add(e);
-        if (!parser.Match(','))
+        if (!parser.Tokenizer.Match(','))
           break;
       }
       var important = Parsers.Important(parser);
@@ -718,14 +718,14 @@ namespace dotless
 
     public static Node Important(Parser parser)
     {
-      return parser.Match(@"!\s*important");
+      return parser.Tokenizer.Match(@"!\s*important");
     }
 
     public static Expression Sub(Parser parser)
     {
       Expression e = null;
 
-      if (parser.Match('(') && (e = Parsers.Expression(parser)) && parser.Match(')'))
+      if (parser.Tokenizer.Match('(') && (e = Parsers.Expression(parser)) && parser.Tokenizer.Match(')'))
         return e;
 
       return null;
@@ -737,7 +737,7 @@ namespace dotless
       if (!m)
         return null;
     
-      var op = parser.Match(@"[\/*]");
+      var op = parser.Tokenizer.Match(@"[\/*]");
 
       Node a = null;
       if (op && (a = Parsers.Multiplication(parser)))
@@ -752,9 +752,9 @@ namespace dotless
       if (!m)
         return null;
 
-      var op = parser.Match(@"[-+]\s+");
-      if (!op && parser.PreviousChar != ' ')
-        op = parser.Match(@"[-+]");
+      var op = parser.Tokenizer.Match(@"[-+]\s+");
+      if (!op && parser.Tokenizer.PreviousChar != ' ')
+        op = parser.Tokenizer.Match(@"[-+]");
 
       Node a = null;
       if (op && (a = Parsers.Addition(parser)))
@@ -799,7 +799,7 @@ namespace dotless
 
     public static string Property(Parser parser)
     {
-      var name = parser.Match(@"(\*?-?[-a-z]+)\s*:");
+      var name = parser.Tokenizer.Match(@"(\*?-?[-a-z]+)\s*:");
 
       if (name)
         return name[1];

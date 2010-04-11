@@ -72,6 +72,7 @@
     <Compile Include="Stylizers\IStylizer.cs" />
     <Compile Include="Stylizers\ConsoleStylizer.cs" />
     <Compile Include="Stylizers\PlainStylizer.cs" />
+    <Compile Include="Tokenizer.cs" />
     <Compile Include="Tree\Expression.cs" />
     <Compile Include="Infrastructure\IEvaluatable.cs" />
     <Compile Include="Infrastructure\IOperable.cs" />
