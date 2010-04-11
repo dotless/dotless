@@ -29,7 +29,6 @@
 //
 
 #pragma warning disable 665
-// ReSharper disable InconsistentNaming
 // ReSharper disable RedundantNameQualifier
 
 using System.Collections.Generic;
@@ -55,14 +54,14 @@ namespace dotless
     // Only at one point is the primary rule not called from the
     // block rule: at the root level.
     //
-    public static List<Node> primary(Parser parser)
+    public static List<Node> Primary(Parser parser)
     {
       Node node;
       var root = new List<Node>();
 
-      while (node = Parsers.Mixin.definition(parser) || Parsers.ruleset(parser) || Parsers.rule(parser) ||
-                    Parsers.Mixin.call(parser) || Parsers.comment(parser) ||
-                    parser.Match(@"[\n\s]+") || Parsers.directive(parser))
+      while (node = Parsers.Mixin.Definition(parser) || Parsers.Ruleset(parser) || Parsers.Rule(parser) ||
+                    Parsers.Mixin.Call(parser) || Parsers.Comment(parser) ||
+                    parser.Match(@"[\n\s]+") || Parsers.Directive(parser))
       {
         root.Add(node);
       }
@@ -72,7 +71,7 @@ namespace dotless
     // We create a Comment node for CSS comments `/* */`,
     // but keep the LeSS comments `//` silent, by just skipping
     // over them.
-    public static Node comment(Parser parser) {
+    public static Node Comment(Parser parser) {
       if (parser.CurrentChar != '/') 
         return null;
 
@@ -86,13 +85,13 @@ namespace dotless
     //
     // Entities are tokens which can be found inside an Expression
     //
-    public static class entities {
+    public static class Entities {
       //
       // A string, which supports escaping " and '
       //
       //     "milky way" 'he\'s the one!'
       //
-      public static Quoted quoted(Parser parser)
+      public static Quoted Quoted(Parser parser)
       {
         if (parser.CurrentChar != '"' && parser.CurrentChar != '\'')
           return null;
@@ -109,7 +108,7 @@ namespace dotless
       //
       //     black border-collapse
       //
-      public static Keyword keyword(Parser parser)
+      public static Keyword Keyword(Parser parser)
       {
         var k = parser.Match(@"[A-Za-z-]+");
         if (k)
@@ -128,7 +127,7 @@ namespace dotless
       //
       // The arguments are parsed with the `entities.arguments` parser.
       //
-      public static Call call(Parser parser)
+      public static Call Call(Parser parser)
       {
         var name = parser.Match(@"([a-zA-Z0-9_-]+)\(");
 
@@ -137,12 +136,12 @@ namespace dotless
 
         if (name[1].ToLowerInvariant() == "alpha")
         {
-          var alpha = Parsers.alpha(parser);
+          var alpha = Parsers.Alpha(parser);
           if (alpha != null)
             return alpha;
         }
 
-        var args = Parsers.entities.arguments(parser);
+        var args = Parsers.Entities.Arguments(parser);
 
         if (! parser.Match(')')) 
           return null;
@@ -150,12 +149,12 @@ namespace dotless
         return new Call(name[1], args);
       }
 
-      public static NodeList<Expression> arguments(Parser parser)
+      public static NodeList<Expression> Arguments(Parser parser)
       {
         var args = new NodeList<Expression>();
         Expression arg;
 
-        while (arg = Parsers.expression(parser))
+        while (arg = Parsers.Expression(parser))
         {
           args.Add(arg);
           if (! parser.Match(','))
@@ -164,11 +163,11 @@ namespace dotless
         return args;
       }
 
-      public static Node literal(Parser parser)
+      public static Node Literal(Parser parser)
       {
-        return Parsers.entities.dimension(parser) ||
-               Parsers.entities.color(parser) ||
-               Parsers.entities.quoted(parser);
+        return Parsers.Entities.Dimension(parser) ||
+               Parsers.Entities.Color(parser) ||
+               Parsers.Entities.Quoted(parser);
       }
 
       //
@@ -178,12 +177,12 @@ namespace dotless
       // standard function calls. The difference is that the argument doesn't have
       // to be enclosed within a string, so it can't be parsed as an Expression.
       //
-      public static Url url(Parser parser) 
+      public static Url Url(Parser parser) 
       {
         if (parser.CurrentChar != 'u' || !parser.Match(@"url\(")) 
           return null;
       
-        var value = Parsers.entities.quoted(parser) || parser.Match(@"[-a-zA-Z0-9_%@$\/.&=:;#+?]+");
+        var value = Parsers.Entities.Quoted(parser) || parser.Match(@"[-a-zA-Z0-9_%@$\/.&=:;#+?]+");
       
         if (! parser.Match(')')) 
           throw new ParsingException("missing closing ) for url()");
@@ -199,7 +198,7 @@ namespace dotless
       // We use a different parser for variable definitions,
       // see `parsers.variable`.
       //
-      public static Variable variable(Parser parser)
+      public static Variable Variable(Parser parser)
       {
         RegexMatchResult name;
 
@@ -216,7 +215,7 @@ namespace dotless
       //
       // `rgb` and `hsl` colors are parsed through the `entities.call` parser.
       //
-      public static Color color(Parser parser)
+      public static Color Color(Parser parser)
       {
         RegexMatchResult rgb;
 
@@ -231,7 +230,7 @@ namespace dotless
       //
       //     0.5em 95%
       //
-      public static Number dimension(Parser parser)
+      public static Number Dimension(Parser parser)
       {
         var c = parser.CurrentChar;
         if ((c > 57 || c < 45) || c == 47)
@@ -250,7 +249,7 @@ namespace dotless
     //
     //     @fink:
     //
-    public static string variable(Parser parser)
+    public static string Variable(Parser parser)
     {
       RegexMatchResult name;
 
@@ -267,14 +266,14 @@ namespace dotless
     //
     // We need to peek first, or we'll match on keywords and dimensions
     //
-    public static Shorthand shorthand(Parser parser)
+    public static Shorthand Shorthand(Parser parser)
     {
       if (! parser.Peek(@"[@\w.-]+\/[@\w.-]+"))
         return null;
 
       Node a = null;
       Node b = null;
-      if ((a = Parsers.entity(parser)) && parser.Match('/') && (b = Parsers.entity(parser)))
+      if ((a = Parsers.Entity(parser)) && parser.Match('/') && (b = Parsers.Entity(parser)))
         return new Shorthand(a, b);
 
       return null;
@@ -295,7 +294,7 @@ namespace dotless
       // namespaced, but we only support the child and descendant
       // selector for now.
       //
-      public static Tree.Mixin.Call call(Parser parser)
+      public static Tree.Mixin.Call Call(Parser parser)
       {
         var elements = new NodeList<Element>();
 
@@ -311,7 +310,7 @@ namespace dotless
         }
 
         NodeList<Expression> args = null;
-        if(parser.Match('(') && (args = Parsers.entities.arguments(parser)) && parser.Match(')'))
+        if(parser.Match('(') && (args = Parsers.Entities.Arguments(parser)) && parser.Match(')'))
         {
           // arguments optional
         }
@@ -341,7 +340,7 @@ namespace dotless
       // Once we've got our params list, and a closing `)`, we parse
       // the `{...}` block.
       //
-      public static Tree.Mixin.Definition definition(Parser parser)
+      public static Tree.Mixin.Definition Definition(Parser parser)
       {
         if (parser.CurrentChar != '.' || parser.Peek(@"[^{]*(;|})"))
           return null;
@@ -358,7 +357,7 @@ namespace dotless
         {
           if (parser.Match(':'))
           {
-            var value = Parsers.expression(parser);
+            var value = Parsers.Expression(parser);
             if (value)
               parameters.Add(new Rule(param.Value, value));
             else
@@ -373,7 +372,7 @@ namespace dotless
         if (! parser.Match(')'))
           throw new ParsingException("Expected ')'");
 
-        var rules = Parsers.block(parser);
+        var rules = Parsers.Block(parser);
 
         if (rules != null)
           return new Tree.Mixin.Definition(name, parameters, rules);
@@ -386,9 +385,9 @@ namespace dotless
     // Entities are the smallest recognized token,
     // and can be found inside a rule's value.
     //
-    public static Node entity(Parser parser) {
-      return Parsers.entities.literal(parser) || Parsers.entities.variable(parser) || Parsers.entities.url(parser) ||
-             Parsers.entities.call(parser)    || Parsers.entities.keyword(parser);
+    public static Node Entity(Parser parser) {
+      return Parsers.Entities.Literal(parser) || Parsers.Entities.Variable(parser) || Parsers.Entities.Url(parser) ||
+             Parsers.Entities.Call(parser)    || Parsers.Entities.Keyword(parser);
     }
 
     //
@@ -396,7 +395,7 @@ namespace dotless
     // because the `block` rule will be expecting it, but we still need to make sure
     // it's there, if ';' was ommitted.
     //
-    public static bool end(Parser parser) {
+    public static bool End(Parser parser) {
       return parser.Match(';') || parser.Peek('}');
     }
 
@@ -405,14 +404,14 @@ namespace dotless
     //
     //     alpha(opacity=88)
     //
-    public static Alpha alpha(Parser parser)
+    public static Alpha Alpha(Parser parser)
     {
       Node value;
 
       if (! parser.Match(@"opacity=", true))
         return null;
 
-      if (value = parser.Match(@"[0-9]+") || Parsers.entities.variable(parser))
+      if (value = parser.Match(@"[0-9]+") || Parsers.Entities.Variable(parser))
       {
         if (! parser.Match(')')) 
           throw new ParsingException("missing closing ) for alpha()");
@@ -435,10 +434,10 @@ namespace dotless
     // they are made out of a `Combinator` (see combinator rule),
     // and an element name, such as a tag a class, or `*`.
     //
-    public static Element element(Parser parser)
+    public static Element Element(Parser parser)
     {
-      var c = Parsers.combinator(parser);
-      var e = parser.Match(@"[.#:]?[a-zA-Z0-9_-]+") || parser.Match('*') || Parsers.attribute(parser) ||
+      var c = Parsers.Combinator(parser);
+      var e = parser.Match(@"[.#:]?[a-zA-Z0-9_-]+") || parser.Match('*') || Parsers.Attribute(parser) ||
               parser.Match(@"\([^)@]+\)");
 
       if (e)
@@ -456,7 +455,7 @@ namespace dotless
     // in the input, to see if it's a ` ` character. More info on how
     // we deal with this in *combinator.js*.
     //
-    public static Combinator combinator(Parser parser)
+    public static Combinator Combinator(Parser parser)
     {
       Node match;
       if (match = parser.Match(@"[+>~]") || parser.Match('&') || parser.Match(@"::"))
@@ -473,12 +472,12 @@ namespace dotless
     //
     // Selectors are made out of one or more Elements, see above.
     //
-    public static Selector selector(Parser parser)
+    public static Selector Selector(Parser parser)
     {
       Element e;
       var elements = new NodeList<Element>();
 
-      while (e = Parsers.element(parser))
+      while (e = Parsers.Element(parser))
         elements.Add(e);
 
       if (elements.Count > 0)
@@ -487,12 +486,12 @@ namespace dotless
       return null;
     }
 
-    public static Node tag(Parser parser)
+    public static Node Tag(Parser parser)
     {
       return parser.Match(@"[a-zA-Z][a-zA-Z-]*[0-9]?") || parser.Match('*');
     }
 
-    public static TextNode attribute(Parser parser)
+    public static TextNode Attribute(Parser parser)
     {
       var attr = "";
       Node key;
@@ -501,11 +500,11 @@ namespace dotless
       if (! parser.Match('['))
         return null;
 
-      if (key = parser.Match(@"[a-z]+") || Parsers.entities.quoted(parser))
+      if (key = parser.Match(@"[a-z]+") || Parsers.Entities.Quoted(parser))
       {
         Node op;
         if ((op = parser.Match(@"[|~*$^]?=")) &&
-            (val = Parsers.entities.quoted(parser) || parser.Match(@"[\w-]+")))
+            (val = Parsers.Entities.Quoted(parser) || parser.Match(@"[\w-]+")))
           attr = string.Format("{0}{1}{2}", key, op, val.ToCSS(null));
         else
           attr = key.ToString();
@@ -524,12 +523,12 @@ namespace dotless
     // The `block` rule is used by `ruleset` and `mixin.definition`.
     // It's a wrapper around the `primary` rule, with added `{}`.
     //
-    public static List<Node> block(Parser parser)
+    public static List<Node> Block(Parser parser)
     {
       if (!parser.Match('{'))
         return null;
 
-      var content = Parsers.primary(parser);
+      var content = Parsers.Primary(parser);
 
       if (content != null && parser.Match('}'))
         return content;
@@ -543,7 +542,7 @@ namespace dotless
     //
     // div, .class, body > p {...}
     //
-    public static Ruleset ruleset(Parser parser)
+    public static Ruleset Ruleset(Parser parser)
     {
       var selectors = new NodeList<Selector>();
 
@@ -558,16 +557,16 @@ namespace dotless
       else
       {
         Selector s;
-        while (s = Parsers.selector(parser))
+        while (s = Parsers.Selector(parser))
         {
           selectors.Add(s);
           if (! parser.Match(','))
             break;
         }
-        if (s) Parsers.comment(parser);
+        if (s) Parsers.Comment(parser);
       }
 
-      var rules = Parsers.block(parser);
+      var rules = Parsers.Block(parser);
 
       if (selectors.Count > 0 && rules != null)
         return new Ruleset(selectors, rules);
@@ -575,9 +574,9 @@ namespace dotless
       return null;
     }
 
-    public static Rule rule(Parser parser)
+    public static Rule Rule(Parser parser)
     {
-      var name = Parsers.property(parser) ?? Parsers.variable(parser);
+      var name = Parsers.Property(parser) ?? Parsers.Variable(parser);
 
       if (!string.IsNullOrEmpty(name))
       {
@@ -586,11 +585,11 @@ namespace dotless
         if ((name[0] != '@') && (parser.Peek(@"([^@+\/*(;{}-]*);")))
           value = parser.Match(@"[^@+\/*(;{}-]*");
         else if (name == "font")
-          value = Parsers.font(parser);
+          value = Parsers.Font(parser);
         else
-          value = Parsers.value(parser);
+          value = Parsers.Value(parser);
 
-        if (Parsers.end(parser))
+        if (Parsers.End(parser))
           return new Rule(name, value);
       }
 
@@ -607,11 +606,11 @@ namespace dotless
     // file-system operation. The function used for importing is
     // stored in `import`, which we pass to the Import constructor.
     //
-    public static Import import(Parser parser)
+    public static Import Import(Parser parser)
     {
       Node path = null;
 
-      if (parser.Match(@"@import\s+") && (path = Parsers.entities.quoted(parser) || Parsers.entities.url(parser)) && parser.Match(';'))
+      if (parser.Match(@"@import\s+") && (path = Parsers.Entities.Quoted(parser) || Parsers.Entities.Url(parser)) && parser.Match(';'))
       {
         if (path is Quoted)
           return new Import(path as Quoted, parser.Importer);
@@ -628,12 +627,12 @@ namespace dotless
     //
     //     @charset "utf-8";
     //
-    public static Directive directive(Parser parser) {
+    public static Directive Directive(Parser parser) {
 
       if (parser.CurrentChar != '@') 
         return null;
 
-      var import = Parsers.import(parser);
+      var import = Parsers.Import(parser);
       if (import)
         return import;
 
@@ -642,7 +641,7 @@ namespace dotless
       if (!string.IsNullOrEmpty(name))
       {
         var types = parser.MatchString(@"[a-z:, ]+").Trim();
-        rules = Parsers.block(parser);
+        rules = Parsers.Block(parser);
         if (rules != null)
           return new Directive(name + " " + types, rules);
       }
@@ -651,14 +650,14 @@ namespace dotless
         name = parser.MatchString(@"@[-a-z]+");
         if (name == "@font-face")
         {
-          rules = Parsers.block(parser);
+          rules = Parsers.Block(parser);
           if (rules != null)
             return new Directive(name, rules);
         }
         else
         {
           Node value;
-          if ((value = Parsers.entity(parser)) && parser.Match(';'))
+          if ((value = Parsers.Entity(parser)) && parser.Match(';'))
             return new Directive(name, value);
         }
       }
@@ -666,13 +665,13 @@ namespace dotless
       return null;
     }
 
-    public static Value font(Parser parser)
+    public static Value Font(Parser parser)
     {
       var value = new NodeList();
       var expression = new NodeList();
       Node e;
 
-      while (e = Parsers.shorthand(parser) || Parsers.entity(parser))
+      while (e = Parsers.Shorthand(parser) || Parsers.Entity(parser))
       {
         expression.Add(e);
       }
@@ -680,14 +679,14 @@ namespace dotless
 
       if (parser.Match(','))
       {
-        while (e = Parsers.expression(parser))
+        while (e = Parsers.Expression(parser))
         {
           value.Add(e);
           if (! parser.Match(','))
             break;
         }
       }
-      return new Value(value, Parsers.important(parser));
+      return new Value(value, Parsers.Important(parser));
     }
 
     //
@@ -698,18 +697,18 @@ namespace dotless
     // In a Rule, a Value represents everything after the `:`,
     // and before the `;`.
     //
-    public static Value value(Parser parser)
+    public static Value Value(Parser parser)
     {
       var expressions = new NodeList();
 
       Node e;
-      while (e = Parsers.expression(parser))
+      while (e = Parsers.Expression(parser))
       {
         expressions.Add(e);
         if (!parser.Match(','))
           break;
       }
-      var important = Parsers.important(parser);
+      var important = Parsers.Important(parser);
 
       if (expressions.Count > 0)
         return new Value(expressions, important);
@@ -717,39 +716,39 @@ namespace dotless
       return null;
     }
 
-    public static Node important(Parser parser)
+    public static Node Important(Parser parser)
     {
       return parser.Match(@"!\s*important");
     }
 
-    public static Expression sub(Parser parser)
+    public static Expression Sub(Parser parser)
     {
       Expression e = null;
 
-      if (parser.Match('(') && (e = Parsers.expression(parser)) && parser.Match(')'))
+      if (parser.Match('(') && (e = Parsers.Expression(parser)) && parser.Match(')'))
         return e;
 
       return null;
     }
 
-    public static Node multiplication(Parser parser)
+    public static Node Multiplication(Parser parser)
     {
-      var m = Parsers.operand(parser);
+      var m = Parsers.Operand(parser);
       if (!m)
         return null;
     
       var op = parser.Match(@"[\/*]");
 
       Node a = null;
-      if (op && (a = Parsers.multiplication(parser)))
+      if (op && (a = Parsers.Multiplication(parser)))
         return new Operation(op.Value, m, a);
 
       return m;
     }
 
-    public static Node addition(Parser parser)
+    public static Node Addition(Parser parser)
     {
-      var m = Parsers.multiplication(parser);
+      var m = Parsers.Multiplication(parser);
       if (!m)
         return null;
 
@@ -758,7 +757,7 @@ namespace dotless
         op = parser.Match(@"[-+]");
 
       Node a = null;
-      if (op && (a = Parsers.addition(parser)))
+      if (op && (a = Parsers.Addition(parser)))
         return new Operation(op.Value, m, a);
 
       return m;
@@ -768,11 +767,11 @@ namespace dotless
     // An operand is anything that can be part of an operation,
     // such as a Color, or a Variable
     //
-    public static Node operand(Parser parser) {
-      return Parsers.sub(parser) || 
-             Parsers.entities.dimension(parser) ||
-             Parsers.entities.color(parser) || 
-             Parsers.entities.variable(parser);
+    public static Node Operand(Parser parser) {
+      return Parsers.Sub(parser) || 
+             Parsers.Entities.Dimension(parser) ||
+             Parsers.Entities.Color(parser) || 
+             Parsers.Entities.Variable(parser);
     }
 
     //
@@ -782,12 +781,12 @@ namespace dotless
     //     1px solid black
     //     @var * 2
     //
-    public static Expression expression(Parser parser)
+    public static Expression Expression(Parser parser)
     {
       Node e;
       var entities = new NodeList();
 
-      while (e = Parsers.addition(parser) || Parsers.entity(parser))
+      while (e = Parsers.Addition(parser) || Parsers.Entity(parser))
       {
         entities.Add(e);
       }
@@ -798,7 +797,7 @@ namespace dotless
       return null;
     }
 
-    public static string property(Parser parser)
+    public static string Property(Parser parser)
     {
       var name = parser.Match(@"(\*?-?[-a-z]+)\s*:");
 

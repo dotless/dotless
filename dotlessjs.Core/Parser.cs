@@ -84,7 +84,7 @@ namespace dotless
       Ruleset root = null;
       try
       {
-        root = new Ruleset(new NodeList<Selector>(), Parsers.primary(this));
+        root = new Ruleset(new NodeList<Selector>(), Parsers.Primary(this));
         root.Root = true;
       }
       catch (ParsingException e)
