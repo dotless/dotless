@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -77,8 +78,27 @@ namespace dotless
 
     public Ruleset Parse(string str)
     {
-      var buff = new List<char>();
-      
+      SetupInput(str);
+
+      ParsingException parsingException = null;
+      Ruleset root = null;
+      try
+      {
+        root = new Ruleset(new NodeList<Selector>(), Parsers.primary(this));
+        root.Root = true;
+      }
+      catch (ParsingException e)
+      {
+        parsingException = e;
+      }
+
+      CheckForParsingError(parsingException);
+
+      return root;
+    }
+
+    private void SetupInput(string str)
+    {
       i = j = current = 0;
       chunks = new List<string>();
       input = str.Replace("\r\n", "\n");
@@ -100,6 +120,7 @@ namespace dotless
         }
         else
         {
+          var buff = new List<char>(inputLength);
           for (var k = 0; k < input.Length; k++)
           {
             char c;
@@ -118,43 +139,38 @@ namespace dotless
       }
       else
         chunks.Add(input);
+    }
 
-      // Start with the primary rule.
-      // The whole syntax tree is held under a Ruleset node,
-      // with the `root` property set to true, so no `{}` are
-      // output.
-      var root = new Ruleset(new NodeList<Selector>(), Parsers.primary(this));
-      root.Root = true;
-
+    private void CheckForParsingError(Exception parsingException)
+    {
       // If `i` is smaller than the `input.length - 1`,
       // it means the parser wasn't able to parse the whole
       // string, so we've got a parsing error.
       //
-      // We try to extract a \n delimited string,
-      // showing the line where the parse error occured.
-      // We split it up into two parts (the part which parsed,
-      // and the part which didn't), so we can color them differently.
-      if (i < input.Length - 1) {
-        int start;
-        for (start = i; start > 0; start--)
-        {
-         if (input[start] == '\n')
-           break;
-        }
-        start++;
-        
-        var regex = new Regex(@"\n", RegexOptions.Multiline);
-        var line = regex.Matches(input.Substring(0, i)).Count + 1;
+      // We try to extract the line where the parse error occured.
+      // We pass this to the Stylizer to be prettified for output.
 
-        var end = input.Substring(i).IndexOf('\n');
-        end = end == -1 ? input.Length - start + 1 : end + i;
+      if (i == input.Length - 1 && parsingException != null)
+        throw parsingException;
 
-        var zone = Stylizer.Stylize(input.Substring(start, end - start), i - start);
+      var first = input.Substring(0, i);
+      var second = input.Substring(i);
 
-        var message = "Parse Error on line " + line + ":\n" + zone;
-        throw new ParsingException(message);
-      }
-      return root;
+      var start = first.LastIndexOf('\n') + 1;
+      var line = first.Split('\n').Length;
+      var end = second.IndexOf('\n');
+
+      end = end == -1 ? input.Length - start + 1 : end + i;
+
+      var zone = Stylizer.Stylize(input.Substring(start, end - start), i - start);
+
+      string message;
+      if (parsingException != null)
+        message = string.Format("{0} on line {1}:\n{2}", parsingException.Message, line, zone);
+      else
+        message = string.Format("Parse Error on line {0}:\n{1}", line, zone);
+
+      throw new ParsingException(message, parsingException);
     }
 
     public string MatchString(char tok)
