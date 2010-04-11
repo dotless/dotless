@@ -50,30 +50,33 @@ namespace dotlessjs.Compiler
       var contents = files
         .ToDictionary(f => f, f => File.ReadAllText(f));
 
-      var sizes = files.ToDictionary(f => f, f => contents[f].Length/1024d); // convert bytes to Kbytes
+      const int rounds = 150;
 
-      var rounds = 60;
+      Func<string, int> runTest = file => Enumerable
+                                            .Range(0, rounds)
+                                            .Select(i =>
+                                                      {
+                                                        var starttime = DateTime.Now;
+                                                        parser.Parse(contents[file]).ToCSS(null);
+                                                        var duration = (DateTime.Now - starttime);
+                                                        return duration.Milliseconds;
+                                                      })
+                                            .Sum();
 
-      var times = files
-        .ToDictionary(f => f, f => Enumerable.Range(0, rounds)
-                                     .Select(i =>
-                                               {
-                                                 var starttime = DateTime.Now;
-                                                 parser.Parse(contents[f]).ToCSS(null);
-                                                 var duration = (DateTime.Now - starttime);
-                                                 return duration.Milliseconds;
-                                               })
-                                     .Average());
-      Console.WriteLine();
+      Console.WriteLine("Press Enter to begin benchmark");
+      Console.ReadLine();
 
-      var rates = files.ToDictionary(f => f, f => 1000*sizes[f]/times[f]); // convert ms into s
+      Console.WriteLine("Running each test {0} times", rounds);
 
       foreach (var file in files)
       {
-        Console.WriteLine("{0}\t{1:0000} ms\t{2:0.000} Kb\t{3:0.00} Kb/s", file.PadRight(18), times[file], sizes[file], rates[file]);
+        var size = rounds*contents[file].Length/1024d;
+        Console.Write("{0} : {1,7:#,##0.00} Kb  ", file.PadRight(18), size);
+        var time = runTest(file)/1000d;
+        Console.WriteLine("{0,6:#.00} s  {1,8:#,##0.00} Kb/s", time, size/time);
       }
 
-//      Console.Read();
+      //      Console.Read();
     }
   }
 }
