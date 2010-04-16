@@ -8,15 +8,6 @@ namespace dotless.Tests.Specs
     public void CommaDelimited()
     {
       var input = @"
-.comma-delimited { 
-  background: url(bg.jpg) no-repeat, url(bg.png) repeat-x top left, url(bg);
-  text-shadow: -1px -1px 1px red, 6px 5px 5px yellow;
-  -moz-box-shadow: 0pt 0pt 2px rgba(255, 255, 255, 0.4) inset,
-    0pt 4px 6px rgba(255, 255, 255, 0.4) inset;
-}
-";
-
-      var expected = @"
 .comma-delimited {
   background: url(bg.jpg) no-repeat, url(bg.png) repeat-x top left, url(bg);
   text-shadow: -1px -1px 1px red, 6px 5px 5px yellow;
@@ -24,7 +15,7 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      AssertLess(input, expected);
+      AssertLessUnchanged(input);
     }
 
     [Test]
@@ -33,19 +24,11 @@ namespace dotless.Tests.Specs
       var input = @"
 @font-face {
   font-family: Headline;
-  src: local(Futura-Medium),
-       url(fonts.svg#MyGeometricModern) format(""svg"");
-}
-";
-
-      var expected = @"
-@font-face {
-  font-family: Headline;
   src: local(Futura-Medium), url(fonts.svg#MyGeometricModern) format(""svg"");
 }
 ";
 
-      AssertLess(input, expected);
+      AssertLessUnchanged(input);
     }
     
     [Test]
@@ -57,13 +40,7 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      var expected = @"
-.other {
-  -moz-transform: translate(0, 11em) rotate(-90deg);
-}
-";
-
-      AssertLess(input, expected);
+      AssertLessUnchanged(input);
     }
     
     [Test]
@@ -71,44 +48,37 @@ namespace dotless.Tests.Specs
     {
       var input = @"
 p:not([class*=""lead""]) {
-  color: black; 
-}
-";
-
-      var expected = @"
-p:not([class*=""lead""]) {
   color: black;
 }
 ";
 
-      AssertLess(input, expected);
+      AssertLessUnchanged(input);
     }
     
     [Test]
-    public void MultipleAttributeSelectors()
+    public void MultipleAttributeSelectors1()
     {
       var input = @"
 input[type=""text""].class#id[attr=32]:not(1) {
   color: white;
 }
-
-div#id.class[a=1][b=2].class:not(1) {
-  color: white;
-}
 ";
 
-      var expected = @"
-input[type=""text""].class#id[attr=32]:not(1) {
-  color: white;
-}
-div#id.class[a=1][b=2].class:not(1) {
-  color: white;
-}
-";
-
-      AssertLess(input, expected);
+      AssertLessUnchanged(input);
     }
 
+    [Test]
+    public void MultipleAttributeSelectors2()
+    {
+      var input = @"
+div#id.class[a=1][b=2].class:not(1) {
+  color: white;
+}
+";
+
+      AssertLessUnchanged(input);
+    }
+    
     [Test]
     public void BeforePseudoElement()
     {
@@ -118,29 +88,13 @@ p::before {
 }
 ";
 
-      var expected = @"
-p::before {
-  color: black;
-}
-";
-
-      AssertLess(input, expected);
+      AssertLessUnchanged(input);
     }
 
     [Test]
     public void AfterPseudoElement()
     {
       var input = @"
-ul.comma > li:not(:only-child)::after { 
-  color: white;
-}
-
-ol.comma > li:nth-last-child(2)::after {
-  color: white;
-}
-";
-
-      var expected = @"
 ul.comma > li:not(:only-child)::after {
   color: white;
 }
@@ -149,27 +103,19 @@ ol.comma > li:nth-last-child(2)::after {
 }
 ";
 
-      AssertLess(input, expected);
+      AssertLessUnchanged(input);
     }
 
     [Test]
     public void NthChildExpressions()
     {
       var input = @"
-li:nth-child(4n+1),
-li:nth-child(-5n),
-li:nth-child(-n+2) {
-  color: white;
-}
-";
-
-      var expected = @"
 li:nth-child(4n+1), li:nth-child(-5n), li:nth-child(-n+2) {
   color: white;
 }
 ";
 
-      AssertLess(input, expected);
+      AssertLessUnchanged(input);
     }
 
     [Test]
@@ -181,13 +127,7 @@ a[href^=""http://""] {
 }
 ";
 
-      var expected = @"
-a[href^=""http://""] {
-  color: black;
-}
-";
-
-      AssertLess(input, expected);
+      AssertLessUnchanged(input);
     }
 
     [Test]
@@ -199,13 +139,7 @@ a[href$=""http://""] {
 }
 ";
 
-      var expected = @"
-a[href$=""http://""] {
-  color: black;
-}
-";
-
-      AssertLess(input, expected);
+      AssertLessUnchanged(input);
     }
 
     [Test]
@@ -217,13 +151,7 @@ a ~ p {
 }
 ";
 
-      var expected = @"
-a ~ p {
-  background: red;
-}
-";
-
-      AssertLess(input, expected);
+      AssertLessUnchanged(input);
     }
 
   }

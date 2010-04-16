@@ -22,6 +22,11 @@ namespace dotless.Tests
       Assert.That(output, Is.EqualTo(expected));
     }
 
+    protected static void AssertLessUnchanged(string input)
+    {
+      AssertLess(input, input);
+    }
+
     protected static void AssertExpression(string output, string expression)
     {
       AssertExpression(output, expression, null);
