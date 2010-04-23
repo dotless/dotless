@@ -38,7 +38,7 @@ using dotless.Tree;
 
 namespace dotless
 {
-  public static class Parsers {
+  public class Parsers {
     //
     // The `primary` rule is the *entry* and *exit* point of the parser.
     // The rules here can appear at any level of the parse tree.
@@ -54,14 +54,14 @@ namespace dotless
     // Only at one point is the primary rule not called from the
     // block rule: at the root level.
     //
-    public static List<Node> Primary(Parser parser)
+    public List<Node> Primary(Parser parser)
     {
       Node node;
       var root = new List<Node>();
 
-      while (node = Parsers.Mixin.Definition(parser) || Parsers.Rule(parser) || Parsers.Ruleset(parser) ||
-                    Parsers.Mixin.Call(parser) || Parsers.Comment(parser) ||
-                    parser.Tokenizer.Match(@"[\n\s]+") || Parsers.Directive(parser))
+      while (node = MixinDefinition(parser) || Rule(parser) || Ruleset(parser) ||
+                    MixinCall(parser) || Comment(parser) ||
+                    parser.Tokenizer.Match(@"[\n\s]+") || Directive(parser))
       {
         root.Add(node);
       }
@@ -71,7 +71,7 @@ namespace dotless
     // We create a Comment node for CSS comments `/* */`,
     // but keep the LeSS comments `//` silent, by just skipping
     // over them.
-    public static Node Comment(Parser parser) {
+    public Node Comment(Parser parser) {
       if (parser.Tokenizer.CurrentChar != '/') 
         return null;
 
@@ -85,171 +85,171 @@ namespace dotless
     //
     // Entities are tokens which can be found inside an Expression
     //
-    public static class Entities {
-      //
-      // A string, which supports escaping " and '
-      //
-      //     "milky way" 'he\'s the one!'
-      //
-      public static Quoted Quoted(Parser parser)
-      {
-        if (parser.Tokenizer.CurrentChar != '"' && parser.Tokenizer.CurrentChar != '\'')
-          return null;
 
-        var str = parser.Tokenizer.Match(@"""((?:[^""\\\r\n]|\\.)*)""|'((?:[^'\\\r\n]|\\.)*)'");
-        if (str)
-          return new Quoted(str[0], str[1] ?? str[2]);
-
+    //
+    // A string, which supports escaping " and '
+    //
+    //     "milky way" 'he\'s the one!'
+    //
+    public Quoted Quoted(Parser parser)
+    {
+      if (parser.Tokenizer.CurrentChar != '"' && parser.Tokenizer.CurrentChar != '\'')
         return null;
-      }
 
-      //
-      // A catch-all word, such as:
-      //
-      //     black border-collapse
-      //
-      public static Keyword Keyword(Parser parser)
-      {
-        var k = parser.Tokenizer.Match(@"[A-Za-z-]+");
-        if (k)
-          return new Keyword(k.Value);
+      var str = parser.Tokenizer.Match(@"""((?:[^""\\\r\n]|\\.)*)""|'((?:[^'\\\r\n]|\\.)*)'");
+      if (str)
+        return new Quoted(str[0], str[1] ?? str[2]);
 
-        return null;
-      }
-
-      //
-      // A function call
-      //
-      //     rgb(255, 0, 255)
-      //
-      // We also try to catch IE's `alpha()`, but let the `alpha` parser
-      // deal with the details.
-      //
-      // The arguments are parsed with the `entities.arguments` parser.
-      //
-      public static Call Call(Parser parser)
-      {
-        var name = parser.Tokenizer.Match(@"([a-zA-Z0-9_-]+)\(");
-
-        if (!name)
-          return null;
-
-        if (name[1].ToLowerInvariant() == "alpha")
-        {
-          var alpha = Parsers.Alpha(parser);
-          if (alpha != null)
-            return alpha;
-        }
-
-        var args = Parsers.Entities.Arguments(parser);
-
-        if (! parser.Tokenizer.Match(')')) 
-          return null;
-
-        return new Call(name[1], args);
-      }
-
-      public static NodeList<Expression> Arguments(Parser parser)
-      {
-        var args = new NodeList<Expression>();
-        Expression arg;
-
-        while (arg = Parsers.Expression(parser))
-        {
-          args.Add(arg);
-          if (! parser.Tokenizer.Match(','))
-            break;
-        }
-        return args;
-      }
-
-      public static Node Literal(Parser parser)
-      {
-        return Parsers.Entities.Dimension(parser) ||
-               Parsers.Entities.Color(parser) ||
-               Parsers.Entities.Quoted(parser);
-      }
-
-      //
-      // Parse url() tokens
-      //
-      // We use a specific rule for urls, because they don't really behave like
-      // standard function calls. The difference is that the argument doesn't have
-      // to be enclosed within a string, so it can't be parsed as an Expression.
-      //
-      public static Url Url(Parser parser) 
-      {
-        if (parser.Tokenizer.CurrentChar != 'u' || !parser.Tokenizer.Match(@"url\(")) 
-          return null;
-      
-        var value = Parsers.Entities.Quoted(parser) || parser.Tokenizer.Match(@"[-a-zA-Z0-9_%@$\/.&=:;#+?]+");
-      
-        if (! parser.Tokenizer.Match(')')) 
-          throw new ParsingException("missing closing ) for url()");
-
-        return new Url(value);
-      }
-
-      //
-      // A Variable entity, such as `@fink`, in
-      //
-      //     width: @fink + 2px
-      //
-      // We use a different parser for variable definitions,
-      // see `parsers.variable`.
-      //
-      public static Variable Variable(Parser parser)
-      {
-        RegexMatchResult name;
-
-        if (parser.Tokenizer.CurrentChar == '@' && (name = parser.Tokenizer.Match(@"@[a-zA-Z0-9_-]+")))
-          return new Variable(name.Value);
-
-        return null;
-      }
-
-      //
-      // A Hexadecimal color
-      //
-      //     #4F3C2F
-      //
-      // `rgb` and `hsl` colors are parsed through the `entities.call` parser.
-      //
-      public static Color Color(Parser parser)
-      {
-        RegexMatchResult rgb;
-
-        if (parser.Tokenizer.CurrentChar == '#' && (rgb = parser.Tokenizer.Match(@"#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})")))
-          return new Color(rgb[1]);
-
-        return null;
-      }
-
-      //
-      // A Dimension, that is, a number and a unit
-      //
-      //     0.5em 95%
-      //
-      public static Number Dimension(Parser parser)
-      {
-        var c = parser.Tokenizer.CurrentChar;
-        if ((c > 57 || c < 45) || c == 47)
-          return null;
-
-        var value = parser.Tokenizer.Match(@"(-?[0-9]*\.?[0-9]+)(px|%|em|pc|ex|in|deg|s|ms|pt|cm|mm)?");
-        if (value)
-          return new Number(value[1], value[2]);
-
-        return null;
-      }
+      return null;
     }
+
+    //
+    // A catch-all word, such as:
+    //
+    //     black border-collapse
+    //
+    public Keyword Keyword(Parser parser)
+    {
+      var k = parser.Tokenizer.Match(@"[A-Za-z-]+");
+      if (k)
+        return new Keyword(k.Value);
+
+      return null;
+    }
+
+    //
+    // A function call
+    //
+    //     rgb(255, 0, 255)
+    //
+    // We also try to catch IE's `alpha()`, but let the `alpha` parser
+    // deal with the details.
+    //
+    // The arguments are parsed with the `entities.arguments` parser.
+    //
+    public Call Call(Parser parser)
+    {
+      var name = parser.Tokenizer.Match(@"([a-zA-Z0-9_-]+)\(");
+
+      if (!name)
+        return null;
+
+      if (name[1].ToLowerInvariant() == "alpha")
+      {
+        var alpha = Alpha(parser);
+        if (alpha != null)
+          return alpha;
+      }
+
+      var args = Arguments(parser);
+
+      if (! parser.Tokenizer.Match(')')) 
+        return null;
+
+      return new Call(name[1], args);
+    }
+
+    public NodeList<Expression> Arguments(Parser parser)
+    {
+      var args = new NodeList<Expression>();
+      Expression arg;
+
+      while (arg = Expression(parser))
+      {
+        args.Add(arg);
+        if (! parser.Tokenizer.Match(','))
+          break;
+      }
+      return args;
+    }
+
+    public Node Literal(Parser parser)
+    {
+      return Dimension(parser) ||
+             Color(parser) ||
+             Quoted(parser);
+    }
+
+    //
+    // Parse url() tokens
+    //
+    // We use a specific rule for urls, because they don't really behave like
+    // standard function calls. The difference is that the argument doesn't have
+    // to be enclosed within a string, so it can't be parsed as an Expression.
+    //
+    public Url Url(Parser parser) 
+    {
+      if (parser.Tokenizer.CurrentChar != 'u' || !parser.Tokenizer.Match(@"url\(")) 
+        return null;
+    
+      var value = Quoted(parser) || parser.Tokenizer.Match(@"[-a-zA-Z0-9_%@$\/.&=:;#+?]+");
+    
+      if (! parser.Tokenizer.Match(')')) 
+        throw new ParsingException("missing closing ) for url()");
+
+      return new Url(value);
+    }
+
+    //
+    // A Variable entity, such as `@fink`, in
+    //
+    //     width: @fink + 2px
+    //
+    // We use a different parser for variable definitions,
+    // see `parsers.variable`.
+    //
+    public Variable Variable(Parser parser)
+    {
+      RegexMatchResult name;
+
+      if (parser.Tokenizer.CurrentChar == '@' && (name = parser.Tokenizer.Match(@"@[a-zA-Z0-9_-]+")))
+        return new Variable(name.Value);
+
+      return null;
+    }
+
+    //
+    // A Hexadecimal color
+    //
+    //     #4F3C2F
+    //
+    // `rgb` and `hsl` colors are parsed through the `entities.call` parser.
+    //
+    public Color Color(Parser parser)
+    {
+      RegexMatchResult rgb;
+
+      if (parser.Tokenizer.CurrentChar == '#' && (rgb = parser.Tokenizer.Match(@"#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})")))
+        return new Color(rgb[1]);
+
+      return null;
+    }
+
+    //
+    // A Dimension, that is, a number and a unit
+    //
+    //     0.5em 95%
+    //
+    public Number Dimension(Parser parser)
+    {
+      var c = parser.Tokenizer.CurrentChar;
+      if ((c > 57 || c < 45) || c == 47)
+        return null;
+
+      var value = parser.Tokenizer.Match(@"(-?[0-9]*\.?[0-9]+)(px|%|em|pc|ex|in|deg|s|ms|pt|cm|mm)?");
+      if (value)
+        return new Number(value[1], value[2]);
+
+      return null;
+    }
+    
 
     //
     // The variable part of a variable definition. Used in the `rule` parser
     //
     //     @fink:
     //
-    public static string Variable(Parser parser)
+    public string VariableName(Parser parser)
     {
       RegexMatchResult name;
 
@@ -266,14 +266,14 @@ namespace dotless
     //
     // We need to peek first, or we'll match on keywords and dimensions
     //
-    public static Shorthand Shorthand(Parser parser)
+    public Shorthand Shorthand(Parser parser)
     {
       if (! parser.Tokenizer.Peek(@"[@\w.-]+\/[@\w.-]+"))
         return null;
 
       Node a = null;
       Node b = null;
-      if ((a = Parsers.Entity(parser)) && parser.Tokenizer.Match('/') && (b = Parsers.Entity(parser)))
+      if ((a = Entity(parser)) && parser.Tokenizer.Match('/') && (b = Entity(parser)))
         return new Shorthand(a, b);
 
       return null;
@@ -282,112 +282,111 @@ namespace dotless
     //
     // Mixins
     //
-    public static class Mixin {
-      //
-      // A Mixin call, with an optional argument list
-      //
-      //     #mixins > .square(#fff);
-      //     .rounded(4px, black);
-      //     .button;
-      //
-      // The `while` loop is there because mixins can be
-      // namespaced, but we only support the child and descendant
-      // selector for now.
-      //
-      public static Tree.Mixin.Call Call(Parser parser)
+
+    //
+    // A Mixin call, with an optional argument list
+    //
+    //     #mixins > .square(#fff);
+    //     .rounded(4px, black);
+    //     .button;
+    //
+    // The `while` loop is there because mixins can be
+    // namespaced, but we only support the child and descendant
+    // selector for now.
+    //
+    public Tree.Mixin.Call MixinCall(Parser parser)
+    {
+      var elements = new NodeList<Element>();
+
+      RegexMatchResult e;
+      Combinator c = null;
+
+      while (e = parser.Tokenizer.Match(@"[#.]?[a-zA-Z0-9_-]+"))
       {
-        var elements = new NodeList<Element>();
+        elements.Add(new Element(c, e.Value));
+        var match = parser.Tokenizer.Match('>');
 
-        RegexMatchResult e;
-        Combinator c = null;
-
-        while (e = parser.Tokenizer.Match(@"[#.]?[a-zA-Z0-9_-]+"))
-        {
-          elements.Add(new Element(c, e.Value));
-          var match = parser.Tokenizer.Match('>');
-
-          c = match != null ? new Combinator(match.Value) : null;
-        }
-
-        NodeList<Expression> args = null;
-        if(parser.Tokenizer.Match('(') && (args = Parsers.Entities.Arguments(parser)) && parser.Tokenizer.Match(')'))
-        {
-          // arguments optional
-        }
-
-        if (elements.Count > 0 && (parser.Tokenizer.Match(';') || parser.Tokenizer.Peek('}')))
-          return new Tree.Mixin.Call(elements, args);
-
-        return null;
+        c = match != null ? new Combinator(match.Value) : null;
       }
 
-      //
-      // A Mixin definition, with a list of parameters
-      //
-      //     .rounded (@radius: 2px, @color) {
-      //        ...
-      //     }
-      //
-      // Until we have a finer grained state-machine, we have to
-      // do a look-ahead, to make sure we don't have a mixin call.
-      // See the `rule` function for more information.
-      //
-      // We start by matching `.rounded (`, and then proceed on to
-      // the argument list, which has optional default values.
-      // We store the parameters in `params`, with a `value` key,
-      // if there is a value, such as in the case of `@radius`.
-      //
-      // Once we've got our params list, and a closing `)`, we parse
-      // the `{...}` block.
-      //
-      public static Tree.Mixin.Definition Definition(Parser parser)
+      NodeList<Expression> args = null;
+      if(parser.Tokenizer.Match('(') && (args = Arguments(parser)) && parser.Tokenizer.Match(')'))
       {
-        if (parser.Tokenizer.CurrentChar != '.' || parser.Tokenizer.Peek(@"[^{]*(;|})"))
-          return null;
+        // arguments optional
+      }
 
-        var match = parser.Tokenizer.Match(@"([#.][a-zA-Z0-9_-]+)\s*\(");
-        if (!match)
-          return null;
-        
-        var name = match[1];
+      if (elements.Count > 0 && (parser.Tokenizer.Match(';') || parser.Tokenizer.Peek('}')))
+        return new Tree.Mixin.Call(elements, args);
 
-        var parameters = new NodeList<Rule>();
-        RegexMatchResult param;
-        while (param = parser.Tokenizer.Match(@"@[\w-]+"))
+      return null;
+    }
+
+    //
+    // A Mixin definition, with a list of parameters
+    //
+    //     .rounded (@radius: 2px, @color) {
+    //        ...
+    //     }
+    //
+    // Until we have a finer grained state-machine, we have to
+    // do a look-ahead, to make sure we don't have a mixin call.
+    // See the `rule` function for more information.
+    //
+    // We start by matching `.rounded (`, and then proceed on to
+    // the argument list, which has optional default values.
+    // We store the parameters in `params`, with a `value` key,
+    // if there is a value, such as in the case of `@radius`.
+    //
+    // Once we've got our params list, and a closing `)`, we parse
+    // the `{...}` block.
+    //
+    public Tree.Mixin.Definition MixinDefinition(Parser parser)
+    {
+      if (parser.Tokenizer.CurrentChar != '.' || parser.Tokenizer.Peek(@"[^{]*(;|})"))
+        return null;
+
+      var match = parser.Tokenizer.Match(@"([#.][a-zA-Z0-9_-]+)\s*\(");
+      if (!match)
+        return null;
+      
+      var name = match[1];
+
+      var parameters = new NodeList<Rule>();
+      RegexMatchResult param;
+      while (param = parser.Tokenizer.Match(@"@[\w-]+"))
+      {
+        if (parser.Tokenizer.Match(':'))
         {
-          if (parser.Tokenizer.Match(':'))
-          {
-            var value = Parsers.Expression(parser);
-            if (value)
-              parameters.Add(new Rule(param.Value, value));
-            else
-              throw new ParsingException("Expected value");
-          }
+          var value = Expression(parser);
+          if (value)
+            parameters.Add(new Rule(param.Value, value));
           else
-            parameters.Add(new Rule(param.Value, null));
-
-          if (!parser.Tokenizer.Match(','))
-            break;
+            throw new ParsingException("Expected value");
         }
-        if (! parser.Tokenizer.Match(')'))
-          throw new ParsingException("Expected ')'");
+        else
+          parameters.Add(new Rule(param.Value, null));
 
-        var rules = Parsers.Block(parser);
-
-        if (rules != null)
-          return new Tree.Mixin.Definition(name, parameters, rules);
-
-        return null;
+        if (!parser.Tokenizer.Match(','))
+          break;
       }
+      if (! parser.Tokenizer.Match(')'))
+        throw new ParsingException("Expected ')'");
+
+      var rules = Block(parser);
+
+      if (rules != null)
+        return new Tree.Mixin.Definition(name, parameters, rules);
+
+      return null;
     }
 
     //
     // Entities are the smallest recognized token,
     // and can be found inside a rule's value.
     //
-    public static Node Entity(Parser parser) {
-      return Parsers.Entities.Literal(parser) || Parsers.Entities.Variable(parser) || Parsers.Entities.Url(parser) ||
-             Parsers.Entities.Call(parser)    || Parsers.Entities.Keyword(parser);
+    public Node Entity(Parser parser) {
+      return Literal(parser) || Variable(parser) || Url(parser) ||
+             Call(parser)    || Keyword(parser);
     }
 
     //
@@ -395,7 +394,7 @@ namespace dotless
     // because the `block` rule will be expecting it, but we still need to make sure
     // it's there, if ';' was ommitted.
     //
-    public static bool End(Parser parser) {
+    public bool End(Parser parser) {
       return parser.Tokenizer.Match(';') || parser.Tokenizer.Peek('}');
     }
 
@@ -404,14 +403,14 @@ namespace dotless
     //
     //     alpha(opacity=88)
     //
-    public static Alpha Alpha(Parser parser)
+    public Alpha Alpha(Parser parser)
     {
       Node value;
 
       if (! parser.Tokenizer.Match(@"opacity=", true))
         return null;
 
-      if (value = parser.Tokenizer.Match(@"[0-9]+") || Parsers.Entities.Variable(parser))
+      if (value = parser.Tokenizer.Match(@"[0-9]+") || Variable(parser))
       {
         if (! parser.Tokenizer.Match(')')) 
           throw new ParsingException("missing closing ) for alpha()");
@@ -434,10 +433,10 @@ namespace dotless
     // they are made out of a `Combinator` (see combinator rule),
     // and an element name, such as a tag a class, or `*`.
     //
-    public static Element Element(Parser parser)
+    public Element Element(Parser parser)
     {
-      var c = Parsers.Combinator(parser);
-      var e = parser.Tokenizer.Match(@"[.#:]?[a-zA-Z0-9_-]+") || parser.Tokenizer.Match('*') || Parsers.Attribute(parser) ||
+      var c = Combinator(parser);
+      var e = parser.Tokenizer.Match(@"[.#:]?[a-zA-Z0-9_-]+") || parser.Tokenizer.Match('*') || Attribute(parser) ||
               parser.Tokenizer.Match(@"\([^)@]+\)");
 
       if (e)
@@ -455,7 +454,7 @@ namespace dotless
     // in the input, to see if it's a ` ` character. More info on how
     // we deal with this in *combinator.js*.
     //
-    public static Combinator Combinator(Parser parser)
+    public Combinator Combinator(Parser parser)
     {
       Node match;
       if (match = parser.Tokenizer.Match(@"[+>~]") || parser.Tokenizer.Match('&') || parser.Tokenizer.Match(@"::"))
@@ -472,12 +471,12 @@ namespace dotless
     //
     // Selectors are made out of one or more Elements, see above.
     //
-    public static Selector Selector(Parser parser)
+    public Selector Selector(Parser parser)
     {
       Element e;
       var elements = new NodeList<Element>();
 
-      while (e = Parsers.Element(parser))
+      while (e = Element(parser))
         elements.Add(e);
 
       if (elements.Count > 0)
@@ -486,12 +485,12 @@ namespace dotless
       return null;
     }
 
-    public static Node Tag(Parser parser)
+    public Node Tag(Parser parser)
     {
       return parser.Tokenizer.Match(@"[a-zA-Z][a-zA-Z-]*[0-9]?") || parser.Tokenizer.Match('*');
     }
 
-    public static TextNode Attribute(Parser parser)
+    public TextNode Attribute(Parser parser)
     {
       var attr = "";
       Node key;
@@ -500,11 +499,11 @@ namespace dotless
       if (! parser.Tokenizer.Match('['))
         return null;
 
-      if (key = parser.Tokenizer.Match(@"[a-z]+") || Parsers.Entities.Quoted(parser))
+      if (key = parser.Tokenizer.Match(@"[a-z]+") || Quoted(parser))
       {
         Node op;
         if ((op = parser.Tokenizer.Match(@"[|~*$^]?=")) &&
-            (val = Parsers.Entities.Quoted(parser) || parser.Tokenizer.Match(@"[\w-]+")))
+            (val = Quoted(parser) || parser.Tokenizer.Match(@"[\w-]+")))
           attr = string.Format("{0}{1}{2}", key, op, val.ToCSS(null));
         else
           attr = key.ToString();
@@ -523,12 +522,12 @@ namespace dotless
     // The `block` rule is used by `ruleset` and `mixin.definition`.
     // It's a wrapper around the `primary` rule, with added `{}`.
     //
-    public static List<Node> Block(Parser parser)
+    public List<Node> Block(Parser parser)
     {
       if (!parser.Tokenizer.Match('{'))
         return null;
 
-      var content = Parsers.Primary(parser);
+      var content = Primary(parser);
 
       if (content != null && parser.Tokenizer.Match('}'))
         return content;
@@ -542,7 +541,7 @@ namespace dotless
     //
     // div, .class, body > p {...}
     //
-    public static Ruleset Ruleset(Parser parser)
+    public Ruleset Ruleset(Parser parser)
     {
       var selectors = new NodeList<Selector>();
 
@@ -556,18 +555,18 @@ namespace dotless
       else
       {
         Selector s;
-        while (s = Parsers.Selector(parser))
+        while (s = Selector(parser))
         {
           selectors.Add(s);
           if (!parser.Tokenizer.Match(','))
             break;
         }
-        if (s) Parsers.Comment(parser);
+        if (s) Comment(parser);
       }
 
       List<Node> rules;
 
-      if (selectors.Count > 0 && (rules = Parsers.Block(parser)) != null)
+      if (selectors.Count > 0 && (rules = Block(parser)) != null)
         return new Ruleset(selectors, rules);
 
       parser.Tokenizer.SetLocation(memo);
@@ -575,24 +574,24 @@ namespace dotless
       return null;
     }
 
-    public static Rule Rule(Parser parser)
+    public Rule Rule(Parser parser)
     {
       var memo = parser.Tokenizer.GetLocation();
 
-      var name = Parsers.Property(parser) ?? Parsers.Variable(parser);
+      var name = Property(parser) ?? VariableName(parser);
 
-      if (!string.IsNullOrEmpty(name))
+      if (name != null)
       {
         Node value;
 
         if ((name[0] != '@') && (parser.Tokenizer.Peek(@"([^@+\/*(;{}-]*);")))
           value = parser.Tokenizer.Match(@"[^@+\/*(;{}-]*");
         else if (name == "font")
-          value = Parsers.Font(parser);
+          value = Font(parser);
         else
-          value = Parsers.Value(parser);
+          value = Value(parser);
 
-        if (Parsers.End(parser))
+        if (End(parser))
           return new Rule(name, value);
       }
 
@@ -611,11 +610,11 @@ namespace dotless
     // file-system operation. The function used for importing is
     // stored in `import`, which we pass to the Import constructor.
     //
-    public static Import Import(Parser parser)
+    public Import Import(Parser parser)
     {
       Node path = null;
 
-      if (parser.Tokenizer.Match(@"@import\s+") && (path = Parsers.Entities.Quoted(parser) || Parsers.Entities.Url(parser)) && parser.Tokenizer.Match(';'))
+      if (parser.Tokenizer.Match(@"@import\s+") && (path = Quoted(parser) || Url(parser)) && parser.Tokenizer.Match(';'))
       {
         if (path is Quoted)
           return new Import(path as Quoted, parser.Importer);
@@ -632,12 +631,12 @@ namespace dotless
     //
     //     @charset "utf-8";
     //
-    public static Directive Directive(Parser parser) {
+    public Directive Directive(Parser parser) {
 
       if (parser.Tokenizer.CurrentChar != '@') 
         return null;
 
-      var import = Parsers.Import(parser);
+      var import = Import(parser);
       if (import)
         return import;
 
@@ -646,7 +645,7 @@ namespace dotless
       if (!string.IsNullOrEmpty(name))
       {
         var types = parser.Tokenizer.MatchString(@"[a-z:, ]+").Trim();
-        rules = Parsers.Block(parser);
+        rules = Block(parser);
         if (rules != null)
           return new Directive(name + " " + types, rules);
       }
@@ -655,14 +654,14 @@ namespace dotless
         name = parser.Tokenizer.MatchString(@"@[-a-z]+");
         if (name == "@font-face")
         {
-          rules = Parsers.Block(parser);
+          rules = Block(parser);
           if (rules != null)
             return new Directive(name, rules);
         }
         else
         {
           Node value;
-          if ((value = Parsers.Entity(parser)) && parser.Tokenizer.Match(';'))
+          if ((value = Entity(parser)) && parser.Tokenizer.Match(';'))
             return new Directive(name, value);
         }
       }
@@ -670,13 +669,13 @@ namespace dotless
       return null;
     }
 
-    public static Value Font(Parser parser)
+    public Value Font(Parser parser)
     {
       var value = new NodeList();
       var expression = new NodeList();
       Node e;
 
-      while (e = Parsers.Shorthand(parser) || Parsers.Entity(parser))
+      while (e = Shorthand(parser) || Entity(parser))
       {
         expression.Add(e);
       }
@@ -684,14 +683,14 @@ namespace dotless
 
       if (parser.Tokenizer.Match(','))
       {
-        while (e = Parsers.Expression(parser))
+        while (e = Expression(parser))
         {
           value.Add(e);
           if (! parser.Tokenizer.Match(','))
             break;
         }
       }
-      return new Value(value, Parsers.Important(parser));
+      return new Value(value, Important(parser));
     }
 
     //
@@ -702,18 +701,18 @@ namespace dotless
     // In a Rule, a Value represents everything after the `:`,
     // and before the `;`.
     //
-    public static Value Value(Parser parser)
+    public Value Value(Parser parser)
     {
       var expressions = new NodeList();
 
       Node e;
-      while (e = Parsers.Expression(parser))
+      while (e = Expression(parser))
       {
         expressions.Add(e);
         if (!parser.Tokenizer.Match(','))
           break;
       }
-      var important = Parsers.Important(parser);
+      var important = Important(parser);
 
       if (expressions.Count > 0)
         return new Value(expressions, important);
@@ -721,39 +720,39 @@ namespace dotless
       return null;
     }
 
-    public static Node Important(Parser parser)
+    public Node Important(Parser parser)
     {
       return parser.Tokenizer.Match(@"!\s*important");
     }
 
-    public static Expression Sub(Parser parser)
+    public Expression Sub(Parser parser)
     {
       Expression e = null;
 
-      if (parser.Tokenizer.Match('(') && (e = Parsers.Expression(parser)) && parser.Tokenizer.Match(')'))
+      if (parser.Tokenizer.Match('(') && (e = Expression(parser)) && parser.Tokenizer.Match(')'))
         return e;
 
       return null;
     }
 
-    public static Node Multiplication(Parser parser)
+    public Node Multiplication(Parser parser)
     {
-      var m = Parsers.Operand(parser);
+      var m = Operand(parser);
       if (!m)
         return null;
     
       var op = parser.Tokenizer.Match(@"[\/*]");
 
       Node a = null;
-      if (op && (a = Parsers.Multiplication(parser)))
+      if (op && (a = Multiplication(parser)))
         return new Operation(op.Value, m, a);
 
       return m;
     }
 
-    public static Node Addition(Parser parser)
+    public Node Addition(Parser parser)
     {
-      var m = Parsers.Multiplication(parser);
+      var m = Multiplication(parser);
       if (!m)
         return null;
 
@@ -762,7 +761,7 @@ namespace dotless
         op = parser.Tokenizer.Match(@"[-+]");
 
       Node a = null;
-      if (op && (a = Parsers.Addition(parser)))
+      if (op && (a = Addition(parser)))
         return new Operation(op.Value, m, a);
 
       return m;
@@ -772,11 +771,11 @@ namespace dotless
     // An operand is anything that can be part of an operation,
     // such as a Color, or a Variable
     //
-    public static Node Operand(Parser parser) {
-      return Parsers.Sub(parser) || 
-             Parsers.Entities.Dimension(parser) ||
-             Parsers.Entities.Color(parser) || 
-             Parsers.Entities.Variable(parser);
+    public Node Operand(Parser parser) {
+      return Sub(parser) || 
+             Dimension(parser) ||
+             Color(parser) || 
+             Variable(parser);
     }
 
     //
@@ -786,12 +785,12 @@ namespace dotless
     //     1px solid black
     //     @var * 2
     //
-    public static Expression Expression(Parser parser)
+    public Expression Expression(Parser parser)
     {
       Node e;
       var entities = new NodeList();
 
-      while (e = Parsers.Addition(parser) || Parsers.Entity(parser))
+      while (e = Addition(parser) || Entity(parser))
       {
         entities.Add(e);
       }
@@ -802,7 +801,7 @@ namespace dotless
       return null;
     }
 
-    public static string Property(Parser parser)
+    public string Property(Parser parser)
     {
       var name = parser.Tokenizer.Match(@"(\*?-?[-a-z]+)\s*:");
 
