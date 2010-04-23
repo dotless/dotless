@@ -251,10 +251,10 @@ namespace dotless
     //
     public string VariableName(Parser parser)
     {
-      RegexMatchResult name;
+      var variable = Variable(parser);
 
-      if (parser.Tokenizer.CurrentChar == '@' && (name = parser.Tokenizer.Match(@"(@[a-zA-Z0-9_-]+)\s*:")))
-        return name[1];
+      if (variable != null)
+        return variable.Name;
 
       return null;
     }
@@ -580,7 +580,7 @@ namespace dotless
 
       var name = Property(parser) ?? VariableName(parser);
 
-      if (name != null)
+      if (name != null && parser.Tokenizer.Match(':'))
       {
         Node value;
 
@@ -803,10 +803,10 @@ namespace dotless
 
     public string Property(Parser parser)
     {
-      var name = parser.Tokenizer.Match(@"(\*?-?[-a-z]+)\s*:");
+      var name = parser.Tokenizer.Match(@"\*?-?[-a-z]+");
 
       if (name)
-        return name[1];
+        return name.Value;
 
       return null;
     }
