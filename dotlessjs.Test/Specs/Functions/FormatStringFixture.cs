@@ -28,7 +28,7 @@ namespace dotless.Tests.Specs.Functions
     [Test]
     public void SimpleFormatting()
     {
-      AssertExpression("abc d", "formatstring('abc {0}', 'd', 'e')");         // Currently unable to have "{" inside a string
+      AssertExpression("abc d", "formatstring('abc {0}', 'd', 'e')");
       AssertExpression("abc d e", "formatstring('abc {0} {1}', 'd', 'e')");
       AssertExpression("abc e d", "formatstring('abc {1} {0}', 'd', 'e')");
     }

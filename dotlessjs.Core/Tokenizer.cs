@@ -185,6 +185,16 @@ namespace dotless
       return _i == _inputLength;
     }
 
+    public int GetLocation()
+    {
+      return _i;
+    }
+
+    public void SetLocation(int location)
+    {
+      _i = location;
+    }
+
     public Zone GetCurrentZone()
     {
       var first = _input.Substring(0, _i);

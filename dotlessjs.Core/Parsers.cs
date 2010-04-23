@@ -59,7 +59,7 @@ namespace dotless
       Node node;
       var root = new List<Node>();
 
-      while (node = Parsers.Mixin.Definition(parser) || Parsers.Ruleset(parser) || Parsers.Rule(parser) ||
+      while (node = Parsers.Mixin.Definition(parser) || Parsers.Rule(parser) || Parsers.Ruleset(parser) ||
                     Parsers.Mixin.Call(parser) || Parsers.Comment(parser) ||
                     parser.Tokenizer.Match(@"[\n\s]+") || Parsers.Directive(parser))
       {
@@ -546,8 +546,7 @@ namespace dotless
     {
       var selectors = new NodeList<Selector>();
 
-      if (parser.Tokenizer.Peek(@"[^{]+[@;}]"))
-        return null;
+      var memo = parser.Tokenizer.GetLocation();
 
       if (parser.Tokenizer.Peek(@"([a-z.#: _-]+)[\s\n]*\{"))
       {
@@ -560,22 +559,26 @@ namespace dotless
         while (s = Parsers.Selector(parser))
         {
           selectors.Add(s);
-          if (! parser.Tokenizer.Match(','))
+          if (!parser.Tokenizer.Match(','))
             break;
         }
         if (s) Parsers.Comment(parser);
       }
 
-      var rules = Parsers.Block(parser);
+      List<Node> rules;
 
-      if (selectors.Count > 0 && rules != null)
+      if (selectors.Count > 0 && (rules = Parsers.Block(parser)) != null)
         return new Ruleset(selectors, rules);
+
+      parser.Tokenizer.SetLocation(memo);
 
       return null;
     }
 
     public static Rule Rule(Parser parser)
     {
+      var memo = parser.Tokenizer.GetLocation();
+
       var name = Parsers.Property(parser) ?? Parsers.Variable(parser);
 
       if (!string.IsNullOrEmpty(name))
@@ -592,6 +595,8 @@ namespace dotless
         if (Parsers.End(parser))
           return new Rule(name, value);
       }
+
+      parser.Tokenizer.SetLocation(memo);
 
       return null;
     }
