@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DefaultNodeProvider.cs" />
     <Compile Include="Functions\AbsFunction.cs" />
     <Compile Include="Functions\AddFunction.cs" />
     <Compile Include="Functions\AlphaFunction.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="Functions\RgbFunction.cs" />
     <Compile Include="Functions\HslaFunction.cs" />
     <Compile Include="Infrastructure\RegexMatchResult.cs" />
+    <Compile Include="INodeProvider.cs" />
     <Compile Include="Stylizers\HtmlStylizer.cs" />
     <Compile Include="Stylizers\IStylizer.cs" />
     <Compile Include="Stylizers\ConsoleStylizer.cs" />

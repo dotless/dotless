@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using dotless.Exceptions;
@@ -80,7 +79,7 @@ namespace dotless
       Ruleset root = null;
       try
       {
-        var parsers = new Parsers();
+        var parsers = new Parsers(new DefaultNodeProvider());
         root = new Ruleset(new NodeList<Selector>(), parsers.Primary(this));
         root.Root = true;
       }
