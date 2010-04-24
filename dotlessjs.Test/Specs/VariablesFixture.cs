@@ -71,5 +71,26 @@ namespace dotless.Tests.Specs
 
       AssertLess(input, expected);
     }
+
+    [Test]
+    public void Redefine()
+    {
+      var input = @"
+#redefine {
+  @var: 4;
+  @var: 2;
+  @var: 3;
+  width: @var;
+}
+";
+
+      var expected = @"
+#redefine {
+  width: 3;
+}
+";
+
+      AssertLess(input, expected);
+    }
   }
 }

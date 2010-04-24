@@ -12,8 +12,7 @@ namespace dotless.Tree
     public bool Root { get; set; }
 
     private Dictionary<string, NodeList> _lookups;
-    private List<Rule> _variables;
-    private List<Ruleset> _rulesets;
+    private Dictionary<string, Rule> _variables;
 
 
     public Ruleset(NodeList<Selector> selectors, List<Node> rules)
@@ -28,12 +27,24 @@ namespace dotless.Tree
       _lookups = new Dictionary<string, NodeList>();
     }
 
-    public List<Rule> Variables()
+    public Rule Variable(string name)
     {
-      if (_variables != null)
-        return _variables;
+      if (_variables == null)
+      {
+        _variables = new Dictionary<string, Rule>();
 
-      return _variables = Rules.Where(r => r is Rule).Cast<Rule>().Where(r => r.Variable).ToList();
+        var variables = Rules.Where(r => r is Rule).Cast<Rule>().Where(r => r.Variable);
+
+        foreach (var variable in variables)
+        {
+          _variables[variable.Name] = variable;
+        }
+      }
+
+      if(_variables.ContainsKey(name))
+        return _variables[name];
+
+      return null;
     }
 
     public List<Ruleset> Rulesets()
@@ -42,7 +53,7 @@ namespace dotless.Tree
 //      if (_rulesets != null)
 //        return _rulesets;
 
-      return _rulesets = Rules.Where(r => r is Ruleset).Cast<Ruleset>().ToList();
+      return Rules.Where(r => r is Ruleset).Cast<Ruleset>().ToList();
     }
     
     public NodeList Find(Selector selector, Ruleset self) {

@@ -20,13 +20,10 @@ namespace dotless.Tree
 
     public override Node Evaluate(Env env)
     {
-      var variable = env.Frames
-        .SelectFirst(frame => frame.Variables()
-                                .SelectFirst(v => v.Name == Name,
-                                             v => v.Value is IEvaluatable ? v.Value.Evaluate(env) : v.Value));
+      var variable = env.Frames.SelectFirst(frame => frame.Variable(Name));
 
       if (variable)
-        return variable;
+        return variable.Value.Evaluate(env);
 
       throw new ParsingException("variable " + Name + " is undefined");
     }
