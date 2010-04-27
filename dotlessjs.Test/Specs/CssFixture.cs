@@ -214,23 +214,8 @@ h2[title] {
 [disabled] {
   color: transparent;
 }
-";
-
-      AssertLessUnchanged(input);
-    }
-
-    [Test]
-    public void CssAttributes()
-    {
-      var input = @"
-input[type=""text""] {
-  font-weight: normal;
-}
-h2[title] {
-  font-size: 100%;
-}
-[disabled] {
-  color: transparent;
+form[data-disabled] {
+  color: #444;
 }
 ";
 

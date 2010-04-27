@@ -517,7 +517,7 @@ namespace dotless
       if (! parser.Tokenizer.Match('['))
         return null;
 
-      if (key = parser.Tokenizer.Match(@"[a-z]+") || Quoted(parser))
+      if (key = parser.Tokenizer.Match(@"[a-z-]+") || Quoted(parser))
       {
         Node op;
         if ((op = parser.Tokenizer.Match(@"[|~*$^]?=")) &&
