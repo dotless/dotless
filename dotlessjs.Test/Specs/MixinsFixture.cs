@@ -696,5 +696,113 @@ namespace dotless.Tests.Specs
 
       AssertLess(input, expected);
     }
+
+    [Test]
+    public void IncludesAllMatchedMixins1()
+    {
+      var input =
+        @"
+.mixin () { zero: 0; }
+.mixin (@a: 1px) { one: 1; }
+.mixin (@a) { one-req: 1; }
+.mixin (@a: 1px, @b: 2px) { two: 2; }
+.mixin (@a: 1px, @b: 2px, @c: 3px) { three: 3; }
+
+.zero { .mixin(); }
+
+.one { .mixin(1); }
+
+.two { .mixin(1, 2); }
+
+.three { .mixin(1, 2, 3); }
+";
+
+      var expected = @"
+.zero {
+  zero: 0;
+  one: 1;
+  two: 2;
+  three: 3;
+}
+.one {
+  one: 1;
+  one-req: 1;
+  two: 2;
+  three: 3;
+}
+.two {
+  two: 2;
+  three: 3;
+}
+.three {
+  three: 3;
+}
+";
+
+      AssertLess(input, expected);
+    }
+
+    [Test]
+    public void IncludesAllMatchedMixins2()
+    {
+      var input =
+        @"
+.mixout ('left') { left: 1; }
+
+.mixout ('right') { right: 1; }
+
+.left { .mixout('left'); }
+.right { .mixout('right'); }
+.none { .mixout('top'); }
+";
+
+      var expected = @"
+.left {
+  left: 1;
+}
+.right {
+  right: 1;
+}
+";
+
+      AssertLess(input, expected);
+    }
+
+    [Test]
+    public void IncludesAllMatchedMixins3()
+    {
+      var input =
+        @"
+.border (@side, @width) {
+    color: black;
+    .border-side(@side, @width);
+}
+.border-side (left, @w) {
+    border-left: @w;
+}
+.border-side (right, @w) {
+    border-right: @w;
+}
+
+.border-right {
+    .border(right, 4px);    
+}
+.border-left {
+    .border(left, 4px);    
+}
+";
+
+      var expected = @"
+.border-right {
+  color: black;
+  border-right: 4px;
+}
+.border-left {
+  color: black;
+  border-left: 4px;
+}";
+
+      AssertLess(input, expected);
+    }
   }
 }

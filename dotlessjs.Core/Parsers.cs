@@ -361,18 +361,28 @@ namespace dotless
 
       var parameters = new NodeList<Rule>();
       RegexMatchResult param;
-      while (param = parser.Tokenizer.Match(@"@[\w-]+"))
+      Node param2 = null;
+      while ((param = parser.Tokenizer.Match(@"@[\w-]+")) ||
+             (param2 = Literal(parser) ||
+                     Keyword(parser)) )
       {
-        if (parser.Tokenizer.Match(':'))
+        if (param != null)
         {
-          var value = Expression(parser);
-          if (value)
-            parameters.Add(NodeProvider.Rule(param.Value, value));
+          if (parser.Tokenizer.Match(':'))
+          {
+            var value = Expression(parser);
+            if (value)
+              parameters.Add(NodeProvider.Rule(param.Value, value));
+            else
+              throw new ParsingException("Expected value");
+          }
           else
-            throw new ParsingException("Expected value");
+            parameters.Add(NodeProvider.Rule(param.Value, null));
         }
         else
-          parameters.Add(NodeProvider.Rule(param.Value, null));
+        {
+          parameters.Add(NodeProvider.Rule(null, param2));
+        }
 
         if (!parser.Tokenizer.Match(','))
           break;

@@ -56,7 +56,8 @@ namespace dotless.Tree
       return Rules.Where(r => r is Ruleset).Cast<Ruleset>().ToList();
     }
     
-    public NodeList Find(Selector selector, Ruleset self) {
+    public NodeList Find(Selector selector, Ruleset self)
+    {
       self = self ?? this;
       var rules = new NodeList();
       var key = selector.ToCSS(null);
@@ -78,6 +79,11 @@ namespace dotless.Tree
         }
       }
       return _lookups[key] = rules;
+    }
+
+    public virtual bool MatchArguements(NodeList<Expression> arguements, Env env)
+    {
+      return arguements == null || arguements.Count == 0;
     }
 
     //

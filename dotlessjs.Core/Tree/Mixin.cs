@@ -12,6 +12,8 @@ namespace dotless.Tree
   {
     public class Definition : Ruleset
     {
+      private int _required;
+      private int _arity;
       public string Name { get; set; }
       public NodeList<Rule> Params { get; set; }
 
@@ -21,6 +23,9 @@ namespace dotless.Tree
         Params = parameters;
         Rules = rules;
         Selectors = new NodeList<Selector> {new Selector(new NodeList<Element>(new Element(null, name)))};
+
+        _arity = Params.Count;
+        _required = Params.Count(r => string.IsNullOrEmpty(r.Name) || r.Value == null);
       }
 
       public Ruleset Evaluate(NodeList<Expression> args, Env env)
@@ -32,16 +37,19 @@ namespace dotless.Tree
 
         for (var i = 0; i < Params.Count; i++)
         {
-          Node val;
-          if (args && i < args.Count)
-            val = args[i];
-          else
-            val = Params[i].Value;
+          if (!string.IsNullOrEmpty(Params[i].Name))
+          {
+            Node val;
+            if (args && i < args.Count)
+              val = args[i];
+            else
+              val = Params[i].Value;
 
-          if (val)
-            frame.Rules.Add(new Rule(Params[i].Name, val));
-          else
-            throw new ParsingException("wrong number of arguments for " + Name);
+            if (val)
+              frame.Rules.Add(new Rule(Params[i].Name, val));
+            else
+              throw new ParsingException("wrong number of arguments for " + Name);
+          }
         }
 
         var frames = new[] {this, frame}.Concat(env.Frames).Reverse();
@@ -79,6 +87,28 @@ namespace dotless.Tree
         return new Ruleset(null, newRules);
       }
 
+      public override bool MatchArguements(NodeList<Expression> arguements, Env env)
+      {
+        var argsLength = arguements != null ? arguements.Count : 0;
+
+        if (argsLength < _required || argsLength > _arity)
+          return false;
+
+        for (var i = 0; i < argsLength; i++)
+        {
+
+          if (string.IsNullOrEmpty(Params[i].Name))
+          {
+            if (arguements[i].ToCSS(env) != Params[i].Value.ToCSS(env))
+            {
+              return false;
+            }
+          }
+        }
+
+        return true;
+      }
+
       public override string ToCSS(List<IEnumerable<Selector>> list, Env env)
       {
         return "";
@@ -107,14 +137,21 @@ namespace dotless.Tree
           var rules = new NodeList();
           foreach (var node in mixins)
           {
+            if(!(node is Ruleset))
+              continue;
+
+            var ruleset = node as Ruleset;
+
+            if(!ruleset.MatchArguements(Arguments, env))
+              continue;
+
             if (node is Mixin.Definition)
             {
               var mixin = node as Mixin.Definition;
               rules.AddRange(mixin.Evaluate(Arguments, env).Rules);
             }
-            else if (node is Ruleset)
+            else
             {
-              var ruleset = node as Ruleset;
               if (ruleset.Rules != null)
                 rules.AddRange(ruleset.Rules);
             }

@@ -12,7 +12,7 @@ namespace dotless.Tree
     {
       Name = name;
       Value = value;
-      Variable = name[0] == '@';
+      Variable = name != null ? name[0] == '@' : false;
     }
 
     public override Node Evaluate(Env env)
