@@ -231,7 +231,44 @@ namespace dotless.Test.Spec.Mixin
 
             AssertLess(css, less);
         }
-        
+
+        [Test]
+        public void NestedRulesInsideParameterizedMixinsAreNotOutput()
+        {
+            var less =
+@".mixin(@a: 5) {
+  nested-rule {
+    width: 5;
+  }
+}
+";
+
+            var css = @"";
+
+            AssertLess(css, less);
+        }
+
+        [Test]
+        public void CanNestRulesInParameterizedMixins()
+        {
+            var less =
+@".mixin(@a: 5) {
+  nested-rule {
+    width: 5;
+  }
+}
+
+.class {
+  .mixin();
+}
+";
+
+            var css = @"
+.class nested-rule { width: 5; }
+";
+
+            AssertLess(css, less);
+        }
         
         [Test]
         public void CanUseVariablesAsDefaultArgumentValues()
