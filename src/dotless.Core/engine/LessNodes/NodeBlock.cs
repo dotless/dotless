@@ -107,10 +107,12 @@ namespace dotless.Core.engine
 
         public INode AdoptClone(INode newParent, INode oldParent)
         {
-            var children = Children.Select(n => n.AdoptClone(newParent, oldParent)).ToList();
-
             var clone = (NodeBlock)MemberwiseClone();
+
+            var children = Children.Select(n => n.AdoptClone(clone, this)).ToList();
+
             clone.Children = children;
+            clone.Parent = newParent;
 
             return clone;
         }

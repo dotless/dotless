@@ -269,7 +269,28 @@ namespace dotless.Test.Spec.Mixin
 
             AssertLess(css, less);
         }
-        
+
+        [Test]
+        public void CanUseParametersInNestedRules()
+        {
+            var less = @"
+.mixin(@a: 5) {
+  nested-rule {
+    width: @a;
+  }
+}
+.class1 { .mixin(7); }
+.class2 { .mixin(8); }
+";
+
+            var css = @"
+.class1 nested-rule { width: 7; }
+.class2 nested-rule { width: 8; }
+";
+
+            AssertLess(css, less);
+        }
+
         [Test]
         public void CanUseVariablesAsDefaultArgumentValues()
         {
