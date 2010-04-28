@@ -1,0 +1,30 @@
+using System.Linq;
+using dotless.Infrastructure;
+using dotless.Tree;
+using dotless.Utils;
+
+namespace dotless.Functions
+{
+  public class RgbaFunction : Function
+  {
+    protected override Node Evaluate()
+    {
+      if (Arguments.Count == 2)
+      {
+        Guard.ExpectNode<Color>(Arguments[0], this);
+        Guard.ExpectNode<Number>(Arguments[1], this);
+
+        return new Color(((Color) Arguments[0]).RGB, ((Number) Arguments[1]).Value);
+      }
+
+      Guard.ExpectNumArguments(4, Arguments.Count, this);
+      Guard.ExpectAllNodes<Number>(Arguments, this);
+      
+      var args = Arguments.Cast<Number>();
+
+      var rgb = args.Take(3);
+
+      return new Color(rgb, args.ElementAt(3));
+    }
+  }
+}
