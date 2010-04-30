@@ -98,6 +98,21 @@ namespace dotless.Test.Spec.Mixin
         }
 
         [Test]
+        public void CanCallFunctionUsingMixinArguments()
+        {
+            var less = @"
+.mixin(@a: 5.5) {
+   width: ceil(@a);
+}
+.class { .mixin(6.1); }";
+
+            var css = @"
+.class { width: 7; }
+";
+            AssertLess(css, less);
+        }
+
+        [Test]
         public void MixedPositionalAndNamedArguments()
         {
             var less =

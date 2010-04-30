@@ -66,11 +66,20 @@ namespace dotless.Core.engine
 
         public override INode AdoptClone(INode newParent)
         {
-            var clone = (Function) base.AdoptClone(newParent);
+          var clone = (Function)base.AdoptClone(newParent);
 
-            clone.Args = Args.Select(a => a.AdoptClone(newParent)).ToList();
+          clone.Args = Args.Select(a => a.AdoptClone(newParent)).ToList();
 
-            return clone;
+          return clone;
+        }
+
+        public override INode AdoptClone(INode newParent, INode oldParent)
+        {
+          var clone = (Function)base.AdoptClone(newParent, oldParent);
+
+          clone.Args = Args.Select(a => a.AdoptClone(newParent, oldParent)).ToList();
+
+          return clone;
         }
     }
 }
