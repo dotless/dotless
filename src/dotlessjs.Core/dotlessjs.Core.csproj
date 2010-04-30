@@ -78,6 +78,7 @@
     <Compile Include="Functions\HslaFunction.cs" />
     <Compile Include="Infrastructure\RegexMatchResult.cs" />
     <Compile Include="INodeProvider.cs" />
+    <Compile Include="LessJsEngine.cs" />
     <Compile Include="Stylizers\HtmlStylizer.cs" />
     <Compile Include="Stylizers\IStylizer.cs" />
     <Compile Include="Stylizers\ConsoleStylizer.cs" />
@@ -120,6 +121,12 @@
     <Compile Include="Utils\HslColor.cs" />
     <Compile Include="Utils\LinqExtensions.cs" />
     <Compile Include="Utils\NumberExtensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\dotless.Core\dotless.Core.csproj">
+      <Project>{D7A24E58-68D0-4B10-A324-EA33C822FA56}</Project>
+      <Name>dotless.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

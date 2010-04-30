@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotlessjs.Tests", "dotlessj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotlessjs.Benchmark", "dotlessjs.Benchmark\dotlessjs.Benchmark.csproj", "{2F21B126-9BB2-47F5-915D-C1F9EB0BBD7C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotless.Core", "dotless.Core\dotless.Core.csproj", "{D7A24E58-68D0-4B10-A324-EA33C822FA56}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{2F21B126-9BB2-47F5-915D-C1F9EB0BBD7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F21B126-9BB2-47F5-915D-C1F9EB0BBD7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F21B126-9BB2-47F5-915D-C1F9EB0BBD7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7A24E58-68D0-4B10-A324-EA33C822FA56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7A24E58-68D0-4B10-A324-EA33C822FA56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7A24E58-68D0-4B10-A324-EA33C822FA56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7A24E58-68D0-4B10-A324-EA33C822FA56}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

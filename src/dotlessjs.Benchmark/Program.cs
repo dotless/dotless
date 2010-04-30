@@ -16,6 +16,7 @@ using System;
 using System.IO;
 using System.Linq;
 using dotless;
+using dotless.Core;
 
 namespace dotlessjs.Compiler
 {
@@ -23,8 +24,6 @@ namespace dotlessjs.Compiler
   {
     public static void Main(string[] args)
     {
-      var parser = new Parser();
-
       Directory.SetCurrentDirectory(@"C:\dev\oss\less.js\test\less");
 
       var files = new[]
@@ -33,7 +32,6 @@ namespace dotlessjs.Compiler
                       "comments",
                       "css",
                       "css-3",
-                      "lazy-eval",
                       "mixins",
                       "mixins-args",
                       "operations",
@@ -48,32 +46,61 @@ namespace dotlessjs.Compiler
         .Select(f => f + ".less");
 
       var contents = files
-        .ToDictionary(f => f, f => File.ReadAllText(f));
+        .ToDictionary(f => f, f => new LessSourceObject { Content = File.ReadAllText(f) });
 
       const int rounds = 150;
 
-      Func<string, int> runTest = file => Enumerable
-                                            .Range(0, rounds)
-                                            .Select(i =>
-                                                      {
-                                                        var starttime = DateTime.Now;
-                                                        parser.Parse(contents[file]).ToCSS(null);
-                                                        var duration = (DateTime.Now - starttime);
-                                                        return duration.Milliseconds;
-                                                      })
-                                            .Sum();
+      Func<string, ILessEngine, int> runTest =
+        (file, engine) => Enumerable
+                            .Range(0, rounds)
+                            .Select(i =>
+                                      {
+                                        var starttime = DateTime.Now;
+                                        engine.TransformToCss(contents[file]);
+                                        var duration = (DateTime.Now - starttime);
+                                        return duration.Milliseconds;
+                                      })
+                            .Sum();
 
       Console.WriteLine("Press Enter to begin benchmark");
       Console.ReadLine();
 
-      Console.WriteLine("Running each test {0} times", rounds);
+      Console.WriteLine("Running each test {0} times\n", rounds);
+
+      var engines = new ILessEngine[]
+                      {
+                        new ExtensibleEngine(), 
+                        new LessJsEngine()
+                      };
+
+
+      Console.Write("       File        |     Size     |");
+      foreach (var engine in engines)
+      {
+        Console.Write(engine.GetType().Name.PadRight(24).PadLeft(29));
+        Console.Write('|');
+      }
+      Console.WriteLine();
+      Console.WriteLine(new string('-', 35 + 30*engines.Length));
 
       foreach (var file in files)
       {
-        var size = rounds*contents[file].Length/1024d;
-        Console.Write("{0} : {1,7:#,##0.00} Kb  ", file.PadRight(18), size);
-        var time = runTest(file)/1000d;
-        Console.WriteLine("{0,6:#.00} s  {1,8:#,##0.00} Kb/s", time, size/time);
+        var size = rounds*contents[file].Content.Length/1024d;
+        Console.Write("{0} | {1,8:#,##0.00} Kb  | ", file.PadRight(18), size);
+
+        foreach (var engine in engines)
+        {
+          try
+          {
+            var time = runTest(file, engine)/1000d;
+            Console.Write("{0,8:#.00} s  {1,10:#,##0.00} Kb/s | ", time, size/time);
+          }
+          catch
+          {
+            Console.Write("Failied                     | ");
+          }
+        }
+        Console.WriteLine();
       }
 
       //      Console.Read();
