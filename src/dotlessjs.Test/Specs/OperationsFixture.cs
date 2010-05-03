@@ -54,6 +54,13 @@ namespace dotless.Tests.Specs
     }
 
     [Test]
+    public void OperationsAreLeftAssociative()
+    {
+      AssertExpression("1", "20 / 5 / 4");
+      AssertExpression("0", "20 - 10 - 5 - 5");
+    }
+
+    [Test]
     public void Rounding()
     {
       var variables = new Dictionary<string, string>();

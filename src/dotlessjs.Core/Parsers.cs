@@ -758,14 +758,20 @@ namespace dotless
       var m = Operand(parser);
       if (!m)
         return null;
-    
-      var op = parser.Tokenizer.Match(@"[\/*]");
 
-      Node a = null;
-      if (op && (a = Multiplication(parser)))
-        return NodeProvider.Operation(op.Value, m, a);
+      Operation operation = null;
 
-      return m;
+      while (true)
+      {
+        var op = parser.Tokenizer.Match(@"[\/*]");
+
+        Node a = null;
+        if (op && (a = Operand(parser)))
+          operation = NodeProvider.Operation(op.Value, operation ?? m, a);
+        else
+          break;
+      }
+      return operation ?? m;
     }
 
     public Node Addition(Parser parser)
@@ -774,15 +780,20 @@ namespace dotless
       if (!m)
         return null;
 
-      var op = parser.Tokenizer.Match(@"[-+]\s+");
-      if (!op && parser.Tokenizer.PreviousChar != ' ')
-        op = parser.Tokenizer.Match(@"[-+]");
+      Operation operation = null;
+      while (true)
+      {
+        var op = parser.Tokenizer.Match(@"[-+]\s+");
+        if (!op && parser.Tokenizer.PreviousChar != ' ')
+          op = parser.Tokenizer.Match(@"[-+]");
 
-      Node a = null;
-      if (op && (a = Addition(parser)))
-        return NodeProvider.Operation(op.Value, m, a);
-
-      return m;
+        Node a = null;
+        if (op && (a = Multiplication(parser)))
+          operation = NodeProvider.Operation(op.Value, operation ?? m, a);
+        else
+          break;
+      }
+      return operation ?? m;
     }
 
     //
