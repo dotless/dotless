@@ -2,6 +2,6 @@
 {
   public interface IStylizer
   {
-    string Stylize(string str, int errorPosition);
+    string Stylize(Zone zone);
   }
 }

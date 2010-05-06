@@ -17,6 +17,7 @@ namespace dotless.Stylizers
                    {"yellow",     new[] {33, 39}},
                    {"green",      new[] {32, 39}},
                    {"red",        new[] {31, 39}},
+                   {"grey",       new[] {90, 39}},
                    {"reset",      new[] {0, 0}}
                  };
     }
@@ -27,11 +28,19 @@ namespace dotless.Stylizers
              "\x1b[" + styles[style][1] + "m";
     }
 
-    public string Stylize(string str, int errorPosition)
+    public string Stylize(Zone zone)
     {
-      return Stylize(str.Substring(0, errorPosition), "green") +
+      var extract = zone.Extract;
+      var errorPosition = zone.Position;
+
+      var errorBefore = extract.Line.Substring(0, errorPosition);
+      var errorAfter = extract.Line.Substring(errorPosition + 1);
+
+      return Stylize(extract.Before, "grey") +
+             Stylize(errorBefore, "green") +
              Stylize(
-               Stylize(str[errorPosition].ToString(), "inverse") + str.Substring(errorPosition + 1), "yellow") +
+               Stylize(extract.Line[errorPosition].ToString(), "inverse") + errorAfter, "yellow") +
+             Stylize(extract.After, "grey") +
              Stylize("", "reset");
     }
   }

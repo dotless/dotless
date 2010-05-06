@@ -198,28 +198,38 @@ namespace dotless
     public Zone GetCurrentZone()
     {
       var first = _input.Substring(0, _i);
-      var second = _input.Substring(_i);
 
       var start = first.LastIndexOf('\n') + 1;
-      var line = first.Split('\n').Length;
+      var line = first.Count(c => c == '\n');
 
-      var end = second.IndexOf('\n');
-      end = end == -1 ? _input.Length - start + 1 : end + _i;
+      var lines = _input.Split('\n');
 
       return new Zone
                {
-                 LineNumber = line,
-                 Line = _input.Substring(start, end - start),
-                 Position = _i - start
+                 LineNumber = line + 1,
+                 Position = _i - start,
+                 Extract = new Extract
+                             {
+                               Before = lines[line - 1],
+                               Line = lines[line],
+                               After = lines[line + 1],
+                             },
                };
     }
+  }
 
-    public class Zone
-    {
-      public int LineNumber { get; set; }
-      public string Line { get; set; }
-      public int Position { get; set; }
-    }
+  public class Zone
+  {
+    public int LineNumber { get; set; }
+    public int Position { get; set; }
+    public Extract Extract { get; set; }
+  }
+
+  public class Extract
+  {
+    public string After { get; set; }
+    public string Before { get; set; }
+    public string Line { get; set; }
   }
 
 }

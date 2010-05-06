@@ -103,7 +103,7 @@ namespace dotless
 
       var zone = Tokenizer.GetCurrentZone();
 
-      var zoneString = Stylizer.Stylize(zone.Line, zone.Position);
+      var zoneString = Stylizer.Stylize(zone);
 
       var error = "Parse Error";
       if (parsingException != null)
