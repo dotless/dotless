@@ -106,7 +106,7 @@ namespace dotless
       return new Expression(expression);
     }
 
-    public Value Value(NodeList values, Node important)
+    public Value Value(IEnumerable<Node> values, Node important)
     {
       return new Value(values, important);
     }

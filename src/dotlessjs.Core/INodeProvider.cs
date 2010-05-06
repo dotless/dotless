@@ -34,7 +34,7 @@ namespace dotless
 
     //expressions
     Expression Expression(NodeList expression);
-    Value Value(NodeList values, Node important);
+    Value Value(IEnumerable<Node> values, Node important);
     Operation Operation(string operation, Node left, Node right);
 
     //text

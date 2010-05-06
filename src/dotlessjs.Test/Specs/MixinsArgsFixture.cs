@@ -130,5 +130,25 @@ body {
 
       AssertLess(input, expected);
     }
+
+    [Test]
+    public void CanEvaluateCommaSepearatedExpressions()
+    {
+      var input = @"
+.fonts (@main: 'Arial') {
+    font-family: @main, sans-serif;
+}
+
+.class {
+    .fonts('Helvetica');
+}";
+
+      var expected = @"
+.class {
+  font-family: 'Helvetica', sans-serif;
+}";
+
+      AssertLess(input, expected);
+    }
   }
 }

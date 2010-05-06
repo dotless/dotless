@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using dotless.Infrastructure;
 using dotless.Utils;
 
@@ -9,9 +10,9 @@ namespace dotless.Tree
     public NodeList Values { get; set; }
     public Node Important { get; set; }
 
-    public Value(NodeList values, Node important)
+    public Value(IEnumerable<Node> values, Node important)
     {
-      Values = values;
+      Values = new NodeList(values);
       Important = important;
     }
 
@@ -30,7 +31,7 @@ namespace dotless.Tree
       if (Values.Count == 1)
         return Values[0].Evaluate(env);
 
-      return this;
+      return new Value(Values.Select(n => n.Evaluate(env)), Important);
     }
   }
 }
