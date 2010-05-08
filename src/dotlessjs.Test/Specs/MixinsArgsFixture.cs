@@ -150,5 +150,49 @@ body {
 
       AssertLess(input, expected);
     }
+
+    [Test]
+    public void CanUseVaiablesInsideMixins()
+    {
+      var input = @"
+@var: 5px;
+.mixin() {
+    width: @var, @var, @var;
+}
+.div {
+    .mixin;
+}";
+
+      var expected = @"
+.div {
+  width: 5px, 5px, 5px;
+}";
+
+      AssertLess(input, expected);
+    }
+
+    [Test]
+    public void CanUseSameVaiableName()
+    {
+      var input = @"
+.same-var-name2(@radius) {
+  radius: @radius;
+}
+.same-var-name(@radius) {
+  .same-var-name2(@radius);
+}
+#same-var-name {
+  .same-var-name(5px);
+}
+";
+
+      var expected = @"
+#same-var-name {
+  radius: 5px;
+}
+";
+
+      AssertLess(input, expected);
+    }
   }
 }

@@ -46,7 +46,7 @@ namespace dotless.Tree
               val = Params[i].Value;
 
             if (val)
-              frame.Rules.Add(new Rule(Params[i].Name, val));
+              frame.Rules.Add(new Rule(Params[i].Name, val.Evaluate(env)));
             else
               throw new ParsingException("wrong number of arguments for " + Name);
           }
