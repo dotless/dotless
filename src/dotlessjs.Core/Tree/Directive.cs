@@ -27,12 +27,22 @@ namespace dotless.Tree
     {
     }
 
-    public override string ToCSS(List<IEnumerable<Selector>> context, Env env)
+    public override Node Evaluate(Env env)
+    {
+      if(Rules != null)
+        Rules = new List<Node>(Rules.Select(r => r.Evaluate(env)));
+      else
+        Value = Value.Evaluate(env);
+
+      return this;
+    }
+
+    protected override string ToCSS(List<IEnumerable<Selector>> context)
     {
       if (Rules != null)
-        return Name + " {\n  " + Rules.Select(r => r.ToCSS(env)).JoinStrings("\n  ") + "\n}\n";
+        return Name + " {\n  " + Rules.Select(r => r.ToCSS()).JoinStrings("\n  ") + "\n}\n";
 
-      return Name + " " + Value.ToCSS(env) + ";\n";
+      return Name + " " + Value.ToCSS() + ";\n";
     }
   }
 }

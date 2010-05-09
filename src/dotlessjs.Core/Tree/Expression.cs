@@ -1,10 +1,11 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using dotless.Infrastructure;
 using dotless.Utils;
 
 namespace dotless.Tree
 {
-  public class Expression : Node, IEvaluatable
+  public class Expression : Node
   {
     public NodeList Value { get; set; }
 
@@ -21,13 +22,9 @@ namespace dotless.Tree
       return Value[0].Evaluate(env);
     }
 
-    public override string  ToCSS(Env env)
+    public override string  ToCSS()
     {
-      var evaled = Value
-        .Select(e => e is IEvaluatable ? e.Evaluate(env) : e)
-        .Select(e => e.ToCSS(env));
-
-      return evaled.JoinStrings(" ");
+      return Value.Select(e => e.ToCSS()).JoinStrings(" ");
     }
   }
 }

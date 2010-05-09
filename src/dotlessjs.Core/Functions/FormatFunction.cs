@@ -12,7 +12,7 @@ namespace dotless.Functions
       if (Arguments.Count == 0)
         return new Quoted("");
 
-      Func<Node, string> unescape = n => n is Quoted ? ((Quoted) n).UnescapeContents() : n.ToCSS(null);
+      Func<Node, string> unescape = n => n is Quoted ? ((Quoted) n).UnescapeContents() : n.ToCSS();
 
       var format = unescape(Arguments[0]);
 

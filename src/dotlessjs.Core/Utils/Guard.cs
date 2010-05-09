@@ -23,7 +23,7 @@ namespace dotless.Utils
 
       var expected = typeof(TExpected).Name.ToLowerInvariant();
 
-      var message = string.Format("Expected {0} in {1}, found {2}", expected, @in, actual.ToCSS(null));
+      var message = string.Format("Expected {0} in {1}, found {2}", expected, @in, actual.ToCSS());
 
       throw new ParsingException(message);
     }

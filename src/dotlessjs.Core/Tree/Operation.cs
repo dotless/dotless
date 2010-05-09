@@ -3,7 +3,7 @@ using dotless.Infrastructure;
 
 namespace dotless.Tree
 {
-  public class Operation : Node, IEvaluatable
+  public class Operation : Node
   {
     public Node First { get; set; }
     public Node Second { get; set; }

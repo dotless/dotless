@@ -1,21 +1,17 @@
-﻿using dotless.Exceptions;
+﻿using System;
+using dotless.Exceptions;
 using dotless.Infrastructure;
 using dotless.Utils;
 
 namespace dotless.Tree
 {
-  public class Variable : Node, IEvaluatable
+  public class Variable : Node
   {
     public string Name { get; set; }
 
     public Variable(string name)
     {
       Name = name;
-    }
-
-    public override string ToCSS(Env env)
-    {
-      return Evaluate(env).ToCSS(env);
     }
 
     public override Node Evaluate(Env env)

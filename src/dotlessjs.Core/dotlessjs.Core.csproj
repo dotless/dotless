@@ -85,7 +85,6 @@
     <Compile Include="Stylizers\PlainStylizer.cs" />
     <Compile Include="Tokenizer.cs" />
     <Compile Include="Tree\Expression.cs" />
-    <Compile Include="Infrastructure\IEvaluatable.cs" />
     <Compile Include="Infrastructure\IOperable.cs" />
     <Compile Include="Infrastructure\FileImporter.cs" />
     <Compile Include="Infrastructure\Importer.cs" />

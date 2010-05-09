@@ -11,7 +11,7 @@ namespace dotless.Tree
       Value = value;
     }
 
-    public override string ToCSS(Env env)
+    public override string ToCSS()
     {
       return Value;
     }

@@ -18,9 +18,18 @@ namespace dotless.Utils
         if (node is TNode)
         {
           ruleset.Rules.RemoveAt(i);
-          ruleset.Rules.InsertRange(i, (IEnumerable<Node>) node.Evaluate(env));
+
+          ruleset.Rules.InsertRange(i, (IEnumerable<Node>)node.Evaluate(env));
         }
-      }      
+      }
+    }
+
+    public static void EvalNodes(Env env, Ruleset ruleset)
+    {
+      for (var i = 0; i < ruleset.Rules.Count; i++)
+      {
+        ruleset.Rules[i] = ruleset.Rules[i].Evaluate(env);
+      }
     }
   }
 }

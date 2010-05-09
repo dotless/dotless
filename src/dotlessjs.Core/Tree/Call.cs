@@ -5,10 +5,11 @@ using dotless.Utils;
 
 namespace dotless.Tree
 {
-  public class Call : Node, IEvaluatable
+  public class Call : Node
   {
     public string Name { get; set; }
     public NodeList<Expression> Arguments { get; set; }
+    private Node Evaluated { get; set; }
 
     public Call(string name, NodeList<Expression> arguments)
     {
@@ -22,6 +23,9 @@ namespace dotless.Tree
 
     public override Node Evaluate(Env env)
     {
+      if (Evaluated != null)
+        return Evaluated;
+
       var args = Arguments.Select(a => a.Evaluate(env));
  
       if (env != null)
@@ -31,21 +35,13 @@ namespace dotless.Tree
         if (function != null)
         {
           function.Name = Name;
-          return function.Call(args);
+          Evaluated = function.Call(args);
+          return Evaluated;
         }
       }
 
-      return this;
-    }
-
-    public override string ToCSS(Env env)
-    {
-      var evaled = Evaluate(env);
-      
-      if(evaled != null && evaled != this)
-        return evaled.ToCSS(env);
-
-      return Name + "(" + Arguments.Select(a => a.ToCSS(env) ).JoinStrings(", ") + ")";
+      Evaluated = new TextNode(Name + "(" + Arguments.Select(a => a.Evaluate(env).ToCSS()).JoinStrings(", ") + ")");
+      return Evaluated;
     }
   }
 }

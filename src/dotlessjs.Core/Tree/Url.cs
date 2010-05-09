@@ -11,17 +11,17 @@ namespace dotless.Tree
       Value = value;
     }
 
-    public string GetUrl(Env env)
+    public string GetUrl()
     {
       if (Value is Quoted)
         return ((Quoted) Value).Contents;
 
-      return Value.ToCSS(env);
+      return Value.ToCSS();
     }
 
-    public override string ToCSS(Env env)
+    public override string ToCSS()
     {
-      return "url(" + Value.ToCSS(env) + ")";
+      return "url(" + Value.ToCSS() + ")";
     }
   }
 }

@@ -5,7 +5,7 @@ using dotless.Utils;
 
 namespace dotless.Tree
 {
-  public class Value : Node, IEvaluatable
+  public class Value : Node
   {
     public NodeList Values { get; set; }
     public Node Important { get; set; }
@@ -16,14 +16,14 @@ namespace dotless.Tree
       Important = important;
     }
 
-    public override string ToCSS(Env env)
+    public override string ToCSS()
     {
-      return Values.Select(v => v.ToCSS(env)).JoinStrings(", ");
+      return Values.Select(v => v.ToCSS()).JoinStrings(", ");
     }
 
     public override string ToString()
     {
-      return ToCSS(null);
+      return ToCSS();
     }
 
     public override Node Evaluate(Env env)

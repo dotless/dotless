@@ -19,7 +19,7 @@ namespace dotless.Tree
     {
     }
 
-    public override string ToCSS(Env env)
+    public override string ToCSS()
     {
       return Value;
     }

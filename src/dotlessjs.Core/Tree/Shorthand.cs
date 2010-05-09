@@ -13,9 +13,9 @@ namespace dotless.Tree
       Second = second;
     }
 
-    public override string ToCSS(Env env)
+    public override string ToCSS()
     {
-      return First.ToCSS(env) + "/" + Second.ToCSS(env);
+      return First.ToCSS() + "/" + Second.ToCSS();
     }
   }
 }

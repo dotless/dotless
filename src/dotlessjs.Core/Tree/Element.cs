@@ -13,9 +13,9 @@ namespace dotless.Tree
       Value = value.Trim();
     }
 
-    public override string ToCSS(Env env)
+    public override string ToCSS()
     {
-      return Combinator.ToCSS(env) + Value;
+      return Combinator.ToCSS() + Value;
     }
   }
 }

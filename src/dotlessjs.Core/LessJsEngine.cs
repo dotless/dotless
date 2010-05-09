@@ -9,7 +9,7 @@ namespace dotless
     {
       var tree = new Parser().Parse(source.Content);
 
-      return tree.ToCSS(null);
+      return tree.ToCSS();
     }
   }
 }

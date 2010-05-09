@@ -20,12 +20,12 @@ namespace dotless.Tree
       return new Rule(Name, Value.Evaluate(env));
     }
 
-    public override string ToCSS(Env env)
+    public override string ToCSS()
     {
       if (Variable)
         return "";
       
-      return Name + ": " + Value.ToCSS(env) + ";";
+      return Name + ": " + Value.ToCSS() + ";";
     }
   }
 }

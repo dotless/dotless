@@ -2,7 +2,7 @@
 
 namespace dotless.Tree
 {
-  public class Keyword : Node, IEvaluatable
+  public class Keyword : Node
   {
     public string Value { get; set; }
 
@@ -16,7 +16,7 @@ namespace dotless.Tree
       return (Node) Color.GetColorFromKeyword(Value) ?? this;
     }
 
-    public override string ToCSS(Env env)
+    public override string ToCSS()
     {
       return Value;
     }

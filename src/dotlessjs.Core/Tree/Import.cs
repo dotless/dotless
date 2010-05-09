@@ -6,7 +6,7 @@ using dotless.Utils;
 
 namespace dotless.Tree
 {
-  public class Import : Directive, IEvaluatable
+  public class Import : Directive
   {
     public string Path { get; set; }
     protected Node OriginalPath { get; set; }
@@ -20,7 +20,7 @@ namespace dotless.Tree
     }
 
     public Import(Url path, Importer importer)
-      : this(path.GetUrl(null), importer)
+      : this(path.GetUrl(), importer)
     {
       OriginalPath = path;
     }
@@ -35,21 +35,18 @@ namespace dotless.Tree
 
       // Only pre-compile .less files
       if (!Css)
-        importer.Import(this);
+        importer.Import(this); // TODO: move this into Evaluate()
     }
 
-    public override string ToCSS(List<IEnumerable<Selector>> context, Env env)
+    protected override string ToCSS(List<IEnumerable<Selector>> context)
     {
-      if (Css)
-        return "@import " + OriginalPath.ToCSS(env) + ";\n";
-
-      return "";
+      return base.ToCSS(); // should throw InvalidOperationException
     }
 
     public override Node Evaluate(Env env)
     {
       if (Css)
-        return new NodeList(this);
+        return new NodeList(new TextNode("@import " + OriginalPath.ToCSS() + ";\n"));
 
       NodeHelper.ExpandNodes<Import>(env, InnerRoot);
 

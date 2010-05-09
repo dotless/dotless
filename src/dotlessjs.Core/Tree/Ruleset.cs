@@ -60,7 +60,7 @@ namespace dotless.Tree
     {
       self = self ?? this;
       var rules = new NodeList();
-      var key = selector.ToCSS(null);
+      var key = selector.ToCSS();
 
       if (_lookups.ContainsKey(key))
         return _lookups[key];
@@ -86,17 +86,44 @@ namespace dotless.Tree
       return arguements == null || arguements.Count == 0;
     }
 
+    public override Node Evaluate(Env env)
+    {
+      if(Root)
+      {
+        env = env ?? new Env();
+
+        NodeHelper.ExpandNodes<Import>(env, this);
+      }
+
+      env.Frames.Push(this);
+
+      NodeHelper.ExpandNodes<Mixin.Call>(env, this);
+
+      NodeHelper.EvalNodes(env, this);
+
+      env.Frames.Pop();
+
+      return this;
+    }
+
     //
     // Entry point for code generation
     //
     //     `context` holds an array of arrays.
     //
-    public override string ToCSS(Env env)
+    public override string ToCSS()
     {
-      return ToCSS(new List<IEnumerable<Selector>>(), env);
+      return ToCSS(new Env());
     }
 
-    public virtual string ToCSS(List<IEnumerable<Selector>> context, Env env)
+    public string ToCSS(Env env)
+    {
+      Evaluate(env);
+
+      return ToCSS(new List<IEnumerable<Selector>>());
+    }
+
+    protected virtual string ToCSS(List<IEnumerable<Selector>> context)
     {
       if(!Rules.Any())
         return "";
@@ -118,18 +145,6 @@ namespace dotless.Tree
           }
         }
       }
-      else
-      {
-        env = env ?? new Env();
-
-        NodeHelper.ExpandNodes<Import>(env, this);
-      }
-
-      // push the current ruleset to the frames stack
-      env.Frames.Push(this);
-
-      // Evaluate mixins
-      NodeHelper.ExpandNodes<Mixin.Call>(env, this);
 
       // Evaluate rules and rulesets
       foreach (var rule in Rules)
@@ -137,25 +152,21 @@ namespace dotless.Tree
         if (rule is Ruleset)
         {
           var ruleset = (Ruleset) rule;
-          rulesets.Add(ruleset.ToCSS(paths, env));
-        }
-        else if (rule is Comment)
-        {
-          if (Root)
-            rulesets.Add(rule.ToCSS(env));
-          else
-            rules.Add(rule.ToCSS(env));
+          rulesets.Add(ruleset.ToCSS(paths));
         }
         else if (rule is Rule)
         {
           var r = (rule as Rule);
 
           if (!r.Variable)
-            rules.Add(r.ToCSS(env));
+            rules.Add(r.ToCSS());
         }
-        else if(!(rule is TextNode))
+        else if (!rule.IgnoreOutput())
         {
-          rules.Add(rule.ToCSS(env));
+          if (Root)
+            rulesets.Add(rule.ToCSS());
+          else
+            rules.Add(rule.ToCSS());
         }
       }
 
@@ -171,16 +182,13 @@ namespace dotless.Tree
       {
         if (rules.Count > 0)
         {
-          var selector = paths.Select(p => p.Select(s => s.ToCSS(null)).JoinStrings("").Trim()).
+          var selector = paths.Select(p => p.Select(s => s.ToCSS()).JoinStrings("").Trim()).
             JoinStrings(paths.Count > 3 ? ",\n" : ", "); // The fully rendered selector
           css.Add(selector);
           css.Add(" {\n  " + rules.JoinStrings("\n  ") + "\n}\n");
         }
       }
       css.Add(rulesetsStr);
-
-      // Pop the stack
-      env.Frames.Pop();
 
       return css.JoinStrings("");
     }
@@ -189,7 +197,7 @@ namespace dotless.Tree
     {
       var format = "{0}{{{1}}}";
       return Selectors != null && Selectors.Count > 0
-               ? string.Format(format, Selectors.Select(s => s.ToCSS(null)).JoinStrings(""), Rules.Count)
+               ? string.Format(format, Selectors.Select(s => s.ToCSS()).JoinStrings(""), Rules.Count)
                : string.Format(format, "*", Rules.Count);
     }
   }

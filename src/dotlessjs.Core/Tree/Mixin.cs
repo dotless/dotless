@@ -28,6 +28,11 @@ namespace dotless.Tree
         _required = Params.Count(r => string.IsNullOrEmpty(r.Name) || r.Value == null);
       }
 
+      public override Node Evaluate(Env env)
+      {
+        return this;
+      }
+
       public Ruleset Evaluate(NodeList<Expression> args, Env env)
       {
         if(args)
@@ -99,7 +104,7 @@ namespace dotless.Tree
 
           if (string.IsNullOrEmpty(Params[i].Name))
           {
-            if (arguements[i].ToCSS(env) != Params[i].Value.ToCSS(env))
+            if (arguements[i].Evaluate(env).ToCSS() != Params[i].Value.Evaluate(env).ToCSS())
             {
               return false;
             }
@@ -109,13 +114,13 @@ namespace dotless.Tree
         return true;
       }
 
-      public override string ToCSS(List<IEnumerable<Selector>> list, Env env)
+      protected override string ToCSS(List<IEnumerable<Selector>> list)
       {
         return "";
       }
     }
 
-    public class Call : Node, IEvaluatable
+    public class Call : Node
     {
       public NodeList<Expression> Arguments { get; set; }
       protected Selector Selector { get; set; }
@@ -159,7 +164,7 @@ namespace dotless.Tree
           }
           return rules;
         }
-        throw new ParsingException(Selector.ToCSS(env).Trim() + " is undefined");
+        throw new ParsingException(Selector.ToCSS().Trim() + " is undefined");
       }
     }
   }

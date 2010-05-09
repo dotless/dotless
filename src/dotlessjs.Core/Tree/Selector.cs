@@ -22,12 +22,12 @@ namespace dotless.Tree
       return Elements[0].Value == other.Elements[0].Value;
     }
 
-    public override string ToCSS(Env env)
+    public override string ToCSS()
     {
       if (!string.IsNullOrEmpty(_css)) 
         return _css;
 
-      return _css = Elements.Select(e => e.ToCSS(env)).JoinStrings("");
+      return _css = Elements.Select(e => e.ToCSS()).JoinStrings("");
     }
   }
 }

@@ -123,7 +123,7 @@ namespace dotless.Tree
       set { RGB[2] = value; }
     }
 
-    public override string ToCSS(Env env)
+    public override string ToCSS()
     {
       var rgb = RGB
         .Select(d => (int) Math.Round(d, MidpointRounding.AwayFromZero))

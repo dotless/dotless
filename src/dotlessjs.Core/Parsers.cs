@@ -522,7 +522,7 @@ namespace dotless
         Node op;
         if ((op = parser.Tokenizer.Match(@"[|~*$^]?=")) &&
             (val = Quoted(parser) || parser.Tokenizer.Match(@"[\w-]+")))
-          attr = string.Format("{0}{1}{2}", key, op, val.ToCSS(null));
+          attr = string.Format("{0}{1}{2}", key, op, val.ToCSS());
         else
           attr = key.ToString();
       }

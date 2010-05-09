@@ -16,7 +16,7 @@ namespace dotless.Tree
         Value = value.Trim();
     }
 
-    public override string ToCSS(Env env)
+    public override string ToCSS()
     {
       switch (Value)
       {

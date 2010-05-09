@@ -38,14 +38,21 @@ namespace dotless.Infrastructure
 
     #endregion
 
-    public virtual string ToCSS(Env env)
+    public virtual string ToCSS()
     {
-      throw new NotImplementedException();
+      throw new InvalidOperationException(string.Format("ToCSS() not valid on this type of node. '{0}'", GetType().Name));
     }
 
     public virtual Node Evaluate(Env env)
     {
       return this;
+    }
+
+    public bool IgnoreOutput()
+    {
+      return
+        this is RegexMatchResult ||
+        this is CharMatchResult;
     }
   }
 }

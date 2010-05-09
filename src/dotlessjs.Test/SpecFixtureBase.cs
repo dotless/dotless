@@ -84,7 +84,7 @@ namespace dotless.Tests
     public static string Evaluate(string input, Parser parser)
     {
       var tree = parser.Parse(input);
-      return tree.ToCSS(new List<IEnumerable<Selector>>(), new Env());
+      return tree.ToCSS(new Env());
     }
   }
 }
