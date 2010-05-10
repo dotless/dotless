@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using dotless.Infrastructure;
 using dotless.Utils;
@@ -99,7 +100,10 @@ namespace dotless.Tree
 
       NodeHelper.ExpandNodes<Mixin.Call>(env, this);
 
-      NodeHelper.EvalNodes(env, this);
+      for (var i = 0; i < Rules.Count; i++)
+      {
+        Rules[i] = Rules[i].Evaluate(env);
+      }
 
       env.Frames.Pop();
 
@@ -118,32 +122,24 @@ namespace dotless.Tree
 
     public string ToCSS(Env env)
     {
-      Evaluate(env);
-
-      return ToCSS(new List<IEnumerable<Selector>>());
-    }
-
-    protected virtual string ToCSS(List<IEnumerable<Selector>> context)
-    {
       if(!Rules.Any())
         return "";
 
+      Evaluate(env);
+
+      return ToCSS(new Context());
+    }
+
+    protected virtual string ToCSS(Context context)
+    {
       var css = new List<string>();                   // The CSS output
       var rules = new List<string>();                 // node.Rule instances
       var rulesets = new List<string>();              // node.Ruleset instances
-      var paths = new List<IEnumerable<Selector>>();  // Current selectors
+      var paths = new Context();                      // Current selectors
 
       if (!Root)
       {
-        if (context.Count == 0)
-          paths = Selectors.Select(s => (IEnumerable<Selector>) new List<Selector> {s}).ToList();
-        else
-        {
-          foreach (var sel in Selectors)
-          {
-            paths.AddRange(context.Select(t => t.Concat(new[] {sel})));
-          }
-        }
+        paths.AppendSelectors(context, Selectors);
       }
 
       // Evaluate rules and rulesets
@@ -170,7 +166,6 @@ namespace dotless.Tree
         }
       }
 
-
       var rulesetsStr = rulesets.JoinStrings("");
 
       // If this is the root node, we don't render
@@ -182,9 +177,8 @@ namespace dotless.Tree
       {
         if (rules.Count > 0)
         {
-          var selector = paths.Select(p => p.Select(s => s.ToCSS()).JoinStrings("").Trim()).
-            JoinStrings(paths.Count > 3 ? ",\n" : ", "); // The fully rendered selector
-          css.Add(selector);
+          css.Add(paths.ToString());
+          
           css.Add(" {\n  " + rules.JoinStrings("\n  ") + "\n}\n");
         }
       }

@@ -38,7 +38,7 @@ namespace dotless.Tree
         importer.Import(this); // TODO: move this into Evaluate()
     }
 
-    protected override string ToCSS(List<IEnumerable<Selector>> context)
+    protected override string ToCSS(Context context)
     {
       return base.ToCSS(); // should throw InvalidOperationException
     }

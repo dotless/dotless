@@ -29,5 +29,10 @@ namespace dotless.Tree
 
       return _css = Elements.Select(e => e.ToCSS()).JoinStrings("");
     }
+
+    public override string ToString()
+    {
+      return ToCSS();
+    }
   }
 }

@@ -37,7 +37,7 @@ namespace dotless.Tree
       return this;
     }
 
-    protected override string ToCSS(List<IEnumerable<Selector>> context)
+    protected override string ToCSS(Context context)
     {
       if (Rules != null)
         return Name + " {\n  " + Rules.Select(r => r.ToCSS()).JoinStrings("\n  ") + "\n}\n";

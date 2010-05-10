@@ -23,13 +23,5 @@ namespace dotless.Utils
         }
       }
     }
-
-    public static void EvalNodes(Env env, Ruleset ruleset)
-    {
-      for (var i = 0; i < ruleset.Rules.Count; i++)
-      {
-        ruleset.Rules[i] = ruleset.Rules[i].Evaluate(env);
-      }
-    }
   }
 }

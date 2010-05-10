@@ -114,7 +114,7 @@ namespace dotless.Tree
         return true;
       }
 
-      protected override string ToCSS(List<IEnumerable<Selector>> list)
+      protected override string ToCSS(Context list)
       {
         return "";
       }
