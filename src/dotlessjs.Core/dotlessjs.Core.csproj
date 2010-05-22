@@ -121,6 +121,7 @@
     <Compile Include="Utils\HslColor.cs" />
     <Compile Include="Utils\LinqExtensions.cs" />
     <Compile Include="Utils\NumberExtensions.cs" />
+    <Compile Include="Utils\StringExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\dotless.Core\dotless.Core.csproj">
