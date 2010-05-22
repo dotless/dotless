@@ -662,7 +662,7 @@ namespace dotless
       var name = parser.Tokenizer.MatchString(@"@media|@page");
       if (!string.IsNullOrEmpty(name))
       {
-        var types = parser.Tokenizer.MatchString(@"[a-z:, ]+").Trim();
+        var types = parser.Tokenizer.MatchString(@"[^{]+").Trim();
         rules = Block(parser);
         if (rules != null)
           return NodeProvider.Directive(name + " " + types, rules);

@@ -19,12 +19,26 @@ namespace dotless.Tests.Specs
     }
 
     [Test]
-    public void FontFace()
+    public void FontFaceDirective()
     {
       var input = @"
 @font-face {
   font-family: Headline;
   src: local(Futura-Medium), url(fonts.svg#MyGeometricModern) format(""svg"");
+}
+";
+
+      AssertLessUnchanged(input);
+    }
+
+    [Test]
+    public void MediaDirective()
+    {
+      var input = @"
+@media all and (min-width: 640px) {
+  #media-queries-1 {
+    background-color: #0f0;
+  }
 }
 ";
 
