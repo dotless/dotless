@@ -832,7 +832,7 @@ namespace dotless
 
     public string Property(Parser parser)
     {
-      var name = parser.Tokenizer.Match(@"\*?-?[-a-z]+");
+      var name = parser.Tokenizer.Match(@"\*?-?[-_a-z][-_a-z0-9]*");
 
       if (name)
         return name.Value;

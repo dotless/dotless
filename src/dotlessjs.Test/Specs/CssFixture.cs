@@ -140,6 +140,31 @@ p + h1 {
     }
 
     [Test]
+    public void PropertyWithNumbers()
+    {
+      var input = @"
+textarea {
+  scrollbar-3dlight-color: yellow;
+}
+";
+
+      AssertLessUnchanged(input);
+    }
+
+    [Test]
+    public void PropertyWithUnderscore()
+    {
+      var input = @"
+p {
+  color: red;
+  _color: yellow;
+}
+";
+
+      AssertLessUnchanged(input);
+    }
+
+    [Test]
     public void Shorthands()
     {
       var input = @"
