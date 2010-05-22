@@ -154,5 +154,17 @@ a ~ p {
       AssertLessUnchanged(input);
     }
 
+    [Test]
+    public void MultipleBackgroundProperty()
+    {
+      var input = @"
+.class {
+  background: url(bg1.gif) top left no-repeat, url(bg2.jpg) top right no-repeat;
+}
+";
+
+      AssertLessUnchanged(input);
+    }
+
   }
 }
