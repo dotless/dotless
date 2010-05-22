@@ -154,5 +154,20 @@ textarea {
 
       AssertLess(input, expected);
     }
+
+
+    [Test]
+    public void DecendantSelectorWithTabs()
+    {
+      var input = "td \t input { line-height: 1em; }";
+
+      var expected = @"
+td input {
+  line-height: 1em;
+}
+";
+
+      AssertLess(input, expected);
+    }
   }
 }
