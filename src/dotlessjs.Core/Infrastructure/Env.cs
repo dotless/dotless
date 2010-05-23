@@ -18,7 +18,7 @@ namespace dotless.Infrastructure
       Frames = new Stack<Ruleset>();
     }
 
-    public Function GetFunction(string name)
+    public virtual Function GetFunction(string name)
     {
       if (_functionTypes == null)
       {
