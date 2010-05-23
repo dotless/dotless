@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using dotless.Functions;
 using dotless.Tree;
 
 namespace dotless.Infrastructure

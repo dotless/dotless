@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using dotless.Infrastructure;
 
-namespace dotless.Infrastructure
+namespace dotless.Functions
 {
   public abstract class Function
   {

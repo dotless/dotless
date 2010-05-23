@@ -1,7 +1,8 @@
-﻿using dotless.Tree;
+﻿using dotless.Infrastructure;
+using dotless.Tree;
 using dotless.Utils;
 
-namespace dotless.Infrastructure
+namespace dotless.Functions
 {
   public abstract class HslColorFunctionBase : ColorFunctionBase
   {
