@@ -36,13 +36,63 @@ namespace dotless.Tests.Specs
     {
       var input = @"
 @media all and (min-width: 640px) {
-  #media-queries-1 {
+  #header {
     background-color: #0f0;
   }
 }
 ";
 
       AssertLessUnchanged(input);
+    }
+
+    [Test]
+    public void MediaDirectiveCanUseVariables()
+    {
+      var input = @"
+@var: red;
+@media screen {
+  color: @var;
+  #header {
+    background-color: @var;
+  }
+}
+";
+
+      var expected = @"
+@media screen {
+  color: red;
+  #header {
+    background-color: red;
+  }
+}
+";
+
+      AssertLess(input, expected);
+    }
+
+    [Test]
+    public void MediaDirectiveCanDeclareVariables()
+    {
+      var input = @"
+@media screen {
+  @var: red;
+  color: @var;
+  #header {
+    background-color: @var;
+  }
+}
+";
+
+      var expected = @"
+@media screen {
+  color: red;
+  #header {
+    background-color: red;
+  }
+}
+";
+
+      AssertLess(input, expected);
     }
     
     [Test]

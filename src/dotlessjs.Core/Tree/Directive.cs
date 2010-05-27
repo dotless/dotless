@@ -29,10 +29,14 @@ namespace dotless.Tree
 
     public override Node Evaluate(Env env)
     {
+      env.Frames.Push(this);
+
       if(Rules != null)
         Rules = new List<Node>(Rules.Select(r => r.Evaluate(env)));
       else
         Value = Value.Evaluate(env);
+
+      env.Frames.Pop();
 
       return this;
     }
