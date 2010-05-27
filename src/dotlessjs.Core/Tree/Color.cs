@@ -131,7 +131,7 @@ namespace dotless.Tree
         .ToArray();
 
       if (Alpha < 1.0)
-        return string.Format("rgba({0}, {1}, {2}, {3})", rgb[0], rgb[1], rgb[2], Alpha);
+        return string.Format(CultureInfo.InvariantCulture, "rgba({0}, {1}, {2}, {3})", rgb[0], rgb[1], rgb[2], Alpha);
 
       var keyword = GetKeyword(rgb);
 

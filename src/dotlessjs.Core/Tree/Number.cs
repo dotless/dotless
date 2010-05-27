@@ -10,7 +10,7 @@ namespace dotless.Tree
 
     public Number(string value, string unit)
     {
-      Value = double.Parse(value);
+      Value = double.Parse(value, CultureInfo.InvariantCulture);
       Unit = unit;
     }
 
