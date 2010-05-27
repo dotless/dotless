@@ -17,6 +17,9 @@ namespace dotless
     private int _current;          // index of current chunk, in `input`
     private int _inputLength;
 
+    //Increasing throughput through tracing of Regex
+    private IDictionary<string, Regex> regexCache = new Dictionary<string, Regex>();
+
     public Tokenizer(int optimization)
     {
       Optimization = optimization;
@@ -114,7 +117,7 @@ namespace dotless
       if (caseInsensitive)
         options |= RegexOptions.IgnoreCase;
 
-      var regex = new Regex(tok, options);
+      var regex = GetRegex(tok, options);
 
       var match = regex.Match(_chunks[_j], _i - _current);
 
@@ -163,11 +166,19 @@ namespace dotless
 
     public bool Peek(string tok)
     {
-      var regex = new Regex(tok);
+      var regex = GetRegex(tok, RegexOptions.None);
 
       var match = regex.Match(_input, _i);
 
       return match.Success && match.Index == _i;
+    }
+
+    private Regex GetRegex(string pattern, RegexOptions options)
+    {
+      if (!regexCache.ContainsKey(pattern))
+        regexCache.Add(pattern, new Regex(pattern, options));
+
+      return regexCache[pattern];
     }
 
     public char PreviousChar
