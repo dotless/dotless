@@ -28,7 +28,7 @@ task Init -depends Clean {
 		-company "dotless project" `
 		-product "dotless" `
 		-version $version `
-		-copyright "Copyright © dotless project 2009"
+		-copyright "Copyright © dotless project 2010"
     Generate-Assembly-Info `
 		-file "$source_dir\dotless.Test\Properties\AssemblyInfo.cs" `
 		-title "dotless Tests $version" `
@@ -36,7 +36,7 @@ task Init -depends Clean {
 		-company "dotless project" `
 		-product "dotless" `
 		-version $version `
-		-copyright "Copyright © dotless project 2009"
+		-copyright "Copyright © dotless project 2010"
     Generate-Assembly-Info `
 		-file "$source_dir\dotless.Compiler\Properties\AssemblyInfo.cs" `
 		-title "dotless Compiler $version" `
@@ -44,7 +44,7 @@ task Init -depends Clean {
 		-company "dotless project" `
 		-product "dotless" `
 		-version $version `
-		-copyright "Copyright © dotless project 2009"
+		-copyright "Copyright © dotless project 2010"
         
     new-item $build_dir -itemType directory
     new-item $release_dir -itemType directory
