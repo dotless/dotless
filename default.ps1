@@ -28,7 +28,8 @@ task Init -depends Clean {
 		-company "dotless project" `
 		-product "dotless" `
 		-version $version `
-		-copyright "Copyright © dotless project 2010"
+		-copyright "Copyright © dotless project 2010" `
+        -partial $True
     Generate-Assembly-Info `
 		-file "$source_dir\dotless.Test\Properties\AssemblyInfo.cs" `
 		-title "dotless Tests $version" `
