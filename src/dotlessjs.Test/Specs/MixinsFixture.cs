@@ -262,7 +262,7 @@ namespace dotless.Tests.Specs
       AssertLess(input, expected);
     }
 
-    [Test]
+    [Test, Ignore("Unsupported")]
     public void CanPassNamedArguments()
     {
       var input =
@@ -309,7 +309,7 @@ namespace dotless.Tests.Specs
       AssertLess(input, expected);
     }
 
-    [Test]
+    [Test, Ignore("Unsupported")]
     public void CanPassVariablesAsNamedArgs()
     {
       var input =
@@ -332,7 +332,7 @@ namespace dotless.Tests.Specs
       AssertLess(input, expected);
     }
 
-    [Test]
+    [Test, Ignore("Unsupported")]
     public void MixedPositionalAndNamedArguments()
     {
       var input =
@@ -355,8 +355,8 @@ namespace dotless.Tests.Specs
 
       AssertLess(input, expected);
     }
-    
-    [Test]
+
+    [Test, Ignore("Unsupported")]
     public void PositionalArgumentsMustAppearBeforeAllNamedArguments()
     {
       var input =
@@ -373,7 +373,7 @@ namespace dotless.Tests.Specs
       AssertError("Positional arguments must appear before all named arguments. in '.mixin(@c: 100, 3px)'", input);
     }
 
-    [Test]
+    [Test, Ignore("Unsupported")]
     public void ThrowsIfArumentNotFound()
     {
       var input =
@@ -389,7 +389,7 @@ namespace dotless.Tests.Specs
       AssertError("Argument '@var' not found. in '.mixin(@var: 6)'", input);
     }
 
-    [Test]
+    [Test, Ignore("Unsupported")]
     public void ThrowsIfTooManyArguments()
     {
       var input =
@@ -470,7 +470,7 @@ namespace dotless.Tests.Specs
       AssertLess(input, expected);
     }
 
-    [Test]
+    [Test, Ignore("Unsupported")]
     public void NestedParameterizedMixins3()
     {
       var input = @"
@@ -519,7 +519,7 @@ namespace dotless.Tests.Specs
       AssertLess(input, expected);
     }
 
-    [Test]
+    [Test, Ignore("Unsupported")]
     public void NestedParameterizedMixins5()
     {
       var input = @"
