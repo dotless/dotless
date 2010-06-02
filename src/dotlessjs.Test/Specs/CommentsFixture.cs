@@ -268,7 +268,7 @@ namespace dotless.Tests.Specs
     }
 
     [Test]
-    public void BlockCommented()
+    public void BlockCommented1()
     {
       var input =
         @"
@@ -281,6 +281,40 @@ namespace dotless.Tests.Specs
 
       AssertLessUnchanged(input);
     }
+
+    [Test]
+    public void BlockCommented2()
+    {
+      // Note: fails due to chunking of input.
+
+      var input =
+        @"
+/* 
+#signup form h3.title {
+    background:transparent url(../img/ui/signup.png) no-repeat 50px top;
+    height:100px;
+}
+*/
+";
+
+      AssertLessUnchanged(input);
+    }
+
+    [Test, Ignore("Bug")]
+    public void BlockCommented3()
+    {
+      var input =
+        @"
+/* commented out
+  #more-comments {
+    quotes: ""/*"" ""*/"";
+  }
+*/
+";
+
+      AssertLessUnchanged(input);
+    }
+
 
     [Test]
     public void CommentOnLastLine()

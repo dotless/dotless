@@ -10,7 +10,7 @@ namespace dotless.Tests
   {
     protected static void AssertLess(string input, string expected)
     {
-      AssertLess(input, expected, new Parser());
+      AssertLess(input, expected, new Parser(0));
     }
 
     protected static void AssertLess(string input, string expected, Parser parser)
@@ -78,7 +78,7 @@ namespace dotless.Tests
 
     public static string Evaluate(string input)
     {
-      return Evaluate(input, new Parser());
+      return Evaluate(input, new Parser(0));
     }
 
     public static string Evaluate(string input, Parser parser)

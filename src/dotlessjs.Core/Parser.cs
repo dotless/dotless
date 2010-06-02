@@ -57,7 +57,7 @@ namespace dotless
     public Importer Importer { get; set; }
 
     public Parser()
-      : this(2)
+      : this(1)
     { }
 
     public Parser(int optimization)

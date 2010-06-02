@@ -30,44 +30,28 @@ namespace dotless
       _i = _j = _current = 0;
       _chunks = new List<string>();
       _input = input.Replace("\r\n", "\n");
-      _inputLength = _input.Length;
 
       // Split the input into chunks,
       // Either delimited by /\n\n/ or
       // delmited by '\n}' (see rationale above),
       // depending on the level of optimization.
-      if (Optimization > 0)
-      {
-        if (Optimization > 2)
-        {
-          var regex = new Regex(@"\/\*(?:[^*]|\*+[^\/*])*\*+\/");
-          _input = regex.Replace(_input, "");
 
-          regex = new Regex("^\n", RegexOptions.Multiline);
-          _chunks = regex.Split(_input).ToList();
-        }
-        else
-        {
-          var buff = new List<char>(_inputLength);
-          for (var k = 0; k < _input.Length; k++)
-          {
-            char c;
-            if ((c = _input[k]) == '}' && _input[k - 1] == '\n')
-            {
-              buff.Add('}');
-              var chunk = new string(buff.ToArray());
-              _chunks.Add(chunk);
-              buff = new List<char>();
-            }
-            else
-              buff.Add(c);
-          }
-          _chunks.Add(new string(buff.ToArray()));
-        }
-      }
-      else
+      if (Optimization == 0)
         _chunks.Add(_input);
+      else
+      {
+        var regex = new Regex(@"\/\*(?:[^*]|\*+[^\/*])*\*+\/");
+        _input = regex.Replace(_input, comment => Optimization == 1 ? Regex.Replace(comment.Value, "\n\n+", "\n") : "");
+
+        regex = new Regex("^(?=\n+)", RegexOptions.Multiline);
+        _chunks = regex.Split(_input).ToList();
+
+        Advance(0); // skip any empty chunks at the start.
+      }
+
+      _inputLength = _input.Length;
     }
+
 
     public string MatchString(char tok)
     {
@@ -147,7 +131,7 @@ namespace dotless
           break;
 
         var c = _input[_i];
-        if (!(c == 32 || c == 10 || c == 9))
+        if (!char.IsWhiteSpace(c))
           break;
         _i++;
       }
