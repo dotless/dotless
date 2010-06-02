@@ -285,8 +285,6 @@ namespace dotless.Tests.Specs
     [Test]
     public void BlockCommented2()
     {
-      // Note: fails due to chunking of input.
-
       var input =
         @"
 /* 
