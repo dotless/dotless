@@ -5,12 +5,12 @@ namespace dotless.Core.Parser.Functions
     using Tree;
 
     public class GrayscaleFunction : ColorFunctionBase
-  {
-    protected override Node Eval(Color color)
     {
-      var grey = (color.RGB.Max() + color.RGB.Min()) / 2;
+        protected override Node Eval(Color color)
+        {
+            var grey = (color.RGB.Max() + color.RGB.Min())/2;
 
-      return new Color(grey, grey, grey);
+            return new Color(grey, grey, grey);
+        }
     }
-  }
 }

@@ -1,7 +1,7 @@
 ﻿namespace dotless.Core.Parser.Stylizers
 {
-  public interface IStylizer
-  {
-    string Stylize(Zone zone);
-  }
+    public interface IStylizer
+    {
+        string Stylize(Zone zone);
+    }
 }

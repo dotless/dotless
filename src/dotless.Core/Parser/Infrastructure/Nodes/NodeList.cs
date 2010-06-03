@@ -4,106 +4,112 @@
     using System.Collections.Generic;
 
     public class NodeList : NodeList<Node>
-  {
-    public NodeList()
     {
-      Inner = new List<Node>();
-    }
-    public NodeList(params Node[] nodes)
-      : this((IEnumerable<Node>)nodes)
-    {}
-    public NodeList(IEnumerable<Node> nodes)
-    {
-      Inner = new List<Node>(nodes);
-    }
-  }
+        public NodeList()
+        {
+            Inner = new List<Node>();
+        }
 
-  public class NodeList<TNode> : Node, IList<TNode>
-    where TNode : Node
-  {
-    protected List<TNode> Inner;
+        public NodeList(params Node[] nodes)
+            : this((IEnumerable<Node>) nodes)
+        {
+        }
 
-    public NodeList()
-    {
-      Inner = new List<TNode>();
-    }
-    public NodeList(params TNode[] nodes)
-      : this((IEnumerable<TNode>) nodes)
-    {}
-    public NodeList(IEnumerable<TNode> nodes)
-    {
-      Inner = new List<TNode>(nodes);
+        public NodeList(IEnumerable<Node> nodes)
+        {
+            Inner = new List<Node>(nodes);
+        }
     }
 
-    public void AddRange(IEnumerable<TNode> nodes)
+    public class NodeList<TNode> : Node, IList<TNode>
+        where TNode : Node
     {
-      Inner.AddRange(nodes);
-    }
+        protected List<TNode> Inner;
 
-    public IEnumerator<TNode> GetEnumerator()
-    {
-      return Inner.GetEnumerator();
-    }
+        public NodeList()
+        {
+            Inner = new List<TNode>();
+        }
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-      return GetEnumerator();
-    }
+        public NodeList(params TNode[] nodes)
+            : this((IEnumerable<TNode>) nodes)
+        {
+        }
 
-    public void Add(TNode item)
-    {
-      Inner.Add(item);
-    }
+        public NodeList(IEnumerable<TNode> nodes)
+        {
+            Inner = new List<TNode>(nodes);
+        }
 
-    public void Clear()
-    {
-      Inner.Clear();
-    }
+        public void AddRange(IEnumerable<TNode> nodes)
+        {
+            Inner.AddRange(nodes);
+        }
 
-    public bool Contains(TNode item)
-    {
-      return Inner.Contains(item);
-    }
+        public IEnumerator<TNode> GetEnumerator()
+        {
+            return Inner.GetEnumerator();
+        }
 
-    public void CopyTo(TNode[] array, int arrayIndex)
-    {
-      Inner.CopyTo(array, arrayIndex);
-    }
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
-    public bool Remove(TNode item)
-    {
-      return Inner.Remove(item);
-    }
+        public void Add(TNode item)
+        {
+            Inner.Add(item);
+        }
 
-    public int Count
-    {
-      get { return Inner.Count; }
-    }
+        public void Clear()
+        {
+            Inner.Clear();
+        }
 
-    public bool IsReadOnly
-    {
-      get { return ((IList) Inner).IsReadOnly; }
-    }
+        public bool Contains(TNode item)
+        {
+            return Inner.Contains(item);
+        }
 
-    public int IndexOf(TNode item)
-    {
-      return Inner.IndexOf(item);
-    }
+        public void CopyTo(TNode[] array, int arrayIndex)
+        {
+            Inner.CopyTo(array, arrayIndex);
+        }
 
-    public void Insert(int index, TNode item)
-    {
-      Inner.Insert(index, item);
-    }
+        public bool Remove(TNode item)
+        {
+            return Inner.Remove(item);
+        }
 
-    public void RemoveAt(int index)
-    {
-      Inner.RemoveAt(index);
-    }
+        public int Count
+        {
+            get { return Inner.Count; }
+        }
 
-    public TNode this[int index]
-    {
-      get { return Inner[index]; }
-      set { Inner[index] = value; }
+        public bool IsReadOnly
+        {
+            get { return ((IList) Inner).IsReadOnly; }
+        }
+
+        public int IndexOf(TNode item)
+        {
+            return Inner.IndexOf(item);
+        }
+
+        public void Insert(int index, TNode item)
+        {
+            Inner.Insert(index, item);
+        }
+
+        public void RemoveAt(int index)
+        {
+            Inner.RemoveAt(index);
+        }
+
+        public TNode this[int index]
+        {
+            get { return Inner[index]; }
+            set { Inner[index] = value; }
+        }
     }
-  }
 }

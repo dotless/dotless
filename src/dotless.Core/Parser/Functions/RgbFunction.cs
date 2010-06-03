@@ -5,14 +5,14 @@
     using Utils;
 
     public class RgbFunction : RgbaFunction
-  {
-    protected override Node Evaluate()
     {
-      Guard.ExpectNumArguments(3, Arguments.Count, this);
+        protected override Node Evaluate()
+        {
+            Guard.ExpectNumArguments(3, Arguments.Count, this);
 
-      Arguments.Add(new Number(1d, ""));
+            Arguments.Add(new Number(1d, ""));
 
-      return base.Evaluate();
+            return base.Evaluate();
+        }
     }
-  }
 }

@@ -1,12 +1,12 @@
 ﻿namespace dotless.Core.Parser.Infrastructure.Nodes
 {
-  public class CharMatchResult : TextNode
-  {
-    public char Char { get; set; }
-
-    public CharMatchResult(char c) : base(c.ToString())
+    public class CharMatchResult : TextNode
     {
-      Char = c;
+        public char Char { get; set; }
+
+        public CharMatchResult(char c) : base(c.ToString())
+        {
+            Char = c;
+        }
     }
-  }
 }

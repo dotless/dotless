@@ -7,32 +7,32 @@
     using Utils;
 
     public class Value : Node
-  {
-    public NodeList Values { get; set; }
-    public Node Important { get; set; }
-
-    public Value(IEnumerable<Node> values, Node important)
     {
-      Values = new NodeList(values);
-      Important = important;
-    }
+        public NodeList Values { get; set; }
+        public Node Important { get; set; }
 
-    public override string ToCSS()
-    {
-      return Values.Select(v => v.ToCSS()).JoinStrings(", ");
-    }
+        public Value(IEnumerable<Node> values, Node important)
+        {
+            Values = new NodeList(values);
+            Important = important;
+        }
 
-    public override string ToString()
-    {
-      return ToCSS();
-    }
+        public override string ToCSS()
+        {
+            return Values.Select(v => v.ToCSS()).JoinStrings(", ");
+        }
 
-    public override Node Evaluate(Env env)
-    {
-      if (Values.Count == 1)
-        return Values[0].Evaluate(env);
+        public override string ToString()
+        {
+            return ToCSS();
+        }
 
-      return new Value(Values.Select(n => n.Evaluate(env)), Important);
+        public override Node Evaluate(Env env)
+        {
+            if (Values.Count == 1)
+                return Values[0].Evaluate(env);
+
+            return new Value(Values.Select(n => n.Evaluate(env)), Important);
+        }
     }
-  }
 }

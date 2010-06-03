@@ -6,25 +6,25 @@ namespace dotless.Core.Parser.Functions
     using Utils;
 
     public class RgbaFunction : Function
-  {
-    protected override Node Evaluate()
     {
-      if (Arguments.Count == 2)
-      {
-        Guard.ExpectNode<Color>(Arguments[0], this);
-        Guard.ExpectNode<Number>(Arguments[1], this);
+        protected override Node Evaluate()
+        {
+            if (Arguments.Count == 2)
+            {
+                Guard.ExpectNode<Color>(Arguments[0], this);
+                Guard.ExpectNode<Number>(Arguments[1], this);
 
-        return new Color(((Color) Arguments[0]).RGB, ((Number) Arguments[1]).Value);
-      }
+                return new Color(((Color) Arguments[0]).RGB, ((Number) Arguments[1]).Value);
+            }
 
-      Guard.ExpectNumArguments(4, Arguments.Count, this);
-      Guard.ExpectAllNodes<Number>(Arguments, this);
-      
-      var args = Arguments.Cast<Number>();
+            Guard.ExpectNumArguments(4, Arguments.Count, this);
+            Guard.ExpectAllNodes<Number>(Arguments, this);
 
-      var rgb = args.Take(3);
+            var args = Arguments.Cast<Number>();
 
-      return new Color(rgb, args.ElementAt(3));
+            var rgb = args.Take(3);
+
+            return new Color(rgb, args.ElementAt(3));
+        }
     }
-  }
 }

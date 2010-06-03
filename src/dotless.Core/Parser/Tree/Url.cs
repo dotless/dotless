@@ -3,25 +3,25 @@
     using Infrastructure.Nodes;
 
     public class Url : Node
-  {
-    public Node Value { get; set; }
-
-    public Url(Node value)
     {
-      Value = value;
-    }
+        public Node Value { get; set; }
 
-    public string GetUrl()
-    {
-      if (Value is Quoted)
-        return ((Quoted) Value).Contents;
+        public Url(Node value)
+        {
+            Value = value;
+        }
 
-      return Value.ToCSS();
-    }
+        public string GetUrl()
+        {
+            if (Value is Quoted)
+                return ((Quoted) Value).Contents;
 
-    public override string ToCSS()
-    {
-      return "url(" + Value.ToCSS() + ")";
+            return Value.ToCSS();
+        }
+
+        public override string ToCSS()
+        {
+            return "url(" + Value.ToCSS() + ")";
+        }
     }
-  }
 }

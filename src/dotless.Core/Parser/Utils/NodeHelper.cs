@@ -6,21 +6,21 @@
     using Tree;
 
     internal class NodeHelper
-  {
-    public static void ExpandNodes<TNode>(Env env, Ruleset ruleset)
-      where TNode : Node
     {
-      for (var i = 0; i < ruleset.Rules.Count; i++)
-      {
-        var node = ruleset.Rules[i];
-
-        if (node is TNode)
+        public static void ExpandNodes<TNode>(Env env, Ruleset ruleset)
+            where TNode : Node
         {
-          ruleset.Rules.RemoveAt(i);
+            for (var i = 0; i < ruleset.Rules.Count; i++)
+            {
+                var node = ruleset.Rules[i];
 
-          ruleset.Rules.InsertRange(i, (IEnumerable<Node>)node.Evaluate(env));
+                if (node is TNode)
+                {
+                    ruleset.Rules.RemoveAt(i);
+
+                    ruleset.Rules.InsertRange(i, (IEnumerable<Node>) node.Evaluate(env));
+                }
+            }
         }
-      }
     }
-  }
 }

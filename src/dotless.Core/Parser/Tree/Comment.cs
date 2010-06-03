@@ -3,17 +3,17 @@
     using Infrastructure.Nodes;
 
     public class Comment : Node
-  {
-    public string Value { get; set; }
-
-    public Comment(string value)
     {
-      Value = value;
-    }
+        public string Value { get; set; }
 
-    public override string ToCSS()
-    {
-      return Value;
+        public Comment(string value)
+        {
+            Value = value;
+        }
+
+        public override string ToCSS()
+        {
+            return Value;
+        }
     }
-  }
 }

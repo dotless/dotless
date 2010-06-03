@@ -5,16 +5,16 @@
     using Utils;
 
     public class SaturationFunction : HslColorFunctionBase
-  {
-    protected override Node EvalHsl(HslColor color)
     {
-      return color.GetSaturation();
-    }
+        protected override Node EvalHsl(HslColor color)
+        {
+            return color.GetSaturation();
+        }
 
-    protected override Node EditHsl(HslColor color, Number number)
-    {
-      color.Saturation += number.Value / 100;
-      return color.ToRgbColor();
+        protected override Node EditHsl(HslColor color, Number number)
+        {
+            color.Saturation += number.Value/100;
+            return color.ToRgbColor();
+        }
     }
-  }
 }

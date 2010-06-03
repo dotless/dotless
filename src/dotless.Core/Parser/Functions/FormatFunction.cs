@@ -6,22 +6,21 @@ namespace dotless.Core.Parser.Functions
     using Tree;
 
     public class FormatStringFunction : Function
-  {
-    protected override Node Evaluate()
     {
-      if (Arguments.Count == 0)
-        return new Quoted("");
+        protected override Node Evaluate()
+        {
+            if (Arguments.Count == 0)
+                return new Quoted("");
 
-      Func<Node, string> unescape = n => n is Quoted ? ((Quoted) n).UnescapeContents() : n.ToCSS();
+            Func<Node, string> unescape = n => n is Quoted ? ((Quoted) n).UnescapeContents() : n.ToCSS();
 
-      var format = unescape(Arguments[0]);
+            var format = unescape(Arguments[0]);
 
-      var args = Arguments.Skip(1).Select(unescape).ToArray();
+            var args = Arguments.Skip(1).Select(unescape).ToArray();
 
-      var result = string.Format(format, args);
+            var result = string.Format(format, args);
 
-      return new Quoted(result);
+            return new Quoted(result);
+        }
     }
-  }
-
 }

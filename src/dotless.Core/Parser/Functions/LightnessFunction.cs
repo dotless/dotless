@@ -5,16 +5,16 @@
     using Utils;
 
     public class LightnessFunction : HslColorFunctionBase
-  {
-    protected override Node EvalHsl(HslColor color)
     {
-      return color.GetLightness();
-    }
+        protected override Node EvalHsl(HslColor color)
+        {
+            return color.GetLightness();
+        }
 
-    protected override Node EditHsl(HslColor color, Number number)
-    {
-      color.Lightness += number.Value / 100;
-      return color.ToRgbColor();
+        protected override Node EditHsl(HslColor color, Number number)
+        {
+            color.Lightness += number.Value/100;
+            return color.ToRgbColor();
+        }
     }
-  }
 }

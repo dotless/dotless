@@ -1,10 +1,11 @@
 ﻿namespace dotless.Core.Parser.Stylizers
 {
     public class HtmlStylizer : IStylizer
-  {
-    public string Stylize(Zone zone)
     {
-      var template = @"
+        public string Stylize(Zone zone)
+        {
+            var template =
+                @"
 <div id=""less-error-message"">
   <h3>There is an error in your .less file</h3>
   <p>on line {1}, column {3}</p>
@@ -16,16 +17,16 @@
 </div>
 ";
 
-      return string.Format(template,
-                           zone.LineNumber - 1,
-                           zone.LineNumber,
-                           zone.LineNumber + 1,
-                           zone.Position,
-                           zone.Extract.Before,                            // 
-                           zone.Extract.Line.Substring(0, zone.Position),  //
-                           zone.Extract.Line[zone.Position],               // Html Encode
-                           zone.Extract.Line.Substring(zone.Position + 1), //
-                           zone.Extract.After);                            //
+            return string.Format(template,
+                                 zone.LineNumber - 1,
+                                 zone.LineNumber,
+                                 zone.LineNumber + 1,
+                                 zone.Position,
+                                 zone.Extract.Before, // 
+                                 zone.Extract.Line.Substring(0, zone.Position), //
+                                 zone.Extract.Line[zone.Position], // Html Encode
+                                 zone.Extract.Line.Substring(zone.Position + 1), //
+                                 zone.Extract.After); //
+        }
     }
-  }
 }

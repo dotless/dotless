@@ -5,56 +5,57 @@
     using Infrastructure.Nodes;
 
     public class Operation : Node
-  {
-    public Node First { get; set; }
-    public Node Second { get; set; }
-    public string Operator { get; set; }
-
-    public Operation(string op, Node first, Node second)
     {
-      First = first;
-      Second = second;
-      Operator = op.Trim();
-    }
+        public Node First { get; set; }
+        public Node Second { get; set; }
+        public string Operator { get; set; }
 
-    public override Node Evaluate(Env env)
-    {
-      var a = First.Evaluate(env);
-      var b = Second.Evaluate(env);
-
-      if (a is Number && b is Color) {
-        if (Operator == "*" || Operator == "+")
+        public Operation(string op, Node first, Node second)
         {
-          var temp = b;
-          b = a;
-          a = temp;
+            First = first;
+            Second = second;
+            Operator = op.Trim();
         }
-        else
-          throw new InvalidOperationException("Can't substract or divide a color from a number");
-      }
 
-      var operable = a as IOperable;
-      if (operable != null) 
-        return operable.Operate(Operator, b);
-      
-      return null;
-    }
+        public override Node Evaluate(Env env)
+        {
+            var a = First.Evaluate(env);
+            var b = Second.Evaluate(env);
 
-    public static double Operate(string op, double first, double second)
-    {
-      switch (op)
-      {
-        case "+":
-          return first + second;
-        case "-":
-          return first - second;
-        case "*":
-          return first * second;
-        case "/":
-          return first / second;
-        default:
-          throw new InvalidOperationException("Unknown operator");
-      }
+            if (a is Number && b is Color)
+            {
+                if (Operator == "*" || Operator == "+")
+                {
+                    var temp = b;
+                    b = a;
+                    a = temp;
+                }
+                else
+                    throw new InvalidOperationException("Can't substract or divide a color from a number");
+            }
+
+            var operable = a as IOperable;
+            if (operable != null)
+                return operable.Operate(Operator, b);
+
+            return null;
+        }
+
+        public static double Operate(string op, double first, double second)
+        {
+            switch (op)
+            {
+                case "+":
+                    return first + second;
+                case "-":
+                    return first - second;
+                case "*":
+                    return first*second;
+                case "/":
+                    return first/second;
+                default:
+                    throw new InvalidOperationException("Unknown operator");
+            }
+        }
     }
-  }
 }

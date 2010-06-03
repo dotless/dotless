@@ -4,22 +4,22 @@
     using Infrastructure.Nodes;
 
     public class Keyword : Node
-  {
-    public string Value { get; set; }
-
-    public Keyword(string value)
     {
-      Value = value;
-    }
+        public string Value { get; set; }
 
-    public override Node Evaluate(Env env)
-    {
-      return (Node) Color.GetColorFromKeyword(Value) ?? this;
-    }
+        public Keyword(string value)
+        {
+            Value = value;
+        }
 
-    public override string ToCSS()
-    {
-      return Value;
+        public override Node Evaluate(Env env)
+        {
+            return (Node) Color.GetColorFromKeyword(Value) ?? this;
+        }
+
+        public override string ToCSS()
+        {
+            return Value;
+        }
     }
-  }
 }

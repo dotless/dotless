@@ -5,16 +5,16 @@
     using Utils;
 
     public class HueFunction : HslColorFunctionBase
-  {
-    protected override Node EvalHsl(HslColor color)
     {
-      return color.GetHueInDegrees();
-    }
+        protected override Node EvalHsl(HslColor color)
+        {
+            return color.GetHueInDegrees();
+        }
 
-    protected override Node EditHsl(HslColor color, Number number)
-    {
-      color.Hue += number.Value / 360d;
-      return color.ToRgbColor();
+        protected override Node EditHsl(HslColor color, Number number)
+        {
+            color.Hue += number.Value/360d;
+            return color.ToRgbColor();
+        }
     }
-  }
 }

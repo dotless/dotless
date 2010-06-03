@@ -6,25 +6,25 @@
     using Utils;
 
     public class Expression : Node
-  {
-    public NodeList Value { get; set; }
-
-    public Expression(NodeList value)
     {
-      Value = value;
-    }
-    
-    public override Node Evaluate (Env env)
-    {
-      if (Value.Count > 1)
-        return new Expression(new NodeList(Value.Select(e => e.Evaluate(env))));
+        public NodeList Value { get; set; }
 
-      return Value[0].Evaluate(env);
-    }
+        public Expression(NodeList value)
+        {
+            Value = value;
+        }
 
-    public override string  ToCSS()
-    {
-      return Value.Select(e => e.ToCSS()).JoinStrings(" ");
+        public override Node Evaluate(Env env)
+        {
+            if (Value.Count > 1)
+                return new Expression(new NodeList(Value.Select(e => e.Evaluate(env))));
+
+            return Value[0].Evaluate(env);
+        }
+
+        public override string ToCSS()
+        {
+            return Value.Select(e => e.ToCSS()).JoinStrings(" ");
+        }
     }
-  }
 }

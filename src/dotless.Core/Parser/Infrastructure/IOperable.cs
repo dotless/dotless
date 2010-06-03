@@ -4,8 +4,8 @@
     using Tree;
 
     public interface IOperable
-  {
-    Node Operate(string op, Node other);
-    Color ToColor();
-  }
+    {
+        Node Operate(string op, Node other);
+        Color ToColor();
+    }
 }

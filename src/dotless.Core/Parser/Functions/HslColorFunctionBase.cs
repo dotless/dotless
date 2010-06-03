@@ -5,23 +5,23 @@
     using Utils;
 
     public abstract class HslColorFunctionBase : ColorFunctionBase
-  {
-    protected override Node Eval(Color color)
     {
-      var hsl = HslColor.FromRgbColor(color);
+        protected override Node Eval(Color color)
+        {
+            var hsl = HslColor.FromRgbColor(color);
 
-      return EvalHsl(hsl);
+            return EvalHsl(hsl);
+        }
+
+        protected override Node EditColor(Color color, Number number)
+        {
+            var hsl = HslColor.FromRgbColor(color);
+
+            return EditHsl(hsl, number);
+        }
+
+        protected abstract Node EvalHsl(HslColor color);
+
+        protected abstract Node EditHsl(HslColor color, Number number);
     }
-
-    protected override Node EditColor(Color color, Number number)
-    {
-      var hsl = HslColor.FromRgbColor(color);
-
-      return EditHsl(hsl, number);
-    }
-
-    protected abstract Node EvalHsl(HslColor color);
-
-    protected abstract Node EditHsl(HslColor color, Number number);
-  }
 }
