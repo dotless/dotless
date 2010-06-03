@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>dotless.Tests</RootNamespace>
-    <AssemblyName>dotless.Tests</AssemblyName>
+    <AssemblyName>dotless.Test</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -93,10 +93,6 @@
     <ProjectReference Include="..\dotless.Core\dotless.Core.csproj">
       <Project>{D7A24E58-68D0-4B10-A324-EA33C822FA56}</Project>
       <Name>dotless.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\dotlessjs.Core\dotlessjs.Core.csproj">
-      <Project>{09E5F169-3D23-45CC-BF68-7D734DE5FF9E}</Project>
-      <Name>dotlessjs.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
