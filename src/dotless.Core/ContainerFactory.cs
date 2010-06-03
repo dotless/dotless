@@ -16,8 +16,6 @@ namespace dotless.Core
 {
     using Abstractions;
     using configuration;
-    using engine;
-    using engine.Pipeline;
     using Microsoft.Practices.ServiceLocation;
     using Pandora;
 
@@ -59,7 +57,7 @@ namespace dotless.Core
                                                .Implementor<MinifierDecorator>();
                                        }
                                        p.Service<ILessEngine>()
-                                           .Implementor<ExtensibleEngine>();
+                                           .Implementor<LessJsEngine>();
                                        p.Service<ILessSource>()
                                            .Implementor<FileSource>();
                                    });
