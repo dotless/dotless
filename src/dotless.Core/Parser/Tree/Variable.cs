@@ -1,11 +1,11 @@
-﻿using System;
-using dotless.Exceptions;
-using dotless.Infrastructure;
-using dotless.Utils;
-
-namespace dotless.Tree
+﻿namespace dotless.Core.Parser.Tree
 {
-  public class Variable : Node
+    using Exceptions;
+    using Infrastructure;
+    using Infrastructure.Nodes;
+    using Utils;
+
+    public class Variable : Node
   {
     public string Name { get; set; }
 

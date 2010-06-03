@@ -1,10 +1,10 @@
-﻿using dotless.Infrastructure;
-using dotless.Tree;
-using dotless.Utils;
-
-namespace dotless.Functions
+﻿namespace dotless.Core.Parser.Functions
 {
-  public abstract class HslColorFunctionBase : ColorFunctionBase
+    using Infrastructure.Nodes;
+    using Tree;
+    using Utils;
+
+    public abstract class HslColorFunctionBase : ColorFunctionBase
   {
     protected override Node Eval(Color color)
     {

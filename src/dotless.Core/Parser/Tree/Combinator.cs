@@ -1,8 +1,8 @@
-﻿using dotless.Infrastructure;
-
-namespace dotless.Tree
+﻿namespace dotless.Core.Parser.Tree
 {
-  public class Combinator : Node
+    using Infrastructure.Nodes;
+
+    public class Combinator : Node
   {
     public string Value { get; set; }
 

@@ -1,8 +1,9 @@
-﻿using dotless.Tree;
-
-namespace dotless.Infrastructure
+﻿namespace dotless.Core.Parser.Infrastructure
 {
-  public interface IOperable
+    using Nodes;
+    using Tree;
+
+    public interface IOperable
   {
     Node Operate(string op, Node other);
     Color ToColor();

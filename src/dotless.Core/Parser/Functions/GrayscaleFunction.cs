@@ -1,10 +1,10 @@
-using System.Linq;
-using dotless.Infrastructure;
-using dotless.Tree;
-
-namespace dotless.Functions
+namespace dotless.Core.Parser.Functions
 {
-  public class GrayscaleFunction : ColorFunctionBase
+    using System.Linq;
+    using Infrastructure.Nodes;
+    using Tree;
+
+    public class GrayscaleFunction : ColorFunctionBase
   {
     protected override Node Eval(Color color)
     {

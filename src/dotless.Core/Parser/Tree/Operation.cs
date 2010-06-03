@@ -1,9 +1,10 @@
-﻿using System;
-using dotless.Infrastructure;
-
-namespace dotless.Tree
+﻿namespace dotless.Core.Parser.Tree
 {
-  public class Operation : Node
+    using System;
+    using Infrastructure;
+    using Infrastructure.Nodes;
+
+    public class Operation : Node
   {
     public Node First { get; set; }
     public Node Second { get; set; }

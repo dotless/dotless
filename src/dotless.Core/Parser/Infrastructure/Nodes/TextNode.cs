@@ -1,4 +1,4 @@
-﻿namespace dotless.Infrastructure
+﻿namespace dotless.Core.Parser.Infrastructure.Nodes
 {
   public class TextNode : Node
   {

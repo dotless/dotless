@@ -1,10 +1,10 @@
-﻿using dotless.Exceptions;
-using dotless.Infrastructure;
-using dotless.Tree;
-
-namespace dotless.Functions
+﻿namespace dotless.Core.Parser.Functions
 {
-  public class PercentageFunction : NumberFunctionBase
+    using Exceptions;
+    using Infrastructure.Nodes;
+    using Tree;
+
+    public class PercentageFunction : NumberFunctionBase
   {
     protected override Node Eval(Number number, Node[] args)
     {

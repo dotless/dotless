@@ -1,10 +1,10 @@
-﻿using dotless.Infrastructure;
-using dotless.Tree;
-using dotless.Utils;
-
-namespace dotless.Functions
+﻿namespace dotless.Core.Parser.Functions
 {
-  public class SaturationFunction : HslColorFunctionBase
+    using Infrastructure.Nodes;
+    using Tree;
+    using Utils;
+
+    public class SaturationFunction : HslColorFunctionBase
   {
     protected override Node EvalHsl(HslColor color)
     {

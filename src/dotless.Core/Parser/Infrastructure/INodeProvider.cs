@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
-using dotless.Infrastructure;
-using dotless.Tree;
-
-namespace dotless
+﻿namespace dotless.Core.Parser.Infrastructure
 {
-  public interface INodeProvider
+    using System.Collections.Generic;
+    using Importers;
+    using Nodes;
+    using Tree;
+
+    public interface INodeProvider
   {
     Element Element(Combinator combinator, string value);
     Combinator Combinator(string value);

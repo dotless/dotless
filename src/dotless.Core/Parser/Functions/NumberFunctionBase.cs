@@ -1,11 +1,11 @@
-using System.Linq;
-using dotless.Infrastructure;
-using dotless.Tree;
-using dotless.Utils;
-
-namespace dotless.Functions
+namespace dotless.Core.Parser.Functions
 {
-  public abstract class NumberFunctionBase : Function
+    using System.Linq;
+    using Infrastructure.Nodes;
+    using Tree;
+    using Utils;
+
+    public abstract class NumberFunctionBase : Function
   {
     protected override Node Evaluate()
     {

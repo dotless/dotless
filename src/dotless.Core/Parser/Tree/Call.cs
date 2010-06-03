@@ -1,11 +1,11 @@
-﻿using System;
-using System.Linq;
-using dotless.Infrastructure;
-using dotless.Utils;
-
-namespace dotless.Tree
+﻿namespace dotless.Core.Parser.Tree
 {
-  public class Call : Node
+    using System.Linq;
+    using Infrastructure;
+    using Infrastructure.Nodes;
+    using Utils;
+
+    public class Call : Node
   {
     public string Name { get; set; }
     public NodeList<Expression> Arguments { get; set; }

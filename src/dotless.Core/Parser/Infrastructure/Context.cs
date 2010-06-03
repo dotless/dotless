@@ -1,12 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using dotless.Tree;
-using dotless.Utils;
-
-namespace dotless.Infrastructure
+﻿namespace dotless.Core.Parser.Infrastructure
 {
-  public class Context : IEnumerable<IEnumerable<Selector>>
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Tree;
+    using Utils;
+
+    public class Context : IEnumerable<IEnumerable<Selector>>
   {
     private List<List<Selector>> Paths { get; set; }
 

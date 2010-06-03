@@ -1,9 +1,9 @@
-﻿using System.Text.RegularExpressions;
-using dotless.Infrastructure;
-
-namespace dotless.Tree
+﻿namespace dotless.Core.Parser.Tree
 {
-  public class Quoted : Node
+    using System.Text.RegularExpressions;
+    using Infrastructure.Nodes;
+
+    public class Quoted : Node
   {
     public string Value { get; set; }
     public string Contents { get; set; }

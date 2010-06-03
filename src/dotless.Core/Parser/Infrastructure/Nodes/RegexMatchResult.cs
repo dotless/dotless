@@ -1,8 +1,8 @@
-﻿using System.Text.RegularExpressions;
-
-namespace dotless.Infrastructure
+﻿namespace dotless.Core.Parser.Infrastructure.Nodes
 {
-  public class RegexMatchResult : TextNode
+    using System.Text.RegularExpressions;
+
+    public class RegexMatchResult : TextNode
   {
     public Match Match { get; set; }
 

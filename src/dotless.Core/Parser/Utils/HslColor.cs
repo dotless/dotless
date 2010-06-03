@@ -1,10 +1,10 @@
-using System;
-using System.Linq;
-using dotless.Tree;
-
-namespace dotless.Utils
+namespace dotless.Core.Parser.Utils
 {
-  public class HslColor
+    using System;
+    using System.Linq;
+    using Tree;
+
+    public class HslColor
   {
     // Note: To avoid converting back and forth between HlsColor and Color, HlsColor should perhaps inherit from color and only cenvert when needed.
 

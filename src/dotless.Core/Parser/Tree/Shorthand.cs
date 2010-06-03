@@ -1,8 +1,8 @@
-﻿using dotless.Infrastructure;
-
-namespace dotless.Tree
+﻿namespace dotless.Core.Parser.Tree
 {
-  public class Shorthand : Node
+    using Infrastructure.Nodes;
+
+    public class Shorthand : Node
   {
     public Node First { get; set; }
     public Node Second { get; set; }

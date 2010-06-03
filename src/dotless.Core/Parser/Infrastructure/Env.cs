@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using dotless.Functions;
-using dotless.Tree;
-
-namespace dotless.Infrastructure
+﻿namespace dotless.Core.Parser.Infrastructure
 {
-  public class Env
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using Functions;
+    using Tree;
+
+    public class Env
   {
     private Dictionary<string, Type> _functionTypes;
 

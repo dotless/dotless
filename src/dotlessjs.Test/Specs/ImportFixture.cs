@@ -1,9 +1,10 @@
-using System.Collections.Generic;
-using NUnit.Framework;
-
 namespace dotless.Tests.Specs
 {
-  public class ImportFixture : SpecFixtureBase
+    using Core.Parser;
+    using System.Collections.Generic;
+    using NUnit.Framework;
+
+    public class ImportFixture : SpecFixtureBase
   {
     private static Parser GetParser()
     {

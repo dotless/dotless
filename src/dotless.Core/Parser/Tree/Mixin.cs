@@ -1,14 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using dotless.Exceptions;
-using dotless.Infrastructure;
-using dotless.Utils;
+﻿// ReSharper disable RedundantNameQualifier
 
-// ReSharper disable RedundantNameQualifier
-
-namespace dotless.Tree
+namespace dotless.Core.Parser.Tree
 {
-  public class Mixin
+    using System.Collections.Generic;
+    using System.Linq;
+    using Exceptions;
+    using Infrastructure;
+    using Infrastructure.Nodes;
+    using Utils;
+
+    public class Mixin
   {
     public class Definition : Ruleset
     {

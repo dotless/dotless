@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using dotless.Infrastructure;
-using dotless.Tree;
-
-namespace dotless.Utils
+﻿namespace dotless.Core.Parser.Utils
 {
-  internal class NodeHelper
+    using System.Collections.Generic;
+    using Infrastructure;
+    using Infrastructure.Nodes;
+    using Tree;
+
+    internal class NodeHelper
   {
     public static void ExpandNodes<TNode>(Env env, Ruleset ruleset)
       where TNode : Node

@@ -1,8 +1,8 @@
-﻿using dotless.Infrastructure;
-
-namespace dotless.Tree
+﻿namespace dotless.Core.Parser.Tree
 {
-  public class Url : Node
+    using Infrastructure.Nodes;
+
+    public class Url : Node
   {
     public Node Value { get; set; }
 

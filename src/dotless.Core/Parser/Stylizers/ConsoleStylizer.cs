@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace dotless.Stylizers
+﻿namespace dotless.Core.Parser.Stylizers
 {
-  public class ConsoleStylizer : IStylizer
+    using System.Collections.Generic;
+
+    public class ConsoleStylizer : IStylizer
   {
     private Dictionary<string, int[]> styles;
 

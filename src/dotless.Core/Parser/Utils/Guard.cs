@@ -1,10 +1,10 @@
-using System.Collections.Generic;
-using dotless.Exceptions;
-using dotless.Infrastructure;
-
-namespace dotless.Utils
+namespace dotless.Core.Parser.Utils
 {
-  public static class Guard
+    using System.Collections.Generic;
+    using Exceptions;
+    using Infrastructure.Nodes;
+
+    public static class Guard
   {
     public static void Expect(string expected, string actual, object @in)
     {

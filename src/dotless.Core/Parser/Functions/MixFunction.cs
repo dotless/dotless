@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
-using System.Linq;
-using dotless.Infrastructure;
-using dotless.Tree;
-using dotless.Utils;
-
-namespace dotless.Functions
+namespace dotless.Core.Parser.Functions
 {
-  public class MixFunction : Function
+    using System.Linq;
+    using Infrastructure.Nodes;
+    using Tree;
+    using Utils;
+
+    public class MixFunction : Function
   {
     protected override Node Evaluate()
     {

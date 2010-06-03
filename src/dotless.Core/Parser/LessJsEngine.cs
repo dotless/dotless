@@ -1,9 +1,8 @@
-using System;
-using dotless.Core;
-
-namespace dotless
+namespace dotless.Core.Parser
 {
-  public class LessJsEngine : ILessEngine
+    using dotless.Core;
+
+    public class LessJsEngine : ILessEngine
   {
     public string TransformToCss(LessSourceObject source)
     {

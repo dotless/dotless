@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using dotless.Infrastructure;
-using dotless.Tree;
-using NUnit.Framework;
-
-namespace dotless.Tests
+﻿namespace dotless.Tests
 {
-  public class SpecFixtureBase
+    using Core.Parser;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Core.Parser.Infrastructure;
+    using NUnit.Framework;
+
+    public class SpecFixtureBase
   {
     protected static void AssertLess(string input, string expected)
     {

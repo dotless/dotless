@@ -1,10 +1,10 @@
-﻿using System.Linq;
-using dotless.Infrastructure;
-using dotless.Utils;
-
-namespace dotless.Tree
+﻿namespace dotless.Core.Parser.Tree
 {
-  public class Selector : Node
+    using System.Linq;
+    using Infrastructure.Nodes;
+    using Utils;
+
+    public class Selector : Node
   {
     private string _css;
     public NodeList<Element> Elements { get; set; }

@@ -1,8 +1,8 @@
-﻿using System;
-
-namespace dotless.Exceptions
+﻿namespace dotless.Core.Parser.Exceptions
 {
-  public class ParsingException : Exception
+    using System;
+
+    public class ParsingException : Exception
   {
     public ParsingException(string message)
       : base (message)

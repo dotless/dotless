@@ -1,8 +1,8 @@
-﻿using System.IO;
-
-namespace dotless.Infrastructure
+﻿namespace dotless.Core.Parser.Infrastructure.Importers
 {
-  public class FileImporter : Importer
+    using System.IO;
+
+    public class FileImporter : Importer
   {
     protected override string GetImportContents(string path)
     {

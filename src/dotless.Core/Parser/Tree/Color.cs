@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using dotless.Infrastructure;
-using dotless.Utils;
-
-namespace dotless.Tree
+﻿namespace dotless.Core.Parser.Tree
 {
-  public class Color : Node, IOperable
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Linq;
+    using Infrastructure;
+    using Infrastructure.Nodes;
+    using Utils;
+
+    public class Color : Node, IOperable
   {
     private static readonly Dictionary<int, string> Html4ColorsReverse;
 
@@ -53,7 +54,7 @@ namespace dotless.Tree
     {
       RGB = rgb
         .Select(d => d.Normalize(255d))
-        .ToArray();
+        .ToArray<double>();
 
       Alpha = alpha.Normalize();
     }

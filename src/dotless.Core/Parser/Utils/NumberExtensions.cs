@@ -1,8 +1,8 @@
-using dotless.Tree;
-
-namespace dotless.Utils
+namespace dotless.Core.Parser.Utils
 {
-  public static class NumberExtensions
+    using Tree;
+
+    public static class NumberExtensions
   {
     public static double Normalize(this Number value)
     {

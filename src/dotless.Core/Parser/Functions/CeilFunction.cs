@@ -1,10 +1,10 @@
-﻿using System;
-using dotless.Infrastructure;
-using dotless.Tree;
-
-namespace dotless.Functions
+﻿namespace dotless.Core.Parser.Functions
 {
-  public class CeilFunction : NumberFunctionBase
+    using System;
+    using Infrastructure.Nodes;
+    using Tree;
+
+    public class CeilFunction : NumberFunctionBase
   {
     protected override Node Eval(Number number, Node[] args)
     {

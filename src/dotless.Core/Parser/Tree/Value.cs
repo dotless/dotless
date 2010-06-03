@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using dotless.Infrastructure;
-using dotless.Utils;
-
-namespace dotless.Tree
+﻿namespace dotless.Core.Parser.Tree
 {
-  public class Value : Node
+    using System.Collections.Generic;
+    using System.Linq;
+    using Infrastructure;
+    using Infrastructure.Nodes;
+    using Utils;
+
+    public class Value : Node
   {
     public NodeList Values { get; set; }
     public Node Important { get; set; }

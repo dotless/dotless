@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using dotless.Infrastructure;
-using dotless.Utils;
-
-namespace dotless.Tree
+﻿namespace dotless.Core.Parser.Tree
 {
-  public class Import : Directive
+    using System.Text.RegularExpressions;
+    using Infrastructure;
+    using Infrastructure.Importers;
+    using Infrastructure.Nodes;
+    using Utils;
+
+    public class Import : Directive
   {
     public string Path { get; set; }
     protected Node OriginalPath { get; set; }

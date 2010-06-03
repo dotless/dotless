@@ -1,9 +1,10 @@
-﻿using System.Globalization;
-using dotless.Infrastructure;
-
-namespace dotless.Tree
+﻿namespace dotless.Core.Parser.Tree
 {
-  public class Number : Node, IOperable
+    using System.Globalization;
+    using Infrastructure;
+    using Infrastructure.Nodes;
+
+    public class Number : Node, IOperable
   {
     public double Value { get; set; }
     public string Unit { get; set; }

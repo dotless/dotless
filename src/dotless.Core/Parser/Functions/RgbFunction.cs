@@ -1,10 +1,10 @@
-﻿using dotless.Infrastructure;
-using dotless.Tree;
-using dotless.Utils;
-
-namespace dotless.Functions
+﻿namespace dotless.Core.Parser.Functions
 {
-  public class RgbFunction : RgbaFunction
+    using Infrastructure.Nodes;
+    using Tree;
+    using Utils;
+
+    public class RgbFunction : RgbaFunction
   {
     protected override Node Evaluate()
     {

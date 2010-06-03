@@ -12,12 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
-using dotless.Infrastructure;
-using dotless.Tree;
-
-namespace dotless.Functions
+namespace dotless.Core.Parser.Functions
 {
-  public class IncrementFunction : NumberFunctionBase
+    using Infrastructure.Nodes;
+    using Tree;
+
+    public class IncrementFunction : NumberFunctionBase
     {
         protected override Node Eval(Number number, Node[] args)
         {

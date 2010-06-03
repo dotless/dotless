@@ -31,14 +31,15 @@
 #pragma warning disable 665
 // ReSharper disable RedundantNameQualifier
 
-using System.Collections.Generic;
-using dotless.Exceptions;
-using dotless.Infrastructure;
-using dotless.Tree;
-
-namespace dotless
+namespace dotless.Core.Parser
 {
-  public class Parsers 
+    using System.Collections.Generic;
+    using Exceptions;
+    using Infrastructure;
+    using Infrastructure.Nodes;
+    using Tree;
+
+    public class Parsers 
   {
     public INodeProvider NodeProvider { get; set; }
 

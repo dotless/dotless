@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using dotless.Infrastructure;
-
-namespace dotless.Functions
+﻿namespace dotless.Core.Parser.Functions
 {
-  public abstract class Function
+    using System.Collections.Generic;
+    using System.Linq;
+    using Infrastructure.Nodes;
+
+    public abstract class Function
   {
     public string Name { get; set; }
     protected List<Node> Arguments { get; set; }

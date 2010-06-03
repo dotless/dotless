@@ -1,9 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-
-namespace dotless.Infrastructure
+﻿namespace dotless.Core.Parser.Infrastructure.Nodes
 {
-  public class NodeList : NodeList<Node>
+    using System.Collections;
+    using System.Collections.Generic;
+
+    public class NodeList : NodeList<Node>
   {
     public NodeList()
     {

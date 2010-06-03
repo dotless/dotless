@@ -1,8 +1,9 @@
-﻿using dotless.Infrastructure;
-
-namespace dotless.Tree
+﻿namespace dotless.Core.Parser.Tree
 {
-  public class Alpha : Call
+    using Infrastructure;
+    using Infrastructure.Nodes;
+
+    public class Alpha : Call
   {
     public Node Value { get; set; }
 

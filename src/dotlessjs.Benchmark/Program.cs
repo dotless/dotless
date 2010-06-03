@@ -20,7 +20,9 @@ using dotless.Core;
 
 namespace dotlessjs.Compiler
 {
-  public class Program
+    using dotless.Core.Parser;
+
+    public class Program
   {
     public static void Main(string[] args)
     {
@@ -69,7 +71,6 @@ namespace dotlessjs.Compiler
 
       var engines = new ILessEngine[]
                       {
-                        new ExtensibleEngine(), 
                         new LessJsEngine()
                       };
 

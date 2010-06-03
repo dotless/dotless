@@ -1,17 +1,16 @@
-using System;
-using System.Linq;
-using System.Text.RegularExpressions;
-using dotless.Exceptions;
-using dotless.Infrastructure;
-using dotless.Stylizers;
-using dotless.Tree;
-
 // ReSharper disable InconsistentNaming
 
-namespace dotless
+namespace dotless.Core.Parser
 {
+    using System;
+    using Exceptions;
+    using Infrastructure;
+    using Infrastructure.Importers;
+    using Infrastructure.Nodes;
+    using Stylizers;
+    using Tree;
 
-  //
+    //
   // less.js - parser
   //
   //    A relatively straight-forward recursive-descent parser.

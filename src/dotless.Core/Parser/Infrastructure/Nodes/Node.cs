@@ -1,8 +1,8 @@
-﻿using System;
-
-namespace dotless.Infrastructure
+﻿namespace dotless.Core.Parser.Infrastructure.Nodes
 {
-  public abstract class Node
+    using System;
+
+    public abstract class Node
   {
     #region Boolean Operators
 

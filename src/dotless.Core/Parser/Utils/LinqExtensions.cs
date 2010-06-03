@@ -1,10 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace dotless.Utils
+namespace dotless.Core.Parser.Utils
 {
-  public static class LinqExtensions
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    public static class LinqExtensions
   {
     public static TResult SelectFirst<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, bool> predicate, Func<TSource, TResult> resultSelector)
       where TSource : class 

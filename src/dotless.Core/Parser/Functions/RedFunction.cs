@@ -1,9 +1,9 @@
-﻿using dotless.Infrastructure;
-using dotless.Tree;
-
-namespace dotless.Functions
+﻿namespace dotless.Core.Parser.Functions
 {
-  public class RedFunction : ColorFunctionBase
+    using Infrastructure.Nodes;
+    using Tree;
+
+    public class RedFunction : ColorFunctionBase
   {
     protected override Node Eval(Color color)
     {

@@ -1,10 +1,10 @@
-﻿using dotless.Infrastructure;
-using dotless.Tree;
-using dotless.Utils;
-
-namespace dotless.Functions
+﻿namespace dotless.Core.Parser.Functions
 {
-  public class HslFunction : HslaFunction
+    using Infrastructure.Nodes;
+    using Tree;
+    using Utils;
+
+    public class HslFunction : HslaFunction
   {
     protected override Node Evaluate()
     {

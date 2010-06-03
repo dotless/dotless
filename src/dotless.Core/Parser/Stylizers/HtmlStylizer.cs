@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace dotless.Stylizers
+﻿namespace dotless.Core.Parser.Stylizers
 {
-  public class HtmlStylizer : IStylizer
+    public class HtmlStylizer : IStylizer
   {
     public string Stylize(Zone zone)
     {

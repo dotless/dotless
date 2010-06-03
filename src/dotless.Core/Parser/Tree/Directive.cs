@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using dotless.Infrastructure;
-using dotless.Utils;
-
-namespace dotless.Tree
+﻿namespace dotless.Core.Parser.Tree
 {
-  public class Directive : Ruleset
+    using System.Collections.Generic;
+    using System.Linq;
+    using Infrastructure;
+    using Infrastructure.Nodes;
+    using Utils;
+
+    public class Directive : Ruleset
   {
     public string Name { get; set; }
     public Node Value { get; set; }

@@ -18,6 +18,7 @@ namespace dotless.Core
     using configuration;
     using Microsoft.Practices.ServiceLocation;
     using Pandora;
+    using Parser;
 
     public class ContainerFactory
     {

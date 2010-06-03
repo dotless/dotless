@@ -1,8 +1,9 @@
-﻿using dotless.Infrastructure;
-
-namespace dotless.Tree
+﻿namespace dotless.Core.Parser.Tree
 {
-  public class Rule : Node
+    using Infrastructure;
+    using Infrastructure.Nodes;
+
+    public class Rule : Node
   {
     public string Name { get; set; }
     public Node Value { get; set; }

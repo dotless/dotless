@@ -1,8 +1,8 @@
-﻿using dotless.Infrastructure;
-
-namespace dotless.Tree
+﻿namespace dotless.Core.Parser.Tree
 {
-  public class Comment : Node
+    using Infrastructure.Nodes;
+
+    public class Comment : Node
   {
     public string Value { get; set; }
 

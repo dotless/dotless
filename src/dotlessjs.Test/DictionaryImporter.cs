@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using dotless.Infrastructure;
-
-namespace dotless.Tests
+﻿namespace dotless.Tests
 {
-  public class DictionaryImporter : Importer
+    using Core.Parser.Infrastructure.Importers;
+    using System.Collections.Generic;
+    using System.IO;
+
+
+    public class DictionaryImporter : Importer
   {
     public Dictionary<string, string> Contents;
 

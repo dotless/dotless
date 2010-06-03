@@ -1,8 +1,8 @@
-﻿using dotless.Tree;
-
-namespace dotless.Infrastructure
+﻿namespace dotless.Core.Parser.Infrastructure.Importers
 {
-  public abstract class Importer
+    using Tree;
+
+    public abstract class Importer
   {
     public void Import(Import import)
     {

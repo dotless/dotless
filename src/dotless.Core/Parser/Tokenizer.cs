@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using dotless.Infrastructure;
-
-namespace dotless
+﻿namespace dotless.Core.Parser
 {
-  public class Tokenizer
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text.RegularExpressions;
+    using Infrastructure.Nodes;
+
+    public class Tokenizer
   {
     public int Optimization { get; set; }
 

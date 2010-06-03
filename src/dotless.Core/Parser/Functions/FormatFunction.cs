@@ -1,11 +1,11 @@
-using System;
-using System.Linq;
-using dotless.Infrastructure;
-using dotless.Tree;
-
-namespace dotless.Functions
+namespace dotless.Core.Parser.Functions
 {
-  public class FormatStringFunction : Function
+    using System;
+    using System.Linq;
+    using Infrastructure.Nodes;
+    using Tree;
+
+    public class FormatStringFunction : Function
   {
     protected override Node Evaluate()
     {
