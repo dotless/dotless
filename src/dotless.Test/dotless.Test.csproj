@@ -8,7 +8,7 @@
     <ProjectGuid>{E18BD1BD-68E2-4D7F-B6D6-C100BDDE27E8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>dotless.Tests</RootNamespace>
+    <RootNamespace>dotless.Test</RootNamespace>
     <AssemblyName>dotless.Test</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

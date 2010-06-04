@@ -1,21 +1,22 @@
-using NUnit.Framework;
-
-namespace dotless.Tests.Specs
+namespace dotless.Test.Specs
 {
-  public class CssFixture : SpecFixtureBase
-  {
-    [Test]
-    public void CharsetDirective()
-    {
-      var input = "@charset \"utf-8\";";
+    using NUnit.Framework;
 
-      AssertLessUnchanged(input);
-    }
-
-    [Test]
-    public void Directives()
+    public class CssFixture : SpecFixtureBase
     {
-      var input = @"
+        [Test]
+        public void CharsetDirective()
+        {
+            var input = "@charset \"utf-8\";";
+
+            AssertLessUnchanged(input);
+        }
+
+        [Test]
+        public void Directives()
+        {
+            var input =
+                @"
 @media print {
   font-size: 3em;
 }
@@ -28,13 +29,13 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      AssertLessUnchanged(input);
-    }
+            AssertLessUnchanged(input);
+        }
 
-    [Test]
-    public void TagSelector()
-    {
-      var input = @"
+        [Test]
+        public void TagSelector()
+        {
+            var input = @"
 div {
   color: black;
 }
@@ -43,37 +44,38 @@ div {
 }
 ";
 
-      AssertLessUnchanged(input);
-    }
+            AssertLessUnchanged(input);
+        }
 
-    [Test]
-    public void GlobalSelector()
-    {
-      var input = @"
+        [Test]
+        public void GlobalSelector()
+        {
+            var input = @"
 * {
   min-width: 45em;
 }
 ";
 
-      AssertLessUnchanged(input);
-    }
+            AssertLessUnchanged(input);
+        }
 
-    [Test]
-    public void ChildSelector()
-    {
-      var input = @"
+        [Test]
+        public void ChildSelector()
+        {
+            var input = @"
 h1, h2 > a > p, h3 {
   color: none;
 }
 ";
 
-      AssertLessUnchanged(input);
-    }
+            AssertLessUnchanged(input);
+        }
 
-    [Test]
-    public void ClassAndIdSelectors()
-    {
-      var input = @"
+        [Test]
+        public void ClassAndIdSelectors()
+        {
+            var input =
+                @"
 div.class {
   color: blue;
 }
@@ -88,86 +90,87 @@ div#id {
 }
 ";
 
-      AssertLessUnchanged(input);
-    }
+            AssertLessUnchanged(input);
+        }
 
-    [Test]
-    public void PseudoClass()
-    {
-      var input = @"
+        [Test]
+        public void PseudoClass()
+        {
+            var input = @"
 a:hover, a:link {
   color: #999;
 }
 ";
 
-      AssertLessUnchanged(input);
-    }
+            AssertLessUnchanged(input);
+        }
 
-    [Test]
-    public void FirstChildPseudoClass()
-    {
-      var input = @"
+        [Test]
+        public void FirstChildPseudoClass()
+        {
+            var input = @"
 p, p:first-child {
   text-transform: none;
 }
 ";
 
-      AssertLessUnchanged(input);
-    }
+            AssertLessUnchanged(input);
+        }
 
-    [Test]
-    public void LangPseudoClass()
-    {
-      var input = @"
+        [Test]
+        public void LangPseudoClass()
+        {
+            var input = @"
 q:lang(no) {
   quotes: none;
 }
 ";
 
-      AssertLessUnchanged(input);
-    }
+            AssertLessUnchanged(input);
+        }
 
-    [Test]
-    public void NextSiblingSelector()
-    {
-      var input = @"
+        [Test]
+        public void NextSiblingSelector()
+        {
+            var input = @"
 p + h1 {
   font-size: 2.2em;
 }
 ";
 
-      AssertLessUnchanged(input);
-    }
+            AssertLessUnchanged(input);
+        }
 
-    [Test]
-    public void PropertyWithNumbers()
-    {
-      var input = @"
+        [Test]
+        public void PropertyWithNumbers()
+        {
+            var input = @"
 textarea {
   scrollbar-3dlight-color: yellow;
 }
 ";
 
-      AssertLessUnchanged(input);
-    }
+            AssertLessUnchanged(input);
+        }
 
-    [Test]
-    public void PropertyWithUnderscore()
-    {
-      var input = @"
+        [Test]
+        public void PropertyWithUnderscore()
+        {
+            var input = @"
 p {
   color: red;
   _color: yellow;
 }
 ";
 
-      AssertLessUnchanged(input);
-    }
+            AssertLessUnchanged(input);
+        }
 
-    [Test]
-    public void Shorthands()
-    {
-      var input = @"
+        [Test]
+        public void Shorthands()
+        {
+            var input =
+                @"
 #shorthands {
   border: 1px solid #000;
   font: 12px/16px Arial;
@@ -182,13 +185,14 @@ p {
 }
 ";
 
-      AssertLessUnchanged(input);
-    }
+            AssertLessUnchanged(input);
+        }
 
-    [Test]
-    public void Misc()
-    {
-      var input = @"
+        [Test]
+        public void Misc()
+        {
+            var input =
+                @"
 .misc {
   -moz-border-radius: 2px;
   display: -moz-inline-stack;
@@ -200,13 +204,14 @@ p {
 }
 ";
 
-      AssertLessUnchanged(input);
-    }
+            AssertLessUnchanged(input);
+        }
 
-    [Test]
-    public void Important()
-    {
-      var input = @"
+        [Test]
+        public void Important()
+        {
+            var input =
+                @"
 #important {
   color: red !important;
   width: 100%!important;
@@ -214,25 +219,26 @@ p {
 }
 ";
 
-      AssertLessUnchanged(input);
-    }
+            AssertLessUnchanged(input);
+        }
 
-    [Test]
-    public void AttributeEquals()
-    {
-      var input = @"
+        [Test]
+        public void AttributeEquals()
+        {
+            var input = @"
 input[type=""text""] {
   font-weight: normal;
 }
 ";
 
-      AssertLessUnchanged(input);
-    }
+            AssertLessUnchanged(input);
+        }
 
-    [Test]
-    public void AttributeExists()
-    {
-      var input = @"
+        [Test]
+        public void AttributeExists()
+        {
+            var input =
+                @"
 h2[title] {
   font-size: 100%;
 }
@@ -244,8 +250,7 @@ form[data-disabled] {
 }
 ";
 
-      AssertLessUnchanged(input);
+            AssertLessUnchanged(input);
+        }
     }
-
-  }
 }

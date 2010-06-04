@@ -1,4 +1,4 @@
-﻿namespace dotless.Core.Parser.Infrastructure.Importers
+﻿namespace dotless.Core.Importers
 {
     using System.IO;
 

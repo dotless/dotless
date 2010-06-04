@@ -1,30 +1,30 @@
-﻿namespace dotless.Tests
+﻿namespace dotless.Test
 {
-    using Core.Parser.Infrastructure.Importers;
     using System.Collections.Generic;
     using System.IO;
+    using Core.Importers;
 
 
     public class DictionaryImporter : Importer
-  {
-    public Dictionary<string, string> Contents;
-
-    public DictionaryImporter()
     {
-      Contents = new Dictionary<string, string>();
-    }
+        public Dictionary<string, string> Contents;
 
-    public DictionaryImporter(Dictionary<string, string> contents)
-    {
-      Contents = contents;
-    }
+        public DictionaryImporter()
+        {
+            Contents = new Dictionary<string, string>();
+        }
 
-    protected override string GetImportContents(string path)
-    {
-      if (Contents.ContainsKey(path))
-        return Contents[path];
+        public DictionaryImporter(Dictionary<string, string> contents)
+        {
+            Contents = contents;
+        }
 
-      throw new FileNotFoundException("Import not found", path);
+        protected override string GetImportContents(string path)
+        {
+            if (Contents.ContainsKey(path))
+                return Contents[path];
+
+            throw new FileNotFoundException("Import not found", path);
+        }
     }
-  }
 }

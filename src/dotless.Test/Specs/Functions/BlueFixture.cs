@@ -1,31 +1,31 @@
-﻿using NUnit.Framework;
-
-namespace dotless.Tests.Specs.Functions
+namespace dotless.Test.Specs.Functions
 {
-  public class BlueFixture : SpecFixtureBase
-  {    
-    [Test]
-    public void TestBlue()
-    {
-      AssertExpression("86", "blue(#123456)");
-    }
+    using NUnit.Framework;
 
-    [Test]
-    public void TestBlueException()
+    public class BlueFixture : SpecFixtureBase
     {
-      AssertExpressionError("Expected color in function 'blue', found 12", "blue(12)");
-    }
+        [Test]
+        public void TestBlue()
+        {
+            AssertExpression("86", "blue(#123456)");
+        }
 
-    [Test]
-    public void TestEditBlue()
-    {
-      AssertExpression("#123460", "blue(#123456, 10)");
-    }
+        [Test]
+        public void TestBlueException()
+        {
+            AssertExpressionError("Expected color in function 'blue', found 12", "blue(12)");
+        }
 
-    [Test]
-    public void TestEditBlueTestsTypes()
-    {
-      AssertExpressionError("Expected color in function 'blue', found 12", "blue(12)");
+        [Test]
+        public void TestEditBlue()
+        {
+            AssertExpression("#123460", "blue(#123456, 10)");
+        }
+
+        [Test]
+        public void TestEditBlueTestsTypes()
+        {
+            AssertExpressionError("Expected color in function 'blue', found 12", "blue(12)");
+        }
     }
-  }
 }

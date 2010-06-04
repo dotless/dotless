@@ -1,15 +1,15 @@
-using NUnit.Framework;
-
-namespace dotless.Tests.Specs
+namespace dotless.Test.Specs
 {
-  public class ScopeFixture : SpecFixtureBase
-  {
-    [Test]
-    public void Scope()
+    using NUnit.Framework;
+
+    public class ScopeFixture : SpecFixtureBase
     {
-      // Todo: split into separate atomic tests.
-      var input =
-        @"
+        [Test]
+        public void Scope()
+        {
+            // Todo: split into separate atomic tests.
+            var input =
+                @"
 @x: blue;
 @z: transparent;
 @mix: none;
@@ -44,7 +44,8 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      var expected = @"
+            var expected =
+                @"
 .tiny-scope {
   color: #998899;
 }
@@ -62,7 +63,7 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      AssertLess(input, expected);
+            AssertLess(input, expected);
+        }
     }
-  }
 }

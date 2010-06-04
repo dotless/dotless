@@ -1,8 +1,8 @@
-namespace dotless.Core.Parser.Utils
+namespace dotless.Core.Utils
 {
     using System.Collections.Generic;
     using Exceptions;
-    using Infrastructure.Nodes;
+    using Parser.Infrastructure.Nodes;
 
     public static class Guard
     {

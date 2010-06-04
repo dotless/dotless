@@ -1,20 +1,21 @@
-namespace dotless.Tests.Specs
+namespace dotless.Test.Specs
 {
-    using Core.Parser;
     using System.Collections.Generic;
+    using Core.Parser;
     using NUnit.Framework;
 
     public class ImportFixture : SpecFixtureBase
-  {
-    private static Parser GetParser()
     {
-      var imports = new Dictionary<string, string>();
+        private static Parser GetParser()
+        {
+            var imports = new Dictionary<string, string>();
 
-      imports["import/import-test-a.less"] = @"
+            imports["import/import-test-a.less"] = @"
 @import ""import-test-b.less"";
 @a: 20%;
 ";
-      imports["import-test-b.less"] = @"
+            imports["import-test-b.less"] =
+                @"
 @import 'import-test-c';
 
 @b: 100%;
@@ -24,7 +25,8 @@ namespace dotless.Tests.Specs
   color: @c;
 }
 ";
-      imports["import-test-c.less"] = @"
+            imports["import-test-c.less"] =
+                @"
 @import ""import-test-d.css"";
 @c: red;
 
@@ -33,14 +35,14 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      return new Parser {Importer = new DictionaryImporter(imports)};
-    }
+            return new Parser {Importer = new DictionaryImporter(imports)};
+        }
 
-    [Test]
-    public void Imports()
-    {
-      var input =
-        @"
+        [Test]
+        public void Imports()
+        {
+            var input =
+                @"
 @import url(""import/import-test-a.less"");
 //@import url(""import/import-test-a.less"");
 
@@ -51,8 +53,8 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      var expected =
-        @"
+            var expected =
+                @"
 @import ""import-test-d.css"";
 #import {
   color: red;
@@ -69,9 +71,9 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      var parser = GetParser();
+            var parser = GetParser();
 
-      AssertLess(input, expected, parser);
+            AssertLess(input, expected, parser);
+        }
     }
-  }
 }

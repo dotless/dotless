@@ -1,20 +1,18 @@
-﻿using NUnit.Framework;
-
-namespace dotless.Tests.Specs.Functions
+namespace dotless.Test.Specs.Functions
 {
-  public class FloorFixture : SpecFixtureBase
-  {
+    using NUnit.Framework;
 
-    [Test]
-    public void TestFloor()
+    public class FloorFixture : SpecFixtureBase
     {
-      AssertExpression("4", "floor(4.8)");
-      AssertExpression("4px", "floor(4.8px)");
-      AssertExpression("5px", "floor(5.49px)");
-      AssertExpression("50%", "floor(50.1%)");
+        [Test]
+        public void TestFloor()
+        {
+            AssertExpression("4", "floor(4.8)");
+            AssertExpression("4px", "floor(4.8px)");
+            AssertExpression("5px", "floor(5.49px)");
+            AssertExpression("50%", "floor(50.1%)");
 
-      AssertExpressionError("Expected number in function 'floor', found \"foo\"", "floor(\"foo\")");
+            AssertExpressionError("Expected number in function 'floor', found \"foo\"", "floor(\"foo\")");
+        }
     }
-
-  }
 }

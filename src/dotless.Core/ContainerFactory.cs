@@ -58,7 +58,7 @@ namespace dotless.Core
                                                .Implementor<MinifierDecorator>();
                                        }
                                        p.Service<ILessEngine>()
-                                           .Implementor<LessJsEngine>();
+                                           .Implementor<LessEngine>();
                                        p.Service<ILessSource>()
                                            .Implementor<FileSource>();
                                    });

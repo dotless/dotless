@@ -1,6 +1,6 @@
-namespace dotless.Core.Parser.Utils
+namespace dotless.Core.Utils
 {
-    using Tree;
+    using Parser.Tree;
 
     public static class NumberExtensions
     {

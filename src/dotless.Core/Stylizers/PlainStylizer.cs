@@ -1,5 +1,7 @@
-﻿namespace dotless.Core.Parser.Stylizers
+﻿namespace dotless.Core.Stylizers
 {
+    using Parser;
+
     internal class PlainStylizer : IStylizer
     {
         public string Stylize(Zone zone)

@@ -1,15 +1,15 @@
-using NUnit.Framework;
-
-namespace dotless.Tests.Specs
+namespace dotless.Test.Specs
 {
-  public class VariablesFixture : SpecFixtureBase
-  {
-    [Test]
-    public void Variables()
+    using NUnit.Framework;
+
+    public class VariablesFixture : SpecFixtureBase
     {
-      // Todo: split into separate atomic tests.
-      var input =
-        @"
+        [Test]
+        public void Variables()
+        {
+            // Todo: split into separate atomic tests.
+            var input =
+                @"
 @a: 2;
 @x: @a * @a;
 @y: @x + 1;
@@ -36,7 +36,8 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      var expected = @"
+            var expected =
+                @"
 .variables {
   width: 14cm;
 }
@@ -48,13 +49,13 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void LazyEval()
-    {
-      var input = @"
+        [Test]
+        public void LazyEval()
+        {
+            var input = @"
 @var: @a;
 @a: 100%;
 
@@ -63,19 +64,19 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      var expected = @"
+            var expected = @"
 .lazy-eval {
   width: 100%;
 }
 ";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void Redefine()
-    {
-      var input = @"
+        [Test]
+        public void Redefine()
+        {
+            var input = @"
 #redefine {
   @var: 4;
   @var: 2;
@@ -84,13 +85,13 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      var expected = @"
+            var expected = @"
 #redefine {
   width: 3;
 }
 ";
 
-      AssertLess(input, expected);
+            AssertLess(input, expected);
+        }
     }
-  }
 }

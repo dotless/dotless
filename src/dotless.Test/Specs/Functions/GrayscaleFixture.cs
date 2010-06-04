@@ -1,24 +1,23 @@
-﻿using NUnit.Framework;
-
-namespace dotless.Tests.Specs.Functions
+namespace dotless.Test.Specs.Functions
 {
-  public class GrayscaleFixture : SpecFixtureBase
-  {
-    [Test]
-    public void TestGrayscale()
-    {
-      AssertExpression("#bbbbbb", "grayscale(#abc)");
-      AssertExpression("gray", "grayscale(#f00)");
-      AssertExpression("gray", "grayscale(#00f)");
-      AssertExpression("white", "grayscale(#fff)");
-      AssertExpression("black", "grayscale(#000)");
-    }
+    using NUnit.Framework;
 
-    [Test]
-    public void TestGrayscaleTestsTypes()
+    public class GrayscaleFixture : SpecFixtureBase
     {
-      AssertExpressionError("Expected color in function 'grayscale', found \"foo\"", "grayscale(\"foo\")");
-    }
+        [Test]
+        public void TestGrayscale()
+        {
+            AssertExpression("#bbbbbb", "grayscale(#abc)");
+            AssertExpression("gray", "grayscale(#f00)");
+            AssertExpression("gray", "grayscale(#00f)");
+            AssertExpression("white", "grayscale(#fff)");
+            AssertExpression("black", "grayscale(#000)");
+        }
 
-  }
+        [Test]
+        public void TestGrayscaleTestsTypes()
+        {
+            AssertExpressionError("Expected color in function 'grayscale', found \"foo\"", "grayscale(\"foo\")");
+        }
+    }
 }

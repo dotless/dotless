@@ -1,9 +1,9 @@
-﻿namespace dotless.Core.Parser.Utils
+namespace dotless.Core.Utils
 {
     using System.Collections.Generic;
-    using Infrastructure;
-    using Infrastructure.Nodes;
-    using Tree;
+    using Parser.Infrastructure;
+    using Parser.Infrastructure.Nodes;
+    using Parser.Tree;
 
     internal class NodeHelper
     {

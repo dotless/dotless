@@ -1,4 +1,4 @@
-﻿namespace dotless.Core.Parser.Utils
+﻿namespace dotless.Core.Utils
 {
     using System.Collections.Generic;
     using System.Linq;

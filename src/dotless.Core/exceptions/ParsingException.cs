@@ -1,4 +1,4 @@
-﻿namespace dotless.Core.Parser.Exceptions
+namespace dotless.Core.Exceptions
 {
     using System;
 

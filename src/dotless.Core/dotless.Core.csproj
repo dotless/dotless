@@ -77,7 +77,7 @@
     <Compile Include="configuration\XmlConfigurationInterpreter.cs" />
     <Compile Include="ContainerFactory.cs" />
     <Compile Include="EngineFactory.cs" />
-    <Compile Include="Parser\Exceptions\ParsingException.cs" />
+    <Compile Include="Exceptions\ParsingException.cs" />
     <Compile Include="Parser\Functions\AbsFunction.cs" />
     <Compile Include="Parser\Functions\AddFunction.cs" />
     <Compile Include="Parser\Functions\AlphaFunction.cs" />
@@ -107,8 +107,8 @@
     <Compile Include="Parser\Infrastructure\Context.cs" />
     <Compile Include="Parser\Infrastructure\DefaultNodeProvider.cs" />
     <Compile Include="Parser\Infrastructure\Env.cs" />
-    <Compile Include="Parser\Infrastructure\Importers\FileImporter.cs" />
-    <Compile Include="Parser\Infrastructure\Importers\Importer.cs" />
+    <Compile Include="Importers\FileImporter.cs" />
+    <Compile Include="Importers\Importer.cs" />
     <Compile Include="Parser\Infrastructure\INodeProvider.cs" />
     <Compile Include="Parser\Infrastructure\IOperable.cs" />
     <Compile Include="Parser\Infrastructure\Nodes\CharMatchResult.cs" />
@@ -116,13 +116,9 @@
     <Compile Include="Parser\Infrastructure\Nodes\NodeList.cs" />
     <Compile Include="Parser\Infrastructure\Nodes\RegexMatchResult.cs" />
     <Compile Include="Parser\Infrastructure\Nodes\TextNode.cs" />
-    <Compile Include="Parser\LessJsEngine.cs" />
+    <Compile Include="LessEngine.cs" />
     <Compile Include="Parser\Parser.cs" />
     <Compile Include="Parser\Parsers.cs" />
-    <Compile Include="Parser\Stylizers\ConsoleStylizer.cs" />
-    <Compile Include="Parser\Stylizers\HtmlStylizer.cs" />
-    <Compile Include="Parser\Stylizers\IStylizer.cs" />
-    <Compile Include="Parser\Stylizers\PlainStylizer.cs" />
     <Compile Include="Parser\Tokenizer.cs" />
     <Compile Include="Parser\Tree\Alpha.cs" />
     <Compile Include="Parser\Tree\Call.cs" />
@@ -145,12 +141,6 @@
     <Compile Include="Parser\Tree\Url.cs" />
     <Compile Include="Parser\Tree\Value.cs" />
     <Compile Include="Parser\Tree\Variable.cs" />
-    <Compile Include="Parser\Utils\Guard.cs" />
-    <Compile Include="Parser\Utils\HslColor.cs" />
-    <Compile Include="Parser\Utils\LinqExtensions.cs" />
-    <Compile Include="Parser\Utils\NodeHelper.cs" />
-    <Compile Include="Parser\Utils\NumberExtensions.cs" />
-    <Compile Include="Parser\Utils\StringExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FileSource.cs" />
     <Compile Include="HandlerImpl.cs" />
@@ -162,6 +152,16 @@
     <Compile Include="Loggers\ConsoleLogger.cs" />
     <Compile Include="MinifierDecorator.cs" />
     <Compile Include="StringSource.cs" />
+    <Compile Include="Stylizers\ConsoleStylizer.cs" />
+    <Compile Include="Stylizers\HtmlStylizer.cs" />
+    <Compile Include="Stylizers\IStylizer.cs" />
+    <Compile Include="Stylizers\PlainStylizer.cs" />
+    <Compile Include="Utils\Guard.cs" />
+    <Compile Include="Utils\HslColor.cs" />
+    <Compile Include="Utils\LinqExtensions.cs" />
+    <Compile Include="Utils\NodeHelper.cs" />
+    <Compile Include="Utils\NumberExtensions.cs" />
+    <Compile Include="Utils\StringExtensions.cs" />
     <Compile Include="VirtualPathSource.cs" />
   </ItemGroup>
   <ItemGroup>

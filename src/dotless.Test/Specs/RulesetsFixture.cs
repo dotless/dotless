@@ -1,15 +1,15 @@
-using NUnit.Framework;
-
-namespace dotless.Tests.Specs
+namespace dotless.Test.Specs
 {
-  public class RulesetsFixture : SpecFixtureBase
-  {
-    [Test]
-    public void Rulesets()
+    using NUnit.Framework;
+
+    public class RulesetsFixture : SpecFixtureBase
     {
-      // Todo: split into separate atomic tests.
-      var input =
-        @"
+        [Test]
+        public void Rulesets()
+        {
+            // Todo: split into separate atomic tests.
+            var input =
+                @"
 #first > .one {
   > #second .two > #deux {
     width: 50%;
@@ -42,8 +42,8 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      var expected =
-        @"
+            var expected =
+                @"
 #first > .one {
   font-size: 2em;
 }
@@ -75,15 +75,15 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test, Ignore("Unsupported")]
-    public void ImplicitParentSelectorPseudoClass()
-    {
-      // Note: http://github.com/cloudhead/less.js/issues/issue/7
+        [Test, Ignore("Unsupported")]
+        public void ImplicitParentSelectorPseudoClass()
+        {
+            // Note: http://github.com/cloudhead/less.js/issues/issue/7
 
-      var input = @"
+            var input = @"
 a {
   color: black;
   :hover {
@@ -91,7 +91,7 @@ a {
   }
 }
 ";
-      var expected = @"
+            var expected = @"
 a {
   color: black;
 }
@@ -100,7 +100,7 @@ a:hover {
 }
 ";
 
-      AssertLess(input, expected);
+            AssertLess(input, expected);
+        }
     }
-  }
 }

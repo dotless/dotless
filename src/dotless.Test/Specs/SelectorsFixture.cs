@@ -1,14 +1,14 @@
-using NUnit.Framework;
-
-namespace dotless.Tests.Specs
+namespace dotless.Test.Specs
 {
-  public class SelectorsFixture : SpecFixtureBase
-  {
-    [Test]
-    public void ParentSelector1()
+    using NUnit.Framework;
+
+    public class SelectorsFixture : SpecFixtureBase
     {
-      var input =
-        @"
+        [Test]
+        public void ParentSelector1()
+        {
+            var input =
+                @"
 h1, h2, h3 {
   a, p {
     &:hover {
@@ -18,7 +18,8 @@ h1, h2, h3 {
 }
 ";
 
-      var expected = @"
+            var expected =
+                @"
 h1 a:hover,
 h2 a:hover,
 h3 a:hover,
@@ -29,16 +30,16 @@ h3 p:hover {
 }
 ";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test, Ignore("Unsupported")]
-    public void ParentSelector2()
-    {
-      // Note: http://github.com/cloudhead/less.js/issues/issue/9
+        [Test, Ignore("Unsupported")]
+        public void ParentSelector2()
+        {
+            // Note: http://github.com/cloudhead/less.js/issues/issue/9
 
-      var input =
-        @"
+            var input =
+                @"
 a {
   color: red;
 
@@ -50,7 +51,8 @@ a {
 }
 ";
 
-      var expected = @"
+            var expected =
+                @"
 a {
   color: red;
 }
@@ -65,20 +67,20 @@ p a span {
 }
 ";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void IdSelectors()
-    {
-      var input =
-        @"
+        [Test]
+        public void IdSelectors()
+        {
+            var input =
+                @"
 #all { color: blue; }
 #the { color: blue; }
 #same { color: blue; }
 ";
 
-      var expected = @"
+            var expected = @"
 #all {
   color: blue;
 }
@@ -90,58 +92,58 @@ p a span {
 }
 ";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void Tag()
-    {
-      var input = @"
+        [Test]
+        public void Tag()
+        {
+            var input = @"
 td {
   margin: 0;
   padding: 0;
 }
 ";
 
-      var expected = @"
+            var expected = @"
 td {
   margin: 0;
   padding: 0;
 }
 ";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void TwoTags()
-    {
-      var input = @"
+        [Test]
+        public void TwoTags()
+        {
+            var input = @"
 td, input {
   line-height: 1em;
 }
 ";
 
-      var expected = @"
+            var expected = @"
 td, input {
   line-height: 1em;
 }
 ";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void MultipleTags()
-    {
-      var input =
-        @"
+        [Test]
+        public void MultipleTags()
+        {
+            var input =
+                @"
 ul, li, div, q, blockquote, textarea {
   margin: 0;
 }
 ";
 
-      var expected = @"
+            var expected = @"
 ul,
 li,
 div,
@@ -152,22 +154,22 @@ textarea {
 }
 ";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
 
-    [Test]
-    public void DecendantSelectorWithTabs()
-    {
-      var input = "td \t input { line-height: 1em; }";
+        [Test]
+        public void DecendantSelectorWithTabs()
+        {
+            var input = "td \t input { line-height: 1em; }";
 
-      var expected = @"
+            var expected = @"
 td input {
   line-height: 1em;
 }
 ";
 
-      AssertLess(input, expected);
+            AssertLess(input, expected);
+        }
     }
-  }
 }

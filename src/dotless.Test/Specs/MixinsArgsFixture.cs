@@ -1,15 +1,15 @@
-using NUnit.Framework;
-
-namespace dotless.Tests.Specs
+namespace dotless.Test.Specs
 {
-  public class MixinsArgsFixture : SpecFixtureBase
-  {
-    [Test]
-    public void MixinsArgs()
+    using NUnit.Framework;
+
+    public class MixinsArgsFixture : SpecFixtureBase
     {
-      // Todo: split into separate atomic tests.
-      var input =
-        @"
+        [Test]
+        public void MixinsArgs()
+        {
+            // Todo: split into separate atomic tests.
+            var input =
+                @"
 .mixin (@a: 1px, @b: 50%) {
   width: @a * 5;
   height: @b - 1%;
@@ -84,7 +84,8 @@ body {
 }
 ";
 
-      var expected = @"
+            var expected =
+                @"
 .two-args {
   color: blue;
   width: 10px;
@@ -128,13 +129,14 @@ body {
 }
 ";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void CanEvaluateCommaSepearatedExpressions()
-    {
-      var input = @"
+        [Test]
+        public void CanEvaluateCommaSepearatedExpressions()
+        {
+            var input =
+                @"
 .fonts (@main: 'Arial') {
     font-family: @main, sans-serif;
 }
@@ -143,18 +145,18 @@ body {
     .fonts('Helvetica');
 }";
 
-      var expected = @"
+            var expected = @"
 .class {
   font-family: 'Helvetica', sans-serif;
 }";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void CanUseVaiablesInsideMixins()
-    {
-      var input = @"
+        [Test]
+        public void CanUseVaiablesInsideMixins()
+        {
+            var input = @"
 @var: 5px;
 .mixin() {
     width: @var, @var, @var;
@@ -163,18 +165,19 @@ body {
     .mixin;
 }";
 
-      var expected = @"
+            var expected = @"
 .div {
   width: 5px, 5px, 5px;
 }";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void CanUseSameVaiableName()
-    {
-      var input = @"
+        [Test]
+        public void CanUseSameVaiableName()
+        {
+            var input =
+                @"
 .same-var-name2(@radius) {
   radius: @radius;
 }
@@ -186,13 +189,13 @@ body {
 }
 ";
 
-      var expected = @"
+            var expected = @"
 #same-var-name {
   radius: 5px;
 }
 ";
 
-      AssertLess(input, expected);
+            AssertLess(input, expected);
+        }
     }
-  }
 }

@@ -1,8 +1,8 @@
-namespace dotless.Core.Parser.Utils
+namespace dotless.Core.Utils
 {
     using System;
     using System.Linq;
-    using Tree;
+    using Parser.Tree;
 
     public class HslColor
     {

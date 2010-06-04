@@ -1,15 +1,15 @@
-using NUnit.Framework;
-
-namespace dotless.Tests.Specs
+namespace dotless.Test.Specs
 {
-  public class MixinsFixture : SpecFixtureBase
-  {
-    [Test]
-    public void Mixins()
+    using NUnit.Framework;
+
+    public class MixinsFixture : SpecFixtureBase
     {
-      // Todo: split into separate atomic tests.
-      var input =
-        @"
+        [Test]
+        public void Mixins()
+        {
+            // Todo: split into separate atomic tests.
+            var input =
+                @"
 .mixin { border: 1px solid black; }
 .mixout { border-color: orange; }
 .borders { border-style: dashed; }
@@ -60,7 +60,8 @@ namespace dotless.Tests.Specs
 
 ";
 
-      var expected = @"
+            var expected =
+                @"
 .mixin {
   border: 1px solid black;
 }
@@ -113,16 +114,16 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test, Ignore("Unsupported")]
-    public void CommaSeparatedMixins()
-    {
-      // Note: http://github.com/cloudhead/less.js/issues/issue/8
+        [Test, Ignore("Unsupported")]
+        public void CommaSeparatedMixins()
+        {
+            // Note: http://github.com/cloudhead/less.js/issues/issue/8
 
-      var input =
-        @"
+            var input =
+                @"
 .mixina() {
   color: red;
 }
@@ -135,22 +136,21 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      var expected = @"
+            var expected = @"
 .class {
   color: red;
   color: green;
 }
 ";
 
-      AssertLess(input, expected);
-      
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void ChildSelector()
-    {
-      var input =
-        @"
+        [Test]
+        public void ChildSelector()
+        {
+            var input =
+                @"
 #bundle {
   p {
     padding: 20px;
@@ -163,7 +163,8 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      var expected = @"
+            var expected =
+                @"
 #bundle p {
   padding: 20px;
   color: purple;
@@ -174,14 +175,14 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void MixinNestedRules()
-    {
-      var input =
-        @"
+        [Test]
+        public void MixinNestedRules()
+        {
+            var input =
+                @"
 .bundle() {
   p {
     padding: 20px;
@@ -195,7 +196,7 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      var expected = @"
+            var expected = @"
 #header p {
   padding: 20px;
   color: purple;
@@ -205,13 +206,13 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void MultipleMixins()
-    {
-      var input = @"
+        [Test]
+        public void MultipleMixins()
+        {
+            var input = @"
 .mixin{
 	border:solid 1px red;
 }
@@ -223,7 +224,8 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      var expected = @"
+            var expected =
+                @"
 .mixin {
   border: solid 1px red;
 }
@@ -236,15 +238,15 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
 
-    [Test]
-    public void MixinWithArgs()
-    {
-      var input =
-@".mixin (@a: 1px, @b: 50%) {
+        [Test]
+        public void MixinWithArgs()
+        {
+            var input =
+                @".mixin (@a: 1px, @b: 50%) {
   width: @a * 5;
   height: @b - 1%;
 }
@@ -253,20 +255,20 @@ namespace dotless.Tests.Specs
   .mixin(4px, 21%);
 }";
 
-      var expected =
-@".mixin-arg {
+            var expected =
+                @".mixin-arg {
   width: 20px;
   height: 20%;
 }";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test, Ignore("Unsupported")]
-    public void CanPassNamedArguments()
-    {
-      var input =
-@".mixin (@a: 1px, @b: 50%) {
+        [Test, Ignore("Unsupported")]
+        public void CanPassNamedArguments()
+        {
+            var input =
+                @".mixin (@a: 1px, @b: 50%) {
   width: @a * 5;
   height: @b - 1%;
 }
@@ -276,21 +278,21 @@ namespace dotless.Tests.Specs
   .mixin(@b: 100%);
 }";
 
-      var expected =
-@".named-arg {
+            var expected =
+                @".named-arg {
   color: blue;
   width: 5px;
   height: 99%;
 }";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void CanPassVariablesAsPositionalArgs()
-    {
-      var input =
-@".mixin (@a: 1px, @b: 50%) {
+        [Test]
+        public void CanPassVariablesAsPositionalArgs()
+        {
+            var input =
+                @".mixin (@a: 1px, @b: 50%) {
   width: @a * 5;
   height: @b - 1%;
 }
@@ -300,20 +302,20 @@ namespace dotless.Tests.Specs
   .mixin(@var);
 }";
 
-      var expected =
-@".class {
+            var expected =
+                @".class {
   width: 100px;
   height: 49%;
 }";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test, Ignore("Unsupported")]
-    public void CanPassVariablesAsNamedArgs()
-    {
-      var input =
-@".mixin (@a: 1px, @b: 50%) {
+        [Test, Ignore("Unsupported")]
+        public void CanPassVariablesAsNamedArgs()
+        {
+            var input =
+                @".mixin (@a: 1px, @b: 50%) {
   width: @a * 5;
   height: @b - 1%;
 }
@@ -323,20 +325,20 @@ namespace dotless.Tests.Specs
   .mixin(@b: @var);
 }";
 
-      var expected =
-@".class {
+            var expected =
+                @".class {
   width: 5px;
   height: 19%;
 }";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test, Ignore("Unsupported")]
-    public void MixedPositionalAndNamedArguments()
-    {
-      var input =
-@".mixin (@a: 1px, @b: 50%, @c: 50) {
+        [Test, Ignore("Unsupported")]
+        public void MixedPositionalAndNamedArguments()
+        {
+            var input =
+                @".mixin (@a: 1px, @b: 50%, @c: 50) {
   width: @a * 5;
   height: @b - 1%;
   color: #000000 + @c;
@@ -346,21 +348,21 @@ namespace dotless.Tests.Specs
   .mixin(3px, @c: 100);
 }";
 
-      var expected =
-@".mixed-args {
+            var expected =
+                @".mixed-args {
   width: 15px;
   height: 49%;
   color: #646464;
 }";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test, Ignore("Unsupported")]
-    public void PositionalArgumentsMustAppearBeforeAllNamedArguments()
-    {
-      var input =
-@".mixin (@a: 1px, @b: 50%, @c: 50) {
+        [Test, Ignore("Unsupported")]
+        public void PositionalArgumentsMustAppearBeforeAllNamedArguments()
+        {
+            var input =
+                @".mixin (@a: 1px, @b: 50%, @c: 50) {
   width: @a * 5;
   height: @b - 1%;
   color: #000000 + @c;
@@ -370,14 +372,14 @@ namespace dotless.Tests.Specs
   .mixin(@c: 100, 3px);
 }";
 
-      AssertError("Positional arguments must appear before all named arguments. in '.mixin(@c: 100, 3px)'", input);
-    }
+            AssertError("Positional arguments must appear before all named arguments. in '.mixin(@c: 100, 3px)'", input);
+        }
 
-    [Test, Ignore("Unsupported")]
-    public void ThrowsIfArumentNotFound()
-    {
-      var input =
-@".mixin (@a: 1px, @b: 50%) {
+        [Test, Ignore("Unsupported")]
+        public void ThrowsIfArumentNotFound()
+        {
+            var input =
+                @".mixin (@a: 1px, @b: 50%) {
   width: @a * 3;
   height: @b - 1%;
 }
@@ -386,26 +388,26 @@ namespace dotless.Tests.Specs
   .mixin(@var: 6);
 }";
 
-      AssertError("Argument '@var' not found. in '.mixin(@var: 6)'", input);
-    }
+            AssertError("Argument '@var' not found. in '.mixin(@var: 6)'", input);
+        }
 
-    [Test, Ignore("Unsupported")]
-    public void ThrowsIfTooManyArguments()
-    {
-      var input =
-          @"
+        [Test, Ignore("Unsupported")]
+        public void ThrowsIfTooManyArguments()
+        {
+            var input =
+                @"
 .mixin (@a: 5) {  width: @a * 5; }
 
 .class { .mixin(1, 2, 3); }";
 
-      AssertError("Expected at most 1 arguments in '.mixin', found 3", input);
-    }
-    
-    [Test]
-    public void MixinWithArgsInsideNamespace()
-    {
-      var input =
-@"#namespace {
+            AssertError("Expected at most 1 arguments in '.mixin', found 3", input);
+        }
+
+        [Test]
+        public void MixinWithArgsInsideNamespace()
+        {
+            var input =
+                @"#namespace {
   .mixin (@a: 1px, @b: 50%) {
     width: @a * 5;
     height: @b - 1%;
@@ -416,19 +418,20 @@ namespace dotless.Tests.Specs
   #namespace .mixin(5px);
 }";
 
-      var expected =
-@".namespace-mixin {
+            var expected =
+                @".namespace-mixin {
   width: 25px;
   height: 49%;
 }";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void NestedParameterizedMixins1()
-    {
-      var input = @"
+        [Test]
+        public void NestedParameterizedMixins1()
+        {
+            var input =
+                @"
 .outer(@a: 5) {
   .inner (@b: 10) {
     width: @a + @b;
@@ -440,15 +443,16 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      var expected = "";
+            var expected = "";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void NestedParameterizedMixins2()
-    {
-      var input = @"
+        [Test]
+        public void NestedParameterizedMixins2()
+        {
+            var input =
+                @"
 .outer(@a: 5) {
   .inner (@b: 10) {
     width: @a + @b;
@@ -461,19 +465,20 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      var expected = @"
+            var expected = @"
 .class {
   width: 15;
 }
 ";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test, Ignore("Unsupported")]
-    public void NestedParameterizedMixins3()
-    {
-      var input = @"
+        [Test, Ignore("Unsupported")]
+        public void NestedParameterizedMixins3()
+        {
+            var input =
+                @"
 .outer(@a: 5) {
   .inner (@b: 10) {
     width: @a + @b;
@@ -485,19 +490,20 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      var expected = @"
+            var expected = @"
 .class {
   width: 15;
 }
 ";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void NestedParameterizedMixins4()
-    {
-      var input = @"
+        [Test]
+        public void NestedParameterizedMixins4()
+        {
+            var input =
+                @"
 .outer(@a: 5) {
   .inner (@b: 10) {
     width: @a + @b;
@@ -510,19 +516,20 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      var expected = @"
+            var expected = @"
 .class {
   width: 3;
 }
 ";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test, Ignore("Unsupported")]
-    public void NestedParameterizedMixins5()
-    {
-      var input = @"
+        [Test, Ignore("Unsupported")]
+        public void NestedParameterizedMixins5()
+        {
+            var input =
+                @"
 .outer(@a: 5) {
   .inner (@b: 10) {
     width: @a + @b;
@@ -534,20 +541,20 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      var expected = @"
+            var expected = @"
 .class {
   width: 6;
 }
 ";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void CanUseVariablesAsDefaultArgumentValues()
-    {
-      var input =
-@"@var: 5px;
+        [Test]
+        public void CanUseVariablesAsDefaultArgumentValues()
+        {
+            var input =
+                @"@var: 5px;
 
 .mixin (@a: @var, @b: 50%) {
   width: @a * 5;
@@ -559,20 +566,20 @@ namespace dotless.Tests.Specs
   .mixin;
 }";
 
-      var expected =
-@".class {
+            var expected =
+                @".class {
   width: 25px;
   height: 49%;
 }";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void ArgumentsOverridesVariableInSameScope()
-    {
-      var input =
-@"@a: 10px;
+        [Test]
+        public void ArgumentsOverridesVariableInSameScope()
+        {
+            var input =
+                @"@a: 10px;
 
 .mixin (@a: 5px, @b: 50%) {
   width: @a * 5;
@@ -584,20 +591,20 @@ namespace dotless.Tests.Specs
   .mixin;
 }";
 
-      var expected =
-@".class {
+            var expected =
+                @".class {
   width: 25px;
   height: 49%;
 }";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test, Ignore("Infinite Loop - breaks tester")]
-    public void CanUseArgumentsWithSameNameAsVariable()
-    {
-      var input =
-@"@a: 5px;
+        [Test, Ignore("Infinite Loop - breaks tester")]
+        public void CanUseArgumentsWithSameNameAsVariable()
+        {
+            var input =
+                @"@a: 5px;
 
 .mixin (@a: @a, @b: 50%) {
   width: @a * 5;
@@ -609,19 +616,20 @@ namespace dotless.Tests.Specs
   .mixin;
 }";
 
-      var expected =
-@".class {
+            var expected =
+                @".class {
   width: 25px;
   height: 49%;
 }";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void CanNestParameterizedMixins()
-    {
-      var input = @"
+        [Test]
+        public void CanNestParameterizedMixins()
+        {
+            var input =
+                @"
 .inner(@size: 12px) {
   font-size: @size;
 }
@@ -635,19 +643,20 @@ namespace dotless.Tests.Specs
  .outer(12px);
 }";
 
-      var expected = @"
+            var expected = @"
 .class {
   width: 12px;
   font-size: 10px;
 }";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void CanNestParameterizedMixinsWithDefaults()
-    {
-      var input = @"
+        [Test]
+        public void CanNestParameterizedMixinsWithDefaults()
+        {
+            var input =
+                @"
 .inner(@size: 12px) {
   font-size: @size;
 }
@@ -661,20 +670,21 @@ namespace dotless.Tests.Specs
  .outer();
 }";
 
-      var expected = @"
+            var expected = @"
 .class {
   width: 20px;
   font-size: 12px;
 }";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
 
-    [Test]
-    public void CanNestParameterizedMixinsWithSameParameterNames()
-    {
-      var input = @"
+        [Test]
+        public void CanNestParameterizedMixinsWithSameParameterNames()
+        {
+            var input =
+                @"
 .inner(@size: 12px) {
   font-size: @size;
 }
@@ -688,20 +698,20 @@ namespace dotless.Tests.Specs
  .outer(16px);
 }";
 
-      var expected = @"
+            var expected = @"
 .class {
   width: 16px;
   font-size: 14px;
 }";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void IncludesAllMatchedMixins1()
-    {
-      var input =
-        @"
+        [Test]
+        public void IncludesAllMatchedMixins1()
+        {
+            var input =
+                @"
 .mixin () { zero: 0; }
 .mixin (@a: 1px) { one: 1; }
 .mixin (@a) { one-req: 1; }
@@ -717,7 +727,8 @@ namespace dotless.Tests.Specs
 .three { .mixin(1, 2, 3); }
 ";
 
-      var expected = @"
+            var expected =
+                @"
 .zero {
   zero: 0;
   one: 1;
@@ -739,14 +750,14 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void IncludesAllMatchedMixins2()
-    {
-      var input =
-        @"
+        [Test]
+        public void IncludesAllMatchedMixins2()
+        {
+            var input =
+                @"
 .mixout ('left') { left: 1; }
 
 .mixout ('right') { right: 1; }
@@ -756,7 +767,7 @@ namespace dotless.Tests.Specs
 .none { .mixout('top'); }
 ";
 
-      var expected = @"
+            var expected = @"
 .left {
   left: 1;
 }
@@ -765,14 +776,14 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void IncludesAllMatchedMixins3()
-    {
-      var input =
-        @"
+        [Test]
+        public void IncludesAllMatchedMixins3()
+        {
+            var input =
+                @"
 .border (@side, @width) {
     color: black;
     .border-side(@side, @width);
@@ -792,7 +803,8 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      var expected = @"
+            var expected =
+                @"
 .border-right {
   color: black;
   border-right: 4px;
@@ -802,7 +814,7 @@ namespace dotless.Tests.Specs
   border-left: 4px;
 }";
 
-      AssertLess(input, expected);
+            AssertLess(input, expected);
+        }
     }
-  }
 }

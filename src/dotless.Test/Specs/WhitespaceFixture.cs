@@ -1,16 +1,17 @@
-﻿using NUnit.Framework;
-
 // ReSharper disable ConvertToConstant.Local
 
-namespace dotless.Tests.Specs
+namespace dotless.Test.Specs
 {
-  [TestFixture]
-  public class WhitespaceFixture : SpecFixtureBase
-  {
-    [Test]
-    public void Whitespace()
+    using NUnit.Framework;
+
+    [TestFixture]
+    public class WhitespaceFixture : SpecFixtureBase
     {
-      var input = @"
+        [Test]
+        public void Whitespace()
+        {
+            var input =
+                @"
 .whitespace { color: white; }
 .whitespace{color:white;}
 .whitespace { color: white ; }
@@ -21,8 +22,9 @@ white;
 }
 .whitespace { color : white; }
 ";
-      
-      var expected = @"
+
+            var expected =
+                @"
 .whitespace {
   color: white;
 }
@@ -39,13 +41,13 @@ white;
   color: white;
 }";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void Whitespace2()
-    {
-      var input = @"
+        [Test]
+        public void Whitespace2()
+        {
+            var input = @"
 .white,
 .space,
 .mania
@@ -55,62 +57,63 @@ white;
         white;
 }";
 
-      var expected = @"
+            var expected = @"
 .white, .space, .mania {
   color: white;
 }";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void NoSemiColon1()
-    {
-      var input = ".no-semi-colon { color: white }";
+        [Test]
+        public void NoSemiColon1()
+        {
+            var input = ".no-semi-colon { color: white }";
 
-      var expected = @"
+            var expected = @"
 .no-semi-colon {
   color: white;
 }";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void NoSemiColon2()
-    {
-      var input = @"
+        [Test]
+        public void NoSemiColon2()
+        {
+            var input = @"
 .no-semi-colon {
   color: white;
   white-space: pre
 }";
 
-      var expected = @"
+            var expected = @"
 .no-semi-colon {
   color: white;
   white-space: pre;
 }";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void NoSemiColon3()
-    {
-      var input = ".no-semi-colon {border: 2px solid white}";
+        [Test]
+        public void NoSemiColon3()
+        {
+            var input = ".no-semi-colon {border: 2px solid white}";
 
-      var expected = @"
+            var expected = @"
 .no-semi-colon {
   border: 2px solid white;
 }";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void NewLines()
-    {
-      var input = @"
+        [Test]
+        public void NewLines()
+        {
+            var input =
+                @"
 .newlines {
   background: the,
               great,
@@ -120,7 +123,8 @@ white;
           black;
 }";
 
-      var expected = @"
+            var expected =
+                @"
 .newlines {
   background: the,
               great,
@@ -130,21 +134,20 @@ white;
           black;
 }";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void Empty()
-    {
-      var input = @"
+        [Test]
+        public void Empty()
+        {
+            var input = @"
 .empty {
   
 }";
 
-      var expected = "";
+            var expected = "";
 
-      AssertLess(input, expected);
+            AssertLess(input, expected);
+        }
     }
-
-  }
 }

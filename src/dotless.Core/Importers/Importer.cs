@@ -1,6 +1,7 @@
-﻿namespace dotless.Core.Parser.Infrastructure.Importers
+﻿namespace dotless.Core.Importers
 {
-    using Tree;
+    using Parser.Tree;
+    using Parser;
 
     public abstract class Importer
     {

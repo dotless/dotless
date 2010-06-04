@@ -1,8 +1,8 @@
-﻿namespace dotless.Core.Parser.Tree
+namespace dotless.Core.Parser.Tree
 {
     using System.Text.RegularExpressions;
+    using Importers;
     using Infrastructure;
-    using Infrastructure.Importers;
     using Infrastructure.Nodes;
     using Utils;
 

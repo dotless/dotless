@@ -1,14 +1,15 @@
-using NUnit.Framework;
-
-namespace dotless.Tests.Specs
+namespace dotless.Test.Specs
 {
-  public class ColorsFixture : SpecFixtureBase
-  {
-    [Test]
-    public void Colors()
+    using NUnit.Framework;
+
+    public class ColorsFixture : SpecFixtureBase
     {
-      // Todo: split into separate atomic tests.
-      var input = @"
+        [Test]
+        public void Colors()
+        {
+            // Todo: split into separate atomic tests.
+            var input =
+                @"
 #yelow {
   #short {
     color: #fea;
@@ -46,7 +47,8 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      var expected = @"
+            var expected =
+                @"
 #yelow #short {
   color: #fea;
 }
@@ -83,7 +85,7 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      AssertLess(input, expected);
+            AssertLess(input, expected);
+        }
     }
-  }
 }

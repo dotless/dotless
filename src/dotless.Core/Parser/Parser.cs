@@ -4,8 +4,8 @@ namespace dotless.Core.Parser
 {
     using System;
     using Exceptions;
+    using Importers;
     using Infrastructure;
-    using Infrastructure.Importers;
     using Infrastructure.Nodes;
     using Stylizers;
     using Tree;

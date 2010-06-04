@@ -1,6 +1,7 @@
-﻿namespace dotless.Core.Parser.Stylizers
+namespace dotless.Core.Stylizers
 {
     using System.Collections.Generic;
+    using Parser;
 
     public class ConsoleStylizer : IStylizer
     {

@@ -1,14 +1,14 @@
-using NUnit.Framework;
-
-namespace dotless.Tests.Specs
+namespace dotless.Test.Specs
 {
-  public class CommentsFixture : SpecFixtureBase
-  {
-    [Test]
-    public void CommentHeader()
+    using NUnit.Framework;
+
+    public class CommentsFixture : SpecFixtureBase
     {
-      var input =
-        @"
+        [Test]
+        public void CommentHeader()
+        {
+            var input =
+                @"
 /******************\
 *                  *
 *  Comment Header  *
@@ -16,14 +16,14 @@ namespace dotless.Tests.Specs
 \******************/
 ";
 
-      AssertLessUnchanged(input);
-    }
+            AssertLessUnchanged(input);
+        }
 
-    [Test]
-    public void MultilineComment()
-    {
-      var input =
-        @"
+        [Test]
+        public void MultilineComment()
+        {
+            var input =
+                @"
 /*
 
     Comment
@@ -31,14 +31,14 @@ namespace dotless.Tests.Specs
 */
 ";
 
-      AssertLessUnchanged(input);
-    }
+            AssertLessUnchanged(input);
+        }
 
-    [Test]
-    public void MultilineComment2()
-    {
-      var input =
-        @"
+        [Test]
+        public void MultilineComment2()
+        {
+            var input =
+                @"
 /*  
  * Comment Test
  * 
@@ -47,23 +47,23 @@ namespace dotless.Tests.Specs
  */
 ";
 
-      AssertLessUnchanged(input);
-    }
+            AssertLessUnchanged(input);
+        }
 
-    [Test]
-    public void LineCommentGetsRemoved()
-    {
-      var input = "////////////////";
-      var expected = "";
+        [Test]
+        public void LineCommentGetsRemoved()
+        {
+            var input = "////////////////";
+            var expected = "";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void ColorInsideComments()
-    {
-      var input =
-        @"
+        [Test]
+        public void ColorInsideComments()
+        {
+            var input =
+                @"
 /* Colors
  * ------
  *   #EDF8FC (background blue)
@@ -76,14 +76,14 @@ namespace dotless.Tests.Specs
  */
 ";
 
-      AssertLessUnchanged(input);
-    }
+            AssertLessUnchanged(input);
+        }
 
-    [Test]
-    public void CommentInsideAComment()
-    {
-      var input =
-        @"
+        [Test]
+        public void CommentInsideAComment()
+        {
+            var input =
+                @"
 /*  
  * Comment Test
  * 
@@ -92,70 +92,70 @@ namespace dotless.Tests.Specs
  */
 ";
 
-      AssertLessUnchanged(input);
-    }
+            AssertLessUnchanged(input);
+        }
 
-    [Test]
-    public void VariablesInsideComments()
-    {
-      var input =
-        @"
+        [Test]
+        public void VariablesInsideComments()
+        {
+            var input =
+                @"
 /* @group Variables
 ------------------- */
 ";
-      
-      AssertLessUnchanged(input);
-    }
 
-    [Test]
-    public void BlockCommentAfterSelector()
-    {
-      var input =
-        @"
+            AssertLessUnchanged(input);
+        }
+
+        [Test]
+        public void BlockCommentAfterSelector()
+        {
+            var input =
+                @"
 #comments /* boo */ {
   color: red;
 }
 ";
 
-      var expected = @"
+            var expected = @"
 #comments {
   color: red;
 }
 ";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void EmptyComment()
-    {
-      var input =
-        @"
-#comments {
-  border: solid black;
-  /**/
-  color: red;
-}
-";
-
-      var expected =
-        @"
+        [Test]
+        public void EmptyComment()
+        {
+            var input =
+                @"
 #comments {
   border: solid black;
   /**/
+  color: red;
+}
+";
+
+            var expected =
+                @"
+#comments {
+  border: solid black;
+  /**/
 
   color: red;
 }
 ";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void BlockCommentAfterProperty()
-    {
-      var input =
-        @"
+        [Test]
+        public void BlockCommentAfterProperty()
+        {
+            var input =
+                @"
 #comments {
   border: solid black;
   color: red; /* A C-style comment */
@@ -163,8 +163,8 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      var expected =
-        @"
+            var expected =
+                @"
 #comments {
   border: solid black;
   color: red;
@@ -174,14 +174,14 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void LineCommentAfterProperty()
-    {
-      var input =
-        @"
+        [Test]
+        public void LineCommentAfterProperty()
+        {
+            var input =
+                @"
 #comments {
   border: solid black;
   color: red; // A little comment
@@ -189,7 +189,7 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      var expected = @"
+            var expected = @"
 #comments {
   border: solid black;
   color: red;
@@ -197,14 +197,14 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void BlockCommentBeforeProperty()
-    {
-      var input =
-        @"
+        [Test]
+        public void BlockCommentBeforeProperty()
+        {
+            var input =
+                @"
 #comments {
   border: solid black;
   /* comment */ color: red;
@@ -212,7 +212,7 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      var expected = @"
+            var expected = @"
 #comments {
   border: solid black;
   /* comment */
@@ -221,14 +221,14 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void LineCommentAfterALineComment()
-    {
-      var input =
-        @"
+        [Test]
+        public void LineCommentAfterALineComment()
+        {
+            var input =
+                @"
 #comments {
   border: solid black;
   // comment //
@@ -237,7 +237,7 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      var expected = @"
+            var expected = @"
 #comments {
   border: solid black;
   color: red;
@@ -245,33 +245,33 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void LineCommentAfterBlock()
-    {
-      var input =
-        @"
+        [Test]
+        public void LineCommentAfterBlock()
+        {
+            var input =
+                @"
 #comments /* boo */ {
   color: red;
 } // comment
 ";
 
-      var expected = @"
+            var expected = @"
 #comments {
   color: red;
 }
 ";
 
-      AssertLess(input, expected);
-    }
+            AssertLess(input, expected);
+        }
 
-    [Test]
-    public void BlockCommented1()
-    {
-      var input =
-        @"
+        [Test]
+        public void BlockCommented1()
+        {
+            var input =
+                @"
 /* commented out
   #more-comments {
     color: grey;
@@ -279,14 +279,14 @@ namespace dotless.Tests.Specs
 */
 ";
 
-      AssertLessUnchanged(input);
-    }
+            AssertLessUnchanged(input);
+        }
 
-    [Test]
-    public void BlockCommented2()
-    {
-      var input =
-        @"
+        [Test]
+        public void BlockCommented2()
+        {
+            var input =
+                @"
 /* 
 #signup form h3.title {
     background:transparent url(../img/ui/signup.png) no-repeat 50px top;
@@ -295,14 +295,14 @@ namespace dotless.Tests.Specs
 */
 ";
 
-      AssertLessUnchanged(input);
-    }
+            AssertLessUnchanged(input);
+        }
 
-    [Test, Ignore("Bug")]
-    public void BlockCommented3()
-    {
-      var input =
-        @"
+        [Test, Ignore("Bug")]
+        public void BlockCommented3()
+        {
+            var input =
+                @"
 /* commented out
   #more-comments {
     quotes: ""/*"" ""*/"";
@@ -310,27 +310,26 @@ namespace dotless.Tests.Specs
 */
 ";
 
-      AssertLessUnchanged(input);
-    }
+            AssertLessUnchanged(input);
+        }
 
 
-    [Test]
-    public void CommentOnLastLine()
-    {
-      var input =
-        @"
+        [Test]
+        public void CommentOnLastLine()
+        {
+            var input =
+                @"
 #last { color: blue }
 //
 ";
 
-      var expected = @"
+            var expected = @"
 #last {
   color: blue;
 }
 ";
 
-      AssertLess(input, expected);
+            AssertLess(input, expected);
+        }
     }
-
-  }
 }

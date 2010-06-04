@@ -1,15 +1,16 @@
-using NUnit.Framework;
-
-namespace dotless.Tests.Specs
+namespace dotless.Test.Specs
 {
-  public class AccessorsFixture : SpecFixtureBase
-  {
-    [Test, Ignore("Unsupported")]
-    public void Accessors()
-    {
-      // Note: http://github.com/cloudhead/less.js/issues/issue/6
+    using NUnit.Framework;
 
-      var input = @"
+    public class AccessorsFixture : SpecFixtureBase
+    {
+        [Test, Ignore("Unsupported")]
+        public void Accessors()
+        {
+            // Note: http://github.com/cloudhead/less.js/issues/issue/6
+
+            var input =
+                @"
 .magic-box {
   @trim: orange;
   content: ""gold"";
@@ -31,7 +32,8 @@ namespace dotless.Tests.Specs
   border-color: .magic-box[@trim]; // orange
 }";
 
-      var expected = @"
+            var expected =
+                @"
 .magic-box {
   content: ""gold"";
   width: 60cm;
@@ -53,7 +55,7 @@ namespace dotless.Tests.Specs
 }
 ";
 
-      AssertLess(input, expected);
+            AssertLess(input, expected);
+        }
     }
-  }
 }
