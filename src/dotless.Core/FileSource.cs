@@ -18,13 +18,9 @@ namespace dotless.Core
 
     public class FileSource : ILessSource
     {
-        public LessSourceObject GetSource(string key)
+        public string GetSource(string key)
         {
-            return new LessSourceObject
-                       {
-                           Content = ReadFileContent(key), 
-                           Key = key, Cacheable = false
-                       };
+            return ReadFileContent(key);
         }
 
         private static string ReadFileContent(string key)

@@ -30,7 +30,7 @@ namespace dotlessjs.Compiler
             var files = Directory.GetFiles(".", "*.less");
 
             var contents = files
-                .ToDictionary(f => f, f => new LessSourceObject {Content = File.ReadAllText(f)});
+                .ToDictionary(f => f, f => File.ReadAllText(f));
 
             const int rounds = 150;
 
@@ -68,7 +68,7 @@ namespace dotlessjs.Compiler
 
             foreach (var file in files)
             {
-                var size = rounds*contents[file].Content.Length/1024d;
+                var size = rounds*contents[file].Length/1024d;
                 Console.Write("{0} | {1,8:#,##0.00} Kb  | ", file.PadRight(18), size);
 
                 var times = new List<double>();

@@ -16,6 +16,6 @@ namespace dotless.Core
 {
     public interface ILessEngine
     {
-        string TransformToCss(LessSourceObject source);
+        string TransformToCss(string source);
     }
 }

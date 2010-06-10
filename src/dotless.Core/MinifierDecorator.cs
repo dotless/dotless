@@ -25,13 +25,7 @@ namespace dotless.Core
             this.engine = engine;
         }
 
-        public string TransformToCss(string filename)
-        {
-            var fileSource = new FileSource().GetSource(filename);
-            return TransformToCss(fileSource);
-        }
-
-        public string TransformToCss(LessSourceObject source)
+        public string TransformToCss(string source)
         {
             string buffer = engine.TransformToCss(source);
             return CssCompressor.Compress(buffer);

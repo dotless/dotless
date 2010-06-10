@@ -19,15 +19,11 @@ namespace dotless.Core
 
     public class AspServerPathSource : ILessSource
     {
-        public LessSourceObject GetSource(string key)
+        public string GetSource(string key)
         {
             var path = GetServer().MapPath(key);
-            return new LessSourceObject
-                       {
-                           Content = File.ReadAllText(path),
-                           Cacheable = true,
-                           Key = path
-                       };
+
+            return File.ReadAllText(path);
         }
 
         private static HttpServerUtility GetServer()

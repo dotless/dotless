@@ -28,15 +28,15 @@ namespace dotless.Core
             this.cache = cache;
         }
 
-        public string TransformToCss(LessSourceObject source)
+        public string TransformToCss(string source)
         {
-            if (!source.Cacheable) throw new ConfigurationErrorsException("Your LessSource does not support ASP caching!\nPlease either disable caching or select a source provider that supports caching like AspServerPathSource or FileSource");
-            if (!cache.Exists(source.Key))
-            {
-                string css = underlying.TransformToCss(source);
-                cache.Insert(source.Key, css);
-            }
-            return cache.Retrieve(source.Key);
+//            if (!cache.Exists(source.Key))
+//            {
+//                string css = underlying.TransformToCss(source);
+//                cache.Insert(source.Key, css);
+//            }
+//            return cache.Retrieve(source.Key);
+            return underlying.TransformToCss(source);
         }
     }
 }

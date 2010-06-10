@@ -16,6 +16,6 @@ namespace dotless.Core
 {
     public interface ILessSource
     {
-        LessSourceObject GetSource(string key);
+        string GetSource(string key);
     }
 }
