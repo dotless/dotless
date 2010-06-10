@@ -534,7 +534,7 @@ namespace dotless.Core.Parser
             }
 
             if (! parser.Tokenizer.Match(']'))
-                return null;
+                throw new ParsingException("Excpected ']'");
 
             if (!string.IsNullOrEmpty(attr))
                 return NodeProvider.TextNode("[" + attr + "]");
@@ -556,10 +556,7 @@ namespace dotless.Core.Parser
             if (content != null && parser.Tokenizer.Match('}'))
                 return content;
 
-            if (content != null)
-                throw new ParsingException("Expected '}'");
-
-            return null;
+            throw new ParsingException("Expected '}'");
         }
 
         //
@@ -640,9 +637,11 @@ namespace dotless.Core.Parser
         {
             Node path = null;
 
-            if (parser.Tokenizer.Match(@"@import\s+") && (path = Quoted(parser) || Url(parser)) &&
-                parser.Tokenizer.Match(';'))
+            if (parser.Tokenizer.Match(@"@import\s+") && (path = Quoted(parser) || Url(parser)))
             {
+                if(!parser.Tokenizer.Match(';'))
+                    throw new ParsingException("Expected ';'");
+
                 if (path is Quoted)
                     return NodeProvider.Import(path as Quoted, parser.Importer);
 
@@ -754,12 +753,14 @@ namespace dotless.Core.Parser
 
         public Expression Sub(Parser parser)
         {
-            Expression e = null;
-
-            if (parser.Tokenizer.Match('(') && (e = Expression(parser)) && parser.Tokenizer.Match(')'))
+            if (!parser.Tokenizer.Match('('))
+                return null;
+            
+            var e = Expression(parser);
+            if( e != null && parser.Tokenizer.Match(')'))
                 return e;
 
-            return null;
+            throw new ParsingException("Expected ')'");
         }
 
         public Node Multiplication(Parser parser)
