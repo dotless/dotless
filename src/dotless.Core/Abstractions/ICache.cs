@@ -14,36 +14,13 @@
 
 namespace dotless.Core.Abstractions
 {
-    using System.Web;
-    using System.Web.Caching;
+    using System;
+    using System.Collections.Generic;
 
     public interface ICache
     {
-        void Insert(string fileName, string css);
+        void Insert(string fileName, IEnumerable<string> imports, string css);
         bool Exists(string filename);
         string Retrieve(string filename);
-    }
-
-    public class CssCache : ICache
-    {
-        public void Insert(string fileName, string css)
-        {
-            GetCache().Insert(fileName, css, new CacheDependency(fileName));
-        }
-
-        public bool Exists(string filename)
-        {
-            return Retrieve(filename) != null;
-        }
-
-        public string Retrieve(string filename)
-        {
-            return (string)GetCache()[filename];
-        }
-
-        private static Cache GetCache()
-        {
-            return HttpContext.Current.Cache;
-        }
     }
 }

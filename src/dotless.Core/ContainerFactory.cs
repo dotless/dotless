@@ -14,89 +14,67 @@
 
 namespace dotless.Core
 {
+    using System.Web;
     using Abstractions;
     using configuration;
+    using Loggers;
     using Microsoft.Practices.ServiceLocation;
     using Pandora;
-    using Parser;
+    using Stylizers;
 
     public class ContainerFactory
     {
-        private static PandoraContainer _container;
-        private static readonly object LockObject = new object();
+        private PandoraContainer Container { get; set; }
 
-        public IServiceLocator GetContainer()
+        public IServiceLocator GetContainer(DotlessConfiguration configuration)
         {
-            if (_container == null)
-            {
-                lock (LockObject)
-                {
-                    if (_container == null)
-                    {
-                        DotlessConfiguration configuration = new WebConfigConfigurationLoader().GetConfiguration();
-                        _container = CreateContainer(configuration);
-                    }
-                }
-            }
+            Container = new PandoraContainer();
 
-            return new CommonServiceLocatorAdapter(_container);
+            RegisterServices(configuration);
+
+            return new CommonServiceLocatorAdapter(Container);
         }
 
-        public IServiceLocator GetCoreContainer(DotlessConfiguration configuration)
+        private void RegisterServices(DotlessConfiguration configuration)
         {
-            return new CommonServiceLocatorAdapter(RegisterCoreServices(new PandoraContainer(), configuration));
-        }
-
-        
-        private PandoraContainer RegisterCoreServices(PandoraContainer container, DotlessConfiguration configuration)
-        {
-            container.Register(p =>
+            Container.Register(p =>
                                    {
-                                       if (configuration.MinifyOutput)
+                                       if (configuration.Web)
                                        {
-                                           p.Service<ILessEngine>()
-                                               .Implementor<MinifierDecorator>();
-                                       }
-                                       p.Service<ILessEngine>()
-                                           .Implementor<LessEngine>();
-                                       p.Service<ILessSource>()
-                                           .Implementor<FileSource>();
-                                   });
-            return container;
-        }
+                                           p.Service<HttpContextBase>().Implementor<HttpContextWrapper>().Parameters("httpContext").Set("httpContext.Current");
+                                           p.Service<HttpContext>("httpContext.Current").Instance(HttpContext.Current);
 
-        /// <summary>
-        /// Used to create the Container for the HttpHandler. Not used by Console Compiler and T4CSS
-        /// </summary>
-        /// <param name="configuration">Configuration for the HttpHandler</param>
-        /// <returns></returns>
-        private PandoraContainer CreateContainer(DotlessConfiguration configuration)
-        {
-            var container = new PandoraContainer();
-            container.Register(p =>
-                                   {
-                                       p.Service<ILessSource>()
-                                           .Implementor(configuration.LessSource);
-                                       p.Service<ICache>()
-                                           .Implementor<CssCache>();
-                                       p.Service<IRequest>()
-                                           .Implementor<Request>();
+                                           if (configuration.CacheEnabled)
+                                               p.Service<IResponse>().Implementor<CachedCssResponse>();
+                                           else
+                                               p.Service<IResponse>().Implementor<CssResponse>();
 
-                                       if (!configuration.CacheEnabled)
-                                       {
-                                           p.Service<IResponse>()
-                                               .Implementor<CssResponse>();
+                                           p.Service<ICache>().Implementor<HttpCache>();
+                                           p.Service<ILogger>().Implementor<AspResponseLogger>().Parameters("level").Set("error-level");
+                                           p.Service<IPathResolver>().Implementor<AspServerPathResolver>();
                                        }
                                        else
                                        {
-                                           p.Service<IResponse>()
-                                               .Implementor<CachedCssResponse>();
-                                           p.Service<ILessEngine>()
-                                               .Implementor<AspCacheDecorator>();
+                                           p.Service<ICache>().Implementor<InMemoryCache>();
+                                           p.Service<ILogger>().Implementor<ConsoleLogger>().Parameters("level").Set("error-level");
+                                           p.Service<IPathResolver>().Implementor<RelativePathResolver>();
                                        }
-                                   });
 
-            return RegisterCoreServices(container, configuration);
+                                       p.Service<LogLevel>("error-level").Instance(LogLevel.Error);
+                                       p.Service<IStylizer>().Implementor<PlainStylizer>();
+
+                                       p.Service<Parser.Parser>().Implementor<Parser.Parser>().Parameters("optimization").Set("default-optimization");
+                                       p.Service<int>("default-optimization").Instance(2);
+
+                                       if (configuration.MinifyOutput)
+                                           p.Service<ILessEngine>().Implementor<MinifierDecorator>();
+
+                                       if (configuration.CacheEnabled)
+                                            p.Service<ILessEngine>().Implementor<CacheDecorator>();
+
+                                       p.Service<ILessEngine>().Implementor<LessEngine>();
+                                       p.Service<IFileReader>().Implementor(configuration.LessSource);
+                                   });
         }
     }
 }

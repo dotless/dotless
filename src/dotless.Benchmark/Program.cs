@@ -40,7 +40,7 @@ namespace dotlessjs.Compiler
                                       .Select(i =>
                                                   {
                                                       var starttime = DateTime.Now;
-                                                      engine.TransformToCss(contents[file]);
+                                                      engine.TransformToCss(contents[file], file);
                                                       var duration = (DateTime.Now - starttime);
                                                       return duration.Milliseconds;
                                                   })

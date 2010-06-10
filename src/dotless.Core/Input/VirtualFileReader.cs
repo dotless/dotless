@@ -12,25 +12,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
-namespace dotless.Core.Abstractions
+namespace dotless.Core
 {
-    using System.Web;
+    using System.IO;
+    using System.Web.Hosting;
 
-    public interface IRequest
+    public class VirtualFileReader : IFileReader
     {
-        string LocalPath { get; }
-    }
-
-    public class Request : IRequest
-    {
-        public string LocalPath
+        public string GetFileContents(string fileName)
         {
-            get { return GetRequest().Url.LocalPath; }
-        }
-
-        private static HttpRequest GetRequest()
-        {
-            return HttpContext.Current.Request;
+            var virtualPathProvider = HostingEnvironment.VirtualPathProvider;
+            var virtualFile = virtualPathProvider.GetFile(fileName);
+            using (var streamReader = new StreamReader(virtualFile.Open()))
+            {
+                return streamReader.ReadToEnd();
+            }
         }
     }
 }

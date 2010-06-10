@@ -1,4 +1,4 @@
-﻿/* Copyright 2009 dotless project, http://www.dotlesscss.com
+/* Copyright 2009 dotless project, http://www.dotlesscss.com
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,19 +60,20 @@ namespace dotless.Compiler
             if (File.Exists(inputFilePath))
             {
                 var currentDir = Directory.GetCurrentDirectory();
+                var factory = new EngineFactory(configuration);
+                var engine = factory.GetEngine();
+                
                 SetCurrentDirectory(inputFilePath);
                 
                 Action compilationDelegate = () =>
                                                  {
                                                      inputFilePath = GetFileName(inputFilePath);
                                                      outputFilePath = GetFileName(outputFilePath);
-                                                     var factory = new EngineFactory();
-                                                     ILessEngine engine = factory.GetEngine(configuration);
                                                      Console.Write("Compiling {0} -> {1} ", inputFilePath, outputFilePath);
                                                      try 
                                                      {
                                                          string css =
-                                                             engine.TransformToCss(new FileSource().GetSource(inputFilePath));
+                                                             engine.TransformToCss(new FileReader().GetFileContents(inputFilePath), inputFilePath);
                                                          File.WriteAllText(outputFilePath, css);
                                                          Console.WriteLine("[Done]");
                                                      } catch(Exception ex)

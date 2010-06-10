@@ -8,6 +8,7 @@ namespace dotless.Core.Parser.Tree
 
     public class Import : Directive
     {
+        public Importer Importer { get; set; }
         public string Path { get; set; }
         protected Node OriginalPath { get; set; }
         protected bool Css { get; set; }
@@ -27,15 +28,15 @@ namespace dotless.Core.Parser.Tree
 
         private Import(string path, Importer importer)
         {
+            Importer = importer;
             var regex = new Regex(@"\.(le|c)ss$");
 
             Path = regex.IsMatch(path) ? path : path + ".less";
 
             Css = Path.EndsWith("css");
 
-            // Only pre-compile .less files
-            if (!Css)
-                importer.Import(this); // TODO: move this into Evaluate()
+            if(!Css)
+                Importer.Import(this);
         }
 
         protected override string ToCSS(Context context)

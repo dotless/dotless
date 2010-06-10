@@ -16,26 +16,35 @@ namespace dotless.Core
 {
     using System;
     using System.Collections.Generic;
-    using Yahoo.Yui.Compressor;
+    using Abstractions;
 
-    public class MinifierDecorator : ILessEngine
+    public class CacheDecorator : ILessEngine
     {
-        public ILessEngine Engine { get; private set; }
+        public readonly ILessEngine Underlying;
+        public readonly ICache Cache;
 
-        public MinifierDecorator(ILessEngine engine)
+        public CacheDecorator(ILessEngine underlying, ICache cache)
         {
-            Engine = engine;
+            Underlying = underlying;
+            Cache = cache;
         }
 
         public string TransformToCss(string source, string fileName)
         {
-            var css = Engine.TransformToCss(source, fileName);
-            return CssCompressor.Compress(css);
+            if (!Cache.Exists(fileName))
+            {
+                var css = Underlying.TransformToCss(source, fileName);
+                var imports = GetImports();
+                Cache.Insert(fileName, imports, css);
+                return css;
+            }
+
+            return Cache.Retrieve(fileName);
         }
 
         public IEnumerable<string> GetImports()
         {
-            return Engine.GetImports();
+            return Underlying.GetImports();
         }
     }
 }

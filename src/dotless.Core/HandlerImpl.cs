@@ -14,28 +14,31 @@
 
 namespace dotless.Core
 {
+    using System.Web;
     using Abstractions;
 
     public class HandlerImpl
     {
-        private readonly IRequest request;
-        private readonly IResponse response;
-        private readonly ILessEngine engine;
-        private readonly ILessSource lessSource;
+        private readonly HttpContextBase _context;
+        private readonly IResponse _response;
+        private readonly ILessEngine _engine;
+        private readonly IFileReader _fileReader;
 
-        public HandlerImpl(IRequest request, IResponse response, ILessEngine engine, ILessSource lessSource)
+        public HandlerImpl(HttpContextBase context, IResponse response, ILessEngine engine, IFileReader fileReader)
         {
-            this.request = request;
-            this.response = response;
-            this.engine = engine;
-            this.lessSource = lessSource;
+            _context = context;
+            _response = response;
+            _engine = engine;
+            _fileReader = fileReader;
         }
 
         public void Execute()
         {
-            // our unprocessed filename   
-            var source = lessSource.GetSource(request.LocalPath);
-            response.WriteCss(engine.TransformToCss(source));
+            var localPath = _context.Request.Url.LocalPath;
+
+            var source = _fileReader.GetFileContents(localPath);
+
+            _response.WriteCss(_engine.TransformToCss(source, localPath));
         }
     }
 }

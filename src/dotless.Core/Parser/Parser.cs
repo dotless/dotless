@@ -53,15 +53,32 @@ namespace dotless.Core.Parser
     {
         public Tokenizer Tokenizer { get; set; }
         public IStylizer Stylizer { get; set; }
-        public Importer Importer { get; set; }
+
+        private Importer _importer;
+        public Importer Importer
+        {
+            get { return _importer; }
+            set
+            {
+                _importer = value;
+                _importer.Parser = () => new Parser(Tokenizer.Optimization, Stylizer, _importer);
+            }
+        }
+
+        private const int defaultOptimization = 1;
 
         public Parser()
-            : this(1)
+            : this(defaultOptimization)
         {
         }
 
         public Parser(int optimization)
-            : this(optimization, new PlainStylizer(), new FileImporter())
+            : this(optimization, new PlainStylizer(), new Importer())
+        {
+        }
+
+        public Parser(IStylizer stylizer, Importer importer)
+            : this(defaultOptimization, stylizer, importer)
         {
         }
 
@@ -72,7 +89,7 @@ namespace dotless.Core.Parser
             Tokenizer = new Tokenizer(optimization);
         }
 
-        public Ruleset Parse(string input)
+        public Ruleset Parse(string input, string fileName)
         {
             Tokenizer.SetupInput(input);
 
@@ -89,12 +106,12 @@ namespace dotless.Core.Parser
                 parsingException = e;
             }
 
-            CheckForParsingError(parsingException);
+            CheckForParsingError(parsingException, fileName);
 
             return root;
         }
 
-        private void CheckForParsingError(Exception parsingException)
+        private void CheckForParsingError(Exception parsingException, string fileName)
         {
             if (Tokenizer.HasCompletedParsing())
                 if (parsingException != null)
@@ -104,15 +121,13 @@ namespace dotless.Core.Parser
 
             var zone = Tokenizer.GetCurrentZone();
 
-            var zoneString = Stylizer.Stylize(zone);
-
             var error = "Parse Error";
             if (parsingException != null)
                 error = parsingException.Message;
 
-            var message = string.Format("{0} on line {1}:\n{2}", error, zone.LineNumber, zoneString);
+            var message = Stylizer.Stylize(zone, fileName, error);
 
-            throw new ParsingException(message, parsingException);
+            throw new ParserException(message, parsingException);
         }
     }
 }

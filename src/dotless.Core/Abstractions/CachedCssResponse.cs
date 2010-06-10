@@ -22,24 +22,30 @@ namespace dotless.Core.Abstractions
 
     public class CachedCssResponse : IResponse
     {
+        private readonly HttpContextBase _context;
         private const int CacheAgeMinutes = 5;
+
+        public CachedCssResponse(HttpContextBase context)
+        {
+            _context = context;
+        }
 
         public void WriteCss(string css)
         {
-            var response = GetResponse();
-            var request = GetRequest();
-
-            // The etag should come from the cache instead and have a filedependency on file.less..
-            var etag = GetFileETag("file.less", DateTime.Now);
+            var response = _context.Response;
+            var request = _context.Request;
 
             response.Cache.SetCacheability(HttpCacheability.Public);
-            response.Cache.SetMaxAge(new TimeSpan(0, CacheAgeMinutes,
-                                                  0));
+            response.Cache.SetMaxAge(new TimeSpan(0, CacheAgeMinutes, 0));
 
             response.Cache.SetExpires(DateTime.UtcNow.AddMinutes(CacheAgeMinutes));
-            response.Cache.SetETag(etag);
+            response.Cache.SetETagFromFileDependencies();
 
-            if (request.Headers.Get("If-None-Match") == etag)
+            response.ContentType = "text/css";
+            response.Write(css);
+
+/*
+            if (request.Headers.Get("If-None-Match") == response.Headers.Get("ETag"))
             {
                 response.StatusCode = 304;
                 response.StatusDescription = "Not Modified";
@@ -55,28 +61,7 @@ namespace dotless.Core.Abstractions
             }
 
             response.End();
-        }
-
-        private static string GetFileETag(string fileName, DateTime
-                                                        modifiedDate)
-        {
-            var identifier = fileName + modifiedDate;
-
-            var algorithm = MD5.Create();
-            var hash =
-                algorithm.ComputeHash(Encoding.UTF8.GetBytes(identifier));
-            var hashString = BitConverter.ToString(hash).Replace("-", "");
-            return string.Format("\"{0}\"", hashString);
-        }
-
-        private static HttpResponse GetResponse()
-        {
-            return HttpContext.Current.Response;
-        }
-
-        private static HttpRequest GetRequest()
-        {
-            return HttpContext.Current.Request;
+*/
         }
     }
 }

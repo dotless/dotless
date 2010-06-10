@@ -12,17 +12,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. */
 
-using Microsoft.Practices.ServiceLocation;
-
 namespace dotless.Core
 {
     using configuration;
 
     public class EngineFactory
     {
-        public ILessEngine GetEngine(DotlessConfiguration configuration)
+        public DotlessConfiguration Configuration { get; set; }
+
+        public EngineFactory(DotlessConfiguration configuration)
         {
-            IServiceLocator container = new ContainerFactory().GetCoreContainer(configuration);
+            Configuration = configuration;
+        }
+        public EngineFactory() : this(DotlessConfiguration.Default)
+        {
+        }
+
+        public ILessEngine GetEngine()
+        {
+            var container = new ContainerFactory().GetContainer(Configuration);
             return container.GetInstance<ILessEngine>();
         }
     }

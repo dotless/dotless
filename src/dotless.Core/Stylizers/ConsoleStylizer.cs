@@ -28,7 +28,7 @@ namespace dotless.Core.Stylizers
                    "\x1b[" + styles[style][1] + "m";
         }
 
-        public string Stylize(Zone zone)
+        public string Stylize(Zone zone, string fileName, string error)
         {
             var extract = zone.Extract;
             var errorPosition = zone.Position;

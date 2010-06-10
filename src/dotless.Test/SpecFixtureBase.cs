@@ -1,5 +1,6 @@
 ﻿namespace dotless.Test
 {
+    using System;
     using Core.Parser;
     using System.Collections.Generic;
     using System.Linq;
@@ -8,9 +9,11 @@
 
     public class SpecFixtureBase
     {
+        private static readonly Func<Parser> DeafultParser = () => new Parser(0);
+
         protected static void AssertLess(string input, string expected)
         {
-            AssertLess(input, expected, new Parser(0));
+            AssertLess(input, expected, DeafultParser());
         }
 
         protected static void AssertLess(string input, string expected, Parser parser)
@@ -25,6 +28,11 @@
         protected static void AssertLessUnchanged(string input)
         {
             AssertLess(input, input);
+        }
+
+        protected static void AssertLessUnchanged(string input, Parser parser)
+        {
+            AssertLess(input, input, parser);
         }
 
         protected static void AssertExpression(string output, string expression)
@@ -80,12 +88,12 @@
 
         public static string Evaluate(string input)
         {
-            return Evaluate(input, new Parser(0));
+            return Evaluate(input, DeafultParser());
         }
 
         public static string Evaluate(string input, Parser parser)
         {
-            var tree = parser.Parse(input);
+            var tree = parser.Parse(input, null);
             return tree.ToCSS(new Env());
         }
     }

@@ -14,27 +14,8 @@
 
 namespace dotless.Core.Abstractions
 {
-    using System.Web;
-
     public interface IResponse
     {
         void WriteCss(string css);
-    }
-
-    public class CssResponse : IResponse
-    {
-        public void WriteCss(string css)
-        {
-            var response = GetResponse();
-            response.Cache.SetCacheability(HttpCacheability.Public);
-            response.ContentType = "text/css";
-            response.Write(css);
-            response.End();
-        }
-
-        private static HttpResponse GetResponse()
-        {
-            return HttpContext.Current.Response;
-        }
     }
 }

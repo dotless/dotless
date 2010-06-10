@@ -14,29 +14,26 @@
 
 namespace dotless.Core
 {
-    using System.Configuration;
-    using Abstractions;
+    using System.IO;
 
-    public class AspCacheDecorator : ILessEngine
+    public class FileReader : IFileReader
     {
-        private readonly ILessEngine underlying;
-        private readonly ICache cache;
+        public IPathResolver PathResolver { get; set; }
 
-        public AspCacheDecorator(ILessEngine underlying, ICache cache)
+        public FileReader() : this(new RelativePathResolver())
         {
-            this.underlying = underlying;
-            this.cache = cache;
         }
 
-        public string TransformToCss(string source)
+        public FileReader(IPathResolver pathResolver)
         {
-//            if (!cache.Exists(source.Key))
-//            {
-//                string css = underlying.TransformToCss(source);
-//                cache.Insert(source.Key, css);
-//            }
-//            return cache.Retrieve(source.Key);
-            return underlying.TransformToCss(source);
+            PathResolver = pathResolver;
+        }
+
+        public string GetFileContents(string fileName)
+        {
+            fileName = PathResolver.GetFullPath(fileName);
+
+            return File.ReadAllText(fileName);
         }
     }
 }

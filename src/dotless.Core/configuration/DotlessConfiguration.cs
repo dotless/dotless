@@ -18,34 +18,31 @@ namespace dotless.Core.configuration
 
     public class DotlessConfiguration
     {
+        public static readonly DotlessConfiguration Default = new DotlessConfiguration();
+        public static readonly DotlessConfiguration DefaultWeb = new DotlessConfiguration
+            {
+                Web = true
+            };
+
         public DotlessConfiguration()
         {
-            LessSource = typeof(FileSource);
+            LessSource = typeof (FileReader);
+            MinifyOutput = false;
+            CacheEnabled = true;
+            Web = false;
+        }
+
+        public DotlessConfiguration(DotlessConfiguration config)
+        {
+            LessSource = config.LessSource;
+            MinifyOutput = config.MinifyOutput;
+            CacheEnabled = config.CacheEnabled;
+            Web = config.Web;
         }
 
         public bool MinifyOutput { get; set; }
         public bool CacheEnabled { get; set; }
         public Type LessSource { get; set; }
-        public static DotlessConfiguration DefaultWeb
-        {
-            get
-            {
-                var defaultConfiguration = Default;
-                defaultConfiguration.LessSource = typeof (AspServerPathSource);
-                return defaultConfiguration;
-            }
-        }
-        public static DotlessConfiguration Default
-        {
-            get
-            {
-                return new DotlessConfiguration
-                           {
-                               LessSource = typeof (FileSource),
-                               MinifyOutput = false,
-                               CacheEnabled = true
-                           };
-            }
-        }
+        public bool Web { get; set; }
     }
 }

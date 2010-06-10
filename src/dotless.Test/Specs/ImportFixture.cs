@@ -1,6 +1,7 @@
 namespace dotless.Test.Specs
 {
     using System.Collections.Generic;
+    using Core.Importers;
     using Core.Parser;
     using NUnit.Framework;
 
@@ -10,11 +11,11 @@ namespace dotless.Test.Specs
         {
             var imports = new Dictionary<string, string>();
 
-            imports["import/import-test-a.less"] = @"
+            imports["import\\import-test-a.less"] = @"
 @import ""import-test-b.less"";
 @a: 20%;
 ";
-            imports["import-test-b.less"] =
+            imports["import\\import-test-b.less"] =
                 @"
 @import 'import-test-c';
 
@@ -25,7 +26,7 @@ namespace dotless.Test.Specs
   color: @c;
 }
 ";
-            imports["import-test-c.less"] =
+            imports["import\\import-test-c.less"] =
                 @"
 @import ""import-test-d.css"";
 @c: red;
@@ -35,7 +36,7 @@ namespace dotless.Test.Specs
 }
 ";
 
-            return new Parser {Importer = new DictionaryImporter(imports)};
+            return new Parser {Importer = new Importer(new DictionaryReader(imports))};
         }
 
         [Test]
@@ -43,8 +44,8 @@ namespace dotless.Test.Specs
         {
             var input =
                 @"
-@import url(""import/import-test-a.less"");
-//@import url(""import/import-test-a.less"");
+@import url(""import\import-test-a.less"");
+//@import url(""import\import-test-a.less"");
 
 #import-test {
   .mixin;

@@ -4,31 +4,30 @@ namespace dotless.Core.Stylizers
 
     public class HtmlStylizer : IStylizer
     {
-        public string Stylize(Zone zone)
+        public string Stylize(Zone zone, string fileName, string error)
         {
-            var template =
-                @"
+            return string.Format(@"
 <div id=""less-error-message"">
-  <h3>There is an error in your .less file</h3>
-  <p>on line {1}, column {3}</p>
+  <h3>There is an error in '{0}'</h3>
+  <p>{1} on line {3}, column {5}</p>
   <div class=""extract"">
-    <pre class=""before""><span>{0}</span>{4}</pre>
-    <pre class=""line""><span>{1}</span>{5}<span class=""error"">{6}</span>{7}</pre>
-    <pre class=""after""><span>{2}</span>{8}</pre>
+    <pre class=""before""><span>{2}</span>{6}</pre>
+    <pre class=""line""><span>{3}</span>{7}<span class=""error"">{8}</span>{9}</pre>
+    <pre class=""after""><span>{4}</span>{10}</pre>
   </div>
 </div>
-";
-
-            return string.Format(template,
+",
+                                 fileName,
+                                 error,
                                  zone.LineNumber - 1,
                                  zone.LineNumber,
                                  zone.LineNumber + 1,
                                  zone.Position,
-                                 zone.Extract.Before, // 
-                                 zone.Extract.Line.Substring(0, zone.Position), //
-                                 zone.Extract.Line[zone.Position], // Html Encode
-                                 zone.Extract.Line.Substring(zone.Position + 1), //
-                                 zone.Extract.After); //
+                                 zone.Extract.Before,
+                                 zone.Extract.Line.Substring(0, zone.Position),
+                                 zone.Extract.Line[zone.Position],
+                                 zone.Extract.Line.Substring(zone.Position + 1),
+                                 zone.Extract.After);
         }
     }
 }

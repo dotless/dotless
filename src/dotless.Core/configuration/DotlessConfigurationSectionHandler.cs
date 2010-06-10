@@ -22,7 +22,8 @@ namespace dotless.Core.configuration
     {
         public object Create(object parent, object configContext, XmlNode section)
         {
-            var configuration = new DotlessConfiguration();    //Default
+            var configuration = DotlessConfiguration.Default;
+
             try
             {
                 var interpreter = new XmlConfigurationInterpreter();

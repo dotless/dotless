@@ -7,17 +7,20 @@ namespace dotless.Test.Unit
     public class ConfigurationFixture
     {
         [Test]
-        public void DefaultEngineIsLessEngine()
+        public void DefaultEngineIsCacheDecorator()
         {
             var engine = new EngineFactory().GetEngine();
 
-            Assert.That(engine is LessEngine);
+            Assert.That(engine is CacheDecorator);
+
+            var aspEngine = (CacheDecorator)engine;
+            Assert.That(aspEngine.Underlying is LessEngine);
         }
 
         [Test]
         public void IfMinifyOptionSetEngineIsMinifierDecorator()
         {
-            var config = new DotlessConfiguration { MinifyOutput = true };
+            var config = new DotlessConfiguration { MinifyOutput = true, CacheEnabled = false };
 
             var engine = new EngineFactory(config).GetEngine();
 

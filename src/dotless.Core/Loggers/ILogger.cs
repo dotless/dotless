@@ -1,4 +1,4 @@
-﻿/* Copyright 2009 dotless project, http://www.dotlesscss.com
+/* Copyright 2009 dotless project, http://www.dotlesscss.com
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,20 @@
 
 namespace dotless.Core
 {
-    using System.IO;
-
-    public class FileSource : ILessSource
+    public interface ILogger
     {
-        public string GetSource(string key)
-        {
-            return ReadFileContent(key);
-        }
+        void Log(LogLevel level, string message);
+        void Info(string message);
+        void Debug(string message);
+        void Warn(string message);
+        void Error(string message);
+    }
 
-        private static string ReadFileContent(string key)
-        {
-            using (FileStream fileStream = File.OpenRead(key))
-            {
-                var streamReader = new StreamReader(fileStream);
-                return streamReader.ReadToEnd();
-            }
-        }
+    public enum LogLevel
+    {
+        Info = 1,
+        Debug,
+        Warn,
+        Error
     }
 }
