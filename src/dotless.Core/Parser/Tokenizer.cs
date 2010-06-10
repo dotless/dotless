@@ -1,9 +1,11 @@
 ﻿namespace dotless.Core.Parser
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
     using Infrastructure.Nodes;
+    using Utils;
 
     public class Tokenizer
     {
@@ -29,6 +31,7 @@
             _i = _j = _current = 0;
             _chunks = new List<string>();
             _input = input.Replace("\r\n", "\n");
+            _inputLength = _input.Length;
 
             // Split the input into chunks,
             // Either delimited by /\n\n/ or
@@ -39,17 +42,17 @@
                 _chunks.Add(_input);
             else
             {
-                var regex = new Regex(@"\/\*(?:[^*]|\*+[^\/*])*\*+\/");
-                _input = regex.Replace(_input,
-                                       comment => Optimization == 1 ? Regex.Replace(comment.Value, "\n\n+", "\n") : "");
+                _input = Regex.Replace(_input, @"\/\*(?:[^*]|\*+[^\/*])*\*+\/",
+                                       comment => Optimization == 1 ? Regex.Replace(comment.Value, @"\n\s*\n", "\n") : "");
 
-                regex = new Regex("^(?=\n+)", RegexOptions.Multiline);
-                _chunks = regex.Split(_input).ToList();
+                _input = Regex.Replace(_input, @"^\s*\n\s*(?=[^\s])", "\n", RegexOptions.Multiline);
 
-                Advance(0); // skip any empty chunks at the start.
+                _chunks = Regex.Split(_input, "(?=\n\n)").ToList();
+
+                _inputLength = _input.Length;
             }
 
-            _inputLength = _input.Length;
+            Advance(0); // skip any whitespace characters at the start.
         }
 
 
@@ -94,9 +97,6 @@
 
         public RegexMatchResult Match(string tok, bool caseInsensitive)
         {
-            if (_i >= _current + _chunks[_j].Length && _j < _chunks.Count - 1)
-                _current += _chunks[_j++].Length;
-
             var options = RegexOptions.None;
             if (caseInsensitive)
                 options |= RegexOptions.IgnoreCase;
@@ -125,14 +125,25 @@
             _i += length;
             var endIndex = _current + _chunks[_j].Length;
 
-            while (_i <= endIndex)
+            while (true)
             {
-                if (_i == _inputLength)
+                if(_i == _inputLength)
                     break;
 
-                var c = _input[_i];
-                if (!char.IsWhiteSpace(c))
+                if (_i == endIndex)
+                {
+                    if (_j < _chunks.Count - 1)
+                    {
+                        _current = endIndex;
+                        endIndex += _chunks[++_j].Length;
+                    }
+                    else
+                        break;
+                }
+
+                if (!char.IsWhiteSpace(_input[_i]))
                     break;
+
                 _i++;
             }
         }
@@ -188,6 +199,13 @@
         public void SetLocation(int location)
         {
             _i = location;
+
+            _j = 0;
+            _current = 0;
+            while (_current + _chunks[_j].Length < _i)
+            {
+                _current += _chunks[_j++].Length;
+            }
         }
 
         public Zone GetCurrentZone()
@@ -205,9 +223,9 @@
                            Position = _i - start,
                            Extract = new Extract
                                          {
-                                             Before = lines[line - 1],
+                                             Before = line > 0 ? lines[line - 1] : "/beginning of file",
                                              Line = lines[line],
-                                             After = lines[line + 1],
+                                             After = line + 1 < lines.Length ? lines[line + 1] : "/end of file",
                                          },
                        };
         }
