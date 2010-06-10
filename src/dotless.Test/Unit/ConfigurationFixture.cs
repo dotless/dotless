@@ -11,10 +11,10 @@ namespace dotless.Test.Unit
         {
             var engine = new EngineFactory().GetEngine();
 
-            Assert.That(engine is CacheDecorator);
+            Assert.That(engine, Is.TypeOf<CacheDecorator>());
 
             var aspEngine = (CacheDecorator)engine;
-            Assert.That(aspEngine.Underlying is LessEngine);
+            Assert.That(aspEngine.Underlying, Is.TypeOf<LessEngine>());
         }
 
         [Test]
@@ -24,10 +24,10 @@ namespace dotless.Test.Unit
 
             var engine = new EngineFactory(config).GetEngine();
 
-            Assert.That(engine is MinifierDecorator);
+            Assert.That(engine, Is.TypeOf<MinifierDecorator>());
 
             var minEngine = (MinifierDecorator)engine;
-            Assert.That(minEngine.Engine is LessEngine);
+            Assert.That(minEngine.Engine, Is.TypeOf<LessEngine>());
         }
 
         [Test]
@@ -37,7 +37,7 @@ namespace dotless.Test.Unit
 
             var engine = new EngineFactory(config).GetEngine();
 
-            Assert.That(engine is LessEngine);
+            Assert.That(engine, Is.TypeOf<LessEngine>());
         }
 
         [Test]
@@ -47,10 +47,10 @@ namespace dotless.Test.Unit
 
             var engine = new EngineFactory(config).GetEngine();
 
-            Assert.That(engine is CacheDecorator);
+            Assert.That(engine, Is.TypeOf<CacheDecorator>());
 
             var aspEngine = (CacheDecorator)engine;
-            Assert.That(aspEngine.Underlying is LessEngine);
+            Assert.That(aspEngine.Underlying, Is.TypeOf<LessEngine>());
         }
 
         [Test]
@@ -60,13 +60,13 @@ namespace dotless.Test.Unit
 
             var engine = new EngineFactory(config).GetEngine();
 
-            Assert.That(engine is CacheDecorator);
+            Assert.That(engine, Is.TypeOf<CacheDecorator>());
 
             var aspEngine = (CacheDecorator)engine;
-            Assert.That(aspEngine.Underlying is MinifierDecorator);
+            Assert.That(aspEngine.Underlying, Is.TypeOf<MinifierDecorator>());
 
             var minEngine = (MinifierDecorator)aspEngine.Underlying;
-            Assert.That(minEngine.Engine is LessEngine);
+            Assert.That(minEngine.Engine, Is.TypeOf<LessEngine>());
         }
     }
 }

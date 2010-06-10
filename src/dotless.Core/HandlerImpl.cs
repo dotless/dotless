@@ -14,19 +14,18 @@
 
 namespace dotless.Core
 {
-    using System.Web;
     using Abstractions;
 
     public class HandlerImpl
     {
-        private readonly HttpContextBase _context;
+        private readonly IHttp _http;
         private readonly IResponse _response;
         private readonly ILessEngine _engine;
         private readonly IFileReader _fileReader;
 
-        public HandlerImpl(HttpContextBase context, IResponse response, ILessEngine engine, IFileReader fileReader)
+        public HandlerImpl(IHttp http, IResponse response, ILessEngine engine, IFileReader fileReader)
         {
-            _context = context;
+            _http = http;
             _response = response;
             _engine = engine;
             _fileReader = fileReader;
@@ -34,7 +33,7 @@ namespace dotless.Core
 
         public void Execute()
         {
-            var localPath = _context.Request.Url.LocalPath;
+            var localPath = _http.Context.Request.Url.LocalPath;
 
             var source = _fileReader.GetFileContents(localPath);
 

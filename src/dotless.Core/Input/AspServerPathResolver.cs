@@ -1,19 +1,19 @@
 namespace dotless.Core
 {
-    using System.Web;
+    using Abstractions;
 
     class AspServerPathResolver : IPathResolver
     {
-        private readonly HttpContextBase _context;
+        private readonly IHttp _http;
 
-        public AspServerPathResolver(HttpContextBase context)
+        public AspServerPathResolver(IHttp http)
         {
-            _context = context;
+            _http = http;
         }
 
         public string GetFullPath(string path)
         {
-            return _context.Server.MapPath(path);
+            return _http.Context.Server.MapPath(path);
         }
     }
 }

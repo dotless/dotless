@@ -68,20 +68,22 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Abstractions\CachedCssResponse.cs">
+    <Compile Include="Response\CachedCssResponse.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Abstractions\HttpCache.cs">
+    <Compile Include="Abstractions\Http.cs" />
+    <Compile Include="Cache\HttpCache.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Abstractions\CssResponse.cs">
+    <Compile Include="Response\CssResponse.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Abstractions\ICache.cs">
+    <Compile Include="Cache\ICache.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Abstractions\InMemoryCache.cs" />
-    <Compile Include="Abstractions\IResponse.cs">
+    <Compile Include="Abstractions\IHttp.cs" />
+    <Compile Include="Cache\InMemoryCache.cs" />
+    <Compile Include="Response\IResponse.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CacheDecorator.cs" />
@@ -96,6 +98,7 @@
     <Compile Include="Input\AspServerPathResolver.cs" />
     <Compile Include="Input\IPathResolver.cs" />
     <Compile Include="Input\RelativePathResolver.cs" />
+    <Compile Include="Less.cs" />
     <Compile Include="Loggers\AspResponseLogger.cs" />
     <Compile Include="Loggers\Logger.cs" />
     <Compile Include="Parser\Functions\AbsFunction.cs" />

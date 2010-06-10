@@ -14,7 +14,6 @@
 
 namespace dotless.Core
 {
-    using System.Web;
     using Abstractions;
     using configuration;
     using Loggers;
@@ -41,8 +40,7 @@ namespace dotless.Core
                                    {
                                        if (configuration.Web)
                                        {
-                                           p.Service<HttpContextBase>().Implementor<HttpContextWrapper>().Parameters("httpContext").Set("httpContext.Current");
-                                           p.Service<HttpContext>("httpContext.Current").Instance(HttpContext.Current);
+                                           p.Service<IHttp>().Implementor<Http>();
 
                                            if (configuration.CacheEnabled)
                                                p.Service<IResponse>().Implementor<CachedCssResponse>();
@@ -66,11 +64,11 @@ namespace dotless.Core
                                        p.Service<Parser.Parser>().Implementor<Parser.Parser>().Parameters("optimization").Set("default-optimization");
                                        p.Service<int>("default-optimization").Instance(2);
 
-                                       if (configuration.MinifyOutput)
-                                           p.Service<ILessEngine>().Implementor<MinifierDecorator>();
-
                                        if (configuration.CacheEnabled)
                                             p.Service<ILessEngine>().Implementor<CacheDecorator>();
+
+                                       if (configuration.MinifyOutput)
+                                           p.Service<ILessEngine>().Implementor<MinifierDecorator>();
 
                                        p.Service<ILessEngine>().Implementor<LessEngine>();
                                        p.Service<IFileReader>().Implementor(configuration.LessSource);

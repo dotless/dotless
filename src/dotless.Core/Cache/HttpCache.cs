@@ -2,17 +2,16 @@ namespace dotless.Core.Abstractions
 {
     using System.Collections.Generic;
     using System.Linq;
-    using System.Web;
     using System.Web.Caching;
 
     public class HttpCache : ICache
     {
-        private readonly HttpContextBase _context;
+        private readonly IHttp _http;
         public IPathResolver PathResolver { get; set; }
 
-        public HttpCache(HttpContextBase context, IPathResolver pathResolver)
+        public HttpCache(IHttp http, IPathResolver pathResolver)
         {
-            _context = context;
+            _http = http;
             PathResolver = pathResolver;
         }
 
@@ -37,7 +36,7 @@ namespace dotless.Core.Abstractions
 
         private Cache GetCache()
         {
-            return _context.Cache;
+            return _http.Context.Cache;
         }
     }
 }

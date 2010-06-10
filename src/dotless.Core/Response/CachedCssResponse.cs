@@ -22,18 +22,18 @@ namespace dotless.Core.Abstractions
 
     public class CachedCssResponse : IResponse
     {
-        private readonly HttpContextBase _context;
+        private readonly IHttp _http;
         private const int CacheAgeMinutes = 5;
 
-        public CachedCssResponse(HttpContextBase context)
+        public CachedCssResponse(IHttp http)
         {
-            _context = context;
+            _http = http;
         }
 
         public void WriteCss(string css)
         {
-            var response = _context.Response;
-            var request = _context.Request;
+            var response = _http.Context.Response;
+            var request = _http.Context.Request;
 
             response.Cache.SetCacheability(HttpCacheability.Public);
             response.Cache.SetMaxAge(new TimeSpan(0, CacheAgeMinutes, 0));
