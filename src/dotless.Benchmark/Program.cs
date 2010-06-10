@@ -1,4 +1,4 @@
-﻿/* Copyright 2009 dotless project, http://www.dotlesscss.com
+/* Copyright 2009 dotless project, http://www.dotlesscss.com
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,30 +20,14 @@ using dotless.Core.Parser;
 
 namespace dotlessjs.Compiler
 {
+    using System.Collections.Generic;
+
     public class Program
     {
         public static void Main(string[] args)
         {
-            Directory.SetCurrentDirectory(@"C:\dev\oss\less.js\test\less");
-
-            var files = new[]
-                            {
-                                "colors",
-                                "comments",
-                                "css",
-                                "css-3",
-                                "mixins",
-                                "mixins-args",
-                                "operations",
-                                "parens",
-                                "rulesets",
-                                "scope",
-                                "selectors",
-                                "strings",
-                                "variables",
-                                "whitespace"
-                            }
-                .Select(f => f + ".less");
+            Directory.SetCurrentDirectory("Input");
+            var files = Directory.GetFiles(".", "*.less");
 
             var contents = files
                 .ToDictionary(f => f, f => new LessSourceObject {Content = File.ReadAllText(f)});
@@ -87,11 +71,13 @@ namespace dotlessjs.Compiler
                 var size = rounds*contents[file].Content.Length/1024d;
                 Console.Write("{0} | {1,8:#,##0.00} Kb  | ", file.PadRight(18), size);
 
+                var times = new List<double>();
                 foreach (var engine in engines)
                 {
                     try
                     {
                         var time = runTest(file, engine)/1000d;
+                        times.Add(time);
                         Console.Write("{0,8:#.00} s  {1,10:#,##0.00} Kb/s | ", time, size/time);
                     }
                     catch
@@ -99,6 +85,8 @@ namespace dotlessjs.Compiler
                         Console.Write("Failied                     | ");
                     }
                 }
+                if (times.Count == 2)
+                    Console.Write("{0,4:0.#}x", times[0] / times[1]);
                 Console.WriteLine();
             }
 
