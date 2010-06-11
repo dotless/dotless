@@ -14,7 +14,6 @@
 
 namespace dotless.Core
 {
-    using System;
     using System.Collections.Generic;
     using Yahoo.Yui.Compressor;
 

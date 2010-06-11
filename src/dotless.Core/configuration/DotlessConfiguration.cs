@@ -15,6 +15,7 @@
 namespace dotless.Core.configuration
 {
     using System;
+    using Input;
 
     public class DotlessConfiguration
     {

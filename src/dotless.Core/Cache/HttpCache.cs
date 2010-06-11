@@ -1,8 +1,10 @@
-namespace dotless.Core.Abstractions
+namespace dotless.Core.Cache
 {
     using System.Collections.Generic;
     using System.Linq;
     using System.Web.Caching;
+    using Abstractions;
+    using Input;
 
     public class HttpCache : ICache
     {

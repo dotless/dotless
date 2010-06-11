@@ -13,12 +13,11 @@
  * limitations under the License. */
 
 //Code contributed by alexander.uslontsev
-namespace dotless.Core.Abstractions
+namespace dotless.Core.Response
 {
     using System;
-    using System.Security.Cryptography;
-    using System.Text;
     using System.Web;
+    using Abstractions;
 
     public class CachedCssResponse : IResponse
     {

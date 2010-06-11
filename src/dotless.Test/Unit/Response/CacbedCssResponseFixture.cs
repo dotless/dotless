@@ -1,6 +1,6 @@
 namespace dotless.Test.Unit.Response
 {
-    using Core.Abstractions;
+    using Core.Response;
     using Moq;
     using NUnit.Framework;
 

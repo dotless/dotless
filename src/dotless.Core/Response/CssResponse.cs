@@ -1,6 +1,7 @@
-namespace dotless.Core.Abstractions
+namespace dotless.Core.Response
 {
     using System.Web;
+    using Abstractions;
 
     public class CssResponse : IResponse
     {

@@ -1,11 +1,9 @@
-﻿namespace dotless.Core.Parser
+namespace dotless.Core.Parser
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
     using Infrastructure.Nodes;
-    using Utils;
 
     public class Tokenizer
     {

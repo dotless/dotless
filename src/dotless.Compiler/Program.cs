@@ -21,6 +21,7 @@ namespace dotless.Compiler
     using Core;
     using Core.configuration;
     using System.Linq;
+    using Core.Input;
 
     public class Program
     {

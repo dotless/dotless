@@ -1,7 +1,5 @@
 namespace dotless.Core.Loggers
 {
-    using System;
-
     public abstract class Logger : ILogger
     {
         public LogLevel Level { get; set; }

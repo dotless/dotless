@@ -1,4 +1,4 @@
-namespace dotless.Core
+namespace dotless.Core.Input
 {
     using Abstractions;
 

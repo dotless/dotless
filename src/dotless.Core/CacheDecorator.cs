@@ -14,9 +14,8 @@
 
 namespace dotless.Core
 {
-    using System;
     using System.Collections.Generic;
-    using Abstractions;
+    using Cache;
 
     public class CacheDecorator : ILessEngine
     {

@@ -1,6 +1,6 @@
 namespace dotless.Core.Loggers
 {
-    using Abstractions;
+    using Response;
 
     public class AspResponseLogger : Logger
     {

@@ -1,4 +1,4 @@
-namespace dotless.Core.Abstractions
+namespace dotless.Core.Cache
 {
     using System.Collections.Generic;
 

@@ -1,8 +1,9 @@
-﻿namespace dotless.Test
+namespace dotless.Test
 {
     using System.Collections.Generic;
     using System.IO;
     using Core;
+    using Core.Input;
 
 
     public class DictionaryReader : IFileReader
