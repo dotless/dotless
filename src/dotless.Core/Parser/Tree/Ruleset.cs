@@ -34,7 +34,7 @@
             {
                 _variables = new Dictionary<string, Rule>();
 
-                var variables = Rules.Where(r => r is Rule).Cast<Rule>().Where(r => r.Variable);
+                var variables = Rules.OfType<Rule>().Where(r => r.Variable);
 
                 foreach (var variable in variables)
                 {
@@ -54,7 +54,7 @@
 //      if (_rulesets != null)
 //        return _rulesets;
 
-            return Rules.Where(r => r is Ruleset).Cast<Ruleset>().ToList();
+            return Rules.OfType<Ruleset>().ToList();
         }
 
         public NodeList Find(Selector selector, Ruleset self)
@@ -110,11 +110,6 @@
             return this;
         }
 
-        //
-        // Entry point for code generation
-        //
-        //     `context` holds an array of arrays.
-        //
         public override string ToCSS()
         {
             return ToCSS(new Env());
@@ -142,7 +137,6 @@
                 paths.AppendSelectors(context, Selectors);
             }
 
-            // Evaluate rules and rulesets
             foreach (var rule in Rules)
             {
                 if (rule is Ruleset)
