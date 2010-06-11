@@ -1,4 +1,4 @@
-namespace dotless.Test.Unit
+namespace dotless.Test.Config
 {
     using Core;
     using Core.configuration;

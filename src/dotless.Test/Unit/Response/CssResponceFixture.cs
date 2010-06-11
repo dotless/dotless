@@ -1,4 +1,4 @@
-namespace dotless.Test.Unit
+namespace dotless.Test.Unit.Response
 {
     using System.Web;
     using Core.Abstractions;
@@ -7,18 +7,18 @@ namespace dotless.Test.Unit
 
     public class CssResponceFixture : HttpFixtureBase
     {
-        CssResponse cssResponse;
+        CssResponse CssResponse { get; set; }
 
         [SetUp]
         public void Setup()
         {
-            cssResponse = new CssResponse(Http.Object);
+            CssResponse = new CssResponse(Http.Object);
         }
 
         [Test]
         public void ContentTypeIsTextCss()
         {
-            cssResponse.WriteCss(null);
+            CssResponse.WriteCss(null);
 
             HttpResponse.VerifySet(r => r.ContentType = "text/css", Times.Once());
         }
@@ -28,7 +28,7 @@ namespace dotless.Test.Unit
         {
             var str = "testing";
 
-            cssResponse.WriteCss(str);
+            CssResponse.WriteCss(str);
 
             HttpResponse.Verify(r => r.Write(str), Times.Once());
         }
@@ -36,7 +36,7 @@ namespace dotless.Test.Unit
         [Test]
         public void SetsCachabilityPublic()
         {
-            cssResponse.WriteCss(null);
+            CssResponse.WriteCss(null);
 
             HttpCache.Verify(c => c.SetCacheability(HttpCacheability.Public), Times.Once());
         }
@@ -44,7 +44,7 @@ namespace dotless.Test.Unit
         [Test]
         public void ResponseEndIsCalled()
         {
-            cssResponse.WriteCss(null);
+            CssResponse.WriteCss(null);
 
             HttpResponse.Verify(r => r.End(), Times.Once());
         }
