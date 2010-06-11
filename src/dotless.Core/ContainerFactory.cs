@@ -57,11 +57,11 @@ namespace dotless.Core
 
         private void RegisterCoreServices(FluentRegistration pandora, DotlessConfiguration configuration)
         {
-            pandora.Service<LogLevel>("error-level").Instance(LogLevel.Error);
+            pandora.Service<LogLevel>("error-level").Instance(configuration.LogLevel);
             pandora.Service<IStylizer>().Implementor<PlainStylizer>();
 
             pandora.Service<Parser.Parser>().Implementor<Parser.Parser>().Parameters("optimization").Set("default-optimization");
-            pandora.Service<int>("default-optimization").Instance(1);
+            pandora.Service<int>("default-optimization").Instance(configuration.Optimization);
 
             if (configuration.CacheEnabled)
                 pandora.Service<ILessEngine>().Implementor<CacheDecorator>();

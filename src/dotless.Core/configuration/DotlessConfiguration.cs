@@ -2,6 +2,7 @@ namespace dotless.Core.configuration
 {
     using System;
     using Input;
+    using Loggers;
 
     public class DotlessConfiguration
     {
@@ -17,6 +18,8 @@ namespace dotless.Core.configuration
             MinifyOutput = false;
             CacheEnabled = true;
             Web = false;
+            LogLevel = LogLevel.Error;
+            Optimization = 1;
         }
 
         public DotlessConfiguration(DotlessConfiguration config)
@@ -25,11 +28,15 @@ namespace dotless.Core.configuration
             MinifyOutput = config.MinifyOutput;
             CacheEnabled = config.CacheEnabled;
             Web = config.Web;
+            LogLevel = config.LogLevel;
+            Optimization = config.Optimization;
         }
 
         public bool MinifyOutput { get; set; }
         public bool CacheEnabled { get; set; }
         public Type LessSource { get; set; }
         public bool Web { get; set; }
+        public LogLevel LogLevel { get; set; }
+        public int Optimization { get; set; }
     }
 }
