@@ -176,4 +176,4 @@ TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
 END OF TERMS AND CONDITIONS
 
-Copyright (c) 2009 dotless project, http://www.dotlesscss.com
+Copyright (c) 2009-2010 dotless project, http://www.dotlesscss.com
