@@ -22,6 +22,7 @@ namespace dotless.Compiler
     using Core.configuration;
     using System.Linq;
     using Core.Input;
+    using Core.Parameters;
 
     public class Program
     {
@@ -170,6 +171,13 @@ namespace dotless.Compiler
                     {
                         //Ignore this since it already gets handled. 
                         //TODO: Introduce a run-configuration class for Compiler only (sublcassing DotlessConfiguration?)
+                    }
+                    else if (arg.StartsWith("-D") && arg.Contains("="))
+                    {
+                        var split = arg.Substring(2).Split('=');
+                        var key = split[0];
+                        var value = split[1];
+                        ConsoleArgumentParameterSource.ConsoleArguments.Add(key, value);
                     }
                     else
                     {

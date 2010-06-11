@@ -71,6 +71,10 @@
     <Compile Include="Loggers\AspNetTraceLogger.cs" />
     <Compile Include="Loggers\DiagnosticsLogger.cs" />
     <Compile Include="Loggers\NullLogger.cs" />
+    <Compile Include="ParameterDecorator.cs" />
+    <Compile Include="Parameters\ConsoleArgumentParameterSource.cs" />
+    <Compile Include="Parameters\IParameterSource.cs" />
+    <Compile Include="Parameters\QueryStringParameterSource.cs" />
     <Compile Include="Response\CachedCssResponse.cs">
       <SubType>Code</SubType>
     </Compile>

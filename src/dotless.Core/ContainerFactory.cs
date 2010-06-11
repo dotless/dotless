@@ -7,6 +7,7 @@ namespace dotless.Core
     using Loggers;
     using Microsoft.Practices.ServiceLocation;
     using Pandora;
+    using Parameters;
     using Response;
     using Stylizers;
 
@@ -30,6 +31,7 @@ namespace dotless.Core
                                        if (configuration.Web)
                                        {
                                            p.Service<IHttp>().Implementor<Http>();
+                                           p.Service<IParameterSource>().Implementor<QueryStringParameterSource>();
 
                                            if (configuration.CacheEnabled)
                                                p.Service<IResponse>().Implementor<CachedCssResponse>();
@@ -42,6 +44,8 @@ namespace dotless.Core
                                        }
                                        else
                                        {
+                                           p.Service<IParameterSource>().Implementor<ConsoleArgumentParameterSource>();
+                                           p.Service<IParameterSource>().Implementor<ConsoleArgumentParameterSource>();
                                            p.Service<ICache>().Implementor<InMemoryCache>();
                                            p.Service<ILogger>().Implementor<ConsoleLogger>().Parameters("level").Set("error-level");
                                            p.Service<IPathResolver>().Implementor<RelativePathResolver>();
@@ -52,6 +56,8 @@ namespace dotless.Core
 
                                        p.Service<Parser.Parser>().Implementor<Parser.Parser>().Parameters("optimization").Set("default-optimization");
                                        p.Service<int>("default-optimization").Instance(2);
+
+                                       p.Service<ILessEngine>().Implementor<ParameterDecorator>();
 
                                        if (configuration.CacheEnabled)
                                             p.Service<ILessEngine>().Implementor<CacheDecorator>();
