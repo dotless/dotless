@@ -7,6 +7,7 @@ namespace dotless.Core
     using Loggers;
     using Microsoft.Practices.ServiceLocation;
     using Pandora;
+    using Pandora.Fluent;
     using Response;
     using Stylizers;
 
@@ -18,50 +19,58 @@ namespace dotless.Core
         {
             Container = new PandoraContainer();
 
-            RegisterServices(configuration);
+            Container.Register(pandora => RegisterServices(pandora, configuration));
 
             return new CommonServiceLocatorAdapter(Container);
         }
 
-        private void RegisterServices(DotlessConfiguration configuration)
+        private void RegisterServices(FluentRegistration pandora, DotlessConfiguration configuration)
         {
-            Container.Register(p =>
-                                   {
-                                       if (configuration.Web)
-                                       {
-                                           p.Service<IHttp>().Implementor<Http>();
+            if (configuration.Web)
+                RegisterWebServices(pandora, configuration);
+            else
+                RegisterLocalServices(pandora);
 
-                                           if (configuration.CacheEnabled)
-                                               p.Service<IResponse>().Implementor<CachedCssResponse>();
-                                           else
-                                               p.Service<IResponse>().Implementor<CssResponse>();
+            RegisterCoreServices(pandora, configuration);
+        }
 
-                                           p.Service<ICache>().Implementor<HttpCache>();
-                                           p.Service<ILogger>().Implementor<AspResponseLogger>().Parameters("level").Set("error-level");
-                                           p.Service<IPathResolver>().Implementor<AspServerPathResolver>();
-                                       }
-                                       else
-                                       {
-                                           p.Service<ICache>().Implementor<InMemoryCache>();
-                                           p.Service<ILogger>().Implementor<ConsoleLogger>().Parameters("level").Set("error-level");
-                                           p.Service<IPathResolver>().Implementor<RelativePathResolver>();
-                                       }
+        private void RegisterWebServices(FluentRegistration pandora, DotlessConfiguration configuration)
+        {
+            pandora.Service<IHttp>().Implementor<Http>();
 
-                                       p.Service<LogLevel>("error-level").Instance(LogLevel.Error);
-                                       p.Service<IStylizer>().Implementor<PlainStylizer>();
+            if (configuration.CacheEnabled)
+                pandora.Service<IResponse>().Implementor<CachedCssResponse>();
+            else
+                pandora.Service<IResponse>().Implementor<CssResponse>();
 
-                                       p.Service<Parser.Parser>().Implementor<Parser.Parser>().Parameters("optimization").Set("default-optimization");
-                                       p.Service<int>("default-optimization").Instance(2);
+            pandora.Service<ICache>().Implementor<HttpCache>();
+            pandora.Service<ILogger>().Implementor<AspResponseLogger>().Parameters("level").Set("error-level");
+            pandora.Service<IPathResolver>().Implementor<AspServerPathResolver>();
+        }
 
-                                       if (configuration.CacheEnabled)
-                                            p.Service<ILessEngine>().Implementor<CacheDecorator>();
+        private void RegisterLocalServices(FluentRegistration pandora)
+        {
+            pandora.Service<ICache>().Implementor<InMemoryCache>();
+            pandora.Service<ILogger>().Implementor<ConsoleLogger>().Parameters("level").Set("error-level");
+            pandora.Service<IPathResolver>().Implementor<RelativePathResolver>();
+        }
 
-                                       if (configuration.MinifyOutput)
-                                           p.Service<ILessEngine>().Implementor<MinifierDecorator>();
+        private void RegisterCoreServices(FluentRegistration pandora, DotlessConfiguration configuration)
+        {
+            pandora.Service<LogLevel>("error-level").Instance(LogLevel.Error);
+            pandora.Service<IStylizer>().Implementor<PlainStylizer>();
 
-                                       p.Service<ILessEngine>().Implementor<LessEngine>();
-                                       p.Service<IFileReader>().Implementor(configuration.LessSource);
-                                   });
+            pandora.Service<Parser.Parser>().Implementor<Parser.Parser>().Parameters("optimization").Set("default-optimization");
+            pandora.Service<int>("default-optimization").Instance(1);
+
+            if (configuration.CacheEnabled)
+                pandora.Service<ILessEngine>().Implementor<CacheDecorator>();
+
+            if (configuration.MinifyOutput)
+                pandora.Service<ILessEngine>().Implementor<MinifierDecorator>();
+
+            pandora.Service<ILessEngine>().Implementor<LessEngine>();
+            pandora.Service<IFileReader>().Implementor(configuration.LessSource);
         }
     }
 }
