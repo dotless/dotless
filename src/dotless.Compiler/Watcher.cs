@@ -19,8 +19,11 @@
             SetupWatchers(files);
         }
 
-        private void SetupWatchers(IEnumerable<string> files)
+        public void SetupWatchers(IEnumerable<string> files)
         {
+            if (files == null)
+                return;
+
             foreach (var file in files)
             {
                 var fileInfo = new FileInfo(file);
@@ -55,7 +58,12 @@
                 Console.WriteLine("Stopped watching '{0}'", file);
             }
         }
-        
+
+        public void RemoveWatchers()
+        {
+            SetupWatchers(new string[0]);
+        }
+
         void FsWatcherChanged(object sender, FileSystemEventArgs e)
         {
             if (IsDuplicateEvent()) return;
@@ -83,6 +91,7 @@
         }
 
         private static DateTime lastEventOccured;
+
         private bool IsDuplicateEvent()
         {
             DateTime fileTimeUtc = DateTime.Now;

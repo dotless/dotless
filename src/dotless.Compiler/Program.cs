@@ -33,7 +33,14 @@ namespace dotless.Compiler
             if (!inputFile.Exists && inputFile.Extension != ".less")
                 inputFile = new FileInfo(inputFile.FullName + ".less");
 
-            var outputFilePath = arguments.Count > 1 ? arguments[1] : Path.ChangeExtension(inputFile.Name, ".css");
+            string outputFilePath;
+            if (arguments.Count > 1)
+            {
+                outputFilePath = arguments[1] + (Path.HasExtension(arguments[1]) ? "" : ".css");
+                outputFilePath = Path.GetFullPath(outputFilePath);
+            }
+            else
+                outputFilePath = Path.ChangeExtension(inputFile.Name, ".css");
 
             var currentDir = Directory.GetCurrentDirectory();
             if (inputFile.Directory != null)
@@ -48,13 +55,14 @@ namespace dotless.Compiler
             {
                 WriteAbortInstructions();
 
-                new Watcher(files, compilationDelegate);
-                
+                var watcher = new Watcher(files, compilationDelegate);
+
                 while (Console.ReadLine() != "")
                 {
                     WriteAbortInstructions();
                 }
-                Console.WriteLine("Stopped watching file. Exiting");
+
+                watcher.RemoveWatchers();
             }
 
             Directory.SetCurrentDirectory(currentDir);
@@ -66,19 +74,23 @@ namespace dotless.Compiler
             try
             {
                 var source = new FileReader().GetFileContents(inputFilePath);
-                string css = engine.TransformToCss(source, inputFilePath);
+                var css = engine.TransformToCss(source, inputFilePath);
+
                 File.WriteAllText(outputFilePath, css);
                 Console.WriteLine("[Done]");
+                
                 return new[] { inputFilePath }.Concat(engine.GetImports());
+            }
+            catch(IOException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
-                if (ex is IOException) throw; //Rethrow
-
                 Console.WriteLine("[FAILED]");
                 Console.WriteLine("Compilation failed: {0}", ex.Message);
                 Console.WriteLine(ex.StackTrace);
-                return new string[]{};
+                return null;
             }
         }
 
