@@ -15,43 +15,76 @@
 namespace dotless.Compiler
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Threading;
 
     public class Watcher
     {
-        private readonly Action compilationDelegate;
-        public Watcher(string inputFilePath, Action compilationDelegate)
+        private Func<IEnumerable<string>> CompilationDelegate { get; set; }
+        private Dictionary<string, FileSystemWatcher> FileSystemWatchers { get; set; }
+
+        public Watcher(IEnumerable<string> files, Func<IEnumerable<string>> compilationDelegate)
         {
-            this.compilationDelegate = compilationDelegate;
+            CompilationDelegate = compilationDelegate;
+            FileSystemWatchers = new Dictionary<string, FileSystemWatcher>();
 
-            SetupWatcher(inputFilePath);
-
-            Console.WriteLine("Watching " + inputFilePath + " for changes");
+            SetupWatchers(files);
         }
 
-        private void SetupWatcher(string inputFilePath)
+        private void SetupWatchers(IEnumerable<string> files)
         {
-            var fileInfo = new FileInfo(inputFilePath);
-            if (fileInfo.Directory == null)
-                throw new IOException("File Path has no directory to watch");
+            foreach (var file in files)
+            {
+                var fileInfo = new FileInfo(file);
+                if (fileInfo.Directory == null)
+                    throw new IOException("File Path has no directory to watch");
 
-            string directoryFullName = fileInfo.Directory.FullName;
-            var fsWatcher = new FileSystemWatcher(directoryFullName, fileInfo.Name);
-            fsWatcher.Changed += FsWatcherChanged;
-            fsWatcher.EnableRaisingEvents = true;
+                if(FileSystemWatchers.ContainsKey(file))
+                    continue;
+
+                Console.WriteLine("Started watching '{0}' for changes", file);
+
+                var directoryFullName = fileInfo.Directory.FullName;
+                var fsWatcher = new FileSystemWatcher(directoryFullName, fileInfo.Name);
+                fsWatcher.Changed += FsWatcherChanged;
+                fsWatcher.EnableRaisingEvents = true;
+
+                FileSystemWatchers[file] = fsWatcher;
+            }
+
+            var missing = FileSystemWatchers.Keys.Where(f => !files.Contains(f)).ToList();
+
+            foreach (var file in missing)
+            {
+                var fsWatcher = FileSystemWatchers[file];
+
+                fsWatcher.Changed -= FsWatcherChanged;
+
+                fsWatcher.Dispose();
+
+                FileSystemWatchers.Remove(file);
+
+                Console.WriteLine("Stopped watching '{0}'", file);
+            }
         }
         
         void FsWatcherChanged(object sender, FileSystemEventArgs e)
         {
             if (IsDuplicateEvent()) return;
 
-            bool completed = false;
-            Console.WriteLine("Found change in file. Recompiling...");
-            while(!completed){
+            var fsWatcher = (FileSystemWatcher) sender;
+            var file = FileSystemWatchers.First(d => d.Value == fsWatcher).Key;
+
+            var completed = false;
+            Console.WriteLine("Found change in '{0}'. Recompiling...", file);
+            while(!completed)
+            {
                 try
                 {
-                    compilationDelegate();
+                    var files = CompilationDelegate();
+                    SetupWatchers(files);
                     completed = true;
                 }
                 catch(IOException)

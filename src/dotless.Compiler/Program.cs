@@ -27,15 +27,14 @@ namespace dotless.Compiler
     {
         public static void Main(string[] args)
         {
-            bool watch = false;
             var arguments = new List<string>();
 
             arguments.AddRange(args);
+            var watch = arguments.Any(p => p == "-w" || p == "--watch");
 
             DotlessConfiguration configuration;
             try
             {
-                watch = arguments.Any(p => p == "-w" || p == "--watch");
                 configuration = GetConfigurationFromArguments(arguments);                
             }
             catch (HelpRequestedException)
@@ -43,11 +42,11 @@ namespace dotless.Compiler
                 return;
             }
 
-			if (arguments.Count == 0) {
-				WriteHelp();
-				return;
-			}
-
+            if (arguments.Count == 0)
+            {
+                WriteHelp();
+                return;
+            }
 
             var inputFile = new FileInfo(arguments[0]);
 
@@ -56,65 +55,52 @@ namespace dotless.Compiler
 
             var outputFilePath = arguments.Count > 1 ? arguments[1] : Path.ChangeExtension(inputFile.Name, ".css");
 
-            if (inputFile.Exists)
+
+            var currentDir = Directory.GetCurrentDirectory();
+            if (inputFile.Directory != null)
+                Directory.SetCurrentDirectory(inputFile.Directory.FullName);
+
+            var engine = new EngineFactory(configuration).GetEngine();
+            Func<IEnumerable<string>> compilationDelegate = () => Compile(engine, inputFile.Name, outputFilePath);
+
+            var files = compilationDelegate();
+
+            if (watch)
             {
-                var factory = new EngineFactory(configuration);
-                var engine = factory.GetEngine();
+                WriteAbortInstructions();
 
-                var currentDir = Directory.GetCurrentDirectory();
-                if (inputFile.Directory != null)
-                    Directory.SetCurrentDirectory(inputFile.Directory.FullName);
+                new Watcher(files, compilationDelegate);
                 
-                Action compilationDelegate = () =>
-                                                 {
-                                                     Console.Write("Compiling {0} -> {1} ", inputFile.Name, outputFilePath);
-                                                     try 
-                                                     {
-                                                         string css =
-                                                             engine.TransformToCss(new FileReader().GetFileContents(inputFile.Name), inputFile.Name);
-                                                         File.WriteAllText(outputFilePath, css);
-                                                         Console.WriteLine("[Done]");
-                                                     } catch(Exception ex)
-                                                     {
-                                                         if (ex is IOException) throw; //Rethrow
-
-                                                         Console.WriteLine("[FAILED]");
-                                                         Console.WriteLine("Compilation failed: {0}", ex.Message);
-                                                         Console.WriteLine(ex.StackTrace);
-                                                     }
-                                                     
-                                                 };
-                compilationDelegate();
-                if (watch)
+                while (Console.ReadLine() != "")
                 {
                     WriteAbortInstructions();
-                    var watcher = new Watcher(inputFile.Name, compilationDelegate);
-                    while(Console.ReadLine() != "")
-                    {
-                        WriteAbortInstructions();
-                    }
-                    Console.WriteLine("Stopped watching file. Exiting");
                 }
-
-                Directory.SetCurrentDirectory(currentDir);
+                Console.WriteLine("Stopped watching file. Exiting");
             }
-            else
+
+            Directory.SetCurrentDirectory(currentDir);
+        }
+
+        private static IEnumerable<string> Compile(ILessEngine engine, string inputFilePath, string outputFilePath)
+        {
+            Console.Write("Compiling {0} -> {1} ", inputFilePath, outputFilePath);
+            try
             {
-                Console.WriteLine("Input file {0} does not exist", inputFile.Name);
+                var source = new FileReader().GetFileContents(inputFilePath);
+                string css = engine.TransformToCss(source, inputFilePath);
+                File.WriteAllText(outputFilePath, css);
+                Console.WriteLine("[Done]");
+                return new[] { inputFilePath }.Concat(engine.GetImports());
             }
-        }
+            catch (Exception ex)
+            {
+                if (ex is IOException) throw; //Rethrow
 
-        private static string GetFileName(string path)
-        {
-            var info = new FileInfo(path);
-            return info.Name;
-        }
-
-        private static void SetCurrentDirectory(string inputFilePath)
-        {
-            var info = new FileInfo(inputFilePath);
-            if (info.Directory != null)
-                Directory.SetCurrentDirectory(info.Directory.FullName);
+                Console.WriteLine("[FAILED]");
+                Console.WriteLine("Compilation failed: {0}", ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                return new string[]{};
+            }
         }
 
         private static void WriteAbortInstructions()
@@ -150,6 +136,8 @@ namespace dotless.Compiler
         private static DotlessConfiguration GetConfigurationFromArguments(List<string> arguments)
         {
             var configuration = DotlessConfiguration.Default;
+            configuration.CacheEnabled = false;
+
             foreach (var arg in arguments)
             {
                 if (arg.StartsWith("-"))

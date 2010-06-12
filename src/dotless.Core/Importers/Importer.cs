@@ -25,12 +25,14 @@ namespace dotless.Core.Importers
             Imports = new List<string>();
         }
 
-        public void Import(Import import)
+        public virtual void Import(Import import)
         {
             if (Parser == null)
                 throw new InvalidOperationException("Parser cannot be null.");
 
             var file = paths.Concat(new[] { import.Path }).Aggregate("", Path.Combine);
+
+            file = Path.Combine(Path.GetDirectoryName(file), Path.GetFileName(file));
 
             var contents = FileReader.GetFileContents(file);
 
@@ -38,8 +40,13 @@ namespace dotless.Core.Importers
 
             try
             {
-                import.InnerRoot = Parser().Parse(contents, file);
                 Imports.Add(file);
+                import.InnerRoot = Parser().Parse(contents, file);
+            }
+            catch
+            {
+                Imports.Remove(file);
+                throw;
             }
             finally
             {
