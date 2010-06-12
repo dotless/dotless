@@ -48,33 +48,30 @@ namespace dotless.Compiler
 				return;
 			}
 
-            var inputFilePath = arguments[0];
-            string outputFilePath;
-            if (arguments.Count > 1)
+
+            var inputFile = new FileInfo(arguments[0]);
+
+            if (!inputFile.Exists && inputFile.Extension != ".less")
+                inputFile = new FileInfo(inputFile.FullName + ".less");
+
+            var outputFilePath = arguments.Count > 1 ? arguments[1] : Path.ChangeExtension(inputFile.Name, ".css");
+
+            if (inputFile.Exists)
             {
-                outputFilePath = arguments[1];
-            }
-            else
-            {
-                outputFilePath = String.Format("{0}.css", inputFilePath);
-            }
-            if (File.Exists(inputFilePath))
-            {
-                var currentDir = Directory.GetCurrentDirectory();
                 var factory = new EngineFactory(configuration);
                 var engine = factory.GetEngine();
-                
-                SetCurrentDirectory(inputFilePath);
+
+                var currentDir = Directory.GetCurrentDirectory();
+                if (inputFile.Directory != null)
+                    Directory.SetCurrentDirectory(inputFile.Directory.FullName);
                 
                 Action compilationDelegate = () =>
                                                  {
-                                                     inputFilePath = GetFileName(inputFilePath);
-                                                     outputFilePath = GetFileName(outputFilePath);
-                                                     Console.Write("Compiling {0} -> {1} ", inputFilePath, outputFilePath);
+                                                     Console.Write("Compiling {0} -> {1} ", inputFile.Name, outputFilePath);
                                                      try 
                                                      {
                                                          string css =
-                                                             engine.TransformToCss(new FileReader().GetFileContents(inputFilePath), inputFilePath);
+                                                             engine.TransformToCss(new FileReader().GetFileContents(inputFile.Name), inputFile.Name);
                                                          File.WriteAllText(outputFilePath, css);
                                                          Console.WriteLine("[Done]");
                                                      } catch(Exception ex)
@@ -91,7 +88,7 @@ namespace dotless.Compiler
                 if (watch)
                 {
                     WriteAbortInstructions();
-                    var watcher = new Watcher(inputFilePath, compilationDelegate);
+                    var watcher = new Watcher(inputFile.Name, compilationDelegate);
                     while(Console.ReadLine() != "")
                     {
                         WriteAbortInstructions();
@@ -103,7 +100,7 @@ namespace dotless.Compiler
             }
             else
             {
-                Console.WriteLine("Input file {0} does not exist", inputFilePath);
+                Console.WriteLine("Input file {0} does not exist", inputFile.Name);
             }
         }
 
