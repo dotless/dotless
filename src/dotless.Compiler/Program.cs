@@ -16,17 +16,11 @@ namespace dotless.Compiler
             var arguments = new List<string>();
 
             arguments.AddRange(args);
-            var watch = arguments.Any(p => p == "-w" || p == "--watch");
 
-            DotlessConfiguration configuration;
-            try
-            {
-                configuration = GetConfigurationFromArguments(arguments);                
-            }
-            catch (HelpRequestedException)
-            {
+            var configuration = GetConfigurationFromArguments(arguments);
+
+            if(configuration.Help)
                 return;
-            }
 
             if (arguments.Count == 0)
             {
@@ -41,7 +35,6 @@ namespace dotless.Compiler
 
             var outputFilePath = arguments.Count > 1 ? arguments[1] : Path.ChangeExtension(inputFile.Name, ".css");
 
-
             var currentDir = Directory.GetCurrentDirectory();
             if (inputFile.Directory != null)
                 Directory.SetCurrentDirectory(inputFile.Directory.FullName);
@@ -51,7 +44,7 @@ namespace dotless.Compiler
 
             var files = compilationDelegate();
 
-            if (watch)
+            if (configuration.Watch)
             {
                 WriteAbortInstructions();
 
@@ -119,10 +112,9 @@ namespace dotless.Compiler
             Console.WriteLine("\t\t Defaults to inputfile.css");
         }
 
-        private static DotlessConfiguration GetConfigurationFromArguments(List<string> arguments)
+        private static CompilerConfiguration GetConfigurationFromArguments(List<string> arguments)
         {
-            var configuration = DotlessConfiguration.Default;
-            configuration.CacheEnabled = false;
+            var configuration = new CompilerConfiguration(DotlessConfiguration.Default);
 
             foreach (var arg in arguments)
             {
@@ -135,12 +127,12 @@ namespace dotless.Compiler
                     else if (arg == "-h" || arg == "--help")
                     {
                         WriteHelp();
-                        throw new HelpRequestedException();
+                        configuration.Help = true;
+                        return configuration;
                     }
                     else if (arg == "-w" || arg == "--watch")
                     {
-                        //Ignore this since it already gets handled. 
-                        //TODO: Introduce a run-configuration class for Compiler only (sublcassing DotlessConfiguration?)
+                        configuration.Watch = true;
                     }
                     else
                     {
@@ -150,10 +142,6 @@ namespace dotless.Compiler
             }
             arguments.RemoveAll(p => p.StartsWith("-"));
             return configuration;
-        }
-
-        private class HelpRequestedException : ApplicationException
-        {
         }
     }
 }
