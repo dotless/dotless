@@ -1,5 +1,6 @@
 namespace dotless.Core
 {
+    using System;
     using Abstractions;
     using Cache;
     using configuration;
@@ -26,12 +27,20 @@ namespace dotless.Core
 
         private void RegisterServices(FluentRegistration pandora, DotlessConfiguration configuration)
         {
+            OverrideServices(pandora, configuration);
+
             if (configuration.Web)
                 RegisterWebServices(pandora, configuration);
             else
                 RegisterLocalServices(pandora);
 
             RegisterCoreServices(pandora, configuration);
+        }
+
+        private void OverrideServices(FluentRegistration pandora, DotlessConfiguration configuration)
+        {
+            if (configuration.Logger != null)
+                pandora.Service<ILogger>().Implementor(configuration.Logger);
         }
 
         private void RegisterWebServices(FluentRegistration pandora, DotlessConfiguration configuration)

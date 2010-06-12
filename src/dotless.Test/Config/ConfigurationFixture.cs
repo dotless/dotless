@@ -2,6 +2,7 @@ namespace dotless.Test.Config
 {
     using Core;
     using Core.configuration;
+    using Core.Loggers;
     using NUnit.Framework;
 
     public class ConfigurationFixture
@@ -67,6 +68,25 @@ namespace dotless.Test.Config
 
             var minEngine = (MinifierDecorator)aspEngine.Underlying;
             Assert.That(minEngine.Engine, Is.TypeOf<LessEngine>());
+        }
+
+        [Test]
+        public void CanPassCustomLogger()
+        {
+            var config = new DotlessConfiguration { Logger = typeof(DummyLogger) };
+
+            var serviceLocator = new ContainerFactory().GetContainer(config);
+
+            var logger = serviceLocator.GetInstance<ILogger>();
+
+            Assert.That(logger, Is.TypeOf<DummyLogger>());
+        }
+
+        public class DummyLogger : Logger 
+        {
+            public DummyLogger(LogLevel level) : base(level) { }
+
+            protected override void Log(string message) { }
         }
     }
 }

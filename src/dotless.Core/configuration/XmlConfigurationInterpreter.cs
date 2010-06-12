@@ -35,9 +35,11 @@ namespace dotless.Core.configuration
                     break;
             }
 
-            var source = GetStringValue(section, "source");
-            if (!string.IsNullOrEmpty(source))
-                dotlessConfiguration.LessSource = Type.GetType(source);
+            var source = GetTypeValue(section, "source");
+            if (source != null)
+                dotlessConfiguration.LessSource = source;
+
+            dotlessConfiguration.Logger = GetTypeValue(section, "logger");
 
             return dotlessConfiguration;
         }
@@ -76,6 +78,21 @@ namespace dotless.Core.configuration
             bool result;
             if (bool.TryParse(attribute.Value, out result))
                 return result;
+
+            return null;
+        }
+
+        private static Type GetTypeValue(XmlNode section, string property)
+        {
+            var attribute = section.Attributes[property];
+
+            if (attribute == null)
+                return null;
+
+            var value = attribute.Value;
+
+            if (!string.IsNullOrEmpty(value))
+                return Type.GetType(value);
 
             return null;
         }
