@@ -12,9 +12,15 @@ namespace dotless.Test.Config
             var engine = new EngineFactory().GetEngine();
 
             Assert.That(engine, Is.TypeOf<ParameterDecorator>());
+        }
 
-            var aspEngine = (ParameterDecorator)engine;
-            Assert.That(aspEngine.Underlying, Is.TypeOf<CacheDecorator>());
+        [Test]
+        public void CachingIsEnabledByDefault()
+        {
+            var engine = new EngineFactory().GetEngine();
+            engine = ((ParameterDecorator)engine).Underlying;
+
+            Assert.That(engine, Is.TypeOf<CacheDecorator>());
         }
 
         [Test]

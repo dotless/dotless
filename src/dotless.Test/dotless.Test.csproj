@@ -57,6 +57,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Unit\Parameters\ParameterDecoratorFixture.cs" />
+    <Compile Include="Unit\Parameters\ParameterSourceFixture.cs" />
     <Compile Include="Unit\Response\CacbedCssResponseFixture.cs" />
     <Compile Include="Specs\OptimizationsFixture.cs" />
     <Compile Include="SpecFixtureBase.cs" />
