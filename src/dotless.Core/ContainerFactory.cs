@@ -9,6 +9,7 @@ namespace dotless.Core
     using Microsoft.Practices.ServiceLocation;
     using Pandora;
     using Pandora.Fluent;
+    using Parameters;
     using Response;
     using Stylizers;
 
@@ -46,6 +47,7 @@ namespace dotless.Core
         private void RegisterWebServices(FluentRegistration pandora, DotlessConfiguration configuration)
         {
             pandora.Service<IHttp>().Implementor<Http>();
+            pandora.Service<IParameterSource>().Implementor<QueryStringParameterSource>();
 
             if (configuration.CacheEnabled)
                 pandora.Service<IResponse>().Implementor<CachedCssResponse>();
@@ -60,6 +62,7 @@ namespace dotless.Core
         private void RegisterLocalServices(FluentRegistration pandora)
         {
             pandora.Service<ICache>().Implementor<InMemoryCache>();
+            pandora.Service<IParameterSource>().Implementor<ConsoleArgumentParameterSource>();
             pandora.Service<ILogger>().Implementor<ConsoleLogger>().Parameters("level").Set("error-level");
             pandora.Service<IPathResolver>().Implementor<RelativePathResolver>();
         }
@@ -71,6 +74,8 @@ namespace dotless.Core
 
             pandora.Service<Parser.Parser>().Implementor<Parser.Parser>().Parameters("optimization").Set("default-optimization");
             pandora.Service<int>("default-optimization").Instance(configuration.Optimization);
+
+            pandora.Service<ILessEngine>().Implementor<ParameterDecorator>();
 
             if (configuration.CacheEnabled)
                 pandora.Service<ILessEngine>().Implementor<CacheDecorator>();

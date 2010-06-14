@@ -12,14 +12,20 @@ namespace dotless.Test.Config
     public class ConfigurationFixture
     {
         [Test]
-        public void DefaultEngineIsCacheDecorator()
+        public void DefaultEngineIsParameterDecorator()
         {
             var engine = new EngineFactory().GetEngine();
 
-            Assert.That(engine, Is.TypeOf<CacheDecorator>());
+            Assert.That(engine, Is.TypeOf<ParameterDecorator>());
+        }
 
-            var aspEngine = (CacheDecorator)engine;
-            Assert.That(aspEngine.Underlying, Is.TypeOf<LessEngine>());
+        [Test]
+        public void CachingIsEnabledByDefault()
+        {
+            var engine = new EngineFactory().GetEngine();
+            engine = ((ParameterDecorator)engine).Underlying;
+
+            Assert.That(engine, Is.TypeOf<CacheDecorator>());
         }
 
         [Test]
@@ -27,7 +33,7 @@ namespace dotless.Test.Config
         {
             var config = new DotlessConfiguration { MinifyOutput = true, CacheEnabled = false };
 
-            var engine = new EngineFactory(config).GetEngine();
+            var engine = ((ParameterDecorator)new EngineFactory(config).GetEngine()).Underlying;
 
             Assert.That(engine, Is.TypeOf<MinifierDecorator>());
 
@@ -40,7 +46,7 @@ namespace dotless.Test.Config
         {
             var config = new DotlessConfiguration { Web = true, CacheEnabled = false };
 
-            var engine = new EngineFactory(config).GetEngine();
+            var engine = ((ParameterDecorator)new EngineFactory(config).GetEngine()).Underlying;
 
             Assert.That(engine, Is.TypeOf<LessEngine>());
         }
@@ -50,7 +56,7 @@ namespace dotless.Test.Config
         {
             var config = new DotlessConfiguration { Web = true, CacheEnabled = true };
 
-            var engine = new EngineFactory(config).GetEngine();
+            var engine = ((ParameterDecorator)new EngineFactory(config).GetEngine()).Underlying;
 
             Assert.That(engine, Is.TypeOf<CacheDecorator>());
 
@@ -87,7 +93,7 @@ namespace dotless.Test.Config
         {
             var config = new DotlessConfiguration { Web = true, CacheEnabled = true, MinifyOutput = true };
 
-            var engine = new EngineFactory(config).GetEngine();
+            var engine = ((ParameterDecorator)new EngineFactory(config).GetEngine()).Underlying;
 
             Assert.That(engine, Is.TypeOf<CacheDecorator>());
 

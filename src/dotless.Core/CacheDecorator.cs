@@ -1,30 +1,49 @@
 namespace dotless.Core
 {
+    using System;
     using System.Collections.Generic;
+    using System.Security.Cryptography;
     using Cache;
+    using Loggers;
 
     public class CacheDecorator : ILessEngine
     {
         public readonly ILessEngine Underlying;
         public readonly ICache Cache;
+        public ILogger Logger { get; set; }
 
-        public CacheDecorator(ILessEngine underlying, ICache cache)
+        public CacheDecorator(ILessEngine underlying, ICache cache) : this(underlying, cache, NullLogger.Instance)
+        {}
+
+        public CacheDecorator(ILessEngine underlying, ICache cache, ILogger logger)
         {
             Underlying = underlying;
             Cache = cache;
+            Logger = logger;
         }
 
         public string TransformToCss(string source, string fileName)
         {
-            if (!Cache.Exists(fileName))
+            //Compute Cache Key
+            var hash = ComputeContentHash(source);
+            var cacheKey = fileName + hash;
+            if (!Cache.Exists(cacheKey))
             {
+                Logger.Debug(String.Format("Inserting cache entry for {0}", cacheKey));
                 var css = Underlying.TransformToCss(source, fileName);
                 var imports = GetImports();
-                Cache.Insert(fileName, imports, css);
+                Cache.Insert(cacheKey, imports, css);
                 return css;
             }
+            Logger.Debug(String.Format("Retrieving cache entry {0}", cacheKey));
+            return Cache.Retrieve(cacheKey);
+        }
 
-            return Cache.Retrieve(fileName);
+        private string ComputeContentHash(string source)
+        {
+            MD5 md5 = MD5.Create();
+            byte[] computeHash = md5.ComputeHash(System.Text.Encoding.Default.GetBytes(source));
+            return Convert.ToBase64String(computeHash);
         }
 
         public IEnumerable<string> GetImports()
