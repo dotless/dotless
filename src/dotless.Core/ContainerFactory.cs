@@ -45,7 +45,6 @@ namespace dotless.Core
                                        else
                                        {
                                            p.Service<IParameterSource>().Implementor<ConsoleArgumentParameterSource>();
-                                           p.Service<IParameterSource>().Implementor<ConsoleArgumentParameterSource>();
                                            p.Service<ICache>().Implementor<InMemoryCache>();
                                            p.Service<ILogger>().Implementor<ConsoleLogger>().Parameters("level").Set("error-level");
                                            p.Service<IPathResolver>().Implementor<RelativePathResolver>();
