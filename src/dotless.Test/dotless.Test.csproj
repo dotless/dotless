@@ -59,7 +59,7 @@
   <ItemGroup>
     <Compile Include="Unit\Parameters\ParameterDecoratorFixture.cs" />
     <Compile Include="Unit\Parameters\ParameterSourceFixture.cs" />
-    <Compile Include="Unit\Response\CacbedCssResponseFixture.cs" />
+    <Compile Include="Unit\Response\CachedCssResponseFixture.cs" />
     <Compile Include="Specs\OptimizationsFixture.cs" />
     <Compile Include="SpecFixtureBase.cs" />
     <Compile Include="Specs\CommentsFixture.cs" />
