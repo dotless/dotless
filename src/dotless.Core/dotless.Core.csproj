@@ -68,6 +68,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Loggers\AspNetTraceLogger.cs" />
+    <Compile Include="Loggers\DiagnosticsLogger.cs" />
+    <Compile Include="Loggers\NullLogger.cs" />
     <Compile Include="Response\CachedCssResponse.cs">
       <SubType>Code</SubType>
     </Compile>
