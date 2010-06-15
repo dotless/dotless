@@ -71,7 +71,7 @@
     <Compile Include="Loggers\AspNetTraceLogger.cs" />
     <Compile Include="Loggers\DiagnosticsLogger.cs" />
     <Compile Include="Loggers\NullLogger.cs" />
-    <Compile Include="ParameterDecorator.cs" />
+    <Compile Include="Engine\ParameterDecorator.cs" />
     <Compile Include="Parameters\ConsoleArgumentParameterSource.cs" />
     <Compile Include="Parameters\IParameterSource.cs" />
     <Compile Include="Parameters\QueryStringParameterSource.cs" />
@@ -93,7 +93,7 @@
     <Compile Include="Response\IResponse.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CacheDecorator.cs" />
+    <Compile Include="Engine\CacheDecorator.cs" />
     <Compile Include="Exceptions\ParserException.cs" />
     <Compile Include="configuration\WebConfigConfigurationLoader.cs" />
     <Compile Include="configuration\DotlessConfiguration.cs" />
@@ -145,7 +145,7 @@
     <Compile Include="Parser\Infrastructure\Nodes\NodeList.cs" />
     <Compile Include="Parser\Infrastructure\Nodes\RegexMatchResult.cs" />
     <Compile Include="Parser\Infrastructure\Nodes\TextNode.cs" />
-    <Compile Include="LessEngine.cs" />
+    <Compile Include="Engine\LessEngine.cs" />
     <Compile Include="Parser\Parser.cs" />
     <Compile Include="Parser\Parsers.cs" />
     <Compile Include="Parser\Tokenizer.cs" />
@@ -173,12 +173,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Input\FileReader.cs" />
     <Compile Include="HandlerImpl.cs" />
-    <Compile Include="ILessEngine.cs" />
+    <Compile Include="Engine\ILessEngine.cs" />
     <Compile Include="Input\IFileReader.cs" />
     <Compile Include="Loggers\ILogger.cs" />
     <Compile Include="LessCssHttpHandler.cs" />
     <Compile Include="Loggers\ConsoleLogger.cs" />
-    <Compile Include="MinifierDecorator.cs" />
+    <Compile Include="Engine\MinifierDecorator.cs" />
     <Compile Include="Stylizers\ConsoleStylizer.cs" />
     <Compile Include="Stylizers\HtmlStylizer.cs" />
     <Compile Include="Stylizers\IStylizer.cs" />
