@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using Infrastructure;
     using Infrastructure.Nodes;
     using Utils;
@@ -133,18 +134,25 @@
                 .ToArray();
 
             if (Alpha < 1.0)
-                return string.Format(CultureInfo.InvariantCulture, "rgba({0}, {1}, {2}, {3})", rgb[0], rgb[1], rgb[2],
-                                     Alpha);
+                return string.Format(CultureInfo.InvariantCulture, "rgba({0}, {1}, {2}, {3})", rgb[0], rgb[1], rgb[2], Alpha);
 
             var keyword = GetKeyword(rgb);
+
+            var hexString = '#' + rgb
+                             .Select(i => i.ToString("X2"))
+                             .JoinStrings("")
+                             .ToLowerInvariant();
+
+            if (env.Compress)
+            {
+                hexString = Regex.Replace(hexString, @"#(.)\1(.)\2(.)\3", "#$1$2$3");
+                return string.IsNullOrEmpty(keyword) || hexString.Length < keyword.Length ? hexString : keyword;
+            }
 
             if (!string.IsNullOrEmpty(keyword))
                 return keyword;
 
-            return '#' + rgb
-                             .Select(i => i.ToString("X2"))
-                             .JoinStrings("")
-                             .ToLowerInvariant();
+            return hexString;
         }
 
         public Node Operate(string op, Node other)

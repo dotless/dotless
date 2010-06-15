@@ -81,10 +81,10 @@
             if (string.IsNullOrEmpty(css))
                 return "";
 
-            var start = css.IndexOf("  expression: ");
-            var end = css.LastIndexOf("}");
+            var start = css.IndexOf("expression:");
+            var end = css.LastIndexOf(";");
 
-            return css.Substring(start + 14, end - start - 16);
+            return css.Substring(start + 11, end - start - 11).Trim();
         }
 
         public string Evaluate(string input)

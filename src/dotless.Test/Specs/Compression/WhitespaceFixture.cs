@@ -51,7 +51,7 @@ white;
         {
             var input = ".no-semi-colon { color: white }";
 
-            var expected = ".no-semi-colon{color:white;}";
+            var expected = ".no-semi-colon{color:#fff;}";
 
             AssertLess(input, expected);
         }
@@ -75,7 +75,7 @@ white;
         {
             var input = ".no-semi-colon {border: 2px solid white}";
 
-            var expected = ".no-semi-colon{border:2px solid white;}";
+            var expected = ".no-semi-colon{border:2px solid #fff;}";
 
             AssertLess(input, expected);
         }
