@@ -2,7 +2,7 @@ namespace dotless.Core.Abstractions
 {
     using System.Web;
 
-    class Http : IHttp
+    public class Http : IHttp
     {
         private HttpContextWrapper _context;
 
