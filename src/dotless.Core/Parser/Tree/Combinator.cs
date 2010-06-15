@@ -1,5 +1,7 @@
 ﻿namespace dotless.Core.Parser.Tree
 {
+    using System.Collections.Generic;
+    using Infrastructure;
     using Infrastructure.Nodes;
 
     public class Combinator : Node
@@ -16,28 +18,18 @@
                 Value = value.Trim();
         }
 
-        public override string ToCSS()
+        public override string ToCSS(Env env)
         {
-            switch (Value)
-            {
-                case "":
-                    return "";
-                case " ":
-                    return " ";
-                case "&":
-                    return "";
-                case ":":
-                    return " :";
-                case "::":
-                    return "::";
-                case "+":
-                    return " + ";
-                case "~":
-                    return " ~ ";
-                case ">":
-                    return " > ";
-            }
-            return "";
+            return new Dictionary<string, string> { 
+                  { "", "" }, 
+                  { " ", " " },
+                  { "&", "" },
+                  { ":", " :" },
+                  { "::", "::" },
+                  { "+", env.Compress ? "+" : " + " },
+                  { "~", env.Compress ? "~" : " ~ " },
+                  { ">", env.Compress ? ">" : " > " } 
+              }[Value];
         }
     }
 }

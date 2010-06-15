@@ -7,6 +7,8 @@
     {
         public static string Indent(this string str, int indent)
         {
+            if(indent == 0) return str;
+
             var space = new string(' ', indent);
             return space + str.Replace("\n", "\n" + space);
         }

@@ -22,9 +22,9 @@
             return Value[0].Evaluate(env);
         }
 
-        public override string ToCSS()
+        public override string ToCSS(Env env)
         {
-            return Value.Select(e => e.ToCSS()).JoinStrings(" ");
+            return Value.Select(e => e.ToCSS(env)).JoinStrings(" ");
         }
     }
 }

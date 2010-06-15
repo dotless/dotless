@@ -17,14 +17,14 @@
             Important = important;
         }
 
-        public override string ToCSS()
+        public override string ToCSS(Env env)
         {
-            return Values.Select(v => v.ToCSS()).JoinStrings(", ");
+            return Values.Select(v => v.ToCSS(env)).JoinStrings(env.Compress ? "," : ", ");
         }
 
         public override string ToString()
         {
-            return ToCSS();
+            return ToCSS(new Env()); // only used during debugging.
         }
 
         public override Node Evaluate(Env env)

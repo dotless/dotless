@@ -35,7 +35,7 @@ namespace dotless.Test.Unit.Parameters
             Mock<ILessEngine> engine = SetupDecoratorForTest(out parameterDecorator, parameters);
 
             parameterDecorator.TransformToCss("width: @a;", "myfile");
-            engine.Verify(p => p.TransformToCss(It.Is<string>(a => a.Split('\n').Length == parameters.Count +1), "myfile"));
+            engine.Verify(p => p.TransformToCss(It.Is<string>(a => a.Split('\n').Length == parameters.Count + 1), "myfile"));
         }
     }
 }

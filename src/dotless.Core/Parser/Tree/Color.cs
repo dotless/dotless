@@ -125,7 +125,7 @@
             set { RGB[2] = value; }
         }
 
-        public override string ToCSS()
+        public override string ToCSS(Env env)
         {
             var rgb = RGB
                 .Select(d => (int) Math.Round(d, MidpointRounding.AwayFromZero))

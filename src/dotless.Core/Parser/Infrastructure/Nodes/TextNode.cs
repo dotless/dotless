@@ -19,9 +19,9 @@
             return n1 ?? n2;
         }
 
-        public override string ToCSS()
+        public override string ToCSS(Env env)
         {
-            return Value;
+            return env != null && env.Compress ? Value.Trim() : Value;
         }
 
         public override string ToString()

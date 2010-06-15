@@ -528,7 +528,7 @@ namespace dotless.Core.Parser
                 Node op;
                 if ((op = parser.Tokenizer.Match(@"[|~*$^]?=")) &&
                     (val = Quoted(parser) || parser.Tokenizer.Match(@"[\w-]+")))
-                    attr = string.Format("{0}{1}{2}", key, op, val.ToCSS());
+                    attr = string.Format("{0}{1}{2}", key, op, val.ToCSS(null)); // null should be fine here.
                 else
                     attr = key.ToString();
             }

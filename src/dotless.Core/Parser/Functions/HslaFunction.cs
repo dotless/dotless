@@ -1,13 +1,14 @@
-﻿namespace dotless.Core.Parser.Functions
+namespace dotless.Core.Parser.Functions
 {
     using System.Linq;
+    using Infrastructure;
     using Infrastructure.Nodes;
     using Tree;
     using Utils;
 
     public class HslaFunction : Function
     {
-        protected override Node Evaluate()
+        protected override Node Evaluate(Env env)
         {
             Guard.ExpectNumArguments(4, Arguments.Count, this);
             Guard.ExpectAllNodes<Number>(Arguments, this);

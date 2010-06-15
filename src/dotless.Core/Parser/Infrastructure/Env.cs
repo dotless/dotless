@@ -12,6 +12,7 @@
         private Dictionary<string, Type> _functionTypes;
 
         public Stack<Ruleset> Frames { get; set; }
+        public bool Compress { get; set; }
 
         public Env()
         {

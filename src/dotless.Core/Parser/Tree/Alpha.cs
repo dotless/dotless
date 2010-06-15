@@ -19,9 +19,9 @@
             return this;
         }
 
-        public override string ToCSS()
+        public override string ToCSS(Env env)
         {
-            return string.Format("alpha(opacity={0})", Value.ToCSS());
+            return string.Format("alpha(opacity={0})", Value.ToCSS(env));
         }
     }
 }

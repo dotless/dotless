@@ -1,4 +1,4 @@
-﻿// ReSharper disable RedundantNameQualifier
+// ReSharper disable RedundantNameQualifier
 
 namespace dotless.Core.Parser.Tree
 {
@@ -104,7 +104,7 @@ namespace dotless.Core.Parser.Tree
                 {
                     if (string.IsNullOrEmpty(Params[i].Name))
                     {
-                        if (arguements[i].Evaluate(env).ToCSS() != Params[i].Value.Evaluate(env).ToCSS())
+                        if (arguements[i].Evaluate(env).ToCSS(env) != Params[i].Value.Evaluate(env).ToCSS(env))
                         {
                             return false;
                         }
@@ -114,7 +114,7 @@ namespace dotless.Core.Parser.Tree
                 return true;
             }
 
-            protected override string ToCSS(Context list)
+            protected override string ToCSS(Env env, Context list)
             {
                 return "";
             }
@@ -136,7 +136,7 @@ namespace dotless.Core.Parser.Tree
                 foreach (var frame in env.Frames)
                 {
                     NodeList mixins;
-                    if ((mixins = frame.Find(Selector, null)).Count == 0)
+                    if ((mixins = frame.Find(env, Selector, null)).Count == 0)
                         continue;
 
                     var rules = new NodeList();
@@ -164,7 +164,7 @@ namespace dotless.Core.Parser.Tree
                     }
                     return rules;
                 }
-                throw new ParsingException(Selector.ToCSS().Trim() + " is undefined");
+                throw new ParsingException(Selector.ToCSS(env).Trim() + " is undefined");
             }
         }
     }

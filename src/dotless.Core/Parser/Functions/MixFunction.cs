@@ -1,13 +1,14 @@
 namespace dotless.Core.Parser.Functions
 {
     using System.Linq;
+    using Infrastructure;
     using Infrastructure.Nodes;
     using Tree;
     using Utils;
 
     public class MixFunction : Function
     {
-        protected override Node Evaluate()
+        protected override Node Evaluate(Env env)
         {
             Guard.ExpectMinArguments(2, Arguments.Count, this);
             Guard.ExpectMaxArguments(3, Arguments.Count, this);

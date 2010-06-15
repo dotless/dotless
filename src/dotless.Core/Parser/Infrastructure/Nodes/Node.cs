@@ -38,7 +38,7 @@
 
         #endregion
 
-        public virtual string ToCSS()
+        public virtual string ToCSS(Env env)
         {
             throw new InvalidOperationException(string.Format("ToCSS() not valid on this type of node. '{0}'",
                                                               GetType().Name));

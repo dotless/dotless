@@ -9,7 +9,7 @@ properties {
     $build_dir = "$base_dir\build\" 
     $release_dir = "$base_dir\release\"
     $source_dir = "$base_dir\src"
-	$version = Get-Git-Version
+    $version = Get-Git-Version
 }
 
 task default -depends Release
@@ -22,30 +22,30 @@ task Clean {
 task Init -depends Clean {
     Write-Host $version
     Generate-Assembly-Info `
-		-file "$source_dir\dotless.Core\Properties\AssemblyInfo.cs" `
-		-title "dotless $version" `
-		-description "Dynamic CSS for .net" `
-		-company "dotless project" `
-		-product "dotless" `
-		-version $version `
-		-copyright "Copyright © dotless project 2010" `
+        -file "$source_dir\dotless.Core\Properties\AssemblyInfo.cs" `
+        -title "dotless $version" `
+        -description "Dynamic CSS for .net" `
+        -company "dotless project" `
+        -product "dotless" `
+        -version $version `
+        -copyright "Copyright © dotless project 2010" `
         -partial $True
     Generate-Assembly-Info `
-		-file "$source_dir\dotless.Test\Properties\AssemblyInfo.cs" `
-		-title "dotless Tests $version" `
-		-description "Dynamic CSS for .net" `
-		-company "dotless project" `
-		-product "dotless" `
-		-version $version `
-		-copyright "Copyright © dotless project 2010"
+        -file "$source_dir\dotless.Test\Properties\AssemblyInfo.cs" `
+        -title "dotless Tests $version" `
+        -description "Dynamic CSS for .net" `
+        -company "dotless project" `
+        -product "dotless" `
+        -version $version `
+        -copyright "Copyright © dotless project 2010"
     Generate-Assembly-Info `
-		-file "$source_dir\dotless.Compiler\Properties\AssemblyInfo.cs" `
-		-title "dotless Compiler $version" `
-		-description "Dynamic CSS for .net" `
-		-company "dotless project" `
-		-product "dotless" `
-		-version $version `
-		-copyright "Copyright © dotless project 2010"
+        -file "$source_dir\dotless.Compiler\Properties\AssemblyInfo.cs" `
+        -title "dotless Compiler $version" `
+        -description "Dynamic CSS for .net" `
+        -company "dotless project" `
+        -product "dotless" `
+        -version $version `
+        -copyright "Copyright © dotless project 2010"
         
     new-item $build_dir -itemType directory
     new-item $release_dir -itemType directory
@@ -80,25 +80,24 @@ task Test -depends Build {
 task Merge -depends Build {
     $old = pwd
     cd $build_dir
-	
-	$filename = "dotless.Compiler.exe"
-	Remove-Item $filename-partial.exe -ErrorAction SilentlyContinue
-	Rename-Item $filename $filename-partial.exe
-	& $lib_dir\ilmerge\ILMerge.exe $filename-partial.exe `
-		Pandora.dll `
-		dotless.Core.dll `
-		Microsoft.Practices.ServiceLocation.dll `
+    
+    $filename = "dotless.Compiler.exe"
+    Remove-Item $filename-partial.exe -ErrorAction SilentlyContinue
+    Rename-Item $filename $filename-partial.exe
+    & $lib_dir\ilmerge\ILMerge.exe $filename-partial.exe `
+        Pandora.dll `
+        dotless.Core.dll `
+        Microsoft.Practices.ServiceLocation.dll `
         PegBase.dll `
-        Yahoo.Yui.Compressor.dll `
         /out:$filename `
         /internalize `
         /keyfile:../src/dotless-open-source.snk `
         /t:exe
-	if ($lastExitCode -ne 0) {
+    if ($lastExitCode -ne 0) {
         throw "Error: Failed to merge compiler assemblies"
     }
-	Remove-Item $filename-partial.exe -ErrorAction SilentlyContinue
-	
+    Remove-Item $filename-partial.exe -ErrorAction SilentlyContinue
+    
     $filename = "dotless.Core.dll"
     Remove-Item $filename-partial.dll -ErrorAction SilentlyContinue
     Rename-Item $filename $filename-partial.dll
@@ -107,7 +106,6 @@ task Merge -depends Build {
         Pandora.dll `
         Microsoft.Practices.ServiceLocation.dll `
         PegBase.dll `
-        Yahoo.Yui.Compressor.dll `
         /out:$filename `
         /internalize `
         /keyfile:../src/dotless-open-source.snk `
@@ -115,7 +113,7 @@ task Merge -depends Build {
     if ($lastExitCode -ne 0) {
         throw "Error: Failed to merge assemblies"
     }
-	Remove-Item $filename-partial.dll -ErrorAction SilentlyContinue
+    Remove-Item $filename-partial.dll -ErrorAction SilentlyContinue
     cd $old
 }
 
@@ -126,7 +124,7 @@ task Release-NoTest -depends Merge {
     $build_dir\$filename.dll `
     $build_dir\$filename.pdb `
     $build_dir\dotless.compiler.exe `
-	acknowledgements.txt `
+    acknowledgements.txt `
     license.txt `
     #$build_dir\Testresult.xml `
     

@@ -17,7 +17,7 @@
             return (Node) Color.GetColorFromKeyword(Value) ?? this;
         }
 
-        public override string ToCSS()
+        public override string ToCSS(Env env)
         {
             return Value;
         }

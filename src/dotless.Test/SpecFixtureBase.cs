@@ -9,14 +9,15 @@
 
     public class SpecFixtureBase
     {
-        private static readonly Func<Parser> DeafultParser = () => new Parser(0);
+        protected Func<Parser> DefaultParser = () => new Parser(0);
+        protected Func<Env> DefaultEnv = () => new Env();
 
-        protected static void AssertLess(string input, string expected)
+        protected void AssertLess(string input, string expected)
         {
-            AssertLess(input, expected, DeafultParser());
+            AssertLess(input, expected, DefaultParser());
         }
 
-        protected static void AssertLess(string input, string expected, Parser parser)
+        protected void AssertLess(string input, string expected, Parser parser)
         {
             var output = Evaluate(input, parser).Trim();
 
@@ -25,22 +26,22 @@
             Assert.That(output, Is.EqualTo(expected));
         }
 
-        protected static void AssertLessUnchanged(string input)
+        protected void AssertLessUnchanged(string input)
         {
             AssertLess(input, input);
         }
 
-        protected static void AssertLessUnchanged(string input, Parser parser)
+        protected void AssertLessUnchanged(string input, Parser parser)
         {
             AssertLess(input, input, parser);
         }
 
-        protected static void AssertExpression(string output, string expression)
+        protected void AssertExpression(string output, string expression)
         {
             AssertExpression(output, expression, null);
         }
 
-        protected static void AssertExpression(string output, string expression, IDictionary<string, string> variables)
+        protected void AssertExpression(string output, string expression, IDictionary<string, string> variables)
         {
             Assert.That(EvaluateExpression(expression, variables), Is.EqualTo(output));
         }
@@ -50,22 +51,22 @@
             AssertExpression(expression, expression);
         }
 
-        protected static void AssertError(string message, string input)
+        protected void AssertError(string message, string input)
         {
             Assert.That(() => Evaluate(input), Throws.Exception.Message.EqualTo(message));
         }
 
-        protected static void AssertExpressionError(string message, string expression)
+        protected void AssertExpressionError(string message, string expression)
         {
             Assert.That(() => EvaluateExpression(expression), Throws.Exception.Message.EqualTo(message));
         }
 
-        protected static string EvaluateExpression(string expression)
+        protected string EvaluateExpression(string expression)
         {
             return EvaluateExpression(expression, null);
         }
 
-        protected static string EvaluateExpression(string expression, IDictionary<string, string> variablesDictionary)
+        protected string EvaluateExpression(string expression, IDictionary<string, string> variablesDictionary)
         {
             var variables = "";
             if (variablesDictionary != null)
@@ -86,15 +87,15 @@
             return css.Substring(start + 14, end - start - 16);
         }
 
-        public static string Evaluate(string input)
+        public string Evaluate(string input)
         {
-            return Evaluate(input, DeafultParser());
+            return Evaluate(input, DefaultParser());
         }
 
-        public static string Evaluate(string input, Parser parser)
+        public string Evaluate(string input, Parser parser)
         {
             var tree = parser.Parse(input, null);
-            return tree.ToCSS(new Env());
+            return tree.ToCSS(DefaultEnv());
         }
     }
 }

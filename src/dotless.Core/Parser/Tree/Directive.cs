@@ -41,12 +41,15 @@
             return this;
         }
 
-        protected override string ToCSS(Context context)
+        protected override string ToCSS(Env env, Context context)
         {
             if (Rules != null)
-                return Name + " {\n" + Rules.Select(r => r.ToCSS()).JoinStrings("\n").Trim().Indent(2) + "\n}\n";
+                return Name + 
+                    (env.Compress ? "{" : " {\n") + 
+                    Rules.Select(r => r.ToCSS(env)).JoinStrings("\n").Trim().Indent(env.Compress ? 0 : 2) + 
+                    (env.Compress ? "}" : "\n}\n");
 
-            return Name + " " + Value.ToCSS() + ";\n";
+            return Name + " " + Value.ToCSS(env) + ";\n";
         }
     }
 }

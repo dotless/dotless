@@ -1,13 +1,14 @@
-﻿namespace dotless.Core.Parser.Functions
+namespace dotless.Core.Parser.Functions
 {
     using System.Linq;
+    using Infrastructure;
     using Infrastructure.Nodes;
     using Tree;
     using Utils;
 
     public abstract class ColorFunctionBase : Function
     {
-        protected override Node Evaluate()
+        protected override Node Evaluate(Env env)
         {
             Guard.ExpectMinArguments(1, Arguments.Count(), this);
             Guard.ExpectNode<Color>(Arguments[0], this);

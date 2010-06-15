@@ -1,6 +1,5 @@
 namespace dotless.Core
 {
-    using System;
     using Abstractions;
     using Cache;
     using configuration;
@@ -80,10 +79,9 @@ namespace dotless.Core
             if (configuration.CacheEnabled)
                 pandora.Service<ILessEngine>().Implementor<CacheDecorator>();
 
-            if (configuration.MinifyOutput)
-                pandora.Service<ILessEngine>().Implementor<MinifierDecorator>();
+            pandora.Service<ILessEngine>().Implementor<LessEngine>().Parameters("compress").Set("minify-output");
+            pandora.Service<bool>("minify-output").Instance(configuration.MinifyOutput);
 
-            pandora.Service<ILessEngine>().Implementor<LessEngine>();
             pandora.Service<IFileReader>().Implementor(configuration.LessSource);
         }
     }

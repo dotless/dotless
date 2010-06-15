@@ -21,12 +21,12 @@
             return new Rule(Name, Value.Evaluate(env));
         }
 
-        public override string ToCSS()
+        public override string ToCSS(Env env)
         {
             if (Variable)
                 return "";
 
-            return Name + ": " + Value.ToCSS() + ";";
+            return Name + (env.Compress ? ":" : ": ") + Value.ToCSS(env) + ";";
         }
     }
 }

@@ -61,6 +61,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Specs\Compression\CommentsFixture.cs" />
+    <Compile Include="CompressedSpecFixtureBase.cs" />
+    <Compile Include="Specs\Compression\SelectorsFixture.cs" />
+    <Compile Include="Specs\Compression\WhitespaceFixture.cs" />
     <Compile Include="Unit\Parameters\ParameterDecoratorFixture.cs" />
     <Compile Include="Unit\Parameters\ParameterSourceFixture.cs" />
     <Compile Include="Unit\Response\CachedCssResponseFixture.cs" />

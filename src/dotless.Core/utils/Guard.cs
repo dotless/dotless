@@ -2,6 +2,7 @@ namespace dotless.Core.Utils
 {
     using System.Collections.Generic;
     using Exceptions;
+    using Parser.Infrastructure;
     using Parser.Infrastructure.Nodes;
 
     public static class Guard
@@ -23,7 +24,7 @@ namespace dotless.Core.Utils
 
             var expected = typeof (TExpected).Name.ToLowerInvariant();
 
-            var message = string.Format("Expected {0} in {1}, found {2}", expected, @in, actual.ToCSS());
+            var message = string.Format("Expected {0} in {1}, found {2}", expected, @in, actual.ToCSS(new Env()));
 
             throw new ParsingException(message);
         }

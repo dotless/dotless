@@ -1,5 +1,6 @@
 ﻿namespace dotless.Core.Parser.Tree
 {
+    using Infrastructure;
     using Infrastructure.Nodes;
 
     public class Comment : Node
@@ -11,9 +12,9 @@
             Value = value;
         }
 
-        public override string ToCSS()
+        public override string ToCSS(Env env)
         {
-            return Value;
+            return env.Compress ? "" : Value;
         }
     }
 }

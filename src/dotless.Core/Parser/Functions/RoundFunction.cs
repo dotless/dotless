@@ -1,12 +1,13 @@
-﻿namespace dotless.Core.Parser.Functions
+namespace dotless.Core.Parser.Functions
 {
     using System;
+    using Infrastructure;
     using Infrastructure.Nodes;
     using Tree;
 
     public class RoundFunction : NumberFunctionBase
     {
-        protected override Node Eval(Number number, Node[] args)
+        protected override Node Eval(Env env, Number number, Node[] args)
         {
             return new Number(Math.Round(number.Value), number.Unit);
         }

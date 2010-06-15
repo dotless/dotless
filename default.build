@@ -108,7 +108,6 @@
         <arg file="${build_dir}\dotless.Core.dll" />
         <arg file="${build_dir}\Microsoft.Practices.ServiceLocation.dll" />
         <arg file="${build_dir}\PegBase.dll" />
-        <arg file="${build_dir}\Yahoo.Yui.Compressor.dll" />
         <arg value="/out:${filename}" />
         <arg value="/internalize" />
         <arg value="/keyfile:../src/dotless-open-source.snk" />
@@ -134,7 +133,6 @@
         <arg file="${build_dir}\Pandora.dll" />
         <arg file="${build_dir}\Microsoft.Practices.ServiceLocation.dll" />
         <arg file="${build_dir}\PegBase.dll" />
-        <arg file="${build_dir}\Yahoo.Yui.Compressor.dll" />
         <arg value="/out:${filename}" />
         <arg value="/internalize" />
         <arg value="/keyfile:../src/dotless-open-source.snk" />

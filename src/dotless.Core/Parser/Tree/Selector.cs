@@ -1,6 +1,7 @@
 ﻿namespace dotless.Core.Parser.Tree
 {
     using System.Linq;
+    using Infrastructure;
     using Infrastructure.Nodes;
     using Utils;
 
@@ -22,17 +23,17 @@
             return Elements[0].Value == other.Elements[0].Value;
         }
 
-        public override string ToCSS()
+        public override string ToCSS(Env env)
         {
             if (!string.IsNullOrEmpty(_css))
                 return _css;
 
-            return _css = Elements.Select(e => e.ToCSS()).JoinStrings("");
+            return _css = Elements.Select(e => e.ToCSS(env)).JoinStrings("");
         }
 
         public override string ToString()
         {
-            return ToCSS();
+            return ToCSS(new Env());
         }
     }
 }

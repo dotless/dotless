@@ -62,10 +62,6 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Yahoo.Yui.Compressor, Version=1.4.1.0, Culture=neutral, PublicKeyToken=f8b4b81ec75097e2, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\YUI Compressor .NET\Yahoo.Yui.Compressor.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Loggers\AspNetTraceLogger.cs" />
@@ -178,7 +174,6 @@
     <Compile Include="Loggers\ILogger.cs" />
     <Compile Include="LessCssHttpHandler.cs" />
     <Compile Include="Loggers\ConsoleLogger.cs" />
-    <Compile Include="Engine\MinifierDecorator.cs" />
     <Compile Include="Stylizers\ConsoleStylizer.cs" />
     <Compile Include="Stylizers\HtmlStylizer.cs" />
     <Compile Include="Stylizers\IStylizer.cs" />

@@ -1,6 +1,7 @@
 ﻿namespace dotless.Core.Parser.Tree
 {
     using System.Text.RegularExpressions;
+    using Infrastructure;
     using Infrastructure.Nodes;
 
     public class Quoted : Node
@@ -19,7 +20,7 @@
         {
         }
 
-        public override string ToCSS()
+        public override string ToCSS(Env env)
         {
             return Value;
         }

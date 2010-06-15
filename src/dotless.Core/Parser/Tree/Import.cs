@@ -39,15 +39,15 @@ namespace dotless.Core.Parser.Tree
                 Importer.Import(this);
         }
 
-        protected override string ToCSS(Context context)
+        protected override string ToCSS(Env env, Context context)
         {
-            return base.ToCSS(); // should throw InvalidOperationException
+            return base.ToCSS(env); // should throw InvalidOperationException
         }
 
         public override Node Evaluate(Env env)
         {
             if (Css)
-                return new NodeList(new TextNode("@import " + OriginalPath.ToCSS() + ";\n"));
+                return new NodeList(new TextNode("@import " + OriginalPath.ToCSS(env) + ";\n"));
 
             NodeHelper.ExpandNodes<Import>(env, InnerRoot);
 

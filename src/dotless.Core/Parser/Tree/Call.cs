@@ -35,12 +35,12 @@
                 if (function != null)
                 {
                     function.Name = Name;
-                    Evaluated = function.Call(args);
+                    Evaluated = function.Call(env, args);
                     return Evaluated;
                 }
             }
 
-            Evaluated = new TextNode(Name + "(" + Arguments.Select(a => a.Evaluate(env).ToCSS()).JoinStrings(", ") + ")");
+            Evaluated = new TextNode(Name + "(" + Arguments.Select(a => a.Evaluate(env).ToCSS(env)).JoinStrings(", ") + ")");
             return Evaluated;
         }
     }

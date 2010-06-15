@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using Infrastructure;
     using Infrastructure.Nodes;
     using Utils;
@@ -57,11 +58,11 @@
             return Rules.OfType<Ruleset>().ToList();
         }
 
-        public NodeList Find(Selector selector, Ruleset self)
+        public NodeList Find(Env env, Selector selector, Ruleset self)
         {
             self = self ?? this;
             var rules = new NodeList();
-            var key = selector.ToCSS();
+            var key = selector.ToCSS(env);
 
             if (_lookups.ContainsKey(key))
                 return _lookups[key];
@@ -73,7 +74,7 @@
                     if (selector.Elements.Count > 1)
                     {
                         var remainingSelectors = new Selector(new NodeList<Element>(selector.Elements.Skip(1)));
-                        rules.AddRange(rule.Find(remainingSelectors, self));
+                        rules.AddRange(rule.Find(env, remainingSelectors, self));
                     }
                     else
                         rules.Add(rule);
@@ -110,22 +111,27 @@
             return this;
         }
 
-        public override string ToCSS()
+        public string ToCSS()
         {
             return ToCSS(new Env());
         }
 
-        public string ToCSS(Env env)
+        public override string ToCSS(Env env)
         {
             if (!Rules.Any())
                 return "";
 
             Evaluate(env);
 
-            return ToCSS(new Context());
+            var css = ToCSS(env, new Context());
+
+            if (env.Compress)
+                return Regex.Replace(css, @"(\s)+", " ");
+
+            return css;
         }
 
-        protected virtual string ToCSS(Context context)
+        protected virtual string ToCSS(Env env, Context context)
         {
             var css = new List<string>(); // The CSS output
             var rules = new List<string>(); // node.Rule instances
@@ -142,21 +148,21 @@
                 if (rule is Ruleset)
                 {
                     var ruleset = (Ruleset) rule;
-                    rulesets.Add(ruleset.ToCSS(paths));
+                    rulesets.Add(ruleset.ToCSS(env, paths));
                 }
                 else if (rule is Rule)
                 {
                     var r = (rule as Rule);
 
                     if (!r.Variable)
-                        rules.Add(r.ToCSS());
+                        rules.Add(r.ToCSS(env));
                 }
                 else if (!rule.IgnoreOutput())
                 {
                     if (Root)
-                        rulesets.Add(rule.ToCSS());
+                        rulesets.Add(rule.ToCSS(env));
                     else
-                        rules.Add(rule.ToCSS());
+                        rules.Add(rule.ToCSS(env));
                 }
             }
 
@@ -166,14 +172,17 @@
             // a selector, or {}.
             // Otherwise, only output if this ruleset has rules.
             if (Root)
-                css.Add(rules.JoinStrings("\n"));
+                css.Add(rules.JoinStrings(env.Compress ? "" : "\n"));
             else
             {
                 if (rules.Count > 0)
                 {
-                    css.Add(paths.ToString());
+                    css.Add(paths.ToCSS(env));
 
-                    css.Add(" {\n  " + rules.JoinStrings("\n  ") + "\n}\n");
+                    css.Add(
+                        (env.Compress ? "{" : " {\n  ") +
+                        rules.JoinStrings(env.Compress ? "" : "\n  ") +
+                        (env.Compress ? "}" : "\n}\n"));
                 }
             }
             css.Add(rulesetsStr);
@@ -185,7 +194,7 @@
         {
             var format = "{0}{{{1}}}";
             return Selectors != null && Selectors.Count > 0
-                       ? string.Format(format, Selectors.Select(s => s.ToCSS()).JoinStrings(""), Rules.Count)
+                       ? string.Format(format, Selectors.Select(s => s.ToCSS(new Env())).JoinStrings(""), Rules.Count)
                        : string.Format(format, "*", Rules.Count);
         }
     }

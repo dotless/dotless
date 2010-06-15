@@ -1,5 +1,6 @@
 ﻿namespace dotless.Core.Parser.Tree
 {
+    using Infrastructure;
     using Infrastructure.Nodes;
 
     public class Element : Node
@@ -13,9 +14,9 @@
             Value = value.Trim();
         }
 
-        public override string ToCSS()
+        public override string ToCSS(Env env)
         {
-            return Combinator.ToCSS() + Value;
+            return Combinator.ToCSS(env) + Value;
         }
     }
 }

@@ -1,13 +1,14 @@
-﻿namespace dotless.Core.Parser.Functions
+namespace dotless.Core.Parser.Functions
 {
     using System.Linq;
+    using Infrastructure;
     using Infrastructure.Nodes;
     using Tree;
     using Utils;
 
     public class AddFunction : Function
     {
-        protected override Node Evaluate()
+        protected override Node Evaluate(Env env)
         {
             Guard.ExpectAllNodes<Number>(Arguments, this);
 

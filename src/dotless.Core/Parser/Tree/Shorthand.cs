@@ -1,5 +1,6 @@
 ﻿namespace dotless.Core.Parser.Tree
 {
+    using Infrastructure;
     using Infrastructure.Nodes;
 
     public class Shorthand : Node
@@ -13,9 +14,9 @@
             Second = second;
         }
 
-        public override string ToCSS()
+        public override string ToCSS(Env env)
         {
-            return First.ToCSS() + "/" + Second.ToCSS();
+            return First.ToCSS(env) + "/" + Second.ToCSS(env);
         }
     }
 }

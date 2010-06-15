@@ -1,13 +1,14 @@
 namespace dotless.Core.Parser.Functions
 {
     using System.Linq;
+    using Infrastructure;
     using Infrastructure.Nodes;
     using Tree;
     using Utils;
 
     public class RgbaFunction : Function
     {
-        protected override Node Evaluate()
+        protected override Node Evaluate(Env env)
         {
             if (Arguments.Count == 2)
             {

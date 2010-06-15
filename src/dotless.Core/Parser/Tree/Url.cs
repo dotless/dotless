@@ -1,5 +1,6 @@
 ﻿namespace dotless.Core.Parser.Tree
 {
+    using Infrastructure;
     using Infrastructure.Nodes;
 
     public class Url : Node
@@ -16,12 +17,12 @@
             if (Value is Quoted)
                 return ((Quoted) Value).Contents;
 
-            return Value.ToCSS();
+            return Value.ToCSS(null); // null should be fine here since Value is either Quoted or TextNode.
         }
 
-        public override string ToCSS()
+        public override string ToCSS(Env env)
         {
-            return "url(" + Value.ToCSS() + ")";
+            return "url(" + Value.ToCSS(env) + ")";
         }
     }
 }

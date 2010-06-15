@@ -11,6 +11,11 @@ namespace dotless.Test.Config
 
     public class ConfigurationFixture
     {
+        private ILessEngine GetEngine(DotlessConfiguration config)
+        {
+            return ((ParameterDecorator)new EngineFactory(config).GetEngine()).Underlying;
+        }
+
         [Test]
         public void DefaultEngineIsParameterDecorator()
         {
@@ -29,16 +34,13 @@ namespace dotless.Test.Config
         }
 
         [Test]
-        public void IfMinifyOptionSetEngineIsMinifierDecorator()
+        public void IfMinifyOptionSetEngineIsLessEngine()
         {
             var config = new DotlessConfiguration { MinifyOutput = true, CacheEnabled = false };
 
-            var engine = ((ParameterDecorator)new EngineFactory(config).GetEngine()).Underlying;
+            var engine = GetEngine(config);
 
-            Assert.That(engine, Is.TypeOf<MinifierDecorator>());
-
-            var minEngine = (MinifierDecorator)engine;
-            Assert.That(minEngine.Engine, Is.TypeOf<LessEngine>());
+            Assert.That(engine, Is.TypeOf<LessEngine>());
         }
 
         [Test]
@@ -46,7 +48,7 @@ namespace dotless.Test.Config
         {
             var config = new DotlessConfiguration { Web = true, CacheEnabled = false };
 
-            var engine = ((ParameterDecorator)new EngineFactory(config).GetEngine()).Underlying;
+            var engine = GetEngine(config);
 
             Assert.That(engine, Is.TypeOf<LessEngine>());
         }
@@ -56,7 +58,7 @@ namespace dotless.Test.Config
         {
             var config = new DotlessConfiguration { Web = true, CacheEnabled = true };
 
-            var engine = ((ParameterDecorator)new EngineFactory(config).GetEngine()).Underlying;
+            var engine = GetEngine(config);
 
             Assert.That(engine, Is.TypeOf<CacheDecorator>());
 
@@ -89,19 +91,16 @@ namespace dotless.Test.Config
         }
 
         [Test]
-        public void IfWebCacheAndMinifyOptionsSetEngineIsCacheDecoratorThenMinifierDecorator()
+        public void IfWebCacheAndMinifyOptionsSetEngineIsCacheDecoratorThenLessEngine()
         {
             var config = new DotlessConfiguration { Web = true, CacheEnabled = true, MinifyOutput = true };
 
-            var engine = ((ParameterDecorator)new EngineFactory(config).GetEngine()).Underlying;
+            var engine = GetEngine(config);
 
             Assert.That(engine, Is.TypeOf<CacheDecorator>());
 
             var aspEngine = (CacheDecorator)engine;
-            Assert.That(aspEngine.Underlying, Is.TypeOf<MinifierDecorator>());
-
-            var minEngine = (MinifierDecorator)aspEngine.Underlying;
-            Assert.That(minEngine.Engine, Is.TypeOf<LessEngine>());
+            Assert.That(aspEngine.Underlying, Is.TypeOf<LessEngine>());
         }
 
         [Test]

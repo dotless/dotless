@@ -29,11 +29,11 @@
             }
         }
 
-        public override string ToString()
+        public string ToCSS(Env env)
         {
             return Paths
-                .Select(p => p.Select(s => s.ToCSS()).JoinStrings("").Trim())
-                .JoinStrings(Paths.Count > 3 ? ",\n" : ", ");
+                .Select(p => p.Select(s => s.ToCSS(env)).JoinStrings("").Trim())
+                .JoinStrings(env.Compress ? "," : (Paths.Count > 3 ? ",\n" : ", "));
         }
 
         public int Count
