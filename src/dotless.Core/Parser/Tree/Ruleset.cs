@@ -97,6 +97,13 @@
                 NodeHelper.ExpandNodes<Import>(env, this);
             }
 
+            EvaluateRules(env);
+
+            return this;
+        }
+
+        public List<Node> EvaluateRules(Env env)
+        {
             env.Frames.Push(this);
 
             NodeHelper.ExpandNodes<Mixin.Call>(env, this);
@@ -108,7 +115,7 @@
 
             env.Frames.Pop();
 
-            return this;
+            return Rules;
         }
 
         public string ToCSS()

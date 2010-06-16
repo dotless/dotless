@@ -74,9 +74,7 @@ namespace dotless.Core.Parser.Tree
                     else if (rule is Ruleset)
                     {
                         var ruleset = (rule as Ruleset);
-                        var rules = ruleset.Rules
-                            .Select(r => r.Evaluate(context))
-                            .ToList();
+                        var rules = ruleset.EvaluateRules(context);
 
                         newRules.Add(new Ruleset(ruleset.Selectors, rules));
                     }

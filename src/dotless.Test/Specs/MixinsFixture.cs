@@ -816,5 +816,61 @@ namespace dotless.Test.Specs
 
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void InnerMixinEvaluatedCorrectly()
+        {
+            var input =
+                @"
+.inner-mixin(@width) {
+    width: @width;
+}
+.mixin() {
+    span {
+        color: red;
+        .inner-mixin(30px);
     }
+}
+
+#header {
+    .mixin();
+}";
+
+            var expected = @"
+#header span {
+  color: red;
+  width: 30px;
+}";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void InnerMixinsFindInnerVariables()
+        {
+            var input =
+                @"
+.inner-mixin(@width) {
+    width: @width;
+}
+.mixin() {
+    span {
+        @var: 20px;
+        .inner-mixin(@var);
+    }
+}
+
+#header {
+    .mixin();
+}";
+
+            var expected = @"
+#header span {
+  width: 20px;
+}";
+
+            AssertLess(input, expected);
+        }
+
+  }
 }
