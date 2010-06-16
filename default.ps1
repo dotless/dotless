@@ -88,7 +88,6 @@ task Merge -depends Build {
         Pandora.dll `
         dotless.Core.dll `
         Microsoft.Practices.ServiceLocation.dll `
-        PegBase.dll `
         /out:$filename `
         /internalize `
         /keyfile:../src/dotless-open-source.snk `
@@ -105,7 +104,6 @@ task Merge -depends Build {
     & $lib_dir\ilmerge\ILMerge.exe $filename-partial.dll `
         Pandora.dll `
         Microsoft.Practices.ServiceLocation.dll `
-        PegBase.dll `
         /out:$filename `
         /internalize `
         /keyfile:../src/dotless-open-source.snk `
