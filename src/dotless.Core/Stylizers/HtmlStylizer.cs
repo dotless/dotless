@@ -6,9 +6,11 @@ namespace dotless.Core.Stylizers
     {
         public string Stylize(Zone zone, string fileName, string error)
         {
+            var fileStr = string.IsNullOrEmpty(fileName) ? "" : string.Format(" in '{0}'", fileName);
+
             return string.Format(@"
 <div id=""less-error-message"">
-  <h3>There is an error in '{0}'</h3>
+  <h3>There is an error{0}</h3>
   <p>{1} on line {3}, column {5}</p>
   <div class=""extract"">
     <pre class=""before""><span>{2}</span>{6}</pre>
@@ -17,7 +19,7 @@ namespace dotless.Core.Stylizers
   </div>
 </div>
 ",
-                                 fileName,
+                                 fileStr,
                                  error,
                                  zone.LineNumber - 1,
                                  zone.LineNumber,

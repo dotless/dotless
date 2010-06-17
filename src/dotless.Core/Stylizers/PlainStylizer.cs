@@ -6,13 +6,15 @@
     {
         public string Stylize(Zone zone, string fileName, string error)
         {
+            var fileStr = string.IsNullOrEmpty(fileName) ? "" : string.Format(" in file '{0}'", fileName);
+
             return string.Format(@"
-{1} on line {4} in file '{0}':
+{1} on line {4}{0}:
 {2,5:[#]}: {3}
 {4,5:[#]}: {5}
        {6}^
 {7,5:[#]}: {8}",
-                                 fileName,
+                                 fileStr,
                                  error,
                                  zone.LineNumber - 1,
                                  zone.Extract.Before,
