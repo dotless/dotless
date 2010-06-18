@@ -30,7 +30,7 @@ namespace dotless.Test.Specs.Functions
         [Test]
         public void TestAlphaTestsTypes()
         {
-            AssertExpressionError("Expected color in function 'alpha', found 12", "alpha(12)");
+            AssertExpressionError("Expected color in function 'alpha', found 12", 6, "alpha(12)");
         }
 
         [Test]
@@ -65,8 +65,8 @@ namespace dotless.Test.Specs.Functions
         [Test]
         public void TestEditAlphaTestsTypes()
         {
-            AssertExpressionError("Expected color in function 'alpha', found \"foo\"", "alpha(\"foo\", 10%)");
-            AssertExpressionError("Expected number in function 'alpha', found \"foo\"", "alpha(#fff, \"foo\")");
+            AssertExpressionError("Expected color in function 'alpha', found \"foo\"", 6, "alpha(\"foo\", 10%)");
+            AssertExpressionError("Expected number in function 'alpha', found \"foo\"", 12, "alpha(#fff, \"foo\")");
         }
     }
 }

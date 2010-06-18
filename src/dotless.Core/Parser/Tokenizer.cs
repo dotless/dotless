@@ -189,26 +189,25 @@ namespace dotless.Core.Parser
             return _i == _inputLength;
         }
 
-        public int GetLocation()
+        public int Location
         {
-            return _i;
-        }
-
-        public void SetLocation(int location)
-        {
-            _i = location;
-
-            _j = 0;
-            _current = 0;
-            while (_current + _chunks[_j].Length < _i)
+            get { return _i; }
+            set
             {
-                _current += _chunks[_j++].Length;
+                _i = value;
+
+                _j = 0;
+                _current = 0;
+                while (_current + _chunks[_j].Length < _i)
+                {
+                    _current += _chunks[_j++].Length;
+                }
             }
         }
 
-        public Zone GetCurrentZone()
+        public Zone GetZone(int position)
         {
-            var first = _input.Substring(0, _i);
+            var first = _input.Substring(0, position);
 
             var start = first.LastIndexOf('\n') + 1;
             var line = first.Count(c => c == '\n');
@@ -218,7 +217,7 @@ namespace dotless.Core.Parser
             return new Zone
                        {
                            LineNumber = line + 1,
-                           Position = _i - start,
+                           Position = position - start,
                            Extract = new Extract
                                          {
                                              Before = line > 0 ? lines[line - 1] : "/beginning of file",

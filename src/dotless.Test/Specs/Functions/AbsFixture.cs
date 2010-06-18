@@ -16,7 +16,7 @@ namespace dotless.Test.Specs.Functions
         [Test]
         public void ThrowsIfIncorrectType()
         {
-            AssertExpressionError("Expected number in function 'abs', found #aaaaaa", "abs(#aaa)");
+            AssertExpressionError("Expected number in function 'abs', found #aaaaaa", 4, "abs(#aaa)");
         }
     }
 }

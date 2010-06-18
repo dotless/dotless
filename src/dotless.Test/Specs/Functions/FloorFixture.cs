@@ -12,7 +12,7 @@ namespace dotless.Test.Specs.Functions
             AssertExpression("5px", "floor(5.49px)");
             AssertExpression("50%", "floor(50.1%)");
 
-            AssertExpressionError("Expected number in function 'floor', found \"foo\"", "floor(\"foo\")");
+            AssertExpressionError("Expected number in function 'floor', found \"foo\"", 6, "floor(\"foo\")");
         }
     }
 }

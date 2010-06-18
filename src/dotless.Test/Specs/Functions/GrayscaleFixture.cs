@@ -17,7 +17,7 @@ namespace dotless.Test.Specs.Functions
         [Test]
         public void TestGrayscaleTestsTypes()
         {
-            AssertExpressionError("Expected color in function 'grayscale', found \"foo\"", "grayscale(\"foo\")");
+            AssertExpressionError("Expected color in function 'grayscale', found \"foo\"", 10, "grayscale(\"foo\")");
         }
     }
 }

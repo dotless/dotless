@@ -1,6 +1,8 @@
 ﻿namespace dotless.Test
 {
     using System;
+    using System.Text.RegularExpressions;
+    using Core.Importers;
     using Core.Parser;
     using System.Collections.Generic;
     using System.Linq;
@@ -9,7 +11,7 @@
 
     public class SpecFixtureBase
     {
-        protected Func<Parser> DefaultParser = () => new Parser(0);
+        protected Func<Parser> DefaultParser = () => new Parser(0, new TestStylizer(), new Importer());
         protected Func<Env> DefaultEnv = () => new Env();
 
         protected void AssertLess(string input, string expected)
@@ -56,9 +58,21 @@
             Assert.That(() => Evaluate(input), Throws.Exception.Message.EqualTo(message));
         }
 
+        public void AssertError(string message, string line, int lineNumber, int position, string input)
+        {
+            message = TestStylizer.GetErrorMessage(message, line, lineNumber, position);
+            AssertError(message, input);
+        }
+
         protected void AssertExpressionError(string message, string expression)
         {
             Assert.That(() => EvaluateExpression(expression), Throws.Exception.Message.EqualTo(message));
+        }
+
+        public void AssertExpressionError(string message, int position, string expression)
+        {
+            message = TestStylizer.GetErrorMessage(message, expression, 3, position);
+            AssertExpressionError(message, expression);
         }
 
         protected string EvaluateExpression(string expression)
@@ -74,7 +88,7 @@
                                                           (s, x) =>
                                                           string.Format("{0}\n  @{1}: {2};", s, x.Key, x.Value));
 
-            var less = string.Format(".def {{{0}\n  expression: {1};\n}}", variables, expression);
+            var less = string.Format(".def {{\nexpression:\n{0}\n;}}\n {1}", expression, variables);
 
             var css = Evaluate(less);
 
@@ -94,7 +108,7 @@
 
         public string Evaluate(string input, Parser parser)
         {
-            var tree = parser.Parse(input, null);
+            var tree = parser.Parse(input.Trim(), null);
             return tree.ToCSS(DefaultEnv());
         }
     }

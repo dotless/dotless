@@ -29,10 +29,10 @@ namespace dotless.Test.Specs.Functions
         [Test]
         public void TestHslaChecksTypes()
         {
-            AssertExpressionError("Expected number in function 'hsla', found \"foo\"", "hsla(\"foo\", 10, 12, 0.3)");
-            AssertExpressionError("Expected number in function 'hsla', found \"foo\"", "hsla(10, \"foo\", 12, 0)");
-            AssertExpressionError("Expected number in function 'hsla', found \"foo\"", "hsla(10, 10, \"foo\", 1)");
-            AssertExpressionError("Expected number in function 'hsla', found \"foo\"", "hsla(10, 10, 10, \"foo\")");
+            AssertExpressionError("Expected number in function 'hsla', found \"foo\"", 0, "hsla(\"foo\", 10, 12, 0.3)");
+            AssertExpressionError("Expected number in function 'hsla', found \"foo\"", 0, "hsla(10, \"foo\", 12, 0)");
+            AssertExpressionError("Expected number in function 'hsla', found \"foo\"", 0, "hsla(10, 10, \"foo\", 1)");
+            AssertExpressionError("Expected number in function 'hsla', found \"foo\"", 0, "hsla(10, 10, 10, \"foo\")");
         }
     }
 }

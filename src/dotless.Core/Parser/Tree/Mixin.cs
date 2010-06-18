@@ -34,10 +34,10 @@ namespace dotless.Core.Parser.Tree
                 return this;
             }
 
-            public Ruleset Evaluate(NodeList<Expression> args, Env env)
+            public Ruleset Evaluate(NodeList<Expression> args, Env env, int index)
             {
                 if (args)
-                    Guard.ExpectMaxArguments(Params.Count, args.Count, string.Format("'{0}'", Name));
+                    Guard.ExpectMaxArguments(Params.Count, args.Count, string.Format("'{0}'", Name), index);
 
                 var frame = new Ruleset(null, new List<Node>());
 
@@ -52,9 +52,9 @@ namespace dotless.Core.Parser.Tree
                             val = Params[i].Value;
 
                         if (val)
-                            frame.Rules.Add(new Rule(Params[i].Name, val.Evaluate(env)));
+                            frame.Rules.Add(new Rule(Params[i].Name, val.Evaluate(env)) { Index = val.Index });
                         else
-                            throw new ParsingException("wrong number of arguments for " + Name);
+                            throw new ParsingException(string.Format("wrong number of arguments for {0} ({1} for {2})", Name, args.Count, _arity), index);
                     }
                 }
 
@@ -131,6 +131,7 @@ namespace dotless.Core.Parser.Tree
 
             public override Node Evaluate(Env env)
             {
+                var found = false;
                 foreach (var frame in env.Frames)
                 {
                     NodeList mixins;
@@ -148,10 +149,19 @@ namespace dotless.Core.Parser.Tree
                         if (!ruleset.MatchArguements(Arguments, env))
                             continue;
 
+                        found = true;
+
                         if (node is Mixin.Definition)
                         {
-                            var mixin = node as Mixin.Definition;
-                            rules.AddRange(mixin.Evaluate(Arguments, env).Rules);
+                            try
+                            {
+                                var mixin = node as Mixin.Definition;
+                                rules.AddRange(mixin.Evaluate(Arguments, env, Index).Rules);
+                            }
+                            catch (ParsingException e)
+                            {
+                                throw new ParsingException(e.Message, Index);
+                            }
                         }
                         else
                         {
@@ -160,9 +170,18 @@ namespace dotless.Core.Parser.Tree
                         }
                         // todo fix for other Ruleset types?
                     }
+
+                    if (!found)
+                    {
+                        var message = string.Format("No matching definition was found for `{0}({1})`", 
+                            Selector.ToCSS(env).Trim(), 
+                            Arguments.Select(a => a.ToCSS(env)).JoinStrings(", "));
+                        throw new ParsingException(message, Index);
+                    }
+
                     return rules;
                 }
-                throw new ParsingException(Selector.ToCSS(env).Trim() + " is undefined");
+                throw new ParsingException(Selector.ToCSS(env).Trim() + " is undefined", Index);
             }
         }
     }

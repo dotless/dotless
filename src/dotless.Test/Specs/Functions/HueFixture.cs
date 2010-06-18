@@ -13,7 +13,7 @@ namespace dotless.Test.Specs.Functions
         [Test]
         public void TestHueException()
         {
-            AssertExpressionError("Expected color in function 'hue', found 12", "hue(12)");
+            AssertExpressionError("Expected color in function 'hue', found 12", 4, "hue(12)");
         }
 
         [Test]
@@ -32,8 +32,8 @@ namespace dotless.Test.Specs.Functions
         [Test]
         public void TestEditHueTestsTypes()
         {
-            AssertExpressionError("Expected color in function 'hue', found \"foo\"", "hue(\"foo\", 10%)");
-            AssertExpressionError("Expected number in function 'hue', found \"foo\"", "hue(#fff, \"foo\")");
+            AssertExpressionError("Expected color in function 'hue', found \"foo\"", 4, "hue(\"foo\", 10%)");
+            AssertExpressionError("Expected number in function 'hue', found \"foo\"", 10, "hue(#fff, \"foo\")");
         }
     }
 }

@@ -25,9 +25,9 @@ namespace dotless.Test.Specs.Functions
         [Test]
         public void TestHslChecksTypes()
         {
-            AssertExpressionError("Expected number in function 'hsl', found \"foo\"", "hsl(\"foo\", 10, 12)");
-            AssertExpressionError("Expected number in function 'hsl', found \"foo\"", "hsl(10, \"foo\", 12)");
-            AssertExpressionError("Expected number in function 'hsl', found \"foo\"", "hsl(10, 10, \"foo\")");
+            AssertExpressionError("Expected number in function 'hsl', found \"foo\"", 0, "hsl(\"foo\", 10, 12)");
+            AssertExpressionError("Expected number in function 'hsl', found \"foo\"", 0, "hsl(10, \"foo\", 12)");
+            AssertExpressionError("Expected number in function 'hsl', found \"foo\"", 0, "hsl(10, 10, \"foo\")");
         }
     }
 }

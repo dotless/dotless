@@ -1,6 +1,7 @@
 ﻿namespace dotless.Core.Parser.Tree
 {
     using System;
+    using Exceptions;
     using Infrastructure;
     using Infrastructure.Nodes;
 
@@ -31,18 +32,32 @@
                     a = temp;
                 }
                 else
-                    throw new InvalidOperationException("Can't substract or divide a color from a number");
+                    throw new ParsingException("Can't substract or divide a color from a number", Index);
             }
 
-            var operable = a as IOperable;
-            if (operable != null)
-                return operable.Operate(Operator, b);
+            try
+            {
+                var operable = a as IOperable;
+                if (operable != null)
+                    return operable.Operate(Operator, b);
+            }
+            catch (DivideByZeroException e)
+            {
+                throw new ParsingException(e, Index);
+            }
+            catch (InvalidOperationException e)
+            {
+                throw new ParsingException(e, Index);
+            }
 
             return null;
         }
 
         public static double Operate(string op, double first, double second)
         {
+            if(op == "/" && second == 0)
+                throw new DivideByZeroException();
+
             switch (op)
             {
                 case "+":
@@ -50,9 +65,9 @@
                 case "-":
                     return first - second;
                 case "*":
-                    return first*second;
+                    return first * second;
                 case "/":
-                    return first/second;
+                    return first / second;
                 default:
                     throw new InvalidOperationException("Unknown operator");
             }

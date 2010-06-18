@@ -7,40 +7,40 @@
 
     public interface INodeProvider
     {
-        Element Element(Combinator combinator, string value);
-        Combinator Combinator(string value);
-        Selector Selector(NodeList<Element> elements);
-        Rule Rule(string name, Node value);
-        Ruleset Ruleset(NodeList<Selector> selectors, List<Node> rules);
+        Element Element(Combinator combinator, string value, int index);
+        Combinator Combinator(string value, int index);
+        Selector Selector(NodeList<Element> elements, int index);
+        Rule Rule(string name, Node value, int index);
+        Ruleset Ruleset(NodeList<Selector> selectors, List<Node> rules, int index);
 
         //entities
-        Alpha Alpha(Node value);
-        Call Call(string name, NodeList<Expression> arguments);
-        Color Color(string rgb);
-        Keyword Keyword(string value);
-        Number Number(string value, string unit);
-        Shorthand Shorthand(Node first, Node second);
-        Variable Variable(string name);
-        Url Url(Node value);
+        Alpha Alpha(Node value, int index);
+        Call Call(string name, NodeList<Expression> arguments, int index);
+        Color Color(string rgb, int index);
+        Keyword Keyword(string value, int index);
+        Number Number(string value, string unit, int index);
+        Shorthand Shorthand(Node first, Node second, int index);
+        Variable Variable(string name, int index);
+        Url Url(Node value, int index);
 
         //mixins
-        Mixin.Call MixinCall(NodeList<Element> elements, NodeList<Expression> arguments);
-        Mixin.Definition MixinDefinition(string name, NodeList<Rule> parameters, List<Node> rules);
+        Mixin.Call MixinCall(NodeList<Element> elements, NodeList<Expression> arguments, int index);
+        Mixin.Definition MixinDefinition(string name, NodeList<Rule> parameters, List<Node> rules, int index);
 
         //directives
-        Import Import(Url path, Importer importer);
-        Import Import(Quoted path, Importer importer);
-        Directive Directive(string name, List<Node> rules);
-        Directive Directive(string name, Node value);
+        Import Import(Url path, Importer importer, int index);
+        Import Import(Quoted path, Importer importer, int index);
+        Directive Directive(string name, List<Node> rules, int index);
+        Directive Directive(string name, Node value, int index);
 
         //expressions
-        Expression Expression(NodeList expression);
-        Value Value(IEnumerable<Node> values, Node important);
-        Operation Operation(string operation, Node left, Node right);
+        Expression Expression(NodeList expression, int index);
+        Value Value(IEnumerable<Node> values, Node important, int index);
+        Operation Operation(string operation, Node left, Node right, int index);
 
         //text
-        Comment Comment(string value);
-        TextNode TextNode(string contents);
-        Quoted Quoted(string value, string contents);
+        Comment Comment(string value, int index);
+        TextNode TextNode(string contents, int index);
+        Quoted Quoted(string value, string contents, int index);
     }
 }

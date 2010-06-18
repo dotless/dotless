@@ -13,7 +13,7 @@ namespace dotless.Test.Specs.Functions
             AssertExpression("6px", "ceil(5.49px)");
             AssertExpression("51%", "ceil(50.1%)");
 
-            AssertExpressionError("Expected number in function 'ceil', found \"a\"", "ceil(\"a\")");
+            AssertExpressionError("Expected number in function 'ceil', found \"a\"", 5, "ceil(\"a\")");
         }
     }
 }

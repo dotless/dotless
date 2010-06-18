@@ -14,7 +14,7 @@ namespace dotless.Test.Specs.Functions
         [Test]
         public void TestSaturationException()
         {
-            AssertExpressionError("Expected color in function 'saturation', found 12", "saturation(12)");
+            AssertExpressionError("Expected color in function 'saturation', found 12", 11, "saturation(12)");
         }
 
         [Test]
@@ -49,8 +49,8 @@ namespace dotless.Test.Specs.Functions
         [Test]
         public void TestEditSaturationTestsTypes()
         {
-            AssertExpressionError("Expected color in function 'saturation', found \"foo\"", "saturation(\"foo\", 10%)");
-            AssertExpressionError("Expected number in function 'saturation', found \"foo\"", "saturation(#fff, \"foo\")");
+            AssertExpressionError("Expected color in function 'saturation', found \"foo\"", 11, "saturation(\"foo\", 10%)");
+            AssertExpressionError("Expected number in function 'saturation', found \"foo\"", 17, "saturation(#fff, \"foo\")");
         }
     }
 }

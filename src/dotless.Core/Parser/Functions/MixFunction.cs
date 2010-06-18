@@ -10,14 +10,14 @@ namespace dotless.Core.Parser.Functions
     {
         protected override Node Evaluate(Env env)
         {
-            Guard.ExpectMinArguments(2, Arguments.Count, this);
-            Guard.ExpectMaxArguments(3, Arguments.Count, this);
-            Guard.ExpectAllNodes<Color>(Arguments.Take(2), this);
+            Guard.ExpectMinArguments(2, Arguments.Count, this, Index);
+            Guard.ExpectMaxArguments(3, Arguments.Count, this, Index);
+            Guard.ExpectAllNodes<Color>(Arguments.Take(2), this, Index);
 
             double weight = 50;
             if (Arguments.Count == 3)
             {
-                Guard.ExpectNode<Number>(Arguments[2], this);
+                Guard.ExpectNode<Number>(Arguments[2], this, Index);
 
                 weight = ((Number) Arguments[2]).Value;
             }

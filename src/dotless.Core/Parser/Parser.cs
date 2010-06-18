@@ -2,11 +2,9 @@
 
 namespace dotless.Core.Parser
 {
-    using System;
     using Exceptions;
     using Importers;
     using Infrastructure;
-    using Infrastructure.Nodes;
     using Stylizers;
     using Tree;
 
@@ -98,36 +96,29 @@ namespace dotless.Core.Parser
             try
             {
                 var parsers = new Parsers(new DefaultNodeProvider());
-                root = new Ruleset(new NodeList<Selector>(), parsers.Primary(this));
-                root.Root = true;
+                root = new Root(parsers.Primary(this), e => GenerateParserError(e, fileName));
             }
             catch (ParsingException e)
             {
                 parsingException = e;
             }
 
-            CheckForParsingError(parsingException, fileName);
+            if (Tokenizer.HasCompletedParsing() && parsingException == null)
+                return root;
 
-            return root;
+            throw GenerateParserError(parsingException, fileName);
         }
 
-        private void CheckForParsingError(Exception parsingException, string fileName)
+        private ParserException GenerateParserError(ParsingException parsingException, string fileName)
         {
-            if (Tokenizer.HasCompletedParsing())
-                if (parsingException != null)
-                    throw parsingException;
-                else
-                    return;
+            var errorLocation = parsingException != null ? parsingException.Index : Tokenizer.Location;
+            var error = parsingException != null ? parsingException.Message : "Parse Error";
 
-            var zone = Tokenizer.GetCurrentZone();
-
-            var error = "Parse Error";
-            if (parsingException != null)
-                error = parsingException.Message;
+            var zone = Tokenizer.GetZone(errorLocation);
 
             var message = Stylizer.Stylize(zone, fileName, error);
 
-            throw new ParserException(message, parsingException);
+            return new ParserException(message, parsingException);
         }
     }
 }

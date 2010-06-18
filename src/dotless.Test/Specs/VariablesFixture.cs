@@ -93,5 +93,11 @@ namespace dotless.Test.Specs
 
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void NotFound()
+        {
+            AssertExpressionError("variable @var is undefined", 0, "@var");
+        }
     }
 }

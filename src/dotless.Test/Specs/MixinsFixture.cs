@@ -1,5 +1,6 @@
 namespace dotless.Test.Specs
 {
+    using System;
     using NUnit.Framework;
 
     public class MixinsFixture : SpecFixtureBase
@@ -391,7 +392,7 @@ namespace dotless.Test.Specs
             AssertError("Argument '@var' not found. in '.mixin(@var: 6)'", input);
         }
 
-        [Test, Ignore("Unsupported")]
+        [Test]
         public void ThrowsIfTooManyArguments()
         {
             var input =
@@ -400,7 +401,12 @@ namespace dotless.Test.Specs
 
 .class { .mixin(1, 2, 3); }";
 
-            AssertError("Expected at most 1 arguments in '.mixin', found 3", input);
+            AssertError(
+                "No matching definition was found for `.mixin(1, 2, 3)`",
+                ".class { .mixin(1, 2, 3); }",
+                3,
+                9,
+                input);
         }
 
         [Test]
@@ -764,7 +770,6 @@ namespace dotless.Test.Specs
 
 .left { .mixout('left'); }
 .right { .mixout('right'); }
-.none { .mixout('top'); }
 ";
 
             var expected = @"
@@ -777,6 +782,39 @@ namespace dotless.Test.Specs
 ";
 
             AssertLess(input, expected);
+        }
+
+        [Test]
+        public void ThrowsIfNoMatchFound()
+        {
+            var input =
+                @"
+.mixout ('left') { left: 1; }
+
+.mixout ('right') { right: 1; }
+
+.none { .mixout('top'); }
+";
+
+            AssertError(
+                "No matching definition was found for `.mixout('top')`",
+                ".none { .mixout('top'); }",
+                5,
+                8,
+                input);
+        }
+
+        [Test]
+        public void ThrowsIfNotDefined()
+        {
+            var input = ".none { .mixin(); }";
+
+            AssertError(
+                ".mixin is undefined",
+                ".none { .mixin(); }",
+                1,
+                8,
+                input);
         }
 
         [Test]
@@ -870,6 +908,18 @@ namespace dotless.Test.Specs
 }";
 
             AssertLess(input, expected);
+        }
+
+        [Test]
+        public void MixinNotFound()
+        {
+            var input =
+                @"
+.class {
+  .mixin();
+}
+";
+            AssertError(".mixin is undefined", "  .mixin();", 2, 2, input);
         }
 
   }

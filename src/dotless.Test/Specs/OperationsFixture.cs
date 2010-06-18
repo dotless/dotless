@@ -68,5 +68,19 @@ namespace dotless.Test.Specs
 
             AssertExpression("3.75em", "60/@base", variables);
         }
+
+        [Test]
+        public void DivisionByZero()
+        {
+            AssertExpressionError("Attempted to divide by zero.", 5, "20px / 0");
+            AssertExpressionError("Attempted to divide by zero.", 14, "1 + 2 - 3 * 4 / 0");
+            AssertExpressionError("Attempted to divide by zero.", 6, "1 + 2 / 0 - 3 * 4 / 0");
+        }
+
+        [Test]
+        public void DivideNumberByColor()
+        {
+            AssertExpressionError("Can't substract or divide a color from a number", 4, "100 / #fff");
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace dotless.Core.Parser.Tree
+namespace dotless.Core.Parser.Tree
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -11,7 +11,6 @@
     {
         public NodeList<Selector> Selectors { get; set; }
         public List<Node> Rules { get; set; }
-        public bool Root { get; set; }
 
         private Dictionary<string, NodeList> _lookups;
         private Dictionary<string, Rule> _variables;
@@ -90,7 +89,7 @@
 
         public override Node Evaluate(Env env)
         {
-            if (Root)
+            if (this is Root)
             {
                 env = env ?? new Env();
 
@@ -145,7 +144,7 @@
             var rulesets = new List<string>(); // node.Ruleset instances
             var paths = new Context(); // Current selectors
 
-            if (!Root)
+            if (!(this is Root))
             {
                 paths.AppendSelectors(context, Selectors);
             }
@@ -166,7 +165,7 @@
                 }
                 else if (!rule.IgnoreOutput())
                 {
-                    if (Root)
+                    if (this is Root)
                         rulesets.Add(rule.ToCSS(env));
                     else
                         rules.Add(rule.ToCSS(env));
@@ -178,7 +177,7 @@
             // If this is the root node, we don't render
             // a selector, or {}.
             // Otherwise, only output if this ruleset has rules.
-            if (Root)
+            if (this is Root)
                 css.Add(rules.JoinStrings(env.Compress ? "" : "\n"));
             else
             {

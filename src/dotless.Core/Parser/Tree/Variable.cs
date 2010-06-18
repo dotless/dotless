@@ -1,4 +1,4 @@
-﻿namespace dotless.Core.Parser.Tree
+namespace dotless.Core.Parser.Tree
 {
     using Exceptions;
     using Infrastructure;
@@ -21,7 +21,7 @@
             if (variable)
                 return variable.Value.Evaluate(env);
 
-            throw new ParsingException("variable " + Name + " is undefined");
+            throw new ParsingException("variable " + Name + " is undefined", Index);
         }
     }
 }

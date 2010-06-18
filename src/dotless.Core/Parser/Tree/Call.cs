@@ -1,4 +1,4 @@
-﻿namespace dotless.Core.Parser.Tree
+namespace dotless.Core.Parser.Tree
 {
     using System.Linq;
     using Infrastructure;
@@ -35,6 +35,7 @@
                 if (function != null)
                 {
                     function.Name = Name;
+                    function.Index = Index;
                     Evaluated = function.Call(env, args);
                     return Evaluated;
                 }

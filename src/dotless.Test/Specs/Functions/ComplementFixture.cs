@@ -17,7 +17,7 @@ namespace dotless.Test.Specs.Functions
         [Test]
         public void TestComplementTestsTypes()
         {
-            AssertExpressionError("Expected color in function 'complement', found \"foo\"", "complement(\"foo\")");
+            AssertExpressionError("Expected color in function 'complement', found \"foo\"", 11, "complement(\"foo\")");
         }
     }
 }

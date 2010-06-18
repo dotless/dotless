@@ -9,12 +9,15 @@ namespace dotless.Core.Parser.Functions
     {
         public string Name { get; set; }
         protected List<Node> Arguments { get; set; }
+        public int Index { get; set; }
 
         public Node Call(Env env, IEnumerable<Node> arguments)
         {
             Arguments = arguments.ToList();
 
-            return Evaluate(env);
+            var node = Evaluate(env);
+            node.Index = Index;
+            return node;
         }
 
         protected abstract Node Evaluate(Env env);

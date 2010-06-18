@@ -25,9 +25,9 @@ namespace dotless.Test.Specs.Functions
         [Test]
         public void TestMixTestsTypes()
         {
-            AssertExpressionError("Expected color in function 'mix', found \"foo\"", "mix(\"foo\", #f00, 10%)");
-            AssertExpressionError("Expected color in function 'mix', found \"foo\"", "mix(#f00, \"foo\", 10%)");
-            AssertExpressionError("Expected number in function 'mix', found \"foo\"", "mix(#f00, #baf, \"foo\")");
+            AssertExpressionError("Expected color in function 'mix', found \"foo\"", 0, "mix(\"foo\", #f00, 10%)");
+            AssertExpressionError("Expected color in function 'mix', found \"foo\"", 0, "mix(#f00, \"foo\", 10%)");
+            AssertExpressionError("Expected number in function 'mix', found \"foo\"", 0, "mix(#f00, #baf, \"foo\")");
         }
 
         [Test]

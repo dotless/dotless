@@ -42,9 +42,9 @@ namespace dotless.Test.Specs.Functions
         [Test]
         public void TestRgbTestsTypes()
         {
-            AssertExpressionError("Expected number in function 'rgb', found \"foo\"", "rgb(\"foo\", 10, 12)");
-            AssertExpressionError("Expected number in function 'rgb', found \"foo\"", "rgb(10, \"foo\", 12)");
-            AssertExpressionError("Expected number in function 'rgb', found \"foo\"", "rgb(10, 10, \"foo\")");
+            AssertExpressionError("Expected number in function 'rgb', found \"foo\"", 0, "rgb(\"foo\", 10, 12)");
+            AssertExpressionError("Expected number in function 'rgb', found \"foo\"", 0, "rgb(10, \"foo\", 12)");
+            AssertExpressionError("Expected number in function 'rgb', found \"foo\"", 0, "rgb(10, 10, \"foo\")");
         }
     }
 }

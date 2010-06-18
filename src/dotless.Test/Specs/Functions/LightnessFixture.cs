@@ -14,7 +14,7 @@ namespace dotless.Test.Specs.Functions
         [Test]
         public void TestLightnessException()
         {
-            AssertExpressionError("Expected color in function 'lightness', found 12", "lightness(12)");
+            AssertExpressionError("Expected color in function 'lightness', found 12", 10, "lightness(12)");
         }
 
         [Test]
@@ -47,8 +47,8 @@ namespace dotless.Test.Specs.Functions
         [Test]
         public void TestEditLightnessTestsTypes()
         {
-            AssertExpressionError("Expected color in function 'lightness', found \"foo\"", "lightness(\"foo\", 10%)");
-            AssertExpressionError("Expected number in function 'lightness', found \"foo\"", "lightness(#fff, \"foo\")");
+            AssertExpressionError("Expected color in function 'lightness', found \"foo\"", 10, "lightness(\"foo\", 10%)");
+            AssertExpressionError("Expected number in function 'lightness', found \"foo\"", 16, "lightness(#fff, \"foo\")");
         }
     }
 }

@@ -10,7 +10,7 @@ namespace dotless.Core.Parser.Functions
     {
         protected override Node Evaluate(Env env)
         {
-            Guard.ExpectAllNodes<Number>(Arguments, this);
+            Guard.ExpectAllNodes<Number>(Arguments, this, Index);
 
             var value = Arguments.Cast<Number>().Select(d => d.Value).Aggregate(0d, (a, b) => a + b);
 

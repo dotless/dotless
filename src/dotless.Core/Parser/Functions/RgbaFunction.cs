@@ -12,14 +12,14 @@ namespace dotless.Core.Parser.Functions
         {
             if (Arguments.Count == 2)
             {
-                Guard.ExpectNode<Color>(Arguments[0], this);
-                Guard.ExpectNode<Number>(Arguments[1], this);
+                Guard.ExpectNode<Color>(Arguments[0], this, Index);
+                Guard.ExpectNode<Number>(Arguments[1], this, Index);
 
                 return new Color(((Color) Arguments[0]).RGB, ((Number) Arguments[1]).Value);
             }
 
-            Guard.ExpectNumArguments(4, Arguments.Count, this);
-            Guard.ExpectAllNodes<Number>(Arguments, this);
+            Guard.ExpectNumArguments(4, Arguments.Count, this, Index);
+            Guard.ExpectAllNodes<Number>(Arguments, this, Index);
 
             var args = Arguments.Cast<Number>();
 

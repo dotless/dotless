@@ -13,7 +13,7 @@ namespace dotless.Test.Specs.Functions
             AssertExpression("5px", "round(5.49px)");
             AssertExpression("50%", "round(50.1%)");
 
-            AssertExpressionError("Expected number in function 'round', found #cccccc", "round(#ccc)");
+            AssertExpressionError("Expected number in function 'round', found #cccccc", 6, "round(#ccc)");
         }
     }
 }

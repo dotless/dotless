@@ -7,129 +7,129 @@
 
     public class DefaultNodeProvider : INodeProvider
     {
-        public Element Element(Combinator combinator, string value)
+        public Element Element(Combinator combinator, string value, int index)
         {
-            return new Element(combinator, value);
+            return new Element(combinator, value) { Index = index };
         }
 
-        public Combinator Combinator(string value)
+        public Combinator Combinator(string value, int index)
         {
-            return new Combinator(value);
+            return new Combinator(value) { Index = index };
         }
 
-        public Selector Selector(NodeList<Element> elements)
+        public Selector Selector(NodeList<Element> elements, int index)
         {
-            return new Selector(elements);
+            return new Selector(elements) { Index = index };
         }
 
-        public Rule Rule(string name, Node value)
+        public Rule Rule(string name, Node value, int index)
         {
-            return new Rule(name, value);
+            return new Rule(name, value) { Index = index };
         }
 
-        public Ruleset Ruleset(NodeList<Selector> selectors, List<Node> rules)
+        public Ruleset Ruleset(NodeList<Selector> selectors, List<Node> rules, int index)
         {
-            return new Ruleset(selectors, rules);
+            return new Ruleset(selectors, rules) { Index = index };
         }
 
-        public Alpha Alpha(Node value)
+        public Alpha Alpha(Node value, int index)
         {
-            return new Alpha(value);
+            return new Alpha(value) { Index = index };
         }
 
-        public Call Call(string name, NodeList<Expression> arguments)
+        public Call Call(string name, NodeList<Expression> arguments, int index)
         {
-            return new Call(name, arguments);
+            return new Call(name, arguments) { Index = index };
         }
 
-        public Color Color(string rgb)
+        public Color Color(string rgb, int index)
         {
-            return new Color(rgb);
+            return new Color(rgb) { Index = index };
         }
 
-        public Keyword Keyword(string value)
+        public Keyword Keyword(string value, int index)
         {
-            return new Keyword(value);
+            return new Keyword(value) { Index = index };
         }
 
-        public Number Number(string value, string unit)
+        public Number Number(string value, string unit, int index)
         {
-            return new Number(value, unit);
+            return new Number(value, unit) { Index = index };
         }
 
-        public Shorthand Shorthand(Node first, Node second)
+        public Shorthand Shorthand(Node first, Node second, int index)
         {
-            return new Shorthand(first, second);
+            return new Shorthand(first, second) { Index = index };
         }
 
-        public Variable Variable(string name)
+        public Variable Variable(string name, int index)
         {
-            return new Variable(name);
+            return new Variable(name) { Index = index };
         }
 
-        public Url Url(Node value)
+        public Url Url(Node value, int index)
         {
-            return new Url(value);
+            return new Url(value) { Index = index };
         }
 
-        public Mixin.Call MixinCall(NodeList<Element> elements, NodeList<Expression> arguments)
+        public Mixin.Call MixinCall(NodeList<Element> elements, NodeList<Expression> arguments, int index)
         {
-            return new Mixin.Call(elements, arguments);
+            return new Mixin.Call(elements, arguments) { Index = index };
         }
 
-        public Mixin.Definition MixinDefinition(string name, NodeList<Rule> parameters, List<Node> rules)
+        public Mixin.Definition MixinDefinition(string name, NodeList<Rule> parameters, List<Node> rules, int index)
         {
-            return new Mixin.Definition(name, parameters, rules);
+            return new Mixin.Definition(name, parameters, rules) { Index = index };
         }
 
-        public Import Import(Url path, Importer importer)
+        public Import Import(Url path, Importer importer, int index)
         {
-            return new Import(path, importer);
+            return new Import(path, importer) { Index = index };
         }
 
-        public Import Import(Quoted path, Importer importer)
+        public Import Import(Quoted path, Importer importer, int index)
         {
-            return new Import(path, importer);
+            return new Import(path, importer) { Index = index };
         }
 
-        public Directive Directive(string name, List<Node> rules)
+        public Directive Directive(string name, List<Node> rules, int index)
         {
-            return new Directive(name, rules);
+            return new Directive(name, rules) { Index = index };
         }
 
-        public Directive Directive(string name, Node value)
+        public Directive Directive(string name, Node value, int index)
         {
-            return new Directive(name, value);
+            return new Directive(name, value) { Index = index };
         }
 
-        public Expression Expression(NodeList expression)
+        public Expression Expression(NodeList expression, int index)
         {
-            return new Expression(expression);
+            return new Expression(expression) { Index = index };
         }
 
-        public Value Value(IEnumerable<Node> values, Node important)
+        public Value Value(IEnumerable<Node> values, Node important, int index)
         {
-            return new Value(values, important);
+            return new Value(values, important) { Index = index };
         }
 
-        public Operation Operation(string operation, Node left, Node right)
+        public Operation Operation(string operation, Node left, Node right, int index)
         {
-            return new Operation(operation, left, right);
+            return new Operation(operation, left, right) { Index = index };
         }
 
-        public Comment Comment(string value)
+        public Comment Comment(string value, int index)
         {
-            return new Comment(value);
+            return new Comment(value) { Index = index };
         }
 
-        public TextNode TextNode(string contents)
+        public TextNode TextNode(string contents, int index)
         {
-            return new TextNode(contents);
+            return new TextNode(contents) { Index = index };
         }
 
-        public Quoted Quoted(string value, string contents)
+        public Quoted Quoted(string value, string contents, int index)
         {
-            return new Quoted(value, contents);
+            return new Quoted(value, contents) { Index = index };
         }
     }
 }

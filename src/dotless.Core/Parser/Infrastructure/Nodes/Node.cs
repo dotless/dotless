@@ -4,6 +4,8 @@
 
     public abstract class Node
     {
+        public int Index { get; set; }
+
         #region Boolean Operators
 
         public static implicit operator bool(Node node)

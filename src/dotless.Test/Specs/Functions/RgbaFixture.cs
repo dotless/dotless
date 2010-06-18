@@ -26,10 +26,10 @@ namespace dotless.Test.Specs.Functions
         [Test]
         public void TestRgbaTestsTypes()
         {
-            AssertExpressionError("Expected number in function 'rgba', found \"foo\"", "rgba(\"foo\", 10, 12, 0.2)");
-            AssertExpressionError("Expected number in function 'rgba', found \"foo\"", "rgba(10, \"foo\", 12, 0.1)");
-            AssertExpressionError("Expected number in function 'rgba', found \"foo\"", "rgba(10, 10, \"foo\", 0)");
-            AssertExpressionError("Expected number in function 'rgba', found \"foo\"", "rgba(10, 10, 10, \"foo\")");
+            AssertExpressionError("Expected number in function 'rgba', found \"foo\"", 0, "rgba(\"foo\", 10, 12, 0.2)");
+            AssertExpressionError("Expected number in function 'rgba', found \"foo\"", 0, "rgba(10, \"foo\", 12, 0.1)");
+            AssertExpressionError("Expected number in function 'rgba', found \"foo\"", 0, "rgba(10, 10, \"foo\", 0)");
+            AssertExpressionError("Expected number in function 'rgba', found \"foo\"", 0, "rgba(10, 10, 10, \"foo\")");
         }
 
         [Test]
@@ -42,17 +42,17 @@ namespace dotless.Test.Specs.Functions
         [Test]
         public void TestRgbaWithColorTestsTypes()
         {
-            AssertExpressionError("Expected color in function 'rgba', found \"foo\"", "rgba(\"foo\", 0.2)");
-            AssertExpressionError("Expected number in function 'rgba', found \"foo\"", "rgba(#123456, \"foo\")");
+            AssertExpressionError("Expected color in function 'rgba', found \"foo\"", 0, "rgba(\"foo\", 0.2)");
+            AssertExpressionError("Expected number in function 'rgba', found \"foo\"", 0, "rgba(#123456, \"foo\")");
         }
 
         [Test]
         public void TestRgbaTestsNumArgs()
         {
-            AssertExpressionError("Expected 4 arguments in function 'rgba', found 0", "rgba()");
-            AssertExpressionError("Expected 4 arguments in function 'rgba', found 1", "rgba(blue)");
-            AssertExpressionError("Expected 4 arguments in function 'rgba', found 3", "rgba(1, 2, 3)");
-            AssertExpressionError("Expected 4 arguments in function 'rgba', found 5", "rgba(1, 2, 3, 0.4, 5)");
+            AssertExpressionError("Expected 4 arguments in function 'rgba', found 0", 0, "rgba()");
+            AssertExpressionError("Expected 4 arguments in function 'rgba', found 1", 0, "rgba(blue)");
+            AssertExpressionError("Expected 4 arguments in function 'rgba', found 3", 0, "rgba(1, 2, 3)");
+            AssertExpressionError("Expected 4 arguments in function 'rgba', found 5", 0, "rgba(1, 2, 3, 0.4, 5)");
         }
     }
 }

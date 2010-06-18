@@ -10,8 +10,8 @@ namespace dotless.Core.Parser.Functions
     {
         protected override Node Evaluate(Env env)
         {
-            Guard.ExpectNumArguments(4, Arguments.Count, this);
-            Guard.ExpectAllNodes<Number>(Arguments, this);
+            Guard.ExpectNumArguments(4, Arguments.Count, this, Index);
+            Guard.ExpectAllNodes<Number>(Arguments, this, Index);
 
             var args = Arguments.Cast<Number>().ToArray();
 

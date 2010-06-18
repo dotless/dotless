@@ -13,7 +13,7 @@ namespace dotless.Test.Specs.Functions
         [Test]
         public void TestGreenException()
         {
-            AssertExpressionError("Expected color in function 'green', found 12", "green(12)");
+            AssertExpressionError("Expected color in function 'green', found 12", 6, "green(12)");
         }
 
         [Test]
@@ -25,7 +25,7 @@ namespace dotless.Test.Specs.Functions
         [Test]
         public void TestEditGreenTestsTypes()
         {
-            AssertExpressionError("Expected color in function 'green', found 12", "green(12)");
+            AssertExpressionError("Expected color in function 'green', found 12", 6, "green(12)");
         }
     }
 }
