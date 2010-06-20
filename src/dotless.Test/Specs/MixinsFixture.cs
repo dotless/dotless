@@ -153,20 +153,20 @@ namespace dotless.Test.Specs
             var input =
                 @"
 #bundle {
-  p {
+  .mixin {
     padding: 20px;
     color: purple;
   }
 }
 
 #header {
-  #bundle > p;
+  #bundle > .mixin;
 }
 ";
 
             var expected =
                 @"
-#bundle p {
+#bundle .mixin {
   padding: 20px;
   color: purple;
 }

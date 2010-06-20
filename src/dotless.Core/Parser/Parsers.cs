@@ -332,7 +332,7 @@ namespace dotless.Core.Parser
             RegexMatchResult e;
             Combinator c = null;
 
-            for (var i = parser.Tokenizer.Location; e = parser.Tokenizer.Match(@"[#.]?[a-zA-Z0-9_-]+"); i = parser.Tokenizer.Location)
+            for (var i = parser.Tokenizer.Location; e = parser.Tokenizer.Match(@"[#.][a-zA-Z0-9_-]+"); i = parser.Tokenizer.Location)
             {
                 elements.Add(NodeProvider.Element(c, e.Value, i));
 
