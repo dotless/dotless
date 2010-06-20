@@ -9,7 +9,6 @@ namespace dotless.Core.Parser.Tree
     {
         public string Name { get; set; }
         public NodeList<Expression> Arguments { get; set; }
-        private Node Evaluated { get; set; }
 
         public Call(string name, NodeList<Expression> arguments)
         {
@@ -23,9 +22,6 @@ namespace dotless.Core.Parser.Tree
 
         public override Node Evaluate(Env env)
         {
-            if (Evaluated != null)
-                return Evaluated;
-
             var args = Arguments.Select(a => a.Evaluate(env));
 
             if (env != null)
@@ -36,13 +32,11 @@ namespace dotless.Core.Parser.Tree
                 {
                     function.Name = Name;
                     function.Index = Index;
-                    Evaluated = function.Call(env, args);
-                    return Evaluated;
+                    return function.Call(env, args);
                 }
             }
 
-            Evaluated = new TextNode(Name + "(" + Arguments.Select(a => a.Evaluate(env).ToCSS(env)).JoinStrings(", ") + ")");
-            return Evaluated;
+            return new TextNode(Name + "(" + Arguments.Select(a => a.Evaluate(env).ToCSS(env)).JoinStrings(", ") + ")");
         }
     }
 }

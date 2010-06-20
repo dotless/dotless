@@ -922,5 +922,31 @@ namespace dotless.Test.Specs
             AssertError(".mixin is undefined", "  .mixin();", 2, 2, input);
         }
 
+        [Test]
+        public void DontCacheFunctions()
+        {
+            var input =
+                @"
+.margin(@t, @r) {
+  margin: formatString(""{0} {1}"", @t, @r);
+}
+ul.bla {
+  .margin(10px, 15px);
+}
+ul.bla2 {
+  .margin(0, 0);
+}";
+
+            var expected = @"
+ul.bla {
+  margin: 10px 15px;
+}
+ul.bla2 {
+  margin: 0 0;
+}";
+
+            AssertLess(input, expected);
+        }
+
   }
 }
