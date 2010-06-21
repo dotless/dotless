@@ -89,11 +89,15 @@ namespace dotless.Core.Parser
 
             var index = parser.Tokenizer.Location;
 
-            var comment = parser.Tokenizer.Match(@"\/\*(?:[^*]|\*+[^\/*])*\*+\/\n?");
+            var comment = parser.Tokenizer.Match(@"//.*");
+            if(comment)
+                return NodeProvider.Comment(comment.Value, true, index);
+
+            comment = parser.Tokenizer.Match(@"/\*(?:[^*]|\*+[^\/*])*\*+/\n?");
             if (comment)
                 return NodeProvider.Comment(comment.Value, index);
 
-            return parser.Tokenizer.Match(@"\/\/.*");
+            return null;
         }
 
         //

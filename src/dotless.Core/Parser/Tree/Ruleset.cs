@@ -151,6 +151,12 @@ namespace dotless.Core.Parser.Tree
 
             foreach (var rule in Rules)
             {
+                if (rule.IgnoreOutput())
+                    continue;
+
+                if(rule is Comment && ((Comment)rule).Silent)
+                    continue;
+
                 if (rule is Ruleset)
                 {
                     var ruleset = (Ruleset) rule;
@@ -163,12 +169,12 @@ namespace dotless.Core.Parser.Tree
                     if (!r.Variable)
                         rules.Add(r.ToCSS(env));
                 }
-                else if (!rule.IgnoreOutput())
+                else
                 {
-                    if (this is Root)
-                        rulesets.Add(rule.ToCSS(env));
-                    else
-                        rules.Add(rule.ToCSS(env));
+                  if (this is Root)
+                    rulesets.Add(rule.ToCSS(env));
+                  else
+                    rules.Add(rule.ToCSS(env));
                 }
             }
 

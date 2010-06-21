@@ -119,7 +119,12 @@
 
         public Comment Comment(string value, int index)
         {
-            return new Comment(value) { Index = index };
+            return Comment(value, false, index);
+        }
+
+        public Comment Comment(string value, bool silent, int index)
+        {
+            return new Comment(value, silent) { Index = index };
         }
 
         public TextNode TextNode(string contents, int index)
