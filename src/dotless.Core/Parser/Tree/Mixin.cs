@@ -34,10 +34,10 @@ namespace dotless.Core.Parser.Tree
                 return this;
             }
 
-            public Ruleset Evaluate(NodeList<Expression> args, Env env, int index)
+            public Ruleset Evaluate(NodeList<Expression> args, Env env)
             {
                 if (args)
-                    Guard.ExpectMaxArguments(Params.Count, args.Count, string.Format("'{0}'", Name), index);
+                    Guard.ExpectMaxArguments(Params.Count, args.Count, string.Format("'{0}'", Name), Index);
 
                 var frame = new Ruleset(null, new List<Node>());
 
@@ -54,7 +54,7 @@ namespace dotless.Core.Parser.Tree
                         if (val)
                             frame.Rules.Add(new Rule(Params[i].Name, val.Evaluate(env)) { Index = val.Index });
                         else
-                            throw new ParsingException(string.Format("wrong number of arguments for {0} ({1} for {2})", Name, args.Count, _arity), index);
+                            throw new ParsingException(string.Format("wrong number of arguments for {0} ({1} for {2})", Name, args.Count, _arity), Index);
                     }
                 }
 
@@ -156,11 +156,11 @@ namespace dotless.Core.Parser.Tree
                             try
                             {
                                 var mixin = node as Mixin.Definition;
-                                rules.AddRange(mixin.Evaluate(Arguments, env, Index).Rules);
+                                rules.AddRange(mixin.Evaluate(Arguments, env).Rules);
                             }
                             catch (ParsingException e)
                             {
-                                throw new ParsingException(e.Message, Index);
+                                throw new ParsingException(e.Message, e.Index, Index);
                             }
                         }
                         else

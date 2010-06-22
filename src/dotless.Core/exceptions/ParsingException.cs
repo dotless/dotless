@@ -5,22 +5,20 @@ namespace dotless.Core.Exceptions
     public class ParsingException : Exception
     {
         public int Index { get; set; }
+        public int Call { get; set; }
 
-        public ParsingException(string message, int index)
-            : base(message)
-        {
-            Index = index;
-        }
+        public ParsingException(string message, int index) : this(message, null, index, 0) {}
 
-        public ParsingException(Exception innerException, int index)
-            : this(innerException.Message, innerException, index)
-        {
-        }
+        public ParsingException(string message, int index, int call) : this(message, null, index, call) {}
 
-        public ParsingException(string message, Exception innerException, int index)
-            : base(message, innerException)
+        public ParsingException(Exception innerException, int index) : this(innerException, index, 0) {}
+
+        public ParsingException(Exception innerException, int index, int call) : this(innerException.Message, innerException, index, call) {}
+
+        public ParsingException(string message, Exception innerException, int index, int call) : base(message, innerException)
         {
-            Index = index;
+          Index = index;
+          Call = call;
         }
     }
 }

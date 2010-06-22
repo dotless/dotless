@@ -4,9 +4,9 @@ namespace dotless.Core.Stylizers
 
     public class HtmlStylizer : IStylizer
     {
-        public string Stylize(Zone zone, string fileName, string error)
+        public string Stylize(Zone zone)
         {
-            var fileStr = string.IsNullOrEmpty(fileName) ? "" : string.Format(" in '{0}'", fileName);
+            var fileStr = string.IsNullOrEmpty(zone.FileName) ? "" : string.Format(" in '{0}'", zone.FileName);
 
             return string.Format(@"
 <div id=""less-error-message"">
@@ -20,7 +20,7 @@ namespace dotless.Core.Stylizers
 </div>
 ",
                                  fileStr,
-                                 error,
+                                 zone.Message,
                                  zone.LineNumber - 1,
                                  zone.LineNumber,
                                  zone.LineNumber + 1,

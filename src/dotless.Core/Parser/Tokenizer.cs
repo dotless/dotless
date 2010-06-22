@@ -205,7 +205,7 @@ namespace dotless.Core.Parser
             }
         }
 
-        public Zone GetZone(int position)
+        public Zone GetZone(string error, int position, int call, string fileName)
         {
             var first = _input.Substring(0, position);
 
@@ -214,16 +214,17 @@ namespace dotless.Core.Parser
 
             var lines = _input.Split('\n');
 
+            var callLine = _input.Substring(0, call).Count(c => c == '\n');
+
             return new Zone
                        {
+                           FileName = fileName,
+                           Message = error,
+                           CallLine = callLine + 1,
+                           CallExtract = callLine <= 0 ? null : new Extract(lines, callLine),
                            LineNumber = line + 1,
                            Position = position - start,
-                           Extract = new Extract
-                                         {
-                                             Before = line > 0 ? lines[line - 1] : "/beginning of file",
-                                             Line = lines[line],
-                                             After = line + 1 < lines.Length ? lines[line + 1] : "/end of file",
-                                         },
+                           Extract = new Extract(lines, line),
                        };
         }
     }
@@ -233,10 +234,21 @@ namespace dotless.Core.Parser
         public int LineNumber { get; set; }
         public int Position { get; set; }
         public Extract Extract { get; set; }
+        public string Message { get; set; }
+        public string FileName { get; set; }
+        public int CallLine { get; set; }
+        public Extract CallExtract { get; set; }
     }
 
     public class Extract
     {
+        public Extract(string[] lines, int line)
+        {
+            Before = line > 0 ? lines[line - 1] : "/beginning of file";
+            Line = lines[line];
+            After = line + 1 < lines.Length ? lines[line + 1] : "/end of file";
+        }
+
         public string After { get; set; }
         public string Before { get; set; }
         public string Line { get; set; }

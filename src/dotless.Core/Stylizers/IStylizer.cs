@@ -4,6 +4,6 @@ namespace dotless.Core.Stylizers
 
     public interface IStylizer
     {
-        string Stylize(Zone zone, string fileName, string error);
+        string Stylize(Zone zone);
     }
 }

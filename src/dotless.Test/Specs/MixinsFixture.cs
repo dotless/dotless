@@ -818,6 +818,27 @@ namespace dotless.Test.Specs
         }
 
         [Test]
+        public void CallSiteCorrectWhenMixinThrowsAnError()
+        {
+            var input = @"
+.mixin(@a: 5px) {
+  width: 10px / @a;
+}
+.error {
+  .mixin(0px);
+}";
+
+            AssertError(
+                "Attempted to divide by zero.",
+                "  width: 10px / @a;",
+                2,
+                14,
+                "  .mixin(0px);",
+                5,
+                input);
+        }
+
+        [Test]
         public void IncludesAllMatchedMixins3()
         {
             var input =
@@ -911,7 +932,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void MixinNotFound()
+        public void ThrowsIfMixinNotFound()
         {
             var input =
                 @"

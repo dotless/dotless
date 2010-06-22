@@ -58,9 +58,14 @@
             Assert.That(() => Evaluate(input), Throws.Exception.Message.EqualTo(message));
         }
 
-        public void AssertError(string message, string line, int lineNumber, int position, string input)
+      public void AssertError(string message, string line, int lineNumber, int position, string input)
+      {
+        AssertError(message, line, lineNumber, position, null, 0, input);
+      }
+
+      public void AssertError(string message, string line, int lineNumber, int position, string call, int callLine, string input)
         {
-            message = TestStylizer.GetErrorMessage(message, line, lineNumber, position);
+            message = TestStylizer.GetErrorMessage(message, line, lineNumber, position, call, callLine);
             AssertError(message, input);
         }
 
@@ -71,7 +76,7 @@
 
         public void AssertExpressionError(string message, int position, string expression)
         {
-            message = TestStylizer.GetErrorMessage(message, expression, 3, position);
+            message = TestStylizer.GetErrorMessage(message, expression, 3, position, null, 0);
             AssertExpressionError(message, expression);
         }
 
