@@ -2,6 +2,7 @@ namespace dotless.Core
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Security.Cryptography;
     using Cache;
     using Loggers;
@@ -30,9 +31,12 @@ namespace dotless.Core
             if (!Cache.Exists(cacheKey))
             {
                 Logger.Debug(String.Format("Inserting cache entry for {0}", cacheKey));
+
                 var css = Underlying.TransformToCss(source, fileName);
-                var imports = GetImports();
-                Cache.Insert(cacheKey, imports, css);
+                var dependancies = new[] { fileName }.Concat(GetImports());
+                
+                Cache.Insert(cacheKey, dependancies, css);
+                
                 return css;
             }
             Logger.Debug(String.Format("Retrieving cache entry {0}", cacheKey));

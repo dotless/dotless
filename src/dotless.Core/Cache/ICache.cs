@@ -4,8 +4,8 @@ namespace dotless.Core.Cache
 
     public interface ICache
     {
-        void Insert(string fileName, IEnumerable<string> imports, string css);
-        bool Exists(string filename);
-        string Retrieve(string filename);
+        void Insert(string cacheKey, IEnumerable<string> fileDependancies, string css);
+        bool Exists(string cacheKey);
+        string Retrieve(string cacheKey);
     }
 }

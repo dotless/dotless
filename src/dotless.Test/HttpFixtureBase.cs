@@ -1,5 +1,6 @@
 namespace dotless.Test
 {
+    using System.Collections.Specialized;
     using System.Web;
     using Core.Abstractions;
     using Moq;
@@ -14,6 +15,8 @@ namespace dotless.Test
         protected Mock<HttpServerUtilityBase> HttpServer { get; set; }
         protected Mock<HttpCachePolicyBase> HttpCache { get; set; }
         protected Mock<IHttp> Http { get; set; }
+        protected NameValueCollection QueryString { get; set; }
+        protected NameValueCollection Form { get; set; }
 
         [SetUp]
         public void BaseSetup()
@@ -26,6 +29,9 @@ namespace dotless.Test
             HttpCache = new Mock<HttpCachePolicyBase>();
             Http = new Mock<IHttp>();
 
+            QueryString = new NameValueCollection();
+            Form = new NameValueCollection();
+
             Http.SetupGet(h => h.Context).Returns(HttpContext.Object);
 
             HttpContext.SetupGet(c => c.Request).Returns(HttpRequest.Object);
@@ -33,6 +39,8 @@ namespace dotless.Test
             HttpContext.SetupGet(c => c.Server).Returns(HttpServer.Object);
             HttpContext.SetupGet(c => c.Session).Returns(HttpSession.Object);
             HttpResponse.SetupGet(r => r.Cache).Returns(HttpCache.Object);
+            HttpRequest.SetupGet(r => r.QueryString).Returns(QueryString);
+            HttpRequest.SetupGet(r => r.Form).Returns(Form);
         }
     }
 }

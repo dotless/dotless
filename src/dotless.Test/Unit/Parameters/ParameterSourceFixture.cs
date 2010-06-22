@@ -1,6 +1,5 @@
 namespace dotless.Test.Unit.Parameters
 {
-    using System.Collections.Specialized;
     using Core.Parameters;
     using NUnit.Framework;
 
@@ -10,7 +9,6 @@ namespace dotless.Test.Unit.Parameters
         public void ReturnsEmptyDictionaryIfNoParametersArePassed()
         {
             var queryStringParameterSource = new QueryStringParameterSource(Http.Object);
-            HttpRequest.Setup(p => p.QueryString).Returns(new NameValueCollection());
 
             var dictionary = queryStringParameterSource.GetParameters();
 
@@ -21,7 +19,7 @@ namespace dotless.Test.Unit.Parameters
         public void GetsParametersFromQueryStringDictionary()
         {
             var queryStringParameterSource = new QueryStringParameterSource(Http.Object);
-            HttpRequest.Setup(p => p.QueryString).Returns(new NameValueCollection {{"hello", "world"}});
+            QueryString["hello"] = "world";
 
             var dictionary = queryStringParameterSource.GetParameters();
 
@@ -32,12 +30,10 @@ namespace dotless.Test.Unit.Parameters
         public void CanHandleMultipleEntries()
         {
             var queryStringParameterSource = new QueryStringParameterSource(Http.Object);
-            HttpRequest.Setup(p => p.QueryString).Returns(new NameValueCollection
-                                                              {
-                                                                  {"hello", "world"},
-                                                                  {"something", "else"},
-                                                                  {"width", "15px"}
-                                                              });
+
+            QueryString["hello"] = "world";
+            QueryString["something"] = "else";
+            QueryString["width"] = "15px";
 
             var dictionary = queryStringParameterSource.GetParameters();
 

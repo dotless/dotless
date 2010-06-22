@@ -17,13 +17,13 @@ namespace dotless.Core.Cache
             PathResolver = pathResolver;
         }
 
-        public void Insert(string fileName, IEnumerable<string> imports, string css)
+        public void Insert(string cacheKey, IEnumerable<string> fileDependancies, string css)
         {
-            var fullPaths = imports.Concat(new[] { fileName }).Select(f => PathResolver.GetFullPath(f)).ToArray();
+            var fullPaths = fileDependancies.Select(f => PathResolver.GetFullPath(f)).ToArray();
 
             var cache = GetCache();
 
-            cache.Insert(fileName, css, new CacheDependency(fullPaths));
+            cache.Insert(cacheKey, css, new CacheDependency(fullPaths));
         }
 
         public bool Exists(string filename)
