@@ -7,12 +7,22 @@
     using System.Collections.Generic;
     using System.Linq;
     using Core.Parser.Infrastructure;
+    using Core.Stylizers;
     using NUnit.Framework;
 
     public class SpecFixtureBase
     {
-        protected Func<Parser> DefaultParser = () => new Parser(0, new TestStylizer(), new Importer());
-        protected Func<Env> DefaultEnv = () => new Env();
+        protected Func<IStylizer> DefaultStylizer;
+        protected Func<Parser> DefaultParser;
+        protected Func<Env> DefaultEnv;
+
+        [SetUp]
+        public void SetupParser()
+        {
+            DefaultStylizer = () => new PlainStylizer();
+            DefaultParser = () => new Parser(0, DefaultStylizer(), new Importer());
+            DefaultEnv = () => new Env();
+        }
 
         protected void AssertLess(string input, string expected)
         {
@@ -58,13 +68,14 @@
             Assert.That(() => Evaluate(input), Throws.Exception.Message.EqualTo(message));
         }
 
-      public void AssertError(string message, string line, int lineNumber, int position, string input)
-      {
-        AssertError(message, line, lineNumber, position, null, 0, input);
-      }
-
-      public void AssertError(string message, string line, int lineNumber, int position, string call, int callLine, string input)
+        public void AssertError(string message, string line, int lineNumber, int position, string input)
         {
+            AssertError(message, line, lineNumber, position, null, 0, input);
+        }
+
+        public void AssertError(string message, string line, int lineNumber, int position, string call, int callLine, string input)
+        {
+            DefaultStylizer = () => new TestStylizer();
             message = TestStylizer.GetErrorMessage(message, line, lineNumber, position, call, callLine);
             AssertError(message, input);
         }
@@ -76,6 +87,7 @@
 
         public void AssertExpressionError(string message, int position, string expression)
         {
+            DefaultStylizer = () => new TestStylizer();
             message = TestStylizer.GetErrorMessage(message, expression, 3, position, null, 0);
             AssertExpressionError(message, expression);
         }
