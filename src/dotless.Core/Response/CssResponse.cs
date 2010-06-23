@@ -18,7 +18,7 @@ namespace dotless.Core.Response
             response.Cache.SetCacheability(HttpCacheability.Public);
             response.ContentType = "text/css";
             response.Write(css);
-            response.End();
+//            response.End();
         }
     }
 }

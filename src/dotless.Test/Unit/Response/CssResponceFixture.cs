@@ -42,11 +42,11 @@ namespace dotless.Test.Unit.Response
         }
 
         [Test]
-        public void ResponseEndIsCalled()
+        public void ResponseEndIsNotCalled()
         {
             CssResponse.WriteCss(null);
 
-            HttpResponse.Verify(r => r.End(), Times.Once());
+            HttpResponse.Verify(r => r.End(), Times.Never());
         }
     }
 }
