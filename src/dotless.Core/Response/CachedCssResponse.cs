@@ -43,9 +43,9 @@
                 response.ContentType = "text/css";
                 response.Write(css);
             }
-
-            response.End();
 */
+            response.End();
+
         }
     }
 }
