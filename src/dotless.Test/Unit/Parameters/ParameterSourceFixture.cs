@@ -39,5 +39,19 @@ namespace dotless.Test.Unit.Parameters
 
             Assert.AreEqual(3, dictionary.Count);
         }
+
+        [Test]
+        public void CanHandleNullEntries()
+        {
+            var queryStringParameterSource = new QueryStringParameterSource(Http.Object);
+            
+            QueryString["hello"] = "world";
+            QueryString[null] = "1234567890";
+            QueryString["width"] = "15px";
+
+            var dictionary = queryStringParameterSource.GetParameters();
+
+            Assert.AreEqual(2, dictionary.Count);
+        }
     }
 }

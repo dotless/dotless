@@ -19,8 +19,11 @@
             var allKeys = queryString.AllKeys;
             foreach (var key in allKeys)
             {
-                string s = queryString[key];
-                dictionary.Add(key, s);
+                if (key != null)
+                {
+                    string s = queryString[key];
+                    dictionary.Add(key, s);
+                }
             }
             return dictionary;
         }
