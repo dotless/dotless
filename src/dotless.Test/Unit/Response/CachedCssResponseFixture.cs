@@ -21,5 +21,13 @@ namespace dotless.Test.Unit.Response
 
             HttpResponse.VerifySet(r => r.ContentType = "text/css", Times.Once());
         }
+
+        [Test]
+        public void ResponseEndIsCalled()
+        {
+            CachedCssResponse.WriteCss(null);
+
+            HttpResponse.Verify(r => r.End(), Times.Once());
+        }
     }
 }

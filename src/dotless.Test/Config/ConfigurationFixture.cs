@@ -2,6 +2,7 @@ namespace dotless.Test.Config
 {
     using System;
     using Core;
+    using Core.Abstractions;
     using Core.Cache;
     using Core.configuration;
     using Core.Input;
@@ -153,6 +154,19 @@ namespace dotless.Test.Config
             var consoleLogger = (ConsoleLogger)logger;
 
             Assert.That(consoleLogger.Level, Is.EqualTo(LogLevel.Info));
+        }
+
+        [Test]
+        public void HttpInstanceIsTransient()
+        {
+            var config = new DotlessConfiguration { Web = true };
+
+            var serviceLocator = new ContainerFactory().GetContainer(config);
+
+            var http1 = serviceLocator.GetInstance<IHttp>();
+            var http2 = serviceLocator.GetInstance<IHttp>();
+
+            Assert.That(http1, Is.Not.SameAs(http2));
         }
 
         public class DummyLogger : Logger

@@ -45,7 +45,7 @@ namespace dotless.Core
 
         private void RegisterWebServices(FluentRegistration pandora, DotlessConfiguration configuration)
         {
-            pandora.Service<IHttp>().Implementor<Http>();
+            pandora.Service<IHttp>().Implementor<Http>().Lifestyle.Transient();
             pandora.Service<IParameterSource>().Implementor<QueryStringParameterSource>();
 
             if (configuration.CacheEnabled)

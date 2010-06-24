@@ -41,12 +41,12 @@ namespace dotless.Test.Unit.Response
             HttpCache.Verify(c => c.SetCacheability(HttpCacheability.Public), Times.Once());
         }
 
-        //[Test]
-        //public void ResponseEndIsNotCalled()
-        //{
-        //    CssResponse.WriteCss(null);
+        [Test]
+        public void ResponseEndIsCalled()
+        {
+            CssResponse.WriteCss(null);
 
-        //    HttpResponse.Verify(r => r.End(), Times.Never());
-        //}
+            HttpResponse.Verify(r => r.End(), Times.Once());
+        }
     }
 }
