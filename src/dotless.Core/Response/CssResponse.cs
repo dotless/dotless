@@ -5,16 +5,16 @@ namespace dotless.Core.Response
 
     public class CssResponse : IResponse
     {
-        private readonly IHttp _http;
+        public readonly IHttp Http;
 
         public CssResponse(IHttp http)
         {
-            _http = http;
+            Http = http;
         }
 
         public void WriteCss(string css)
         {
-            var response = _http.Context.Response;
+            var response = Http.Context.Response;
             response.Cache.SetCacheability(HttpCacheability.Public);
             response.ContentType = "text/css";
             response.Write(css);

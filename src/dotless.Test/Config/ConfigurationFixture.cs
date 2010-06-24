@@ -8,6 +8,7 @@ namespace dotless.Test.Config
     using Core.Input;
     using Core.Loggers;
     using Core.Parser;
+    using Core.Response;
     using NUnit.Framework;
 
     public class ConfigurationFixture
@@ -167,6 +168,70 @@ namespace dotless.Test.Config
             var http2 = serviceLocator.GetInstance<IHttp>();
 
             Assert.That(http1, Is.Not.SameAs(http2));
+        }
+
+        [Test]
+        public void CachedCssResponseInstanceIsTransient()
+        {
+            var config = new DotlessConfiguration { Web = true };
+
+            var serviceLocator = new ContainerFactory().GetContainer(config);
+
+            var response1 = serviceLocator.GetInstance<IResponse>();
+            var response2 = serviceLocator.GetInstance<IResponse>();
+
+            Assert.That(response1, Is.Not.SameAs(response2));
+
+            var http1 = (response1 as CachedCssResponse).Http;
+            var http2 = (response2 as CachedCssResponse).Http;
+
+            Assert.That(http1, Is.Not.SameAs(http2));
+        }
+
+        [Test]
+        public void CssResponseInstanceIsTransient()
+        {
+            var config = new DotlessConfiguration { Web = true, CacheEnabled = false };
+
+            var serviceLocator = new ContainerFactory().GetContainer(config);
+
+            var response1 = serviceLocator.GetInstance<IResponse>();
+            var response2 = serviceLocator.GetInstance<IResponse>();
+
+            Assert.That(response1, Is.Not.SameAs(response2));
+
+            var http1 = (response1 as CssResponse).Http;
+            var http2 = (response2 as CssResponse).Http;
+
+            Assert.That(http1, Is.Not.SameAs(http2));
+        }
+
+        [Test]
+        public void HandlerImplInstanceIsTransient()
+        {
+            var config = new DotlessConfiguration { Web = true };
+
+            var serviceLocator = new ContainerFactory().GetContainer(config);
+
+            var handler1 = serviceLocator.GetInstance<HandlerImpl>();
+            var handler2 = serviceLocator.GetInstance<HandlerImpl>();
+
+            Assert.That(handler1, Is.Not.SameAs(handler2));
+
+            var http1 = handler1.Http;
+            var http2 = handler2.Http;
+
+            Assert.That(http1, Is.Not.SameAs(http2));
+
+            var response1 = handler1.Response;
+            var response2 = handler2.Response;
+
+            Assert.That(response1, Is.Not.SameAs(response2));
+
+            var engine1 = handler1.Engine;
+            var engine2 = handler2.Engine;
+
+            Assert.That(engine1, Is.Not.SameAs(engine2));
         }
 
         public class DummyLogger : Logger

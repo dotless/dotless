@@ -6,26 +6,26 @@ namespace dotless.Core
 
     public class HandlerImpl
     {
-        private readonly IHttp _http;
-        private readonly IResponse _response;
-        private readonly ILessEngine _engine;
-        private readonly IFileReader _fileReader;
+        public readonly IHttp Http;
+        public readonly IResponse Response;
+        public readonly ILessEngine Engine;
+        public readonly IFileReader FileReader;
 
         public HandlerImpl(IHttp http, IResponse response, ILessEngine engine, IFileReader fileReader)
         {
-            _http = http;
-            _response = response;
-            _engine = engine;
-            _fileReader = fileReader;
+            Http = http;
+            Response = response;
+            Engine = engine;
+            FileReader = fileReader;
         }
 
         public void Execute()
         {
-            var localPath = _http.Context.Request.Url.LocalPath;
+            var localPath = Http.Context.Request.Url.LocalPath;
 
-            var source = _fileReader.GetFileContents(localPath);
+            var source = FileReader.GetFileContents(localPath);
 
-            _response.WriteCss(_engine.TransformToCss(source, localPath));
+            Response.WriteCss(Engine.TransformToCss(source, localPath));
         }
     }
 }

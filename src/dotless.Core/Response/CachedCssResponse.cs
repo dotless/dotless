@@ -6,18 +6,18 @@
 
     public class CachedCssResponse : IResponse
     {
-        private readonly IHttp _http;
+        public readonly IHttp Http;
         private const int CacheAgeMinutes = 5;
 
         public CachedCssResponse(IHttp http)
         {
-            _http = http;
+            Http = http;
         }
 
         public void WriteCss(string css)
         {
-            var response = _http.Context.Response;
-            var request = _http.Context.Request;
+            var response = Http.Context.Response;
+            var request = Http.Context.Request;
 
             response.Cache.SetCacheability(HttpCacheability.Public);
             response.Cache.SetMaxAge(new TimeSpan(0, CacheAgeMinutes, 0));
