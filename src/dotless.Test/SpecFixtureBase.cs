@@ -80,16 +80,21 @@
             AssertError(message, input);
         }
 
-        protected void AssertExpressionError(string message, string expression)
+        protected void AssertExpressionError(string message, string expression, IDictionary<string, string> variables)
         {
-            Assert.That(() => EvaluateExpression(expression), Throws.Exception.Message.EqualTo(message));
+            Assert.That(() => EvaluateExpression(expression, variables), Throws.Exception.Message.EqualTo(message));
         }
 
         public void AssertExpressionError(string message, int position, string expression)
         {
+            AssertExpressionError(message, position, expression, null);
+        }
+
+        public void AssertExpressionError(string message, int position, string expression, IDictionary<string, string> variables)
+        {
             DefaultStylizer = () => new TestStylizer();
             message = TestStylizer.GetErrorMessage(message, expression, 3, position, null, 0);
-            AssertExpressionError(message, expression);
+            AssertExpressionError(message, expression, variables);
         }
 
         protected string EvaluateExpression(string expression)

@@ -39,7 +39,9 @@
             {
                 var operable = a as IOperable;
                 if (operable != null)
-                    return operable.Operate(Operator, b);
+                    return operable.Operate(this, b);
+
+                throw new ParsingException(string.Format("Cannot apply operator {0} to the left hand side: {1}", Operator, a.ToCSS(env)), Index);
             }
             catch (DivideByZeroException e)
             {

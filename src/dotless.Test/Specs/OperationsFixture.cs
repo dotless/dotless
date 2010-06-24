@@ -82,5 +82,30 @@ namespace dotless.Test.Specs
         {
             AssertExpressionError("Can't substract or divide a color from a number", 4, "100 / #fff");
         }
+
+        [Test]
+        public void ThrowsIfLeftHandSideIsNotOperable()
+        {
+            var variables = new Dictionary<string, string> { { "a", "1px dotted #cccccc" } };
+
+            AssertExpressionError("Cannot apply operator + to the left hand side: 1px dotted #cccccc", 21, "(1px dotted #cccccc) + #252525");
+            AssertExpressionError("Cannot apply operator + to the left hand side: 1px dotted #cccccc", 3, "@a + #252525", variables);
+        }
+
+        [Test]
+        public void ThrowsIfUnableToConvertRightHandSideToColor()
+        {
+            var variables = new Dictionary<string, string> { { "a", "keyword" } };
+
+            AssertExpressionError("Unable to convert right hand side of + to a color", 8, "#252525 + @a", variables);
+        }
+
+        [Test]
+        public void ThrowsIfRightHandSideIsNotANumber()
+        {
+            var variables = new Dictionary<string, string> { { "a", "twenty" } };
+
+            AssertExpressionError("Expected number in right hand side of +, found twenty", 3, "10 + @a", variables);
+        }
     }
 }

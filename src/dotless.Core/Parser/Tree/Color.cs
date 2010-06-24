@@ -1,10 +1,11 @@
-﻿namespace dotless.Core.Parser.Tree
+namespace dotless.Core.Parser.Tree
 {
     using System;
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
     using System.Text.RegularExpressions;
+    using Exceptions;
     using Infrastructure;
     using Infrastructure.Nodes;
     using Utils;
@@ -155,17 +156,23 @@
             return hexString;
         }
 
-        public Node Operate(string op, Node other)
+        public Node Operate(Operation op, Node other)
         {
             var otherColor = other as Color;
 
             if (otherColor == null)
-                otherColor = ((IOperable) other).ToColor();
+            {
+                var operable = other as IOperable;
+                if(operable == null)
+                    throw new ParsingException(string.Format("Unable to convert right hand side of {0} to a color", op.Operator), op.Index);
+
+                otherColor = operable.ToColor();
+            }
 
             var result = new double[3];
             for (var c = 0; c < 3; c++)
             {
-                result[c] = Operation.Operate(op, RGB[c], otherColor.RGB[c]);
+                result[c] = Operation.Operate(op.Operator, RGB[c], otherColor.RGB[c]);
             }
             return new Color(result);
         }
