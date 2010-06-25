@@ -61,6 +61,22 @@ namespace dotless.Test.Specs
         }
 
         [Test]
+        public void CanIncludeFunctionsInOperations()
+        {
+            AssertExpression("5", "round(10.34) / 2");
+            AssertExpression("2", "6 / round(2.8)");
+            AssertExpression("50%", "lightness(white) / 2");
+        }
+
+        [Test]
+        public void CanUseColorKeywordsInOperations()
+        {
+            AssertExpression("#ff1111", "red + 17");
+            AssertExpression("gray", "white / 2");
+            AssertExpression("#ff80ff", "red + green + blue");
+        }
+
+        [Test]
         public void Rounding()
         {
             var variables = new Dictionary<string, string>();
