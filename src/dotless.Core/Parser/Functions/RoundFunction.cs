@@ -9,7 +9,7 @@ namespace dotless.Core.Parser.Functions
     {
         protected override Node Eval(Env env, Number number, Node[] args)
         {
-            return new Number(Math.Round(number.Value), number.Unit);
+            return new Number(Math.Round(number.Value, MidpointRounding.AwayFromZero), number.Unit);
         }
     }
 }

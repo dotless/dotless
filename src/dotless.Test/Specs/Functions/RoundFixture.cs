@@ -15,5 +15,14 @@ namespace dotless.Test.Specs.Functions
 
             AssertExpressionError("Expected number in function 'round', found #cccccc", 6, "round(#ccc)");
         }
+
+        [Test]
+        public void RoundsMidpointAwayFromZero()
+        {
+            AssertExpression("5", "round(4.5)");
+            AssertExpression("6", "round(5.5)");
+            AssertExpression("7", "round(6.5)");
+            AssertExpression("8", "round(7.5)");
+        }
     }
 }
