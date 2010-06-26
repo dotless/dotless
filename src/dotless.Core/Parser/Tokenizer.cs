@@ -242,19 +242,22 @@ namespace dotless.Core.Parser
             return _i == _inputLength;
         }
 
-        public int Location
+        public Location Location
         {
-            get { return _i; }
+            get 
+            {
+                return new Location
+                {
+                    Index = _i,
+                    CurrentChunk = _j,
+                    CurrentChunkIndex = _current
+                };
+            }
             set
             {
-                _i = value;
-
-                _j = 0;
-                _current = 0;
-                while (_current + _chunks[_j].Length < _i)
-                {
-                    _current += _chunks[_j++].Length;
-                }
+                _i = value.Index;
+                _j = value.CurrentChunk;
+                _current = value.CurrentChunkIndex;
             }
         }
 
@@ -305,5 +308,12 @@ namespace dotless.Core.Parser
         public string After { get; set; }
         public string Before { get; set; }
         public string Line { get; set; }
+    }
+
+    public class Location 
+    {
+        public int Index { get; set; }
+        public int CurrentChunk { get; set; }
+        public int CurrentChunkIndex { get; set; }
     }
 }

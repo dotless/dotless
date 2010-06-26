@@ -111,7 +111,7 @@ namespace dotless.Core.Parser
 
         private ParserException GenerateParserError(ParsingException parsingException, string fileName)
         {
-            var errorLocation = Tokenizer.Location;
+            var errorLocation = Tokenizer.Location.Index;
             var error = "Parse Error";
             var call = 0;
 
