@@ -2,8 +2,10 @@ namespace dotless.Core.Parser
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text;
     using System.Text.RegularExpressions;
     using Infrastructure.Nodes;
+    using Utils;
 
     public class Tokenizer
     {
@@ -40,12 +42,63 @@ namespace dotless.Core.Parser
                 _chunks.Add(_input);
             else
             {
-                _input = Regex.Replace(_input, @"\/\*(?:[^*]|\*+[^\/*])*\*+\/",
-                                       comment => Optimization == 1 ? Regex.Replace(comment.Value, @"\n\s*\n", "\n") : "");
+                var chunkParts = new List<StringBuilder> { new StringBuilder() };
+                var chunkPart = chunkParts.Last();
+                var skip = new Regex(@"\G[^\""'{}*/]+");
+                var comment = new Regex(@"\G\/\*(?:[^*\n]|\*+[^\/\n]|\*?(\n))*\*+\/");
+                char? inString = null;
+                var level = 0;
 
-                _input = Regex.Replace(_input, @"^\s*\n\s*(?=[^\s])", "\n", RegexOptions.Multiline);
+                for (int i = 0; i < _input.Length; i++)
+                {
+                    var match = skip.Match(_input, i);
+                    if(match.Success)
+                    {
+                        i += match.Length - 1;
+                        chunkPart.Append(match.Value);
+                        continue;
+                    }
 
-                _chunks = Regex.Split(_input, "(?=\n\n)").ToList();
+                    var c = _input[i];
+
+                    
+                    if (c == '"' || c == '\'')
+                        inString = c != inString ? c : (char?)null;
+                    else if (inString == null && c == '{')
+                        level++;
+                    else if (inString == null && c == '}')
+                    {
+                        level--;
+                        if(level == 0)
+                        {
+                            chunkPart.Append(c);
+                            chunkPart = new StringBuilder();
+                            chunkParts.Add(chunkPart);
+                            continue;
+                        }
+                    }
+                    else if (inString == null && c == '/' && i < _inputLength - 1 && _input[i + 1] == '*')
+                    {
+                        match = comment.Match(_input, i);
+                        if (match.Success)
+                        {
+                            i += match.Length - 1;
+
+                            if (Optimization == 1)
+                                chunkPart.Append(match.Value);
+                            else
+                                chunkPart.Append(new string('\n', match.Groups[1].Captures.Count));
+
+                            continue;
+                        }
+                    }
+
+                    chunkPart.Append(c);
+                }
+
+                _chunks = chunkParts.Select(p => p.ToString()).ToList();
+
+                _input = _chunks.JoinStrings("");
 
                 _inputLength = _input.Length;
             }

@@ -15,12 +15,14 @@
         protected Func<IStylizer> DefaultStylizer;
         protected Func<Parser> DefaultParser;
         protected Func<Env> DefaultEnv;
+        protected int Optimisation { get; set; }
 
         [SetUp]
         public void SetupParser()
         {
+            Optimisation = 1;
             DefaultStylizer = () => new PlainStylizer();
-            DefaultParser = () => new Parser(0, DefaultStylizer(), new Importer());
+            DefaultParser = () => new Parser(Optimisation, DefaultStylizer(), new Importer());
             DefaultEnv = () => new Env();
         }
 

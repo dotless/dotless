@@ -16,8 +16,11 @@ namespace dotless.Test.Specs
  */
 ";
 
-            AssertLessUnchanged(input, new Parser(0));
-            AssertLessUnchanged(input, new Parser(1));
+            Optimisation = 0;
+            AssertLessUnchanged(input);
+
+            Optimisation = 1;
+            AssertLessUnchanged(input);
         }
 
         [Test]
@@ -34,11 +37,12 @@ namespace dotless.Test.Specs
  */
 ";
 
-            AssertLessUnchanged(input, new Parser(0));
+            Optimisation = 0;
+            AssertLessUnchanged(input);
         }
 
         [Test]
-        public void Optimization1RemovesWhitespaceLinesFromComments()
+        public void Optimization1DoesNotRemoveWhitespaceLinesFromComments()
         {
             string input = @"
 /*
@@ -51,17 +55,12 @@ namespace dotless.Test.Specs
  */
 ";
 
-            string expected = @"
-/*
- * Multiline Comment
- */
-";
-
-            AssertLess(input, expected, new Parser(1));
+            Optimisation = 1;
+            AssertLessUnchanged(input);
         }
 
         [Test]
-        public void Optimization2AndGreaterStripsComments()
+        public void Optimization2StripsComments()
         {
             string input = @"
 /*
@@ -73,11 +72,30 @@ namespace dotless.Test.Specs
 
             var expected = "";
 
-            AssertLess(input, expected, new Parser(2));
-            AssertLess(input, expected, new Parser(3));
-            AssertLess(input, expected, new Parser(4));
-            // ...
-            AssertLess(input, expected, new Parser(100));
+            Optimisation = 2;
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void ErrorAfterCommentIsReportedOnCorrectLine()
+        {
+            var input =
+                @"
+/*
+ * Comment
+ */
+
+.error { .mixin }
+";
+
+            Optimisation = 0;
+            AssertError(".mixin is undefined", ".error { .mixin }", 5, 9, input);
+
+            Optimisation = 1;
+            AssertError(".mixin is undefined", ".error { .mixin }", 5, 9, input);
+
+            Optimisation = 2;
+            AssertError(".mixin is undefined", ".error { .mixin }", 5, 9, input);
         }
     }
 }
