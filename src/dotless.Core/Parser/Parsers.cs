@@ -71,8 +71,7 @@ namespace dotless.Core.Parser
             var root = new List<Node>();
 
             while (node = MixinDefinition(parser) || Rule(parser) || Ruleset(parser) ||
-                          MixinCall(parser) || Comment(parser) ||
-                          parser.Tokenizer.Match(@"[\n\s]+") || Directive(parser))
+                          MixinCall(parser) || Comment(parser) || Directive(parser))
             {
                 root.Add(node);
             }
