@@ -11,7 +11,7 @@ namespace dotless.Core.Parser
     //
     // less.js - parser
     //
-    //    A relatively straight-forward recursive-descent parser.
+    //    A relatively straight-forward predictive parser.
     //    There is no tokenization/lexing stage, the input is parsed
     //    in one sweep.
     //
@@ -23,13 +23,9 @@ namespace dotless.Core.Parser
     //      and move the `lastIndex` pointer on match, foregoing `slice()`
     //      completely. This gives us a 3x speed-up.
     //
-    //    - Matching on a huge input is often cause of slowdowns,
-    //      especially with the /g flag. The solution to that is to
-    //      chunkify the input: we split it by /\n\n/, just to be on
-    //      the safe side. The chunks are stored in the `chunks` var,
-    //      `j` holds the current chunk index, and `current` holds
-    //      the index of the current chunk in relation to `input`.
-    //      This gives us an almost 4x speed-up.
+    //    - Matching on a huge input is often cause of slowdowns. 
+    //      The solution to that is to chunkify the input into
+    //      smaller strings.
     //
     //    - In many cases, we don't need to match individual tokens;
     //      for example, if a value doesn't hold any variables, operations

@@ -44,10 +44,9 @@ namespace dotless.Core.Parser
             {
                 var chunkParts = new List<StringBuilder> { new StringBuilder() };
                 var chunkPart = chunkParts.Last();
-                var skip = new Regex(@"\G[^\""'{}*/]+");
+                var skip = new Regex(@"\G[^\""'}*/]+");
                 var comment = new Regex(@"\G\/\*(?:[^*\n]|\*+[^\/\n]|\*?(\n))*\*+\/");
                 char? inString = null;
-                var level = 0;
 
                 for (int i = 0; i < _input.Length; i++)
                 {
@@ -61,21 +60,14 @@ namespace dotless.Core.Parser
 
                     var c = _input[i];
 
-                    
                     if (c == '"' || c == '\'')
                         inString = c != inString ? c : (char?)null;
-                    else if (inString == null && c == '{')
-                        level++;
                     else if (inString == null && c == '}')
                     {
-                        level--;
-                        if(level == 0)
-                        {
-                            chunkPart.Append(c);
-                            chunkPart = new StringBuilder();
-                            chunkParts.Add(chunkPart);
-                            continue;
-                        }
+                        chunkPart.Append(c);
+                        chunkPart = new StringBuilder();
+                        chunkParts.Add(chunkPart);
+                        continue;
                     }
                     else if (inString == null && c == '/' && i < _inputLength - 1 && _input[i + 1] == '*')
                     {
