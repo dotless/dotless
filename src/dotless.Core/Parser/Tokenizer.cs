@@ -159,9 +159,6 @@ namespace dotless.Core.Parser
             if (!match.Success)
                 return null;
 
-            if (match.Index != _i - _current)
-                return null;
-
             Advance(match.Length);
 
             return new RegexMatchResult(match);
@@ -216,13 +213,13 @@ namespace dotless.Core.Parser
 
             var match = regex.Match(_input, _i);
 
-            return match.Success && match.Index == _i;
+            return match.Success;
         }
 
         private Regex GetRegex(string pattern, RegexOptions options)
         {
             if (!regexCache.ContainsKey(pattern))
-                regexCache.Add(pattern, new Regex(pattern, options));
+                regexCache.Add(pattern, new Regex(@"\G" + pattern, options));
 
             return regexCache[pattern];
         }
