@@ -123,5 +123,13 @@ namespace dotless.Test.Specs
 
             AssertExpressionError("Expected number in right hand side of +, found twenty", 3, "10 + @a", variables);
         }
+
+        [Test]
+        public void OperationsKeepImportantKeyword()
+        {
+            AssertExpressionUnchanged("-120px !important");
+            AssertExpression("3 !important", "1 + 2 !important");
+            AssertExpression("3 !important", "6 / 2 !important");
+        }
     }
 }

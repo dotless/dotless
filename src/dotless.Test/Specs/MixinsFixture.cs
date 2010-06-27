@@ -969,5 +969,27 @@ ul.bla2 {
             AssertLess(input, expected);
         }
 
-  }
+        [Test]
+        public void MixinsKeepImportantKeyword()
+        {
+            var input =
+                @"
+.important-mixin(@colour: #FFFFFF) {
+  color: @colour !important;
+}
+
+important-rule {
+  .important-mixin(#3f3f3f);
+}
+";
+
+            var expected = @"
+important-rule {
+  color: #3f3f3f !important;
+}
+";
+
+            AssertLess(input, expected);
+        }
+    }
 }

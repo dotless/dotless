@@ -107,7 +107,7 @@
             return new Expression(expression) { Index = index };
         }
 
-        public Value Value(IEnumerable<Node> values, Node important, int index)
+        public Value Value(IEnumerable<Node> values, string important, int index)
         {
             return new Value(values, important) { Index = index };
         }

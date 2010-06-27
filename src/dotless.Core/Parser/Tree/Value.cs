@@ -9,9 +9,9 @@
     public class Value : Node
     {
         public NodeList Values { get; set; }
-        public Node Important { get; set; }
+        public string Important { get; set; }
 
-        public Value(IEnumerable<Node> values, Node important)
+        public Value(IEnumerable<Node> values, string important)
         {
             Values = new NodeList(values);
             Important = important;
@@ -19,7 +19,9 @@
 
         public override string ToCSS(Env env)
         {
-            return Values.Select(v => v.ToCSS(env)).JoinStrings(env.Compress ? "," : ", ");
+            return 
+                Values.Select(v => v.ToCSS(env)).JoinStrings(env.Compress ? "," : ", ") + 
+                (string.IsNullOrEmpty(Important) ? "" : " " + Important);
         }
 
         public override string ToString()
@@ -29,7 +31,7 @@
 
         public override Node Evaluate(Env env)
         {
-            if (Values.Count == 1)
+            if (Values.Count == 1 && string.IsNullOrEmpty(Important))
                 return Values[0].Evaluate(env);
 
             return new Value(Values.Select(n => n.Evaluate(env)), Important);

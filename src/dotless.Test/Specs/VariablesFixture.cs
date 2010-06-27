@@ -1,5 +1,6 @@
 namespace dotless.Test.Specs
 {
+    using System.Collections.Generic;
     using NUnit.Framework;
 
     public class VariablesFixture : SpecFixtureBase
@@ -95,9 +96,46 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void NotFound()
+        public void ThrowsIfNotFound()
         {
             AssertExpressionError("variable @var is undefined", 0, "@var");
         }
+
+        [Test]
+        public void VariablesKeepImportantKeyword()
+        {
+            var variables = new Dictionary<string, string>();
+            variables["a"] = "#335577";
+            variables["b"] = "#335577 !important";
+
+            AssertExpression("#335577 !important", "@a !important", variables);
+            AssertExpression("#335577 !important", "@b", variables);
+        }
+
+        [Test]
+        public void VariablesKeepImportantKeyword2()
+        {
+            var input = @"
+@var: 0 -120px !important;
+
+.mixin(@a) {
+  background-position: @a;
+}
+
+.class1 { .mixin( @var ); }
+.class2 { background-position: @var; }
+";
+
+            var expected = @"
+.class1 {
+  background-position: 0 -120px !important;
+}
+.class2 {
+  background-position: 0 -120px !important;
+}
+";
+            AssertLess(input, expected);
+        }
+
     }
 }

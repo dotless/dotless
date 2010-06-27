@@ -1,4 +1,4 @@
-﻿namespace dotless.Core.Parser.Infrastructure
+namespace dotless.Core.Parser.Infrastructure
 {
     using System.Collections.Generic;
     using Importers;
@@ -35,7 +35,7 @@
 
         //expressions
         Expression Expression(NodeList expression, int index);
-        Value Value(IEnumerable<Node> values, Node important, int index);
+        Value Value(IEnumerable<Node> values, string important, int index);
         Operation Operation(string operation, Node left, Node right, int index);
 
         //text

@@ -790,9 +790,11 @@ namespace dotless.Core.Parser
             return null;
         }
 
-        public Node Important(Parser parser)
+        public string Important(Parser parser)
         {
-            return parser.Tokenizer.Match(@"!\s*important");
+            var important = parser.Tokenizer.Match(@"!\s*important");
+
+            return important == null ? "" : important.Value;
         }
 
         public Expression Sub(Parser parser)
