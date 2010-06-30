@@ -35,11 +35,22 @@ namespace dotless.Test.Specs
             AssertExpressionUnchanged(@"'\'\""'");
         }
 
-
         [Test]
         public void BracesInQuotes()
         {
             AssertExpressionUnchanged(@"""{"" ""}""");
+        }
+
+        [Test]
+        public void CloseBraceInsideStringAfterQuoteInsideString()
+        {
+            var input = @"
+#test {
+  prop: ""'test'"";
+  prop: ""}"";
+}
+";
+            AssertLessUnchanged(input);
         }
     }
 }

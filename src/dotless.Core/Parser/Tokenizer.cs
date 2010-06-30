@@ -61,7 +61,12 @@ namespace dotless.Core.Parser
                     var c = _input[i];
 
                     if (c == '"' || c == '\'')
-                        inString = c != inString ? c : (char?)null;
+                    {
+                        if (inString == null)
+                            inString = c;
+                        else
+                            inString = inString == c ? null : inString;
+                    }
                     else if (inString == null && c == '}')
                     {
                         chunkPart.Append(c);
