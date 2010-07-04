@@ -93,7 +93,7 @@ namespace dotless.Core.Parser.Tree
             {
                 env = env ?? new Env();
 
-                NodeHelper.ExpandNodes<Import>(env, this);
+                NodeHelper.ExpandNodes<Import>(env, this.Rules);
             }
 
             EvaluateRules(env);
@@ -105,7 +105,7 @@ namespace dotless.Core.Parser.Tree
         {
             env.Frames.Push(this);
 
-            NodeHelper.ExpandNodes<Mixin.Call>(env, this);
+            NodeHelper.ExpandNodes<Mixin.Call>(env, this.Rules);
 
             for (var i = 0; i < Rules.Count; i++)
             {

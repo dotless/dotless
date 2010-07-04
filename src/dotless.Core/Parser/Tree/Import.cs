@@ -49,7 +49,7 @@ namespace dotless.Core.Parser.Tree
             if (Css)
                 return new NodeList(new TextNode("@import " + OriginalPath.ToCSS(env) + ";\n"));
 
-            NodeHelper.ExpandNodes<Import>(env, InnerRoot);
+            NodeHelper.ExpandNodes<Import>(env, InnerRoot.Rules);
 
             return new NodeList(InnerRoot.Rules);
         }
