@@ -161,7 +161,12 @@ namespace dotless.Core.Parser.Tree
                         else
                         {
                             if (ruleset.Rules != null)
-                                rules.AddRange(ruleset.Rules);
+                            {
+                                var nodes = new List<Node>(ruleset.Rules);
+                                NodeHelper.ExpandNodes<Mixin.Call>(env, nodes);
+
+                                rules.AddRange(nodes);
+                            }
                         }
                     }
 

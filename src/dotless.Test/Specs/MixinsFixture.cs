@@ -1024,5 +1024,37 @@ important-rule {
 
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void CanCallMixinFromWithinInnerRuleset()
+        {
+            var input =
+            @"
+#mybox {
+  .box;
+}
+.box {
+  .square();
+}
+.square() {
+  width: 10px;
+  height: 10px;
+}
+";
+
+            var expected =
+                @"
+#mybox {
+  width: 10px;
+  height: 10px;
+}
+.box {
+  width: 10px;
+  height: 10px;
+}
+";
+
+            AssertLess(input, expected);
+        }
     }
 }
