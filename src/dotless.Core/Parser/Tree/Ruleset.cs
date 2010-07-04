@@ -12,7 +12,7 @@ namespace dotless.Core.Parser.Tree
         public NodeList<Selector> Selectors { get; set; }
         public List<Node> Rules { get; set; }
 
-        private Dictionary<string, NodeList> _lookups;
+        private Dictionary<string, List<Ruleset>> _lookups;
         private Dictionary<string, Rule> _variables;
 
 
@@ -25,7 +25,7 @@ namespace dotless.Core.Parser.Tree
 
         protected Ruleset()
         {
-            _lookups = new Dictionary<string, NodeList>();
+            _lookups = new Dictionary<string, List<Ruleset>>();
         }
 
         public Rule Variable(string name)
@@ -50,17 +50,13 @@ namespace dotless.Core.Parser.Tree
 
         public List<Ruleset> Rulesets()
         {
-            // Note: No noticable slow down by caching ruleset. Removing this allows dynamic parameterised mixins.
-//      if (_rulesets != null)
-//        return _rulesets;
-
             return Rules.OfType<Ruleset>().ToList();
         }
 
-        public NodeList Find(Env env, Selector selector, Ruleset self)
+        public List<Ruleset> Find(Env env, Selector selector, Ruleset self)
         {
             self = self ?? this;
-            var rules = new NodeList();
+            var rules = new List<Ruleset>();
             var key = selector.ToCSS(env);
 
             if (_lookups.ContainsKey(key))

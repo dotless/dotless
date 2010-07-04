@@ -134,28 +134,23 @@ namespace dotless.Core.Parser.Tree
                 var found = false;
                 foreach (var frame in env.Frames)
                 {
-                    NodeList mixins;
+                    List<Ruleset> mixins;
                     if ((mixins = frame.Find(env, Selector, null)).Count == 0)
                         continue;
 
                     var rules = new NodeList();
-                    foreach (var node in mixins)
+                    foreach (var ruleset in mixins)
                     {
-                        if (!(node is Ruleset))
-                            continue;
-
-                        var ruleset = node as Ruleset;
-
                         if (!ruleset.MatchArguements(Arguments, env))
                             continue;
 
                         found = true;
 
-                        if (node is Mixin.Definition)
+                        if (ruleset is Mixin.Definition)
                         {
                             try
                             {
-                                var mixin = node as Mixin.Definition;
+                                var mixin = ruleset as Mixin.Definition;
                                 rules.AddRange(mixin.Evaluate(Arguments, env).Rules);
                             }
                             catch (ParsingException e)
@@ -168,7 +163,6 @@ namespace dotless.Core.Parser.Tree
                             if (ruleset.Rules != null)
                                 rules.AddRange(ruleset.Rules);
                         }
-                        // todo fix for other Ruleset types?
                     }
 
                     if (!found)
