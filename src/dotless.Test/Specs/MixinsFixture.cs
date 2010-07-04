@@ -991,5 +991,38 @@ important-rule {
 
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void ShortMixinDoesntMatchLongerSelectors()
+        {
+            var input =
+            @"
+#test {
+  .mixin();
+}
+
+.mixin { color: red; }
+.mixin:after, .dummy { color: green; }
+.mixin .inner, .dummy { color: blue; }
+";
+
+            var expected =
+                @"
+#test {
+  color: red;
+}
+.mixin {
+  color: red;
+}
+.mixin:after, .dummy {
+  color: green;
+}
+.mixin .inner, .dummy {
+  color: blue;
+}
+";
+
+            AssertLess(input, expected);
+        }
     }
 }

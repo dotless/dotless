@@ -20,7 +20,9 @@
 
         public bool Match(Selector other)
         {
-            return Elements[0].Value == other.Elements[0].Value;
+            return
+                other.Elements.Count <= Elements.Count &&
+                Elements[0].Value == other.Elements[0].Value;
         }
 
         public override string ToCSS(Env env)
