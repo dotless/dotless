@@ -6,6 +6,7 @@
     using System.Reflection;
     using Functions;
     using Tree;
+    using Utils;
 
     public class Env
     {
@@ -17,6 +18,16 @@
         public Env()
         {
             Frames = new Stack<Ruleset>();
+        }
+
+        public Rule FindVariable(string name)
+        {
+            return Frames.Select(frame => frame.Variable(name)).FirstOrDefault(r => r != null);
+        }
+
+        public IEnumerable<Ruleset> FindRulesets(Selector selector)
+        {
+            return Frames.Select(frame => frame.Find(this, selector, null)).FirstOrDefault(r => r.Count != 0);
         }
 
         public virtual Function GetFunction(string name)

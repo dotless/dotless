@@ -16,7 +16,7 @@ namespace dotless.Core.Parser.Tree
 
         public override Node Evaluate(Env env)
         {
-            var variable = env.Frames.SelectFirst(frame => frame.Variable(Name));
+            var variable = env.FindVariable(Name);
 
             if (variable)
                 return variable.Value.Evaluate(env);

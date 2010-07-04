@@ -181,7 +181,6 @@
     <Compile Include="Stylizers\PlainStylizer.cs" />
     <Compile Include="Utils\Guard.cs" />
     <Compile Include="Utils\HslColor.cs" />
-    <Compile Include="Utils\LinqExtensions.cs" />
     <Compile Include="Utils\NodeHelper.cs" />
     <Compile Include="Utils\NumberExtensions.cs" />
     <Compile Include="Utils\StringExtensions.cs" />

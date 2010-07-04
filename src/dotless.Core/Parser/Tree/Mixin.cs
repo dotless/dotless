@@ -132,55 +132,52 @@ namespace dotless.Core.Parser.Tree
             public override Node Evaluate(Env env)
             {
                 var found = false;
-                foreach (var frame in env.Frames)
+                var rulesets = env.FindRulesets(Selector);
+
+                if(rulesets == null)
+                    throw new ParsingException(Selector.ToCSS(env).Trim() + " is undefined", Index);
+
+                var rules = new NodeList();
+                foreach (var ruleset in rulesets)
                 {
-                    List<Ruleset> mixins;
-                    if ((mixins = frame.Find(env, Selector, null)).Count == 0)
+                    if (!ruleset.MatchArguements(Arguments, env))
                         continue;
 
-                    var rules = new NodeList();
-                    foreach (var ruleset in mixins)
+                    found = true;
+
+                    if (ruleset is Mixin.Definition)
                     {
-                        if (!ruleset.MatchArguements(Arguments, env))
-                            continue;
-
-                        found = true;
-
-                        if (ruleset is Mixin.Definition)
+                        try
                         {
-                            try
-                            {
-                                var mixin = ruleset as Mixin.Definition;
-                                rules.AddRange(mixin.Evaluate(Arguments, env).Rules);
-                            }
-                            catch (ParsingException e)
-                            {
-                                throw new ParsingException(e.Message, e.Index, Index);
-                            }
+                            var mixin = ruleset as Mixin.Definition;
+                            rules.AddRange(mixin.Evaluate(Arguments, env).Rules);
                         }
-                        else
+                        catch (ParsingException e)
                         {
-                            if (ruleset.Rules != null)
-                            {
-                                var nodes = new List<Node>(ruleset.Rules);
-                                NodeHelper.ExpandNodes<Mixin.Call>(env, nodes);
-
-                                rules.AddRange(nodes);
-                            }
+                            throw new ParsingException(e.Message, e.Index, Index);
                         }
                     }
-
-                    if (!found)
+                    else
                     {
-                        var message = string.Format("No matching definition was found for `{0}({1})`", 
-                            Selector.ToCSS(env).Trim(), 
-                            Arguments.Select(a => a.ToCSS(env)).JoinStrings(", "));
-                        throw new ParsingException(message, Index);
-                    }
+                        if (ruleset.Rules != null)
+                        {
+                            var nodes = new List<Node>(ruleset.Rules);
+                            NodeHelper.ExpandNodes<Mixin.Call>(env, nodes);
 
-                    return rules;
+                            rules.AddRange(nodes);
+                        }
+                    }
                 }
-                throw new ParsingException(Selector.ToCSS(env).Trim() + " is undefined", Index);
+
+                if (!found)
+                {
+                    var message = string.Format("No matching definition was found for `{0}({1})`",
+                                                Selector.ToCSS(env).Trim(),
+                                                Arguments.Select(a => a.ToCSS(env)).JoinStrings(", "));
+                    throw new ParsingException(message, Index);
+                }
+
+                return rules;
             }
         }
     }
