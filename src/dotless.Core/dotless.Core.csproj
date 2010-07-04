@@ -156,7 +156,8 @@
     <Compile Include="Parser\Tree\Expression.cs" />
     <Compile Include="Parser\Tree\Import.cs" />
     <Compile Include="Parser\Tree\Keyword.cs" />
-    <Compile Include="Parser\Tree\Mixin.cs" />
+    <Compile Include="Parser\Tree\MixinCall.cs" />
+    <Compile Include="Parser\Tree\MixinDefinition.cs" />
     <Compile Include="Parser\Tree\Number.cs" />
     <Compile Include="Parser\Tree\Operation.cs" />
     <Compile Include="Parser\Tree\Quoted.cs" />

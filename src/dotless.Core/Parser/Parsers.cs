@@ -327,7 +327,7 @@ namespace dotless.Core.Parser
         // namespaced, but we only support the child and descendant
         // selector for now.
         //
-        public Tree.Mixin.Call MixinCall(Parser parser)
+        public MixinCall MixinCall(Parser parser)
         {
             var elements = new NodeList<Element>();
             var index = parser.Tokenizer.Location.Index;
@@ -375,7 +375,7 @@ namespace dotless.Core.Parser
         // Once we've got our params list, and a closing `)`, we parse
         // the `{...}` block.
         //
-        public Tree.Mixin.Definition MixinDefinition(Parser parser)
+        public MixinDefinition MixinDefinition(Parser parser)
         {
             if (parser.Tokenizer.CurrentChar != '.' || parser.Tokenizer.Peek(@"[^{]*(;|})"))
                 return null;

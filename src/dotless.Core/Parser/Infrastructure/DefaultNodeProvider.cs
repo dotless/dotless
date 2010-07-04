@@ -1,4 +1,4 @@
-﻿namespace dotless.Core.Parser.Infrastructure
+namespace dotless.Core.Parser.Infrastructure
 {
     using System.Collections.Generic;
     using Importers;
@@ -72,14 +72,14 @@
             return new Url(value) { Index = index };
         }
 
-        public Mixin.Call MixinCall(NodeList<Element> elements, NodeList<Expression> arguments, int index)
+        public MixinCall MixinCall(NodeList<Element> elements, NodeList<Expression> arguments, int index)
         {
-            return new Mixin.Call(elements, arguments) { Index = index };
+            return new MixinCall(elements, arguments) { Index = index };
         }
 
-        public Mixin.Definition MixinDefinition(string name, NodeList<Rule> parameters, List<Node> rules, int index)
+        public MixinDefinition MixinDefinition(string name, NodeList<Rule> parameters, List<Node> rules, int index)
         {
-            return new Mixin.Definition(name, parameters, rules) { Index = index };
+            return new MixinDefinition(name, parameters, rules) { Index = index };
         }
 
         public Import Import(Url path, Importer importer, int index)

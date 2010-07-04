@@ -24,8 +24,8 @@ namespace dotless.Core.Parser.Infrastructure
         Url Url(Node value, int index);
 
         //mixins
-        Mixin.Call MixinCall(NodeList<Element> elements, NodeList<Expression> arguments, int index);
-        Mixin.Definition MixinDefinition(string name, NodeList<Rule> parameters, List<Node> rules, int index);
+        MixinCall MixinCall(NodeList<Element> elements, NodeList<Expression> arguments, int index);
+        MixinDefinition MixinDefinition(string name, NodeList<Rule> parameters, List<Node> rules, int index);
 
         //directives
         Import Import(Url path, Importer importer, int index);

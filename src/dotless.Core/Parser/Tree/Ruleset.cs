@@ -101,7 +101,7 @@ namespace dotless.Core.Parser.Tree
         {
             env.Frames.Push(this);
 
-            NodeHelper.ExpandNodes<Mixin.Call>(env, this.Rules);
+            NodeHelper.ExpandNodes<MixinCall>(env, this.Rules);
 
             for (var i = 0; i < Rules.Count; i++)
             {
