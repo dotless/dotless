@@ -31,7 +31,7 @@ namespace dotless.Compiler
 
             var inputFile = new FileInfo(arguments[0]);
 
-            if (!inputFile.Exists && inputFile.Extension != ".less")
+            if (!inputFile.Exists && inputFile.Extension != ".less" && !inputFile.FullName.EndsWith(".less.css"))
                 inputFile = new FileInfo(inputFile.FullName + ".less");
 
             string outputFilePath;
@@ -40,6 +40,8 @@ namespace dotless.Compiler
                 outputFilePath = arguments[1] + (Path.HasExtension(arguments[1]) ? "" : ".css");
                 outputFilePath = Path.GetFullPath(outputFilePath);
             }
+            else if (inputFile.FullName.EndsWith(".less.css"))
+                outputFilePath = inputFile.Name.Substring(0, inputFile.Name.Length - 9) + ".css";
             else
                 outputFilePath = Path.ChangeExtension(inputFile.Name, ".css");
 
