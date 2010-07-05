@@ -12,7 +12,7 @@ namespace dotless.Core.Parser.Tree
         public NodeList<Selector> Selectors { get; set; }
         public List<Node> Rules { get; set; }
 
-        private Dictionary<string, List<Ruleset>> _lookups;
+        private Dictionary<string, List<Closure>> _lookups;
         private Dictionary<string, Rule> _variables;
 
 
@@ -25,7 +25,7 @@ namespace dotless.Core.Parser.Tree
 
         protected Ruleset()
         {
-            _lookups = new Dictionary<string, List<Ruleset>>();
+            _lookups = new Dictionary<string, List<Closure>>();
         }
 
         public Rule Variable(string name)
@@ -53,10 +53,10 @@ namespace dotless.Core.Parser.Tree
             return Rules.OfType<Ruleset>().ToList();
         }
 
-        public List<Ruleset> Find(Env env, Selector selector, Ruleset self)
+        public List<Closure> Find(Env env, Selector selector, Ruleset self)
         {
             self = self ?? this;
-            var rules = new List<Ruleset>();
+            var rules = new List<Closure>();
             var key = selector.ToCSS(env);
 
             if (_lookups.ContainsKey(key))
@@ -69,10 +69,17 @@ namespace dotless.Core.Parser.Tree
                     if (selector.Elements.Count > 1)
                     {
                         var remainingSelectors = new Selector(new NodeList<Element>(selector.Elements.Skip(1)));
-                        rules.AddRange(rule.Find(env, remainingSelectors, self));
+                        var closures = rule.Find(env, remainingSelectors, self);
+
+                        foreach (var closure in closures)
+                        {
+                            closure.Context.Insert(0, rule);
+                        }
+
+                        rules.AddRange(closures);
                     }
                     else
-                        rules.Add(rule);
+                        rules.Add(new Closure { Ruleset = rule, Context = new List<Ruleset> { rule } });
                 }
             }
             return _lookups[key] = rules;

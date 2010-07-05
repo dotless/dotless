@@ -31,7 +31,7 @@ namespace dotless.Core.Parser.Tree
             return this;
         }
 
-        public Ruleset Evaluate(NodeList<Expression> args, Env env)
+        public Ruleset Evaluate(NodeList<Expression> args, Env env, List<Ruleset> closureContext)
         {
             if (args)
                 Guard.ExpectMaxArguments(Params.Count, args.Count, String.Format("'{0}'", Name), Index);
@@ -55,7 +55,7 @@ namespace dotless.Core.Parser.Tree
                 }
             }
 
-            var frames = new[] {this, frame}.Concat(env.Frames).Reverse();
+            var frames = new[] { this, frame }.Concat(env.Frames).Concat(closureContext).Reverse();
             var context = new Env {Frames = new Stack<Ruleset>(frames)};
 
             var newRules = new List<Node>();

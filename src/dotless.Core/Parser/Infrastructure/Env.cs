@@ -25,7 +25,7 @@
             return Frames.Select(frame => frame.Variable(name)).FirstOrDefault(r => r != null);
         }
 
-        public IEnumerable<Ruleset> FindRulesets(Selector selector)
+        public List<Closure> FindRulesets(Selector selector)
         {
             return Frames.Select(frame => frame.Find(this, selector, null)).FirstOrDefault(r => r.Count != 0);
         }

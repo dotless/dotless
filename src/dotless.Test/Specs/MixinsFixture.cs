@@ -1056,5 +1056,90 @@ important-rule {
 
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void CanResolveMixinsInSameScopeAsMixinDefinition()
+        {
+            var input =
+            @"
+#ns {
+  .square() {
+    width: 10px;
+    height: 10px;
+  }
+  .box() {
+    .square();
+  }
+}
+
+#mybox {
+  #ns > .box();
+}
+";
+
+            var expected =
+                @"
+#mybox {
+  width: 10px;
+  height: 10px;
+}
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void CanResolveVariablesInSameScopeAsMixinDefinition()
+        {
+            var input =
+            @"
+#ns {
+  @width: 10px;
+  .box() {
+    width: @width;
+  }
+}
+
+#mybox {
+  #ns > .box();
+}
+";
+
+            var expected =
+                @"
+#mybox {
+  width: 10px;
+}
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void IncludeAllMixinsInSameScope()
+        {
+            var input =
+            @"
+#ns {
+  .mixin() { color: red; }
+}
+#ns {
+  .mixin() { color: blue; }
+  .box {
+    #ns > .mixin();
+  }
+}
+";
+
+            var expected =
+                @"
+#ns .box {
+  color: red;
+  color: blue;
+}
+";
+
+            AssertLess(input, expected);
+        }
     }
 }
