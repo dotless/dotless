@@ -22,6 +22,7 @@ namespace dotless.Core.Parser.Infrastructure
         Shorthand Shorthand(Node first, Node second, int index);
         Variable Variable(string name, int index);
         Url Url(Node value, int index);
+        Script Script(string script, int index);
 
         //mixins
         MixinCall MixinCall(NodeList<Element> elements, NodeList<Expression> arguments, int index);

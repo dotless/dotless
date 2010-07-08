@@ -1,5 +1,6 @@
 namespace dotless.Core.Parser.Infrastructure
 {
+    using System;
     using System.Collections.Generic;
     using Importers;
     using Nodes;
@@ -70,6 +71,11 @@ namespace dotless.Core.Parser.Infrastructure
         public Url Url(Node value, int index)
         {
             return new Url(value) { Index = index };
+        }
+
+        public Script Script(string script, int index)
+        {
+            return new Script(script) { Index = index };
         }
 
         public MixinCall MixinCall(NodeList<Element> elements, NodeList<Expression> arguments, int index)
