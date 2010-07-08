@@ -4,6 +4,7 @@ namespace dotless.Core.Parser
     using System.Linq;
     using System.Text;
     using System.Text.RegularExpressions;
+    using Exceptions;
     using Infrastructure.Nodes;
     using Utils;
 
@@ -44,18 +45,41 @@ namespace dotless.Core.Parser
             {
                 var chunkParts = new List<StringBuilder> { new StringBuilder() };
                 var chunkPart = chunkParts.Last();
-                var skip = new Regex(@"\G[^\""'}*/]+");
+                var skip = new Regex(@"\G[^\""'{}/\\]+");
                 var comment = new Regex(@"\G\/\*(?:[^*\n]|\*+[^\/\n]|\*?(\n))*\*+\/");
+                var level = 0;
+                var lastBlock = 0;
+                var lastQuote = 0;
                 char? inString = null;
 
-                for (int i = 0; i < _input.Length; i++)
+                for (int i = 0; i < _inputLength; i++)
                 {
                     var match = skip.Match(_input, i);
                     if(match.Success)
                     {
-                        i += match.Length - 1;
                         chunkPart.Append(match.Value);
-                        continue;
+                        i += match.Length;
+
+                        if (i == _inputLength)
+                            break;
+                    }
+
+
+                    if(i < _inputLength - 1 && _input[i] == '/')
+                    {
+                        var cc = _input[i + 1];
+                        if(cc == '/' || cc=='*')
+                        {
+                            match = comment.Match(_input, i);
+                            if (match.Success)
+                            {
+                                i += match.Length;
+                                chunkPart.Append(match.Value);
+
+                                if (i == _inputLength)
+                                    break;
+                            }
+                        }
                     }
 
                     var c = _input[i];
@@ -63,35 +87,45 @@ namespace dotless.Core.Parser
                     if (c == '"' || c == '\'')
                     {
                         if (inString == null)
+                        {
                             inString = c;
+                            lastQuote = i;
+                        }
                         else
                             inString = inString == c ? null : inString;
                     }
+                    else if (inString != null && c == '\\' && i < _inputLength - 1)
+                    {
+                        chunkPart.Append(_input, i, 2);
+                        i++;
+                        continue;
+                    }
+                    else if (inString == null && c == '{')
+                    {
+                        level++;
+                        lastBlock = i;
+                    }
                     else if (inString == null && c == '}')
                     {
+                        level--;
+
+                        if (level < 0)
+                            throw new ParsingException("Unexpected '}'", i);
+
                         chunkPart.Append(c);
                         chunkPart = new StringBuilder();
                         chunkParts.Add(chunkPart);
                         continue;
                     }
-                    else if (inString == null && c == '/' && i < _inputLength - 1 && _input[i + 1] == '*')
-                    {
-                        match = comment.Match(_input, i);
-                        if (match.Success)
-                        {
-                            i += match.Length - 1;
-
-                            if (Optimization == 1)
-                                chunkPart.Append(match.Value);
-                            else
-                                chunkPart.Append(new string('\n', match.Groups[1].Captures.Count));
-
-                            continue;
-                        }
-                    }
 
                     chunkPart.Append(c);
                 }
+
+                if(inString != null)
+                    throw new ParsingException(string.Format("Missing closing quote ({0})", inString), lastQuote);
+
+                if(level > 0)
+                    throw new ParsingException("Missing closing '}'", lastBlock);
 
                 _chunks = chunkParts.Select(p => p.ToString()).ToList();
 
