@@ -110,9 +110,9 @@
             if (variablesDictionary != null)
                 variables = variablesDictionary.Aggregate("",
                                                           (s, x) =>
-                                                          string.Format("{0}\n  @{1}: {2};", s, x.Key, x.Value));
+                                                          string.Format("{0}  @{1}: {2};", s, x.Key, x.Value));
 
-            var less = string.Format(".def {{\nexpression:\n{0}\n;}}\n {1}", expression, variables);
+            var less = string.Format("{1} .def {{\nexpression:\n{0}\n;}}", expression, variables);
 
             var css = Evaluate(less);
 

@@ -19,8 +19,9 @@ namespace dotless.Test.Specs
 }
 
 .tiny-scope {
-  color: @mix; // #989
+  color: @mix; // none
   .mixin;
+  color: @mix; // #989
 }
 
 .scope1 {
@@ -47,6 +48,7 @@ namespace dotless.Test.Specs
             var expected =
                 @"
 .tiny-scope {
+  color: none;
   color: #998899;
 }
 .scope1 {

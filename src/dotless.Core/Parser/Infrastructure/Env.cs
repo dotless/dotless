@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Reflection;
     using Functions;
+    using Nodes;
     using Tree;
     using Utils;
 
@@ -14,6 +15,7 @@
 
         public Stack<Ruleset> Frames { get; set; }
         public bool Compress { get; set; }
+        public Node Rule { get; set; }
 
         public Env()
         {
@@ -22,7 +24,20 @@
 
         public Rule FindVariable(string name)
         {
-            return Frames.Select(frame => frame.Variable(name)).FirstOrDefault(r => r != null);
+            return FindVariable(name, Rule);
+        }
+
+        public Rule FindVariable(string name, Node rule)
+        {
+            var previousNode = rule;
+            foreach (var frame in Frames)
+            {
+                var v = frame.Variable(name, previousNode);
+                if (v)
+                    return v;
+                previousNode = frame;
+            }
+            return null;
         }
 
         public List<Closure> FindRulesets(Selector selector)

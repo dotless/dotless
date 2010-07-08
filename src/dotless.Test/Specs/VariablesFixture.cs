@@ -54,7 +54,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void LazyEval()
+        public void ThrowsWhenTryToEvaluateBeforeDefinition()
         {
             var input = @"
 @var: @a;
@@ -65,9 +65,143 @@ namespace dotless.Test.Specs
 }
 ";
 
+            AssertError("variable @a is undefined", "@var: @a;", 1, 6, input);
+        }
+
+        [Test]
+        public void ThrowsIfVariableDefinedAfterUse()
+        {
+            var input = @"
+.late-bound {
+  width: @var;
+}
+
+@var: 10px;
+";
+
+            AssertError("variable @var is undefined", "  width: @var;", 2, 9, input);
+        }
+
+        [Test]
+        public void VariableOverridesPreviousValue1()
+        {
+            var input = @"
+@var: 10px;
+.init {
+  width: @var;
+}
+
+@var: 20px;
+.overridden {
+  width: @var;
+}
+";
+            
             var expected = @"
-.lazy-eval {
-  width: 100%;
+.init {
+  width: 10px;
+}
+.overridden {
+  width: 20px;
+}
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void VariableOverridesPreviousValue2()
+        {
+            var input = @"
+@var: 10px;
+.test {
+  width: @var;
+
+  @var: 20px;
+  height: @var;
+}
+";
+            
+            var expected = @"
+.test {
+  width: 10px;
+  height: 20px;
+}
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void VariableOverridesPreviousValue3()
+        {
+            var input = @"
+@var: 10px;
+.test {
+  @var: 15px;
+  width: @var;
+
+  @var: 20px;
+  height: @var;
+}
+";
+            
+            var expected = @"
+.test {
+  width: 15px;
+  height: 20px;
+}
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void VariableOverridesPreviousValue4()
+        {
+            var input = @"
+@var: 10px;
+.test1 {
+  @var: 20px;
+  width: @var;
+}
+.test2 {
+  width: @var;
+}
+";
+            
+            var expected = @"
+.test1 {
+  width: 20px;
+}
+.test2 {
+  width: 10px;
+}
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void VariableOverridesPreviousValue5()
+        {
+            var input = @"
+.mixin(@a) {
+  width: @a;
+}
+.test {
+  @var: 15px;
+  .mixin(@var);
+
+  @var: 20px;
+  .mixin(@var);
+}
+";
+            
+            var expected = @"
+.test {
+  width: 15px;
+  width: 20px;
 }
 ";
 

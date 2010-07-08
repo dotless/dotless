@@ -27,6 +27,8 @@ namespace dotless.Core.Parser.Tree
             if(closures == null)
                 throw new ParsingException(Selector.ToCSS(env).Trim() + " is undefined", Index);
 
+            env.Rule = this;
+
             var rules = new NodeList();
             foreach (var closure in closures)
             {
@@ -60,6 +62,8 @@ namespace dotless.Core.Parser.Tree
                     }
                 }
             }
+
+            env.Rule = null;
 
             if (!found)
             {

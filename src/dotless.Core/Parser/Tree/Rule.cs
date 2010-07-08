@@ -18,7 +18,13 @@ namespace dotless.Core.Parser.Tree
 
         public override Node Evaluate(Env env)
         {
-            return new Rule(Name, Value.Evaluate(env)) { Index = Index };
+            env.Rule = this;
+            
+            var rule = new Rule(Name, Value.Evaluate(env)) {Index = Index};
+
+            env.Rule = null;
+            
+            return rule;
         }
 
         public override string ToCSS(Env env)

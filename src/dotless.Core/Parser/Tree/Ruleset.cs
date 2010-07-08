@@ -28,24 +28,14 @@ namespace dotless.Core.Parser.Tree
             _lookups = new Dictionary<string, List<Closure>>();
         }
 
-        public Rule Variable(string name)
+        public Rule Variable(string name, Node startNode)
         {
-            if (_variables == null)
-            {
-                _variables = new Dictionary<string, Rule>();
-
-                var variables = Rules.OfType<Rule>().Where(r => r.Variable);
-
-                foreach (var variable in variables)
-                {
-                    _variables[variable.Name] = variable;
-                }
-            }
-
-            if (_variables.ContainsKey(name))
-                return _variables[name];
-
-            return null;
+            return Rules
+                .TakeWhile(r => r != startNode)
+                .OfType<Rule>()
+                .Where(r => r.Variable)
+                .Reverse()
+                .FirstOrDefault(r => r.Name == name);
         }
 
         public List<Ruleset> Rulesets()
