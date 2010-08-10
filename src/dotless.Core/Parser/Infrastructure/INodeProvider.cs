@@ -21,7 +21,7 @@ namespace dotless.Core.Parser.Infrastructure
         Number Number(string value, string unit, int index);
         Shorthand Shorthand(Node first, Node second, int index);
         Variable Variable(string name, int index);
-        Url Url(TextNode value, int index);
+        Url Url(TextNode value, IEnumerable<string> paths, int index);
         Script Script(string script, int index);
 
         //mixins

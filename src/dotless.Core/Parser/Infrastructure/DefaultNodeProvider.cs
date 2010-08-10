@@ -1,6 +1,5 @@
 namespace dotless.Core.Parser.Infrastructure
 {
-    using System;
     using System.Collections.Generic;
     using Importers;
     using Nodes;
@@ -68,9 +67,9 @@ namespace dotless.Core.Parser.Infrastructure
             return new Variable(name) { Index = index };
         }
 
-        public Url Url(TextNode value, int index)
+        public Url Url(TextNode value, IEnumerable<string> paths, int index)
         {
-            return new Url(value) { Index = index };
+            return new Url(value, paths) { Index = index };
         }
 
         public Script Script(string script, int index)

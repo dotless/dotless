@@ -7,13 +7,14 @@ namespace dotless.Core.Importers
     using Input;
     using Parser.Tree;
     using Parser;
+    using Utils;
 
     public class Importer
     {
         public IFileReader FileReader { get; set; }
         public List<string> Imports { get; set; }
         public Func<Parser> Parser { get; set; }
-        private readonly List<string> paths = new List<string>();
+        public readonly List<string> Paths = new List<string>();
 
         public Importer() : this(new FileReader())
         {
@@ -30,13 +31,11 @@ namespace dotless.Core.Importers
             if (Parser == null)
                 throw new InvalidOperationException("Parser cannot be null.");
 
-            var file = paths.Concat(new[] { import.Path }).Aggregate("", Path.Combine);
-
-            file = Path.Combine(Path.GetDirectoryName(file), Path.GetFileName(file));
+            var file = Paths.Concat(new[] { import.Path }).AggregatePaths();
 
             var contents = FileReader.GetFileContents(file);
 
-            paths.Add(Path.GetDirectoryName(import.Path));
+            Paths.Add(Path.GetDirectoryName(import.Path));
 
             try
             {
@@ -50,7 +49,7 @@ namespace dotless.Core.Importers
             }
             finally
             {
-                paths.RemoveAt(paths.Count - 1);
+                Paths.RemoveAt(Paths.Count - 1);
             }
         }
     }

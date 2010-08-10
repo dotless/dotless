@@ -25,7 +25,7 @@ namespace dotless.Test
             if (Contents.ContainsKey(fileName))
                 return Contents[fileName];
 
-            throw new FileNotFoundException("Import not found", fileName);
+            throw new FileNotFoundException(string.Format("Import {0} not found", fileName), fileName);
         }
     }
 }

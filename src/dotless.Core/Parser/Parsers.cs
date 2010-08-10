@@ -212,7 +212,7 @@ namespace dotless.Core.Parser
             if (!parser.Tokenizer.Match(')'))
                 throw new ParsingException("missing closing ) for url()", parser.Tokenizer.Location.Index);
 
-            return NodeProvider.Url(value, index);
+            return NodeProvider.Url(value, parser.Importer.Paths, index);
         }
 
         //
