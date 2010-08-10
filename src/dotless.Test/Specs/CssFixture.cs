@@ -252,5 +252,11 @@ form[data-disabled] {
 
             AssertLessUnchanged(input);
         }
+
+        [Test]
+        public void EmptyUrl()
+        {
+            AssertExpressionUnchanged( "url()" );
+        }
     }
 }
