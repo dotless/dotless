@@ -5,19 +5,16 @@
 
     public class Url : Node
     {
-        public Node Value { get; set; }
+        public TextNode Value { get; set; }
 
-        public Url(Node value)
+        public Url(TextNode value)
         {
             Value = value;
         }
 
         public string GetUrl()
         {
-            if (Value is Quoted)
-                return ((Quoted) Value).Contents;
-
-            return Value.ToCSS(null); // null should be fine here since Value is either Quoted or TextNode.
+            return Value.Value;
         }
 
         public override string ToCSS(Env env)

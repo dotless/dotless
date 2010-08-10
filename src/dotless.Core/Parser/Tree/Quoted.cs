@@ -4,32 +4,32 @@
     using Infrastructure;
     using Infrastructure.Nodes;
 
-    public class Quoted : Node
+    public class Quoted : TextNode
     {
-        public string Value { get; set; }
-        public string Contents { get; set; }
+        public char? Quote { get; set; }
 
         public Quoted(string value, string contents)
+          : base(contents)
         {
-            Value = value;
-            Contents = contents;
+            Quote = value[0];
         }
 
         public Quoted(string value)
             : this(value, value)
         {
+            Quote = null;
         }
 
         public override string ToCSS(Env env)
         {
-            return Value;
+            return Quote + Value + Quote;
         }
 
         private readonly Regex _unescape = new Regex(@"(^|[^\\])\\(.)");
 
         public string UnescapeContents()
         {
-            return _unescape.Replace(Contents, @"$1$2");
+            return _unescape.Replace(Value, @"$1$2");
         }
     }
 }

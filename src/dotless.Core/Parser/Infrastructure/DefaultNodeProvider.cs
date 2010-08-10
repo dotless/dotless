@@ -68,7 +68,7 @@ namespace dotless.Core.Parser.Infrastructure
             return new Variable(name) { Index = index };
         }
 
-        public Url Url(Node value, int index)
+        public Url Url(TextNode value, int index)
         {
             return new Url(value) { Index = index };
         }
