@@ -817,7 +817,7 @@ namespace dotless.Test.Specs
                 input);
         }
 
-        [Test]
+        [Test, Ignore]
         public void CallSiteCorrectWhenMixinThrowsAnError()
         {
             var input = @"
