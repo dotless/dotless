@@ -1,5 +1,6 @@
 namespace dotless.Test.Specs
 {
+    using System;
     using System.Collections.Generic;
     using NUnit.Framework;
 
@@ -85,12 +86,13 @@ namespace dotless.Test.Specs
             AssertExpression("3.75em", "60/@base", variables);
         }
 
-        [Test, Ignore]
+        [Test]
         public void DivisionByZero()
         {
-            AssertExpressionError("Attempted to divide by zero.", 5, "20px / 0");
-            AssertExpressionError("Attempted to divide by zero.", 14, "1 + 2 - 3 * 4 / 0");
-            AssertExpressionError("Attempted to divide by zero.", 6, "1 + 2 / 0 - 3 * 4 / 0");
+            var divideByZeroException = new DivideByZeroException();
+            AssertExpressionError(divideByZeroException.Message, 5, "20px / 0");
+            AssertExpressionError(divideByZeroException.Message, 14, "1 + 2 - 3 * 4 / 0");
+            AssertExpressionError(divideByZeroException.Message, 6, "1 + 2 / 0 - 3 * 4 / 0");
         }
 
         [Test]

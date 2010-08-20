@@ -1,6 +1,8 @@
 namespace dotless.Test.Specs
 {
     using System;
+    using System.Globalization;
+    using System.Threading;
     using NUnit.Framework;
 
     public class MixinsFixture : SpecFixtureBase
@@ -817,9 +819,11 @@ namespace dotless.Test.Specs
                 input);
         }
 
-        [Test, Ignore]
+        [Test]
         public void CallSiteCorrectWhenMixinThrowsAnError()
         {
+            var divideByZeroException = new DivideByZeroException();
+            
             var input = @"
 .mixin(@a: 5px) {
   width: 10px / @a;
@@ -829,7 +833,7 @@ namespace dotless.Test.Specs
 }";
 
             AssertError(
-                "Attempted to divide by zero.",
+                divideByZeroException.Message,
                 "  width: 10px / @a;",
                 2,
                 14,
