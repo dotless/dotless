@@ -54,7 +54,6 @@ Converting:
 var manager = Manager.Create(Host, GenerationEnvironment);
 var configuration = new DotlessConfiguration();
 configuration.MinifyOutput = _minimize;
-var dotLess = new EngineFactory().GetEngine(configuration);
 foreach(var cssFile in cssFiles) 
 {
     manager.StartNewFile(GetCssFileName(cssFile));
@@ -62,9 +61,7 @@ foreach(var cssFile in cssFiles)
     {
 
 	 
-		var fs = new FileSource();
-		var lso = fs.GetSource(cssFile);
-        string css = dotLess.TransformToCss(lso);
+        string css = Less.Parse(File.ReadAllText(cssFile), configuration);
         Write(css);
     }
     catch(Exception e) 
