@@ -291,7 +291,7 @@ namespace dotless.Core.Parser
 
         public Zone GetZone(string error, int position, int call, string fileName)
         {
-            var first = _input.Substring(0, position);
+            var first = _input.Substring(0, System.Math.Min(position, _input.Length));
 
             var start = first.LastIndexOf('\n') + 1;
             var line = first.Count(c => c == '\n');
