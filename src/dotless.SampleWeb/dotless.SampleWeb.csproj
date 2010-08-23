@@ -118,6 +118,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\Site.less" />
+    <None Include="Content\subfolder\test.less" />
     <Content Include="Content\Web.config" />
   </ItemGroup>
   <ItemGroup>

@@ -4,16 +4,9 @@ namespace dotless.Core.Input
 
     class AspServerPathResolver : IPathResolver
     {
-        private readonly IHttp _http;
-
-        public AspServerPathResolver(IHttp http)
-        {
-            _http = http;
-        }
-
         public string GetFullPath(string path)
         {
-            return _http.Context.Server.MapPath(path);
+            return System.Web.HttpContext.Current.Server.MapPath(path);
         }
     }
 }
