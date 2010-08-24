@@ -54,5 +54,11 @@ namespace dotless.Core
         {
             return Parser.Importer.Imports.Distinct();
         }
+
+        public void ResetImports()
+        {
+            Parser.Importer.Imports.Clear();
+        }
+
     }
 }

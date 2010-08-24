@@ -54,5 +54,10 @@ namespace dotless.Core
         {
             return Underlying.GetImports();
         }
+
+        public void ResetImports()
+        {
+            Underlying.ResetImports();
+        }
     }
 }

@@ -31,5 +31,10 @@
         {
             return Underlying.GetImports();
         }
+
+        public void ResetImports()
+        {
+            Underlying.ResetImports();
+        }
     }
 }

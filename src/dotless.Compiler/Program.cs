@@ -100,6 +100,7 @@ namespace dotless.Compiler
                 files.Add(inputFilePath);
                 foreach (var file in engine.GetImports())
                     files.Add(Path.Combine(directoryPath, Path.ChangeExtension(file, "less")));
+                engine.ResetImports();
                 return files;
             }
             catch (IOException)

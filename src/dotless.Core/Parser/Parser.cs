@@ -86,7 +86,7 @@ namespace dotless.Core.Parser
 
         public Ruleset Parse(string input, string fileName)
         {
-            Importer.Imports = new List<string>();
+            Tokenizer.SetupInput(input);
             ParsingException parsingException = null;
             Ruleset root = null;
 
