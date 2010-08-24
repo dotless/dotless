@@ -13,3 +13,4 @@ Log/
 Uploads/
 *.user
 Thumbs.db
+gems/lib/*
