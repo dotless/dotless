@@ -28,6 +28,7 @@ namespace dotless.Compiler
             }
 
             var inputDirectoryPath = Path.GetDirectoryName(arguments[0]);
+            if(string.IsNullOrEmpty(inputDirectoryPath)) inputDirectoryPath = ".\\";
             var inputFilePattern = Path.GetFileName(arguments[0]);
             var outputDirectoryPath = string.Empty;
             var outputFilename = string.Empty;
