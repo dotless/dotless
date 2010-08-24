@@ -155,6 +155,22 @@ task t4css -depends Merge {
     $build_dir\t4css\    
 }
 
+task Gem -depends Merge {
+    $target = "$base_dir\gems"
+    remove-item -force -recurse $target\lib -ErrorAction SilentlyContinue 
+    new-item $target\lib -itemType directory
+    remove-item -force -recurse $target\bin\ -ErrorAction SilentlyContinue 
+    new-item $target\bin -itemType directory
+    
+    cp $build_dir\dotless.Core.dll $target\lib\dotless.Core.dll
+    cp $build_dir\dotless.Compiler.exe $target\bin\dotless.Compiler.exe
+    
+    $fileContent = "result = system(File.dirname(__FILE__) + ""/dotless.Compiler.exe "" + ARGV.join(' '))
+exit 1 unless result"
+    out-file -filePath $target\bin\dotless -encoding ascii -inputObject $fileContent
+
+}
+
 task Release -depends Test, Merge, t4css {
     $commit = Get-Git-Commit
     $filename = "dotless.core"

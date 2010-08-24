@@ -4,7 +4,7 @@ Gem::Specification.new do |spec|
 	spec.platform	= Gem::Platform::RUBY
 	spec.name	= 'dotless'
 	spec.version 	= version
-	spec.files 	= Dir['lib/**/*']
+	spec.files 	= Dir['lib/**/*'] + Dir['bin/**/*']
 	spec.bindir	= 'bin'
 	spec.executables << 'dotless'
 
