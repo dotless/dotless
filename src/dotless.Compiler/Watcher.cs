@@ -3,89 +3,117 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
     using System.Threading;
 
-    public class Watcher
+    public delegate CompilationDelegate CompilationFactoryDelegate(string input);
+    public delegate IEnumerable<string> CompilationDelegate();
+
+    class Watcher : IDisposable
     {
-        private Func<IEnumerable<string>> CompilationDelegate { get; set; }
-        private Dictionary<string, FileSystemWatcher> FileSystemWatchers { get; set; }
+        private static Dictionary<string, CompilationDelegate> CompilationDelegates = new Dictionary<string, CompilationDelegate>();
+        private static Dictionary<string, CompilationFactoryDelegate> CreationDelegates = new Dictionary<string, CompilationFactoryDelegate>();
+        private static List<FileSystemWatcher> FileSystemWatchers = new List<FileSystemWatcher>();
+        public bool Watch { get; set; }
 
-        public Watcher(IEnumerable<string> files, Func<IEnumerable<string>> compilationDelegate)
+        private object _eventLock = new object();
+
+        public void SetupDirectoryWatcher(string directoryPath, string pattern, CompilationFactoryDelegate del)
         {
-            CompilationDelegate = compilationDelegate;
-            FileSystemWatchers = new Dictionary<string, FileSystemWatcher>();
-
-            SetupWatchers(files);
+            var fsWatcher = new FileSystemWatcher(directoryPath, pattern);
+            fsWatcher.Created += FileCreatedHandler;
+            fsWatcher.EnableRaisingEvents = true;
+            Console.WriteLine("Started watching '{0}' for changes", directoryPath + "\\" + pattern);
+            CreationDelegates.Add(directoryPath, del);
+            FileSystemWatchers.Add(fsWatcher);
         }
 
-        public void SetupWatchers(IEnumerable<string> files)
+        public void SetupWatchers(IEnumerable<string> files, CompilationDelegate del)
         {
-            if (files == null)
-                return;
-
-            foreach (var file in files)
+            foreach (var path in files)
             {
-                var fileInfo = new FileInfo(file);
-                if (fileInfo.Directory == null)
-                    throw new IOException("File Path has no directory to watch");
-
-                if(FileSystemWatchers.ContainsKey(file))
-                    continue;
-
-                Console.WriteLine("Started watching '{0}' for changes", file);
-
-                var directoryFullName = fileInfo.Directory.FullName;
-                var fsWatcher = new FileSystemWatcher(directoryFullName, fileInfo.Name);
-                fsWatcher.Changed += FsWatcherChanged;
-                fsWatcher.EnableRaisingEvents = true;
-
-                FileSystemWatchers[file] = fsWatcher;
-            }
-
-            var missing = FileSystemWatchers.Keys.Where(f => !files.Contains(f)).ToList();
-
-            foreach (var file in missing)
-            {
-                var fsWatcher = FileSystemWatchers[file];
-
-                fsWatcher.Changed -= FsWatcherChanged;
-
-                fsWatcher.Dispose();
-
-                FileSystemWatchers.Remove(file);
-
-                Console.WriteLine("Stopped watching '{0}'", file);
+                if (!CompilationDelegates.ContainsKey(path))
+                {
+                    var fsWatcher = new FileSystemWatcher(Path.GetDirectoryName(path), Path.GetFileName(path));
+                    fsWatcher.Changed += FileChangedHandler;
+                    fsWatcher.Deleted += FileDeletedHandler;
+                    fsWatcher.EnableRaisingEvents = true;
+                    Console.WriteLine("Started watching '{0}' for changes", path);
+                    CompilationDelegates.Add(path, del);
+                    FileSystemWatchers.Add(fsWatcher);
+                }
+                else
+                {
+                    lock (_eventLock)
+                    {
+                        bool add = true;
+                        foreach (var d in CompilationDelegates[path].GetInvocationList())
+                        {
+                            if (d.Target.Equals(del.Target)) add = false;
+                        }
+                        if (add) CompilationDelegates[path] += del;
+                    }
+                }
             }
         }
 
-        public void RemoveWatchers()
+        void FileCreatedHandler(object sender, FileSystemEventArgs e)
         {
-            SetupWatchers(new string[0]);
+            var directoryPath = Path.GetDirectoryName(e.FullPath);
+            if (CreationDelegates.ContainsKey(directoryPath))
+            {
+                var compilationDelegate = CreationDelegates[directoryPath](e.FullPath);
+                Console.WriteLine("[Compile]");
+                var files = compilationDelegate();
+                SetupWatchers(files, compilationDelegate);
+            }
         }
 
-        void FsWatcherChanged(object sender, FileSystemEventArgs e)
+        void FileDeletedHandler(object sender, FileSystemEventArgs e)
+        {
+            var fsWatcher = sender as FileSystemWatcher;
+            fsWatcher.EnableRaisingEvents = false;
+            Console.WriteLine("Stopped watching '{0}'", e.FullPath);
+            FileSystemWatchers.Remove(fsWatcher);
+            fsWatcher.Changed -= null;
+            fsWatcher.Dispose();
+
+            var path = e.FullPath;
+            if (CompilationDelegates.ContainsKey(path))
+            {
+                lock (_eventLock)
+                {
+                    var del = CompilationDelegates[path];
+                    CompilationDelegates.Remove(path);
+                    List<string> toberemoved = new List<string>();
+                    foreach (var key in CompilationDelegates.Keys)
+                        foreach (var d in CompilationDelegates[key].GetInvocationList())
+                            if (d.Target.Equals(del.Target))
+                                toberemoved.Add(key);
+                    foreach (var key in toberemoved) 
+                        CompilationDelegates[key] -= del;
+                }
+            }
+        }
+
+        void FileChangedHandler(object sender, FileSystemEventArgs e)
         {
             if (IsDuplicateEvent()) return;
-
-            var fsWatcher = (FileSystemWatcher) sender;
-            var file = FileSystemWatchers.First(d => d.Value == fsWatcher).Key;
-
+            var compilationDelegate = CompilationDelegates[e.FullPath];
             var completed = false;
-            Console.WriteLine("Found change in '{0}'. Recompiling...", file);
-            while(!completed)
+            Console.WriteLine("[Change in {0}]", e.Name);
+            Console.WriteLine("[Recompile]");
+            while (!completed)
             {
                 try
                 {
-                    var files = CompilationDelegate();
-                    SetupWatchers(files);
+                    var files = compilationDelegate();
+                    SetupWatchers(files, compilationDelegate);
                     completed = true;
                 }
-                catch(IOException)
+                catch (IOException)
                 {
-                    Thread.Sleep(100);
-                    Console.WriteLine("[Waiting]");
-                    Console.WriteLine("File still locked, waiting 100ms");
+                    Console.WriteLine("[Waiting(File locked)]");
+                    Thread.Sleep(300);
                 }
             }
         }
@@ -104,5 +132,23 @@
             lastEventOccured = fileTimeUtc;
             return false;
         }
+
+        #region IDisposable Members
+
+        void IDisposable.Dispose()
+        {
+            foreach (var fsWatcher in FileSystemWatchers)
+            {
+                fsWatcher.EnableRaisingEvents = false;
+                fsWatcher.Changed -= null;
+                fsWatcher.Dispose();
+                Console.WriteLine("Stopped watching '{0}'", fsWatcher.Filter);
+            }
+            FileSystemWatchers.Clear();
+            CompilationDelegates.Clear();
+            CreationDelegates.Clear();
+        }
+
+        #endregion
     }
 }

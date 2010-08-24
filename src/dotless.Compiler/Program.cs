@@ -6,8 +6,6 @@ namespace dotless.Compiler
     using System.Reflection;
     using Core;
     using Core.configuration;
-    using System.Linq;
-    using Core.Input;
     using Core.Parameters;
 
     public class Program
@@ -29,62 +27,82 @@ namespace dotless.Compiler
                 return;
             }
 
-            var inputFile = new FileInfo(arguments[0]);
+            var inputDirectoryPath = Path.GetDirectoryName(arguments[0]);
+            var inputFilePattern = Path.GetFileName(arguments[0]);
+            var outputDirectoryPath = string.Empty;
+            var outputFilename = string.Empty;
 
-            if (!inputFile.Exists && inputFile.Extension != ".less" && !inputFile.FullName.EndsWith(".less.css"))
-                inputFile = new FileInfo(inputFile.FullName + ".less");
+            if (string.IsNullOrEmpty(inputFilePattern)) inputFilePattern = "*.less";
+            if (!Path.HasExtension(inputFilePattern)) inputFilePattern = Path.ChangeExtension(inputFilePattern, "less");
 
-            string outputFilePath;
             if (arguments.Count > 1)
             {
-                outputFilePath = arguments[1] + (Path.HasExtension(arguments[1]) ? "" : ".css");
-                outputFilePath = Path.GetFullPath(outputFilePath);
+                outputDirectoryPath = Path.GetDirectoryName(arguments[1]);
+                outputFilename = Path.GetFileName(arguments[1]);
+                outputFilename = Path.ChangeExtension(outputFilename, "css");
             }
-            else if (inputFile.FullName.EndsWith(".less.css"))
-                outputFilePath = inputFile.Name.Substring(0, inputFile.Name.Length - 9) + ".css";
-            else
-                outputFilePath = Path.ChangeExtension(inputFile.Name, ".css");
+            else outputDirectoryPath = inputDirectoryPath;
+            if (HasWildcards(inputFilePattern)) outputFilename = string.Empty;
 
-            var currentDir = Directory.GetCurrentDirectory();
-            if (inputFile.Directory != null)
-                Directory.SetCurrentDirectory(inputFile.Directory.FullName);
-
+            var filenames = Directory.GetFiles(inputDirectoryPath, inputFilePattern);
             var engine = new EngineFactory(configuration).GetEngine();
-            Func<IEnumerable<string>> compilationDelegate = () => Compile(engine, inputFile.Name, outputFilePath);
 
-            var files = compilationDelegate();
-
-            if (configuration.Watch)
+            using (var watcher = new Watcher() { Watch = configuration.Watch })
             {
-                WriteAbortInstructions();
-
-                var watcher = new Watcher(files, compilationDelegate);
-
-                while (Console.ReadLine() != "")
+                if (watcher.Watch && HasWildcards(inputFilePattern))
                 {
-                    WriteAbortInstructions();
+                    CompilationFactoryDelegate factoryDelegate = (input) => CreationImpl(engine, input, Path.GetFullPath(outputDirectoryPath));
+                    watcher.SetupDirectoryWatcher(Path.GetFullPath(inputDirectoryPath), inputFilePattern, factoryDelegate);
                 }
 
-                watcher.RemoveWatchers();
-            }
+                foreach (var filename in filenames)
+                {
+                    var inputFile = new FileInfo(filename);
+                    var pathbuilder = new System.Text.StringBuilder(outputDirectoryPath + "\\");
+                    if (string.IsNullOrEmpty(outputFilename)) pathbuilder.Append(Path.ChangeExtension(inputFile.Name, "css"));
+                    else pathbuilder.Append(outputFilename);
+                    var outputFilePath = Path.GetFullPath(pathbuilder.ToString());
 
-            Directory.SetCurrentDirectory(currentDir);
+                    CompilationDelegate compilationDelegate = () => CompileImpl(engine, inputFile.FullName, outputFilePath);
+                    Console.WriteLine("[Compile]");
+                    var files = compilationDelegate();
+                    if (watcher.Watch) watcher.SetupWatchers(files, compilationDelegate);
+                }
+                if (configuration.Watch) WriteAbortInstructions();
+                while (watcher.Watch && Console.ReadKey(true).Key != ConsoleKey.Enter) 
+                {
+                    System.Threading.Thread.Sleep(200);
+                }
+            }
+        }
+        private static CompilationDelegate CreationImpl(ILessEngine engine, string inputFilePath, string outputDirectoryPath)
+        {
+            var pathbuilder = new System.Text.StringBuilder(outputDirectoryPath + Path.DirectorySeparatorChar);
+            pathbuilder.Append(Path.ChangeExtension(Path.GetFileName(inputFilePath), "css"));
+            var outputFilePath = Path.GetFullPath(pathbuilder.ToString());
+            return () => CompileImpl(engine, inputFilePath, outputFilePath);
         }
 
-        private static IEnumerable<string> Compile(ILessEngine engine, string inputFilePath, string outputFilePath)
+        private static IEnumerable<string> CompileImpl(ILessEngine engine, string inputFilePath, string outputFilePath)
         {
-            Console.Write("Compiling {0} -> {1} ", inputFilePath, outputFilePath);
+            var currentDir = Directory.GetCurrentDirectory();
             try
             {
-                var source = new FileReader().GetFileContents(inputFilePath);
+                Console.WriteLine("{0} -> {1}", inputFilePath, outputFilePath);
+                var directoryPath = Path.GetDirectoryName(inputFilePath);
+                var source = new dotless.Core.Input.FileReader().GetFileContents(inputFilePath);
+                Directory.SetCurrentDirectory(directoryPath);
                 var css = engine.TransformToCss(source, inputFilePath);
-
                 File.WriteAllText(outputFilePath, css);
                 Console.WriteLine("[Done]");
-                
-                return new[] { inputFilePath }.Concat(engine.GetImports());
+
+                var files = new List<string>();
+                files.Add(inputFilePath);
+                foreach (var file in engine.GetImports())
+                    files.Add(Path.Combine(directoryPath, Path.ChangeExtension(file, "less")));
+                return files;
             }
-            catch(IOException)
+            catch (IOException)
             {
                 throw;
             }
@@ -95,6 +113,16 @@ namespace dotless.Compiler
                 Console.WriteLine(ex.StackTrace);
                 return null;
             }
+            finally
+            {
+                Directory.SetCurrentDirectory(currentDir);
+            }
+        }
+
+
+        private static bool HasWildcards(string inputFilePattern)
+        {
+            return System.Text.RegularExpressions.Regex.Match(inputFilePattern, @"[\*\?]").Success;
         }
 
         private static void WriteAbortInstructions()
@@ -105,7 +133,7 @@ namespace dotless.Compiler
         private static string GetAssemblyVersion()
         {
             Assembly assembly = typeof(EngineFactory).Assembly;
-            var attributes = assembly.GetCustomAttributes(typeof (AssemblyFileVersionAttribute), true) as
+            var attributes = assembly.GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true) as
                              AssemblyFileVersionAttribute[];
             if (attributes != null && attributes.Length == 1)
                 return attributes[0].Version;
