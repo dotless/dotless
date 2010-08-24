@@ -161,6 +161,7 @@ task Gem -depends Merge {
     new-item $target\lib -itemType directory
     remove-item -force -recurse $target\bin\ -ErrorAction SilentlyContinue 
     new-item $target\bin -itemType directory
+    remove-item $target\VERSION -ErrorAction SilentlyContinue
     
     cp $build_dir\dotless.Core.dll $target\lib\dotless.Core.dll
     cp $build_dir\dotless.Compiler.exe $target\bin\dotless.Compiler.exe
@@ -168,7 +169,9 @@ task Gem -depends Merge {
     $fileContent = "result = system(File.dirname(__FILE__) + ""/dotless.Compiler.exe "" + ARGV.join(' '))
 exit 1 unless result"
     out-file -filePath $target\bin\dotless -encoding ascii -inputObject $fileContent
-
+    out-file -filePath $target\VERSION -encoding ascii -inputObject $version
+    cd $target
+    gem build dotless.gemspec
 }
 
 task Release -depends Test, Merge, t4css {
