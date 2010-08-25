@@ -11,11 +11,11 @@ namespace dotless.Test.Specs.Compression
         {
             var imports = new Dictionary<string, string>();
 
-            imports["import\\import-test-a.less"] = @"
+            imports["import/import-test-a.less"] = @"
 @import ""import-test-b.less"";
 @a: 20%;
 ";
-            imports["import\\import-test-b.less"] =
+            imports["import/import-test-b.less"] =
                 @"
 @import 'import-test-c';
 
@@ -26,7 +26,7 @@ namespace dotless.Test.Specs.Compression
   color: @c;
 }
 ";
-            imports["import\\import-test-c.less"] =
+            imports["import/import-test-c.less"] =
                 @"
 @import ""import-test-d.css"";
 @c: red;
@@ -44,8 +44,8 @@ namespace dotless.Test.Specs.Compression
         {
             var input =
                 @"
-@import url(""import\import-test-a.less"");
-//@import url(""import\import-test-a.less"");
+@import url(""import/import-test-a.less"");
+//@import url(""import/import-test-a.less"");
 
 #import-test {
   .mixin;

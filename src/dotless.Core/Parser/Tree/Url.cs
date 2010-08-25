@@ -1,23 +1,29 @@
 ﻿namespace dotless.Core.Parser.Tree
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text.RegularExpressions;
     using Infrastructure;
     using Infrastructure.Nodes;
+    using Utils;
 
     public class Url : Node
     {
-        public Node Value { get; set; }
+        public TextNode Value { get; set; }
 
-        public Url(Node value)
+        public Url(TextNode value, IEnumerable<string> paths)
         {
+            if (!Regex.IsMatch(value.Value, @"^(http:\/)?\/") && paths.Any())
+            {
+                value.Value = paths.Concat(new[] {value.Value}).AggregatePaths();
+            }
+
             Value = value;
         }
 
         public string GetUrl()
         {
-            if (Value is Quoted)
-                return ((Quoted) Value).Contents;
-
-            return Value.ToCSS(null); // null should be fine here since Value is either Quoted or TextNode.
+            return Value.Value;
         }
 
         public override string ToCSS(Env env)

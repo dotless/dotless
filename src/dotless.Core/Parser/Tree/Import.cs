@@ -15,7 +15,7 @@ namespace dotless.Core.Parser.Tree
         public Ruleset InnerRoot { get; set; }
 
         public Import(Quoted path, Importer importer)
-            : this(path.Contents, importer)
+            : this(path.Value, importer)
         {
             OriginalPath = path;
         }

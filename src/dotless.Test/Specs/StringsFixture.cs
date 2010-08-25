@@ -42,6 +42,12 @@ namespace dotless.Test.Specs
         }
 
         [Test]
+        public void SemiColonInQuotes()
+        {
+            AssertExpressionUnchanged(@"';'");
+        }
+
+        [Test]
         public void CloseBraceInsideStringAfterQuoteInsideString()
         {
             var input = @"

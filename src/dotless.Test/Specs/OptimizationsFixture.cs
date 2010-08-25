@@ -6,7 +6,7 @@ namespace dotless.Test.Specs
     public class OptimizationsFixture : SpecFixtureBase
     {
         [Test]
-        public void Optimization0And1DontStripComments()
+        public void DontStripComments()
         {
             string input = @"
 /*
@@ -20,6 +20,9 @@ namespace dotless.Test.Specs
             AssertLessUnchanged(input);
 
             Optimisation = 1;
+            AssertLessUnchanged(input);
+
+            Optimisation = 2;
             AssertLessUnchanged(input);
         }
 
@@ -57,23 +60,6 @@ namespace dotless.Test.Specs
 
             Optimisation = 1;
             AssertLessUnchanged(input);
-        }
-
-        [Test]
-        public void Optimization2StripsComments()
-        {
-            string input = @"
-/*
- *
- * Multiline Comment
- *
- */
-";
-
-            var expected = "";
-
-            Optimisation = 2;
-            AssertLess(input, expected);
         }
 
         [Test]

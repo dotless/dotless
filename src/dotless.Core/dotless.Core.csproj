@@ -71,6 +71,8 @@
     <Compile Include="Parameters\ConsoleArgumentParameterSource.cs" />
     <Compile Include="Parameters\IParameterSource.cs" />
     <Compile Include="Parameters\QueryStringParameterSource.cs" />
+    <Compile Include="Parser\Infrastructure\Closure.cs" />
+    <Compile Include="Parser\Tree\Script.cs" />
     <Compile Include="Parser\Tree\Root.cs" />
     <Compile Include="Response\CachedCssResponse.cs">
       <SubType>Code</SubType>

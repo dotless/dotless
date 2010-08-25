@@ -22,14 +22,18 @@ namespace dotless.Core.Parser.Tree
         public override Node Evaluate(Env env)
         {
             var found = false;
-            var rulesets = env.FindRulesets(Selector);
+            var closures = env.FindRulesets(Selector);
 
-            if(rulesets == null)
+            if(closures == null)
                 throw new ParsingException(Selector.ToCSS(env).Trim() + " is undefined", Index);
 
+            env.Rule = this;
+
             var rules = new NodeList();
-            foreach (var ruleset in rulesets)
+            foreach (var closure in closures)
             {
+                var ruleset = closure.Ruleset;
+
                 if (!ruleset.MatchArguements(Arguments, env))
                     continue;
 
@@ -40,7 +44,7 @@ namespace dotless.Core.Parser.Tree
                     try
                     {
                         var mixin = ruleset as MixinDefinition;
-                        rules.AddRange(mixin.Evaluate(Arguments, env).Rules);
+                        rules.AddRange(mixin.Evaluate(Arguments, env, closure.Context).Rules);
                     }
                     catch (ParsingException e)
                     {
@@ -58,6 +62,8 @@ namespace dotless.Core.Parser.Tree
                     }
                 }
             }
+
+            env.Rule = null;
 
             if (!found)
             {

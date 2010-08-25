@@ -207,12 +207,12 @@ namespace dotless.Core.Parser
             if (parser.Tokenizer.CurrentChar != 'u' || !parser.Tokenizer.Match(@"url\("))
                 return null;
 
-            var value = Quoted(parser) || parser.Tokenizer.Match(@"[-a-zA-Z0-9_%@$\/.&=:;#+?]+");
+            var value = Quoted(parser) || parser.Tokenizer.Match(@"[-a-zA-Z0-9_%@$\/.&=:;#+?]+") || new TextNode("");
 
             if (!parser.Tokenizer.Match(')'))
                 throw new ParsingException("missing closing ) for url()", parser.Tokenizer.Location.Index);
 
-            return NodeProvider.Url(value, index);
+            return NodeProvider.Url(value, parser.Importer.Paths, index);
         }
 
         //
@@ -270,6 +270,26 @@ namespace dotless.Core.Parser
             var value = parser.Tokenizer.Match(@"(-?[0-9]*\.?[0-9]+)(px|%|em|pc|ex|in|deg|s|ms|pt|cm|mm)?");
             if (value)
                 return NodeProvider.Number(value[1], value[2], index);
+
+            return null;
+        }
+
+        //
+        // C# code to be evaluated
+        //
+        //     ``
+        //
+        public Script Script(Parser parser)
+        {
+            if (parser.Tokenizer.CurrentChar != '`') 
+                return null;
+
+            var index = parser.Tokenizer.Location.Index;
+
+            var script = parser.Tokenizer.Match(@"`([^`]*)`");
+
+            if (script != null)
+                return NodeProvider.Script(script[1], index);
 
             return null;
         }
@@ -435,7 +455,7 @@ namespace dotless.Core.Parser
         public Node Entity(Parser parser)
         {
             return Literal(parser) || Variable(parser) || Url(parser) ||
-                   Call(parser) || Keyword(parser);
+                   Call(parser)    || Keyword(parser)  || Script(parser);
         }
 
         //
@@ -643,8 +663,8 @@ namespace dotless.Core.Parser
             {
                 Node value;
 
-                if ((name[0] != '@') && (parser.Tokenizer.Peek(@"([^@+\/*(;{}-]*);")))
-                    value = parser.Tokenizer.Match(@"[^@+\/*(;{}-]*");
+                if ((name[0] != '@') && (parser.Tokenizer.Peek(@"([^@+\/*`(;{}'""-]*);")))
+                    value = parser.Tokenizer.Match(@"[^@+\/*`(;{}'""-]*");
                 else if (name == "font")
                     value = Font(parser);
                 else
@@ -860,21 +880,21 @@ namespace dotless.Core.Parser
         //
         public Node Operand(Parser parser)
         {
-          var operand = Sub(parser) ??
-                        Dimension(parser) ??
-                        Color(parser) ??
-                        (Node) Variable(parser);
+            var operand = Sub(parser) ??
+                          Dimension(parser) ??
+                          Color(parser) ??
+                          (Node) Variable(parser);
 
-          if (operand != null)
-            return operand;
+            if (operand != null)
+                return operand;
 
-          if(parser.Tokenizer.CurrentChar == 'u' && parser.Tokenizer.Peek(@"url\("))
-            return null;
+            if (parser.Tokenizer.CurrentChar == 'u' && parser.Tokenizer.Peek(@"url\("))
+                return null;
 
-          return Call(parser) || Keyword(parser);
+            return Call(parser) || Keyword(parser);
         }
 
-      //
+        //
         // Expressions either represent mathematical operations,
         // or white-space delimited Entities.
         //
