@@ -1,0 +1,288 @@
+img {
+  border: 0;
+}
+body {
+  padding: 0;
+  margin: 0;
+  font-family: arial;
+}
+hr {
+  height: 1px;
+  background-color: #999999;
+  color: #999999;
+  border: none;
+  padding: 0;
+  margin: 1em 0;
+}
+a {
+  text-decoration: none;
+}
+h1, h2, h3 {
+  padding: 0;
+  margin: 0;
+  color: #999999;
+  font-family: Impact, arial;
+}
+h1 {
+  font-size: 26px;
+}
+h2 {
+  font-size: 24px;
+}
+h3 {
+  font-size: 22px;
+  font-family: arial;
+}
+.content_addition .content {
+  width: 950px;
+  margin: auto;
+}
+.clearer {
+  clear: both;
+  display: block;
+}
+#header1 {
+  background: #106698;
+  height: 117px;
+  border-bottom: solid 5px #333333;
+}
+#header1 .content {
+  width: 950px;
+  margin: auto;
+}
+#header1 #logo {
+  margin: 20px 0 0 0;
+}
+#header1 #beta {
+  position: absolute;
+}
+#header1 ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+#header1 ul li {
+  list-style: none;
+  float: right;
+}
+#header1 ul li a {
+  display: block;
+  color: white;
+  background: #2e84b6;
+  font-weight: bold;
+  margin: 20px 5px 0 0;
+  border: solid 2px white;
+  padding: 5px;
+}
+#header1 ul li a:hover {
+  background: #00487a;
+}
+#footer1 {
+  height: 80px;
+}
+#header2 {
+  height: 127px;
+  background: black;
+  border-bottom: solid 5px #333333;
+}
+#header2 .content {
+  width: 950px;
+  margin: auto;
+}
+#header2 .left {
+  width: 600px;
+  padding: 5px 0 0 0;
+  float: left;
+  display: inline;
+  color: #999999;
+  font-family: Impact, arial;
+}
+#header2 .left p {
+  font-size: 15px;
+  margin: 0;
+  padding: 5px 0 0 0;
+  line-height: 22px;
+}
+#header2 .left a {
+  color: #106698;
+  text-decoration: none;
+}
+#header2 .left a:hover {
+  border-bottom: dashed 2px #106698;
+}
+#header2 .right {
+  width: 325px;
+  float: left;
+  display: inline;
+}
+#header2 .right img {
+  margin-top: 10px;
+}
+#body1 {
+  border-top: solid 5px #b3b3b3;
+  font-family: arial;
+}
+#body1 .content {
+  width: 950px;
+  margin: auto;
+}
+#body1 .sections {
+  font-size: 90%;
+}
+#body1 .sections h3 {
+  margin-top: 5px;
+}
+#body1 .sections .section {
+  padding: 0 10px 0 10px;
+  width: 280px;
+  float: left;
+  display: inline;
+}
+#body1 .sections .section > pre {
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+}
+#body1 .sections .section pre code {
+  font-weight: bold;
+}
+#body1 .sections #getting-started {
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+  text-align: right;
+  border: solid 2px #e6e6e6;
+  background: #ecffff;
+  margin: 5px 0 0 0;
+  padding: 15px;
+}
+#body1 .sections #getting-started h3 {
+  color: #106698;
+  font-size: 18px;
+}
+#body1 pre, #body1 .block {
+  background-color: #e6e6e6;
+  border: solid 1px #b3b3b3;
+  color: #106698;
+  display: block;
+  margin: 0;
+  padding: 5px;
+}
+#body1 pre code, #body1 .block code {
+  font-style: normal;
+  font-weight: normal;
+}
+#body1 pre code span, #body1 .block code span {
+  color: black;
+}
+#documentation h1, #documentation h2, #documentation h3 {
+  font-family: arial;
+}
+#documentation h1 {
+  color: black;
+  margin: 15px 0 10px 0;
+}
+#documentation h2 {
+  color: #2e84b6;
+  margin: 10px 0 5px 0;
+}
+#documentation pre {
+  color: #000000;
+}
+#documentation #reference, #documentation #toc {
+  width: 100px;
+  float: left;
+  text-align: right;
+}
+#documentation #reference a, #documentation #toc a {
+  color: #149;
+}
+#documentation #reference h3, #documentation #toc h3 {
+  margin: 4px 0 4px 0;
+  color: #668;
+  font-size: 14pt;
+}
+#documentation #reference h4, #documentation #toc h4 {
+  margin: 7px 0 4px 0;
+}
+#documentation #reference div, #documentation #toc div {
+  margin-top: 2px;
+}
+#documentation #reference div span, #documentation #toc div span {
+  color: #335;
+  font-size: 11px;
+}
+#documentation #reference p,
+#documentation #toc p,
+#documentation #reference h3,
+#documentation #toc h3,
+#documentation #reference h4,
+#documentation #toc h4,
+#documentation #reference div,
+#documentation #toc div {
+  margin-left: -100px;
+}
+#documentation #article {
+  font-size: 90%;
+  margin-left: 123px;
+}
+#documentation #article h4 {
+  margin-bottom: 5px;
+}
+#documentation #article #example #input textarea {
+  border: 1px solid #999;
+  padding: 3px;
+  width: 100%;
+}
+#documentation #article #example #demo > div {
+  float: left;
+  display: block;
+  margin: 0 4px 4px 4px;
+  padding: 5px;
+}
+#documentation #article #example .left {
+  float: left;
+  width: 54%;
+}
+#documentation #article #example .right {
+  float: left;
+  width: 44%;
+  margin-left: 2%;
+}
+#tryit {
+  width: 950px;
+  margin: 0 auto;
+}
+#tryit h3 {
+  margin-top: 15px;
+}
+#tryit h4 {
+  margin-bottom: 5px;
+}
+#tryit #input, #tryit #html {
+  float: left;
+  width: 100%;
+  margin: 0;
+}
+#tryit #input textarea, #tryit #html textarea {
+  border: 1px solid #999;
+  padding: 3px;
+  width: 100%;
+}
+#tryit #input textarea {
+  height: 300px;
+}
+#tryit #html textarea {
+  height: 100px;
+}
+#tryit #output, #tryit #demo {
+  float: left;
+  width: 100%;
+  margin: 0;
+}
+#tryit #demo > div {
+  float: left;
+  display: block;
+  margin: 0 4px 4px 4px;
+  padding: 5px;
+}
