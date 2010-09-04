@@ -1,48 +1,48 @@
-<div  id="getting-started">
-	<h3>1. Download the latest source</h3>
+<div id="getting-started">
 
-	<p>You can find the latest source code for dotless at GitHub and build the project</p>
-
-	<hr />
-
-	<h3>2. Include our reference to your web project</h3>
-
-	<img src="Images/references.jpg" alt="Add a few references" />
-
-	<hr />
-
-	<h3>3. Add a new HttpHandler to your Web.Config</h3>
-
-	<p>Lets make the dotless processor handle our .LESS files.</p>
-
-	<p>Add this entry to the HttpHandlers section of your Web.Config:</p>
-
+	<h3>1. Download the latest source</h3> 
+	 
+	<p>You can find the latest source code for dotless at GitHub and build the project</p> 
+	 
+	<hr /> 
+	 
+	<h3>2. Include our reference to your web project</h3> 
+	 
+	<p><img src="Images/references.jpg" alt="Add a few reference" /></p> 
+	 
+	<hr /> 
+	 
+	<h3>3. Add a new HttpHandler to your Web.Config</h3> 
+	 
+	<p>Lets make the dotless processor handle our .LESS files.</p> 
+	 
+	<p>Add this entry to the HttpHandlers section of your Web.Config:</p> 
+	 
 	<pre><code>&lt;add type="
 	dotless.Core.LessCssHttpHandler
 	,dotless.Core" validate="false"
-	path="*.LESS" verb="*" /&gt;</code></pre>
-
-	<hr />
-
-	<h3>4. Add a few configuration sections (optional)</h3>
-
-	<p>First add our config handler in the "configSections" node of your web.config</p>
-
+	path="*.LESS" verb="*" /&gt;</code></pre> 
+	 
+	<hr /> 
+	 
+	<h3>4. Add a few configuration sections (optional)</h3> 
+	 
+	<p>First add our config handler in the "configSections" node of your web.config</p> 
+	 
 	<pre><code>&lt;section name="dotless"
 	type="dotless.Core.configuration.
 	DotlessConfigurationSectionHandler
-	,dotless.Core" /&gt;</code></pre>
-
-	<p>Now you can configure caching and minifying of the Css output</p>
-
+	,dotless.Core" /&gt;</code></pre> 
+	 
+	<p>Now you can configure caching and minifying of the Css output</p> 
+	 
 	<pre><code>&lt;dotless
 	minifyCss="false"
-	cache="true" /&gt;</code></pre>
-
-	<hr />
-
-	<h3>5. Get started</h3>
-
-	<p>Reference your LESS files the same way as you would any other CSS file, just ensure that you use the .LESS extention.</p>
-
+	cache="true" /&gt;</code></pre> 
+	 
+	<hr /> 
+	 
+	<h3>5. Get started</h3> 
+	 
+	<p>Reference your LESS files the same way as you would any other CSS file, just ensure that you use the .LESS extention.</p> 
 </div>
