@@ -16,3 +16,5 @@ Thumbs.db
 gems/lib/*
 gems/*.gem
 gems/VERSION
+_site/
+*~
