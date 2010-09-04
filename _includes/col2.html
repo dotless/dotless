@@ -1,0 +1,50 @@
+<h3>Mixins</h3>
+
+<p>Mixins allow you to embed all the properties of a class into another class by simply
+including the class name as one of its properties. It's just like variables, but
+for whole classes.</p>
+
+<pre><code>.rounded_corners(@radius: 5px) {
+  -moz-border-radius: @radius;
+  -webkit-border-radius: @radius;
+  border-radius: @radius;
+}
+
+#header {
+  <span>.rounded_corners</span>;
+}
+
+#footer {
+  <span>.rounded_corners(10px)</span>;
+}</code></pre>
+
+
+<h3>Nested Rules</h3>
+
+<p>Rather than constructing long selector names to specify inheritance, in Less you
+can simply nest selectors inside other selectors. This makes inheritance clear and
+style sheets shorter.</p>
+
+<pre><code>#header {
+    color: red;
+    <span>a {
+       font-weight: bold;
+       text-decoration: none;
+    }</span>
+}</code></pre>
+
+
+<h3>Functions</h3>
+
+<p>.LESS implements a number of functions to make working with colors easier.</p>
+
+<pre><code>@base-color: <span>hsl(30, 40%, 60%)</span>
+
+#header {
+  color: <span>lightness(@base-color, 10%)</span>;
+}
+
+#footer {
+  color: <span>saturation(@base-color, -10%)</span>;
+}
+</code></pre>
