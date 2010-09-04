@@ -1,0 +1,35 @@
+h3. Variables
+
+Variables allow you to specify widely used values in a single place, and then re-use
+them throughout the style sheet, making global changes as easy as changing one line
+of code.
+
+<pre><code><span>@brand_color</span>: #4D926F;
+
+#header {
+  color: <span>@brand_color</span>;
+}
+
+h2 {
+  color: <span>@brand_color</span>;
+}</code></pre>
+
+
+h3. Operations
+
+Are some elements in your style sheet proportional to other elements? Operations
+let you add, subtract, divide and multiply property values and colors, giving you
+the power to do create complex relationships between properties.
+
+<pre><code>@the-border: 1px;
+@base-color: #111;
+
+#header {
+  color: <span>@base-color * 3</span>;
+  border-left: @the-border;
+  border-right: <span>@the-border * 2</span>;
+}
+
+#footer {
+  color: <span>(@base-color + #111) * 1.5</span>;
+}</code></pre>
