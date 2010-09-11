@@ -71,6 +71,7 @@
     <Compile Include="TestStylizer.cs" />
     <Compile Include="Unit\Engine\CacheDecoratorFixture.cs" />
     <Compile Include="Unit\Engine\ParameterDecoratorFixture.cs" />
+    <Compile Include="Unit\Engine\PathAggregatorBug.cs" />
     <Compile Include="Unit\Parameters\ParameterSourceFixture.cs" />
     <Compile Include="Unit\Response\CachedCssResponseFixture.cs" />
     <Compile Include="Specs\OptimizationsFixture.cs" />
