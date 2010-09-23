@@ -1,12 +1,12 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotless.Core", "dotless.Core\dotless.Core.csproj", "{D7A24E58-68D0-4B10-A324-EA33C822FA56}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6CC48544-7A6A-4EB8-9F2D-B92CFC042E59}"
 	ProjectSection(SolutionItems) = preProject
 		dotless-open-source.snk = dotless-open-source.snk
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotless.Core", "dotless.Core\dotless.Core.csproj", "{D7A24E58-68D0-4B10-A324-EA33C822FA56}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotless.Compiler", "dotless.Compiler\dotless.Compiler.csproj", "{D0CE2A3A-5086-494A-A967-5D54B41BBC64}"
 EndProject
