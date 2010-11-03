@@ -11,7 +11,18 @@ namespace dotless.Test.Unit.Engine
             var foo = new [] { @"..\site.less" };
             var aggregatePaths = foo.AggregatePaths();
 
-            Assert.AreEqual(@"..\site.less", aggregatePaths);
+            // Even most of Windows accepts the forward slash as a path separator
+            // so it should be OK to let it get changed
+            Assert.AreEqual(@"../site.less", aggregatePaths);
         }
+
+		[Test]
+		public void StringExtension_AggregatePath_CantGoUpMultipleLevels()
+		{
+            var foo = new [] { @"../../site.less" };
+            var aggregatePaths = foo.AggregatePaths();
+
+            Assert.AreEqual(@"../../site.less", aggregatePaths);
+		}
     }
 }
