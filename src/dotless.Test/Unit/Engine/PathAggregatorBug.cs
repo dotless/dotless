@@ -16,13 +16,13 @@ namespace dotless.Test.Unit.Engine
             Assert.AreEqual(@"../site.less", aggregatePaths);
         }
 
-		[Test]
-		public void StringExtension_AggregatePath_CantGoUpMultipleLevels()
-		{
+        [Test]
+        public void StringExtension_AggregatePath_CantGoUpMultipleLevels()
+        {
             var foo = new [] { @"../../site.less" };
             var aggregatePaths = foo.AggregatePaths();
 
             Assert.AreEqual(@"../../site.less", aggregatePaths);
-		}
+        }
     }
 }
