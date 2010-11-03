@@ -24,5 +24,23 @@ namespace dotless.Test.Unit.Engine
 
             Assert.AreEqual(@"../../site.less", aggregatePaths);
         }
+
+        [Test]
+        public void StringExtension_AggregatePath_ReplacesAllBackwardSlashesWithForwardSlashes()
+        {
+            var foo = new[] { @"../..\../something.less" };
+            var aggregatePaths = foo.AggregatePaths();
+
+            Assert.AreEqual(@"../../../something.less", aggregatePaths);
+        }
+
+        [Test]
+        public void StringExtension_AggregatePath_WillFixParentDeclarationIfPossible()
+        {
+            var foo = new[] {@"/site/../something.less"};
+            var aggregatePaths = foo.AggregatePaths();
+
+            Assert.AreEqual("/something.less", aggregatePaths);
+        }
     }
 }
