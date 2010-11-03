@@ -54,6 +54,9 @@ namespace dotless.Test.Specs
 }
 ";
 
+            imports["/import/absolute.less"] = @"body { background-color: black; }";
+            imports["../import/relative-with-parent-dir.less"] = @"body { background-color: foo; }";
+
             return new Parser {Importer = new Importer(new DictionaryReader(imports))};
         }
 
@@ -115,6 +118,40 @@ namespace dotless.Test.Specs
   background: url(image.gif);
 }
 ";
+
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void AbsoluteUrls()
+        {
+            var input =
+                @"
+@import url(""/import/absolute.less"");
+";
+
+            var expected = @"body {
+  background-color: black;
+}";
+
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void RelativeUrlWithParentDirReference()
+        {
+            var input =
+                @"
+@import url(""../import/relative-with-parent-dir.less"");
+";
+
+            var expected = @"body {
+  background-color: foo;
+}";
 
             var parser = GetParser();
 
