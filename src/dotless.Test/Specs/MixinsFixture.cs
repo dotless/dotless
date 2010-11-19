@@ -559,6 +559,34 @@ namespace dotless.Test.Specs
         }
 
         [Test]
+        public void NestedRulesInMixinsShouldRespectArguments()
+        {
+            var input =
+                @"
+.mixin(@a: 5) {
+    .someClass {
+        width: @a;
+    }
+}
+
+.class1 { .mixin(1); }
+.class2 { .mixin(2); }
+";
+
+            var expected = @"
+.class1 .someClass {
+  width: 1;
+}
+.class2 .someClass {
+  width: 2;
+}
+";
+
+            AssertLess(input, expected);
+        }
+
+
+        [Test]
         public void CanUseVariablesAsDefaultArgumentValues()
         {
             var input =
