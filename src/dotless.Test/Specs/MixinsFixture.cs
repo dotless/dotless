@@ -217,13 +217,13 @@ namespace dotless.Test.Specs
         {
             var input = @"
 .mixin{
-	border:solid 1px red;
+    border:solid 1px red;
 }
 .mixin{
-	color:blue;
+    color:blue;
 }
 .mix-me-in{
-	.mixin;
+    .mixin;
 }
 ";
 
@@ -581,6 +581,48 @@ namespace dotless.Test.Specs
   width: 2;
 }
 ";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void MultipleCallsToMixinsContainingMixinCalls()
+        {
+            var input =
+                @"
+.mixintest(@a :5px){
+    height: @a;
+    input{
+        .mixintest2(@a);
+    }
+}
+
+.mixintest2(@a : 10px){
+    width: @a;
+}
+
+.test{
+    .mixintest();
+}
+
+.test2{
+    .mixintest(15px);
+}";
+
+            var expected =
+                @"
+.test {
+  height: 5px;
+}
+.test input {
+  width: 5px;
+}
+.test2 {
+  height: 15px;
+}
+.test2 input {
+  width: 15px;
+}";
 
             AssertLess(input, expected);
         }

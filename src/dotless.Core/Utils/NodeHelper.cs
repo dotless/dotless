@@ -21,5 +21,26 @@ namespace dotless.Core.Utils
                 }
             }
         }
+
+        public static IEnumerable<Node> NonDestructiveExpandNodes<TNode>(Env env, List<Node> rules)
+            where TNode : Node
+        {
+            foreach (var node in rules)
+            {
+                if (node is TNode)
+                {
+                    var expandedNodes = (IEnumerable<Node>)node.Evaluate(env);
+
+                    foreach (var expandedNode in expandedNodes)
+                    {
+                        yield return expandedNode;
+                    }
+                }
+                else
+                {
+                    yield return node;
+                }
+            }
+        }
     }
 }
