@@ -73,8 +73,10 @@ namespace dotless.Core.Parser.Tree
                     var ruleset = (rule as Ruleset);
 
                     context.Frames.Push(ruleset);
-                    NodeHelper.ExpandNodes<MixinCall>(context, ruleset.Rules);
-                    var rules = ruleset.Rules.Select(r => r.Evaluate(context)).ToList();
+
+                    var rules = NodeHelper.NonDestructiveExpandNodes<MixinCall>(context, ruleset.Rules)
+                        .Select(r => r.Evaluate(context)).ToList();
+
                     context.Frames.Pop();
 
                     newRules.Add(new Ruleset(ruleset.Selectors, rules));
