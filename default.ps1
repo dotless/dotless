@@ -174,7 +174,7 @@ exit 1 unless result"
     gem build dotless.gemspec
 }
 
-task Release -depends Test, Merge, t4css {
+task Release -depends Test, Merge, NuGetPackage, t4css {
     $commit = Get-Git-Commit
     $filename = "dotless.core"
     & $lib_dir\7zip\7za.exe a $release_dir\dotless-$commit.zip `
@@ -185,9 +185,30 @@ task Release -depends Test, Merge, t4css {
     acknowledgements.txt `
     license.txt `
     
+    Move-Item $build_dir\*.nupkg $release_dir\
+    
     
     Write-host "-----------------------------"
     Write-Host "dotless $version was successfully compiled and packaged."
     Write-Host "The release bits can be found in ""$release_dir"""
     Write-Host -ForegroundColor Cyan "Thank you for using dotless!"
+}
+
+
+task NuGetPackage -depends Merge {
+    $target = "$build_dir\NuGet\"
+    remove-item -force -recurse $target -ErrorAction SilentlyContinue     
+    New-Item $target -ItemType directory
+    New-Item $target\lib -ItemType directory
+    New-Item $target\tool -ItemType directory
+    New-Item $target\content -ItemType directory
+    
+    Copy-Item $source_dir\Dotless.nuspec $target
+    Copy-Item $source_dir\web.config.transform $target\content\
+    Copy-Item $build_dir\dotless.Core.dll $target\lib\
+    Copy-Item $build_dir\dotless.compiler.exe $target\tool\
+    Copy-Item acknowledgements.txt $target
+    Copy-Item license.txt $target
+        
+    .\lib\NuGet.exe pack $target\Dotless.nuspec -o $build_dir
 }
