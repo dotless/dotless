@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+	<id>dotless</id>
+	<version>1.1.0.5</version>
+	<authors>Christopher Owen, Erik van Brakel, Daniel Hölbling and James Foster</authors>
+	<description>
+This is a project to port the hugely useful Less libary to the .NET world. It give variables, nested rules and operators to CSS.
+
+For more information about the original Less project see http://lesscss.org/. For more information about how to get started with the .NET version see http://www.dotlesscss.org/.
+	</description>
+	<language>en-US</language>
+  </metadata>
+</package>
