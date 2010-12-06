@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Text;
     using Parameters;
+    using System.Linq;
 
     public class ParameterDecorator : ILessEngine
     {
@@ -18,7 +19,8 @@
         public string TransformToCss(string source, string fileName)
         {
             var sb = new StringBuilder();
-            var parameters = parameterSource.GetParameters();
+            var parameters = parameterSource.GetParameters()
+                .Where(ValueIsNotNullOrEmpty);
             foreach (var parameter in parameters)
             {
                 sb.AppendFormat("@{0}: {1};\n", parameter.Key, parameter.Value);
@@ -35,6 +37,11 @@
         public void ResetImports()
         {
             Underlying.ResetImports();
+        }
+
+        private static bool ValueIsNotNullOrEmpty(KeyValuePair<string, string> kvp)
+        {
+            return !string.IsNullOrEmpty(kvp.Value);
         }
     }
 }

@@ -46,5 +46,23 @@ namespace dotless.Test.Unit.Engine
 
             Engine.Verify(p => p.TransformToCss(It.Is<string>(s => s.Count(c => c == '\n') == 2), "myfile"));
         }
+
+        [Test]
+        public void IgnoresParamtersWithNullValue()
+        {
+            Parameters["a"] = null;
+            ParameterDecorator.TransformToCss("", "myfile");
+
+            Engine.Verify(p => p.TransformToCss(It.Is<string>(s => s == ""), "myfile"));
+        }
+
+        [Test]
+        public void IgnoresParameterWithEmptyValue()
+        {
+            Parameters["a"] = "";
+            ParameterDecorator.TransformToCss("", "myfile");
+
+            Engine.Verify(p => p.TransformToCss(It.Is<string>(s => s == ""), "myfile"));
+        }
     }
 }
