@@ -75,7 +75,7 @@ namespace dotless.Core.Parser.Tree
             return _lookups[key] = rules;
         }
 
-        public virtual bool MatchArguements(NodeList<Expression> arguements, Env env)
+        public virtual bool MatchArguments(NodeList<Expression> arguements, Env env)
         {
             return arguements == null || arguements.Count == 0;
         }

@@ -34,7 +34,7 @@ namespace dotless.Core.Parser.Tree
             {
                 var ruleset = closure.Ruleset;
 
-                if (!ruleset.MatchArguements(Arguments, env))
+                if (!ruleset.MatchArguments(Arguments, env))
                     continue;
 
                 found = true;

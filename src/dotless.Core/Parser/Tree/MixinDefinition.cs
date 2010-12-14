@@ -94,7 +94,7 @@ namespace dotless.Core.Parser.Tree
             return new Ruleset(null, newRules);
         }
 
-        public override bool MatchArguements(NodeList<Expression> arguements, Env env)
+        public override bool MatchArguments(NodeList<Expression> arguements, Env env)
         {
             var argsLength = arguements != null ? arguements.Count : 0;
 
