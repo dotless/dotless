@@ -91,6 +91,7 @@
     <Compile Include="Specs\ScriptFixture.cs" />
     <Compile Include="TestStylizer.cs" />
     <Compile Include="Unit\Engine\CacheDecoratorFixture.cs" />
+    <Compile Include="Unit\Engine\CommentBug.cs" />
     <Compile Include="Unit\Engine\NullVariableValueBug.cs" />
     <Compile Include="Unit\Engine\ParameterDecoratorFixture.cs" />
     <Compile Include="Unit\Engine\PathAggregatorBug.cs" />

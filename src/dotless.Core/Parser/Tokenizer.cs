@@ -46,7 +46,7 @@ namespace dotless.Core.Parser
                 var chunkParts = new List<StringBuilder> { new StringBuilder() };
                 var chunkPart = chunkParts.Last();
                 var skip = new Regex(@"\G[^\""'{}/\\]+");
-                var comment = new Regex(@"\G\/\*(?:[^*\n]|\*+[^\/\n]|\*?(\n))*\*+\/");
+                var comment = new Regex(@"\G\/\*(?:[^*\n]|\*+[^\/\n]|\*?(\n))*?\*+\/");
                 var level = 0;
                 var lastBlock = 0;
                 var lastQuote = 0;
