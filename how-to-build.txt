@@ -1,3 +1,8 @@
+HOW TO BUILD DOTLESS
+
+1) Powershell
+2) NAnt
+3) Mono: XBuild via Bash
 
 ==== Powershell ====
 
@@ -35,3 +40,27 @@ The NAnt script contains the same possible build targets as above.
 
 To run another build targert simply run:
 nant <target>
+
+
+
+==== Mono: XBuild via Bash ====
+
+ATTENTION: EXPERIMENTAL
+This is a build for Mono platform based on Linux environments. Requires Bash/XBuild.
+
+Move into monobuild directory, then execute Make-Dotless script. Script takes two arguments.
+First is build target, second is configuration. Currently, ownly 3 targets are implemented.
+
+Example:
+	./Make-Dotless.sh build debug
+
+Builds dotless compiler in debug configuration.
+
+Currently supported targets:
+	clean	> Cleans output directories for fresh builds.
+	init	> clean +> Generates AssemblyInfo.cs files with git version info.
+	build	> init +> Compiles dotless.Compiler executable into output directory.
+
+Per default, all build artefacts are dropped into "bin" directory. Building for Mono on
+*nix environments is experimental. While it should operate as intended, it lacks
+completeness. Use at your own risk.

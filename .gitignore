@@ -18,3 +18,5 @@ gems/*.gem
 gems/VERSION
 _site/
 *~
+*.userprefs
+*.pidb

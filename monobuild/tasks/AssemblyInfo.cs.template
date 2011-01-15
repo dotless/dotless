@@ -1,0 +1,16 @@
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Security;
+
+[assembly: ComVisibleAttribute(false)]
+[assembly: AssemblyTitleAttribute("$title")]
+[assembly: AssemblyDescriptionAttribute("$description")]
+[assembly: AssemblyCompanyAttribute("$company")]
+[assembly: AssemblyProductAttribute("$product $commit")]
+[assembly: AssemblyCopyrightAttribute("$copyright")]
+[assembly: AssemblyVersionAttribute("$version")]
+[assembly: AssemblyInformationalVersionAttribute("$version")]
+[assembly: AssemblyFileVersionAttribute("$version")]
+[assembly: AssemblyDelaySignAttribute(false)]
+[assembly: AllowPartiallyTrustedCallers]
