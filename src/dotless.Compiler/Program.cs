@@ -28,7 +28,7 @@ namespace dotless.Compiler
             }
 
             var inputDirectoryPath = Path.GetDirectoryName(arguments[0]);
-            if(string.IsNullOrEmpty(inputDirectoryPath)) inputDirectoryPath = ".\\";
+            if(string.IsNullOrEmpty(inputDirectoryPath)) inputDirectoryPath = "." + Path.DirectorySeparatorChar;
             var inputFilePattern = Path.GetFileName(arguments[0]);
             var outputDirectoryPath = string.Empty;
             var outputFilename = string.Empty;
@@ -59,7 +59,7 @@ namespace dotless.Compiler
                 foreach (var filename in filenames)
                 {
                     var inputFile = new FileInfo(filename);
-                    var pathbuilder = new System.Text.StringBuilder(outputDirectoryPath + "\\");
+                    var pathbuilder = new System.Text.StringBuilder(outputDirectoryPath + Path.DirectorySeparatorChar);
                     if (string.IsNullOrEmpty(outputFilename)) pathbuilder.Append(Path.ChangeExtension(inputFile.Name, "css"));
                     else pathbuilder.Append(outputFilename);
                     var outputFilePath = Path.GetFullPath(pathbuilder.ToString());
