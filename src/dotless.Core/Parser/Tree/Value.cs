@@ -4,6 +4,7 @@
     using System.Linq;
     using Infrastructure;
     using Infrastructure.Nodes;
+    using Plugins;
 
     public class Value : Node
     {
@@ -53,6 +54,11 @@
             }
 
             return returnNode.ReducedFrom<Node>(this);
+        }
+
+        public override void Accept(IVisitor visitor)
+        {
+            visitor.Visit(Values);
         }
     }
 }

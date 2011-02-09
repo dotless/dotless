@@ -3,6 +3,7 @@
     using Infrastructure;
     using Infrastructure.Nodes;
     using System.Collections.Generic;
+    using Plugins;
 
     public class Selector : Node
     {
@@ -42,6 +43,11 @@
             _css = env.Output.Pop().ToString();
 
             env.Output.Append(_css);
+        }
+
+        public override void Accept(IVisitor visitor)
+        {
+            visitor.Visit(Elements);
         }
 
         public override string ToString()

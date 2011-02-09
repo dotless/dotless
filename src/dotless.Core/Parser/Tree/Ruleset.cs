@@ -2,10 +2,11 @@ namespace dotless.Core.Parser.Tree
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text;
     using Infrastructure;
     using Infrastructure.Nodes;
     using Utils;
-    using System.Text;
+    using Plugins;
 
     public class Ruleset : Node
     {
@@ -132,6 +133,14 @@ namespace dotless.Core.Parser.Tree
         ///  overwrite defintions that might be required later..
         /// </summary>
         protected void EvaluateRules(Env env)
+
+        public override void Accept(IVisitor visitor)
+        {
+            visitor.Visit(Selectors);
+
+            Rules.ForEach(visitor.Visit);
+        }
+
         {
             env.Frames.Push(this);
 

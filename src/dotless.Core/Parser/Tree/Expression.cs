@@ -4,6 +4,7 @@
     using Infrastructure.Nodes;
     using System.Linq;
     using System.Collections.Generic;
+    using Plugins;
 
     public class Expression : Node
     {
@@ -31,6 +32,11 @@
         public override void AppendCSS(Env env)
         {
             env.Output.AppendMany(Value, " ");
+        }
+
+        public override void Accept(IVisitor visitor)
+        {
+            visitor.Visit(Value);
         }
     }
 }

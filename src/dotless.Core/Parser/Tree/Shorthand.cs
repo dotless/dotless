@@ -2,6 +2,7 @@
 {
     using Infrastructure;
     using Infrastructure.Nodes;
+    using Plugins;
 
     public class Shorthand : Node
     {
@@ -20,6 +21,12 @@
                 .Append(First)
                 .Append("/")
                 .Append(Second);
+        }
+
+        public override void Accept(IVisitor visitor)
+        {
+            visitor.Visit(First);
+            visitor.Visit(Second);
         }
     }
 }

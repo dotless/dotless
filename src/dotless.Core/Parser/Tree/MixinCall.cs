@@ -7,6 +7,7 @@ namespace dotless.Core.Parser.Tree
     using Infrastructure;
     using Infrastructure.Nodes;
     using Utils;
+    using Plugins;
 
     public class MixinCall : Node
     {
@@ -79,6 +80,16 @@ namespace dotless.Core.Parser.Tree
             }
 
             return rules;
+        }
+
+        public override void Accept(IVisitor visitor)
+        {
+            visitor.Visit(Selector);
+
+            foreach (var a in Arguments)
+            {
+                visitor.Visit(a.Value);
+            }
         }
     }
 }

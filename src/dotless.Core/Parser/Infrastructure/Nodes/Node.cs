@@ -1,4 +1,6 @@
-﻿namespace dotless.Core.Parser.Infrastructure.Nodes
+﻿using dotless.Core.Plugins;
+
+namespace dotless.Core.Parser.Infrastructure.Nodes
 {
     using System;
 
@@ -114,5 +116,7 @@
                 this is RegexMatchResult ||
                 this is CharMatchResult;
         }
+
+        public virtual void Accept(IVisitor visitor) {}
     }
 }
