@@ -875,8 +875,8 @@ namespace dotless.Core.Parser
 
                 var preValueComments = GatherAndPullComments(parser);
 
-                if ((name[0] != '@') && (parser.Tokenizer.Peek(@"([^@+\/*`(;{}'""-]*);")))
-                    value = parser.Tokenizer.Match(@"[^@+\/*`(;{}'""-]*");
+                if ((name[0] != '@') && (parser.Tokenizer.Peek(@"([^#@+\/*`(;{}'""-]*);")))
+                    value = parser.Tokenizer.Match(@"[^#@+\/*`(;{}'""-]*");
                 else if (name == "font")
                     value = Font(parser);
                 else

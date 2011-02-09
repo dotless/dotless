@@ -72,7 +72,7 @@ namespace dotless.Test.Specs
         [Test]
         public void Colours()
         {
-            AssertExpression("#123", "#123");
+            AssertExpression("#123456", "#123456");
             AssertExpression("#334455", "#234 + #111111");
             AssertExpression("black", "#222222 - #fff");
             AssertExpression("#222222", "2 * #111");

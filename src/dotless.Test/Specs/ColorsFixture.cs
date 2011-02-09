@@ -5,16 +5,38 @@ namespace dotless.Test.Specs
     public class ColorsFixture : SpecFixtureBase
     {
         [Test]
-        public void Colors()
+        [Ignore]
+        public void ColorLiteralsUnchanged()
         {
             AssertExpressionUnchanged("#fea");
             AssertExpressionUnchanged("#ffeeaa");
-            AssertExpressionUnchanged("rgba(255, 238, 170, 0.1)");
             AssertExpressionUnchanged("#00f");
             AssertExpressionUnchanged("#0000ff");
+        }
+
+        [Test]
+        public void ColorLiterals()
+        {
+            AssertExpression("#ffeeaa", "#fea");
+            AssertExpression("#ffeeaa", "#ffeeaa");
+            AssertExpression("blue", "#00f");
+            AssertExpression("blue", "#0000ff");
+        }
+
+        [Test]
+        public void RgbaNonOpaqueColorsUnchanged()
+        {
+            AssertExpressionUnchanged("rgba(255, 238, 170, 0.1)");
             AssertExpressionUnchanged("rgba(0, 0, 255, 0.1)");
         }
-        
+
+        [Test]
+        public void RgbaOpaqueColors()
+        {
+            AssertExpression("#ffeeaa", "rgba(255, 238, 170, 1)");
+            AssertExpression("blue", "rgba(0, 0, 255, 1)");
+        }
+
         [Test]
         public void Overflow()
         {
