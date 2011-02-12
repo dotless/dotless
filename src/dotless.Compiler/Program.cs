@@ -86,6 +86,7 @@ namespace dotless.Compiler
 
         private static IEnumerable<string> CompileImpl(ILessEngine engine, string inputFilePath, string outputFilePath)
         {
+            engine = new FixImportPathDecorator(engine);
             var currentDir = Directory.GetCurrentDirectory();
             try
             {
