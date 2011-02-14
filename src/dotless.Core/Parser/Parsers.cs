@@ -319,7 +319,7 @@ namespace dotless.Core.Parser
         //
         public Shorthand Shorthand(Parser parser)
         {
-            if (!parser.Tokenizer.Peek(@"[@\w.-]+\/[@\w.-]+"))
+            if (!parser.Tokenizer.Peek(@"[@%\w.-]+\/[@%\w.-]+"))
                 return null;
 
             var index = parser.Tokenizer.Location.Index;

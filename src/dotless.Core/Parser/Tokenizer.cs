@@ -46,7 +46,7 @@ namespace dotless.Core.Parser
                 var chunkParts = new List<StringBuilder> { new StringBuilder() };
                 var chunkPart = chunkParts.Last();
                 var skip = new Regex(@"\G[^\""'{}/\\]+");
-                var comment = new Regex(@"\G\/\*(?:[^*\n]|\*+[^\/\n]|\*?(\n))*?\*+\/");
+                var comment = new Regex(@"\G(\/\/[^\n]*|(\/\*(?:[^*\n]|\*+[^\/\n]|\*?(\n))*?\*+\/))");
                 var level = 0;
                 var lastBlock = 0;
                 var lastQuote = 0;
@@ -65,7 +65,7 @@ namespace dotless.Core.Parser
                     }
 
 
-                    if(i < _inputLength - 1 && _input[i] == '/')
+                    if(i < _inputLength - 1 && _input[i] == '/' && inString == null)
                     {
                         var cc = _input[i + 1];
                         if(cc == '/' || cc=='*')
@@ -94,6 +94,10 @@ namespace dotless.Core.Parser
                         else
                             inString = inString == c ? null : inString;
                     }
+//                    else if (inString != null && c == '\n')
+//                    {
+//                        throw new ParsingException(string.Format("Missing closing quote ({0})", inString), lastQuote);
+//                    }
                     else if (inString != null && c == '\\' && i < _inputLength - 1)
                     {
                         chunkPart.Append(_input, i, 2);
