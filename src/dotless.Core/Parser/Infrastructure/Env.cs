@@ -42,10 +42,12 @@
 
         public List<Closure> FindRulesets(Selector selector)
         {
-            return Frames.Select(frame => frame.Find(this, selector, null)).FirstOrDefault(r => r.Count != 0);
+        	return Frames.Select(frame => frame.Find(this, selector, null))
+        		.Where(f => !f.Any(c => Frames.Contains(c.Ruleset)))
+				.FirstOrDefault(r => r.Count != 0);
         }
 
-        public virtual Function GetFunction(string name)
+    	public virtual Function GetFunction(string name)
         {
             if (_functionTypes == null)
             {
