@@ -49,6 +49,13 @@ namespace dotless.Core.Parser
         public Tokenizer Tokenizer { get; set; }
         public IStylizer Stylizer { get; set; }
 
+        private INodeProvider _nodeProvider;
+        public INodeProvider NodeProvider
+        {
+            get { return _nodeProvider??(new DefaultNodeProvider()); }
+            set { _nodeProvider = value; }
+        }
+
         private Importer _importer;
         public Importer Importer
         {
@@ -56,7 +63,7 @@ namespace dotless.Core.Parser
             set
             {
                 _importer = value;
-                _importer.Parser = () => new Parser(Tokenizer.Optimization, Stylizer, _importer);
+                _importer.Parser = () => new Parser(Tokenizer.Optimization, Stylizer, _importer) {NodeProvider = this.NodeProvider};
             }
         }
 
@@ -84,7 +91,7 @@ namespace dotless.Core.Parser
             Tokenizer = new Tokenizer(optimization);
         }
 
-        public Ruleset Parse(string input, string fileName)
+        public Ruleset Parse(string input,  string fileName)
         {
             Tokenizer.SetupInput(input);
             ParsingException parsingException = null;
@@ -94,7 +101,7 @@ namespace dotless.Core.Parser
             {
                 Tokenizer.SetupInput(input);
 
-                var parsers = new Parsers(new DefaultNodeProvider());
+                var parsers = new Parsers(NodeProvider);
                 root = new Root(parsers.Primary(this), e => GenerateParserError(e, fileName));
             }
             catch (ParsingException e)
