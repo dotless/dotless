@@ -7,7 +7,7 @@
     public class CachedCssResponse : IResponse
     {
         public readonly IHttp Http;
-        private const int CacheAgeMinutes = 5;
+        private const int CacheAgeMinutes = 10080; //7 days
 
         public CachedCssResponse(IHttp http)
         {
