@@ -223,6 +223,25 @@ p {
         }
 
         [Test]
+        public void ImportantVariable()
+        {
+            var input =
+                @"
+@c: white;
+#important {
+  color: @c !important;
+}
+";
+            var output =
+                @"
+#important {
+  color: white !important;
+}
+";
+            AssertLess(input, output);
+        }
+
+        [Test]
         public void AttributeEquals()
         {
             var input = @"
