@@ -1,6 +1,6 @@
-﻿<#@ template language="C#v3.5" hostspecific="True" #>
+﻿<#@ template language="C#" hostspecific="True" #>
 <#@ Output Extension=".log" #>
-<#@ assembly name="dotless.Core.dll" #>
+<#@ assembly name="$(SolutionDir)\dotless.Core.dll" #>
 <#@ assembly name="System.Core" #>
 <#@ assembly name="System.Data.Linq" #>
 <#@ assembly name="Microsoft.VisualStudio.Shell.Interop.8.0" #>
@@ -29,9 +29,24 @@
 /*-------------------------------------------------*/
 // Settings      
 /*-------------------------------------------------*/
-_minimize = false;
-_runOnBuild = false;
+
+// If _autoMinimize is set to true, the optimize code flag on the project will determine whether the css is minified
+// by default, this will output normal CSS on Debug builds and minified CSS on Release builds
+_autoMinimize = true;  
+
+// If you'd like to manage this in your application, instead, set _autoMinimize to false, _bothOutputs to true,
+// and set the postfix variables as ncessary
+_bothOutputs = false;
+_debugPostfix = "_d";  // output_d.css
+_minifiedPostfix = ""; // output.css
+
+// If both _autoMinimize and _bothOutputs are false, you can use _minimize to control what type of output you'd like
+_minimize = true; 
+_runOnBuild = true;
 _useCssExtension = false;
+
+
+
 #>
 
 T4.Less Log
@@ -40,11 +55,29 @@ T4.Less Log
 var currentDirectory = Path.GetDirectoryName(Host.TemplateFile);
 var filespec = _useCssExtension ? "*.less.css" : "*.less";
 var cssFiles = Directory.GetFiles(currentDirectory, filespec);
-#>
+Configuration config = null;
 
+if (_autoMinimize){
+	var serviceProvider = Host as IServiceProvider;
+	var dte = serviceProvider.GetService(typeof(SDTE)) as DTE;
+	config = dte.Solution.FindProjectItem(Host.TemplateFile).ContainingProject.ConfigurationManager.ActiveConfiguration;
+	foreach(Property prop in config.Properties)
+		if (prop.Name == "Optimize"){
+			_minimize = (bool)prop.Value;
+			break;
+		}	
+}
+#>
 Converted at: <#= DateTime.Now.ToShortDateString() #> <#= DateTime.Now.ToShortTimeString() #>
 Template File: <#=Host.TemplateFile #>
 Template Directory: <#= currentDirectory #>
+<# if(_autoMinimize) {#>
+Minimizing content: <#=_minimize #> (auto)
+<# }else if (_bothOutputs){ #>
+Minimizing content: Both outputs will be generated
+<# }else{ #>
+Minimizing content: <#=_minimize #> 
+<# } #>
 .Less Files Found: <#= cssFiles.Length #>
 Converting:
 <# foreach(var cssFile in cssFiles) { #>
@@ -53,10 +86,35 @@ Converting:
       
 var manager = Manager.Create(Host, GenerationEnvironment);
 var configuration = new DotlessConfiguration();
+var postfix = _bothOutputs ?
+              (_minimize ? _minifiedPostfix : _debugPostfix) :
+			  "";
 configuration.MinifyOutput = _minimize;
 foreach(var cssFile in cssFiles) 
 {
-    manager.StartNewFile(GetCssFileName(cssFile));
+	ProcessFile(cssFile, postfix, manager, configuration);
+	if (_bothOutputs){
+		configuration.MinifyOutput = !_minimize;
+		postfix = configuration.MinifyOutput ? _minifiedPostfix : _debugPostfix;
+		ProcessFile(cssFile, postfix, manager, configuration);
+	}
+}
+manager.Process(true);
+
+if(_runOnBuild)
+{
+	//Mark the t4 template as unsaved so it will run on every build
+	MarkDirty();
+}
+#>
+
+<#+
+
+bool _minimize, _runOnBuild, _useCssExtension, _autoMinimize, _bothOutputs;
+string _debugPostfix, _minifiedPostfix;
+
+void ProcessFile(string cssFile, string postfix, Manager manager, DotlessConfiguration configuration){
+    manager.StartNewFile(GetCssFileName(cssFile, postfix));
     try
     {
 
@@ -70,18 +128,6 @@ foreach(var cssFile in cssFiles)
     }
     manager.EndBlock();
 }
-manager.Process(true);
-
-if(_runOnBuild)
-{
-	//Mark the t4 template as unsaved so it will run on every build
-	MarkDirty();
-}
-#>
-
-<#+
-
-bool _minimize, _runOnBuild, _useCssExtension;
 
 /*
     This MarkDirty code is based on T4MVC by David Ebbo. Concept explained here: http://blogs.msdn.com/davidebb/archive/2009/06/26/the-mvc-t4-template-is-now-up-on-codeplex-and-it-does-change-your-code-a-bit.aspx
@@ -304,8 +350,8 @@ class Manager
     End of Manager.tt
 */
 
-public string GetCssFileName(string dotLessFileName) {
-	return (_useCssExtension) ? Path.GetFileNameWithoutExtension(dotLessFileName.Replace(".less","")) + ".css"
-							  : Path.GetFileNameWithoutExtension(dotLessFileName) + ".css";
+public string GetCssFileName(string dotLessFileName, string postfix) {
+	return (_useCssExtension) ? Path.GetFileNameWithoutExtension(dotLessFileName.Replace(".less","")) + postfix + ".css"
+							  : Path.GetFileNameWithoutExtension(dotLessFileName) + postfix + ".css";
 }
 #>
