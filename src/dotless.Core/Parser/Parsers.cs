@@ -93,8 +93,12 @@ namespace dotless.Core.Parser
                 return NodeProvider.Comment(comment.Value, true, index);
 
             comment = parser.Tokenizer.Match(@"/\*(?:[^*]|\*+[^\/*])*\*+/\n?");
-            if (comment)
+            if (comment) {
+				if (comment.Value == @"/*\*/") {
+					throw new ParsingException("The IE6 comment hack is not supported", parser.Tokenizer.Location.Index);
+				}
                 return NodeProvider.Comment(comment.Value, index);
+			}
 
             return null;
         }
@@ -207,7 +211,7 @@ namespace dotless.Core.Parser
             if (parser.Tokenizer.CurrentChar != 'u' || !parser.Tokenizer.Match(@"url\("))
                 return null;
 
-            var value = Quoted(parser) || parser.Tokenizer.Match(@"[-a-zA-Z0-9_%@$\/.&=:;#+?]+") || new TextNode("");
+            var value = Quoted(parser) || parser.Tokenizer.Match(@"[-a-zA-Z0-9_%@$\/.&=:\|;#+?]+") || new TextNode("");
 
             if (!parser.Tokenizer.Match(')'))
                 throw new ParsingException("missing closing ) for url()", parser.Tokenizer.Location.Index);
@@ -505,11 +509,11 @@ namespace dotless.Core.Parser
         // they are made out of a `Combinator` (see combinator rule),
         // and an element name, such as a tag a class, or `*`.
         //
-        public Element Element(Parser parser)
+        public Element Element(Parser parser, Combinator c)
         {
             var index = parser.Tokenizer.Location.Index;
 
-            var c = Combinator(parser);
+            c = (Combinator)(c || Combinator(parser));
             var e = parser.Tokenizer.Match(@"[.#:]?[a-zA-Z0-9_-]+") || parser.Tokenizer.Match('*') || Attribute(parser) ||
                     parser.Tokenizer.Match(@"\([^)@]+\)");
 
@@ -550,13 +554,23 @@ namespace dotless.Core.Parser
         public Selector Selector(Parser parser)
         {
             Element e;
+			Combinator c = null;
             var elements = new NodeList<Element>();
 
             var index = parser.Tokenizer.Location.Index;
-
-            while (e = Element(parser))
+			
+            while (true) {
+				// absorb comments at the end of selectors and elements. Replace them with whitespace
+				while(Comment(parser)) c = NodeProvider.Combinator(" ", index);
+				
+				e = Element(parser, c);
+				if  (!e) {
+					break;
+				}
                 elements.Add(e);
-
+				c = null;
+			}
+			
             if (elements.Count > 0)
                 return NodeProvider.Selector(elements, index);
 
