@@ -18,7 +18,7 @@ body
 }";
 
         	var expected =
-        		@"body {
+        		@"/* Block comment ********************/body {
   background-color: yellow;
   /* Another block comment */
 }";

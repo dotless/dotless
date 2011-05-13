@@ -9,7 +9,7 @@ namespace dotless.Core.Parser.Infrastructure
     {
         Element Element(Combinator combinator, string value, int index);
         Combinator Combinator(string value, int index);
-        Selector Selector(NodeList<Element> elements, int index);
+        Selector Selector(NodeList<Node> elements, int index);
         Rule Rule(string name, Node value, int index);
         Ruleset Ruleset(NodeList<Selector> selectors, List<Node> rules, int index);
 

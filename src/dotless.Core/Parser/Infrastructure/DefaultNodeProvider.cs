@@ -17,7 +17,7 @@ namespace dotless.Core.Parser.Infrastructure
             return new Combinator(value) { Index = index };
         }
 
-        public Selector Selector(NodeList<Element> elements, int index)
+        public Selector Selector(NodeList<Node> elements, int index)
         {
             return new Selector(elements) { Index = index };
         }
