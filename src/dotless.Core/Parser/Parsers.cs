@@ -70,8 +70,8 @@ namespace dotless.Core.Parser
             Node node;
             var root = new List<Node>();
 
-            while (node = MixinDefinition(parser) || Rule(parser) || Ruleset(parser) ||
-                          MixinCall(parser) || Comment(parser) || Directive(parser))
+            while (node = MixinDefinition(parser) || Rule(parser) || Comment(parser) || Ruleset(parser) ||
+                          MixinCall(parser) || Directive(parser))
             {
                 root.Add(node);
             }
@@ -92,11 +92,13 @@ namespace dotless.Core.Parser
             if(comment)
                 return NodeProvider.Comment(comment.Value, true, index);
 
-            comment = parser.Tokenizer.Match(@"/\*(?:[^*]|\*+[^\/*])*\*+/\n?");
+            comment = parser.Tokenizer.Match(@"/\*(.|[\r\n])*?\*/");
             if (comment) {
-				if (comment.Value == @"/*\*/") {
-					throw new ParsingException("The IE6 comment hack is not supported", parser.Tokenizer.Location.Index);
-				}
+				
+				//Once CSS Hacks are supported, implement this exception
+				//if (comment.Value.EndsWith(@"\*/")) {
+				//	throw new ParsingException("The IE6 comment hack is not supported", parser.Tokenizer.Location.Index);
+				//}
                 return NodeProvider.Comment(comment.Value, index);
 			}
 
@@ -509,11 +511,11 @@ namespace dotless.Core.Parser
         // they are made out of a `Combinator` (see combinator rule),
         // and an element name, such as a tag a class, or `*`.
         //
-        public Element Element(Parser parser, Combinator c)
+        public Element Element(Parser parser)
         {
             var index = parser.Tokenizer.Location.Index;
 
-            c = (Combinator)(c || Combinator(parser));
+            Combinator c = Combinator(parser);
             var e = parser.Tokenizer.Match(@"[.#:]?[a-zA-Z0-9_-]+") || parser.Tokenizer.Match('*') || Attribute(parser) ||
                     parser.Tokenizer.Match(@"\([^)@]+\)");
 
@@ -553,27 +555,32 @@ namespace dotless.Core.Parser
         //
         public Selector Selector(Parser parser)
         {
-            Element e;
-			Combinator c = null;
-            var elements = new NodeList<Element>();
-
+            Node e;
+			int realElements = 0;
+			
+            var elements = new NodeList<Node>();
             var index = parser.Tokenizer.Location.Index;
 			
+			// absorb comments at the start of selectors
+			while(e = Comment(parser)) elements.Add(e);
+			
             while (true) {
-				// absorb comments at the end of selectors and elements. Replace them with whitespace
-				while(Comment(parser)) c = NodeProvider.Combinator(" ", index);
-				
-				e = Element(parser, c);
+				e = Element(parser); // combinator handles comments in the middle of selectors
 				if  (!e) {
 					break;
 				}
+				realElements++;
                 elements.Add(e);
-				c = null;
 			}
 			
-            if (elements.Count > 0)
+			// absorb comments at the end of selectors
+			while(e = Comment(parser)) elements.Add(e);
+			
+            if (realElements > 0)
                 return NodeProvider.Selector(elements, index);
-
+			
+			//We have lost comments we have absorbed here.
+			//But comments should be absorbed before selectors...
             return null;
         }
 
@@ -638,12 +645,12 @@ namespace dotless.Core.Parser
 
             var memo = parser.Tokenizer.Location;
 
-            if (parser.Tokenizer.Peek(@"([a-z.#: _-]+)[\s\n]*\{"))
+            if (parser.Tokenizer.Peek(@"([a-z.#: _-]+)[\s\n]*\{")) //simple case with no comments
             {
                 var match = parser.Tokenizer.Match(@"[a-z.#: _-]+");
                 selectors =
                     new NodeList<Selector>(
-                        NodeProvider.Selector(new NodeList<Element>(NodeProvider.Element(null, match.Value, memo.Index)), memo.Index));
+                        NodeProvider.Selector(new NodeList<Node>(NodeProvider.Element(null, match.Value, memo.Index)), memo.Index));
             }
             else
             {
@@ -654,7 +661,6 @@ namespace dotless.Core.Parser
                     if (!parser.Tokenizer.Match(','))
                         break;
                 }
-                if (s) Comment(parser);
             }
 
             List<Node> rules;

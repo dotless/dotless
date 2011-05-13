@@ -1,7 +1,6 @@
 namespace dotless.Test.Specs
 {
     using NUnit.Framework;
-	using dotless.Core.Exceptions;
 
     public class CssFixture : SpecFixtureBase
     {
@@ -289,57 +288,6 @@ form[data-disabled] {
 }";
 
             AssertLessUnchanged(input);
-        }
-		
-		[Test]
-        public void CheckCommentsAreAcceptedWhereWhitespaceIsAllowed()
-        {
-			// Note: https://github.com/dotless/dotless/issues/31
-        	var input = @"/* COMMENT */body/* COMMENT */, /* COMMENT */.cls/* COMMENT */ .cla,/* COMMENT */ .clb /* COMMENT */ {background-image: url(pickture.asp);}";
-
-			var expected = @"body, .cls .cla, .clb {
-  background-image: url(pickture.asp);
-}";
-			
-            AssertLess(input, expected);
-        }
-		
-		[Test]
-        public void CheckCommentsAreTakenToBeWhitespace()
-        {
-        	var input = @".cls/* COMMENT */.cla {background-image: url(pickture.asp);}";
-
-			var expected = @".cls .cla {
-  background-image: url(pickture.asp);
-}";
-			
-            AssertLess(input, expected);
-        }
-		
-		[Test]
-		[ExpectedException(typeof(ParserException), ExpectedMessage = @"The IE6 comment hack is not supported", MatchType=MessageMatch.Contains)]
-        public void CommentCSSHackException1()
-        {
-        	var input = @"/*\*/ .cls {background-image: url(picture.asp);} /**/";
-
-			var expected = @"/*\*/ .cls {
-  background-image: url(pickture.asp);
-} /**/";
-			
-            AssertLess(input, expected);
-        }
-		
-		[Test]
-		[ExpectedException(typeof(ParserException), ExpectedMessage = @"The IE6 comment hack is not supported", MatchType=MessageMatch.Contains)]
-        public void CommentCSSHackException2()
-        {
-        	var input = @"/*\*//*/ .cls {background-image: url(picture.asp);} /**/";
-
-			var expected = @"/*\*//*/ .cls {
-  background-image: url(pickture.asp);
-} /**/";
-			
-            AssertLess(input, expected);
         }
     }
 }
