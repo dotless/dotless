@@ -409,5 +409,57 @@ namespace dotless.Test.Specs
 
             AssertLessUnchanged(input);
         }
+		
+		[Test]
+        public void CommentBeforeMixinCall()
+        {
+        	var input = @"/* COMMENT */.clb(@a) { font-size: @a; }
+.cla { .clb(10); }";
+			
+			var expected = @"/* COMMENT */.cla {
+  font-size: 10;
+}";
+
+            AssertLess(input, expected);
+        }
+		
+		[Test, Ignore("comments not supported after mixin calls at the moment")]
+        public void CommentBeforeAndAfterMixinCall()
+        {
+        	var input = @"/* COMMENT */.clb(@a)/* COMMENT */ { font-size: @a; }
+.cla { .clb(10); }";
+			
+			var expected = @"/* COMMENT */.cla {
+  font-size: 10;
+}";
+
+            AssertLess(input, expected);
+        }
+		
+		[Test]
+        public void CommentBeforeDirective()
+        {
+        	var input = @"/* COMMENT */@a : 10px;/* COMMENT */
+.cla { font-size: @a; }";
+			
+			var expected = @"/* COMMENT *//* COMMENT */.cla {
+  font-size: 10px;
+}";
+
+            AssertLess(input, expected);
+        }
+		
+		[Test, Ignore("Fails at the moment - comments not supported inside directives")]
+        public void CommentBeforeAndAfterDirective()
+        {
+        	var input = @"/* COMMENT */@a : 10px/* COMMENT */;
+.cla { font-size: @a; }";
+			
+			var expected = @"/* COMMENT *//* COMMENT */
+.cla { font-size: 10px; }";
+
+            AssertLess(input, expected);
+        }
+
     }
 }
