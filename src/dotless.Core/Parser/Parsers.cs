@@ -81,7 +81,7 @@ namespace dotless.Core.Parser
         // We create a Comment node for CSS comments `/* */`,
         // but keep the LeSS comments `//` silent, by just skipping
         // over them.
-        public Node Comment(Parser parser)
+        public Comment Comment(Parser parser)
         {
             if (parser.Tokenizer.CurrentChar != '/')
                 return null;
@@ -555,14 +555,17 @@ namespace dotless.Core.Parser
         //
         public Selector Selector(Parser parser)
         {
-            Node e;
+            Element e;
+			Comment c;
 			int realElements = 0;
 			
-            var elements = new NodeList<Node>();
+            var elements = new NodeList<Element>();
+			var preComments = new NodeList<Comment>();
+			var postComments = new NodeList<Comment>();
             var index = parser.Tokenizer.Location.Index;
 			
 			// absorb comments at the start of selectors
-			while(e = Comment(parser)) elements.Add(e);
+			while(c = Comment(parser)) preComments.Add(c);
 			
             while (true) {
 				e = Element(parser); // combinator handles comments in the middle of selectors
@@ -574,10 +577,10 @@ namespace dotless.Core.Parser
 			}
 			
 			// absorb comments at the end of selectors
-			while(e = Comment(parser)) elements.Add(e);
+			while(c = Comment(parser)) postComments.Add(c);
 			
             if (realElements > 0)
-                return NodeProvider.Selector(elements, index);
+                return NodeProvider.Selector(elements, preComments, postComments, index);
 			
 			//We have lost comments we have absorbed here.
 			//But comments should be absorbed before selectors...
@@ -650,7 +653,7 @@ namespace dotless.Core.Parser
                 var match = parser.Tokenizer.Match(@"[a-z.#: _-]+");
                 selectors =
                     new NodeList<Selector>(
-                        NodeProvider.Selector(new NodeList<Node>(NodeProvider.Element(null, match.Value, memo.Index)), memo.Index));
+                        NodeProvider.Selector(new NodeList<Element>(NodeProvider.Element(null, match.Value, memo.Index)), memo.Index));
             }
             else
             {

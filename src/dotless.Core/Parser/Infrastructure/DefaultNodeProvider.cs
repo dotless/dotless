@@ -17,9 +17,14 @@ namespace dotless.Core.Parser.Infrastructure
             return new Combinator(value) { Index = index };
         }
 
-        public Selector Selector(NodeList<Node> elements, int index)
+        public Selector Selector(NodeList<Element> elements, int index)
         {
             return new Selector(elements) { Index = index };
+        }
+		
+        public Selector Selector(NodeList<Element> elements, NodeList<Comment> preComments, NodeList<Comment> postComments, int index)
+        {
+            return new Selector(elements) { Index = index, PreComments = preComments, PostComments = postComments };
         }
 
         public Rule Rule(string name, Node value, int index)
