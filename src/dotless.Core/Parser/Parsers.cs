@@ -70,8 +70,8 @@ namespace dotless.Core.Parser
             Node node;
             var root = new List<Node>();
 
-            while (node = MixinDefinition(parser) || Rule(parser) || Ruleset(parser) ||
-                          MixinCall(parser) || Comment(parser) || Directive(parser))
+            while (node = MixinDefinition(parser) || Rule(parser) || Comment(parser) || Ruleset(parser) ||
+                          MixinCall(parser) || Directive(parser))
             {
                 root.Add(node);
             }
@@ -81,7 +81,7 @@ namespace dotless.Core.Parser
         // We create a Comment node for CSS comments `/* */`,
         // but keep the LeSS comments `//` silent, by just skipping
         // over them.
-        public Node Comment(Parser parser)
+        public Comment Comment(Parser parser)
         {
             if (parser.Tokenizer.CurrentChar != '/')
                 return null;
@@ -92,9 +92,15 @@ namespace dotless.Core.Parser
             if(comment)
                 return NodeProvider.Comment(comment.Value, true, index);
 
-            comment = parser.Tokenizer.Match(@"/\*(?:[^*]|\*+[^\/*])*\*+/\n?");
-            if (comment)
+            comment = parser.Tokenizer.Match(@"/\*(.|[\r\n])*?\*/");
+            if (comment) {
+				
+				//Once CSS Hacks are supported, implement this exception
+				//if (comment.Value.EndsWith(@"\*/")) {
+				//	throw new ParsingException("The IE6 comment hack is not supported", parser.Tokenizer.Location.Index);
+				//}
                 return NodeProvider.Comment(comment.Value, index);
+			}
 
             return null;
         }
@@ -207,7 +213,7 @@ namespace dotless.Core.Parser
             if (parser.Tokenizer.CurrentChar != 'u' || !parser.Tokenizer.Match(@"url\("))
                 return null;
 
-            var value = Quoted(parser) || parser.Tokenizer.Match(@"[-a-zA-Z0-9_%@$\/.&=:;#+?]+") || new TextNode("");
+            var value = Quoted(parser) || parser.Tokenizer.Match(@"[-a-zA-Z0-9_%@$\/.&=:\|;#+?]+") || new TextNode("");
 
             if (!parser.Tokenizer.Match(')'))
                 throw new ParsingException("missing closing ) for url()", parser.Tokenizer.Location.Index);
@@ -509,7 +515,7 @@ namespace dotless.Core.Parser
         {
             var index = parser.Tokenizer.Location.Index;
 
-            var c = Combinator(parser);
+            Combinator c = Combinator(parser);
             var e = parser.Tokenizer.Match(@"[.#:]?[a-zA-Z0-9_-]+") || parser.Tokenizer.Match('*') || Attribute(parser) ||
                     parser.Tokenizer.Match(@"\([^)@]+\)");
 
@@ -550,16 +556,34 @@ namespace dotless.Core.Parser
         public Selector Selector(Parser parser)
         {
             Element e;
+			Comment c;
+			int realElements = 0;
+			
             var elements = new NodeList<Element>();
-
+			var preComments = new NodeList<Comment>();
+			var postComments = new NodeList<Comment>();
             var index = parser.Tokenizer.Location.Index;
-
-            while (e = Element(parser))
+			
+			// absorb comments at the start of selectors
+			while(c = Comment(parser)) preComments.Add(c);
+			
+            while (true) {
+				e = Element(parser); // combinator handles comments in the middle of selectors
+				if  (!e) {
+					break;
+				}
+				realElements++;
                 elements.Add(e);
-
-            if (elements.Count > 0)
-                return NodeProvider.Selector(elements, index);
-
+			}
+			
+			// absorb comments at the end of selectors
+			while(c = Comment(parser)) postComments.Add(c);
+			
+            if (realElements > 0)
+                return NodeProvider.Selector(elements, preComments, postComments, index);
+			
+			//We have lost comments we have absorbed here.
+			//But comments should be absorbed before selectors...
             return null;
         }
 
@@ -624,7 +648,7 @@ namespace dotless.Core.Parser
 
             var memo = parser.Tokenizer.Location;
 
-            if (parser.Tokenizer.Peek(@"([a-z.#: _-]+)[\s\n]*\{"))
+            if (parser.Tokenizer.Peek(@"([a-z.#: _-]+)[\s\n]*\{")) //simple case with no comments
             {
                 var match = parser.Tokenizer.Match(@"[a-z.#: _-]+");
                 selectors =
@@ -640,7 +664,6 @@ namespace dotless.Core.Parser
                     if (!parser.Tokenizer.Match(','))
                         break;
                 }
-                if (s) Comment(parser);
             }
 
             List<Node> rules;

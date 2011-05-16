@@ -277,5 +277,17 @@ form[data-disabled] {
         {
             AssertExpressionUnchanged( "url()" );
         }
+		
+       
+        [Test]
+        public void CheckUrlWithHorizBarCharacterIsAcceptedWithoutQuotes()
+        {
+			// Note: https://github.com/dotless/dotless/issues/30
+        	var input = @"body {
+  background-image: url(pickture.asp?id=this|thing);
+}";
+
+            AssertLessUnchanged(input);
+        }
     }
 }

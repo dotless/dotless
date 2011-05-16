@@ -1,7 +1,8 @@
 namespace dotless.Test.Specs
 {
     using NUnit.Framework;
-
+	using dotless.Core.Exceptions;
+	
     public class CommentsFixture : SpecFixtureBase
     {
         [Test]
@@ -58,7 +59,7 @@ namespace dotless.Test.Specs
 
             AssertLess(input, expected);
         }
-
+		
         [Test]
         public void ColorInsideComments()
         {
@@ -118,7 +119,7 @@ namespace dotless.Test.Specs
 ";
 
             var expected = @"
-#comments {
+#comments/* boo */ {
   color: red;
 }
 ";
@@ -143,7 +144,6 @@ namespace dotless.Test.Specs
 #comments {
   border: solid black;
   /**/
-
   color: red;
 }
 ";
@@ -169,7 +169,6 @@ namespace dotless.Test.Specs
   border: solid black;
   color: red;
   /* A C-style comment */
-
   padding: 0;
 }
 ";
@@ -259,7 +258,7 @@ namespace dotless.Test.Specs
 ";
 
             var expected = @"
-#comments {
+#comments/* boo */ {
   color: red;
 }
 ";
@@ -298,16 +297,14 @@ namespace dotless.Test.Specs
             AssertLessUnchanged(input);
         }
 
-        [Test, Ignore("Bug")]
+        [Test]
         public void BlockCommented3()
         {
             var input =
                 @"
-/* commented out
-  #more-comments {
-    quotes: ""/*"" ""*/"";
-  }
-*/
+#more-comments {
+  quotes: ""/*"" ""*/"";
+}
 ";
 
             AssertLessUnchanged(input);
@@ -331,5 +328,138 @@ namespace dotless.Test.Specs
 
             AssertLess(input, expected);
         }
+		
+		[Test]
+		[ExpectedException(typeof(ParserException))]
+        public void CheckCommentsAreNotAcceptedAsASelector()
+        {
+			// Note: https://github.com/dotless/dotless/issues/31
+        	var input = @"/* COMMENT *//* COMMENT */, /* COMMENT */,/* COMMENT */ .clb /* COMMENT */ {background-image: url(pickture.asp);}";
+
+            AssertLessUnchanged(input);
+        }
+		
+		[Test]
+        public void CheckCommentsAreAcceptedBetweenSelectors()
+        {
+			// Note: https://github.com/dotless/dotless/issues/31
+        	var input = @"/* COMMENT */body/* COMMENT */,/* COMMENT */ .clb /* COMMENT */ {background-image: url(pickture.asp);}";
+
+			var expected = @"/* COMMENT */body/* COMMENT */, /* COMMENT */ .clb/* COMMENT */ {
+  background-image: url(pickture.asp);
+}";
+			
+            AssertLess(input, expected);
+        }
+		
+		[Test, Ignore("Bug to fix in the future - dotLess still doesn't allow comments everywhere")]
+        public void CheckCommentsAreAcceptedWhereWhitespaceIsAllowed()
+        {
+			// Note: https://github.com/dotless/dotless/issues/31
+        	var input = @"/* COMMENT */body/* COMMENT */, /* COMMENT */.cls/* COMMENT */ .cla,/* COMMENT */ .clb /* COMMENT */ {background-image: url(pickture.asp);}";
+
+			var expected = @"body, .cls .cla, .clb {
+  background-image: url(pickture.asp);
+}";
+			
+            AssertLess(input, expected);
+        }
+		
+		[Test, Ignore("Bug to fix in the future - dotLess still doesn't allow comments everywhere")]
+        public void CheckCommentsAreTakenToBeWhitespace1()
+        {
+        	var input = @".cls/* COMMENT */.cla {background-image: url(pickture.asp);}";
+
+			var expected = @".cls .cla {
+  background-image: url(pickture.asp);
+}";
+			
+            AssertLess(input, expected);
+        }
+		
+		[Test, Ignore("Bug to fix in the future - dotLess still doesn't allow comments everywhere")]
+        public void CheckCommentsAreTakenToBeWhitespace2()
+        {
+        	var input = @".cls/* COMMENT */ + /* COMMENT */.cla {background-image: url(pickture.asp);}";
+
+			var expected = @".cls + .cla {
+  background-image: url(pickture.asp);
+}";
+			
+            AssertLess(input, expected);
+        }
+		
+		[Test]
+        public void CommentCSSHackException1Accepted()
+        {
+        	var input = @"/*\*/.cls {background-image: url(picture.asp);} /**/";
+			
+			var expected = @"/*\*/.cls {
+  background-image: url(picture.asp);
+}
+/**/";
+
+            AssertLess(input, expected);
+        }
+		
+		[Test]
+        public void CommentCSSHackException2Accepted()
+        {
+        	var input = @"/*\*//*/ .cls {background-image: url(picture.asp);} /**/";
+
+            AssertLessUnchanged(input);
+        }
+		
+		[Test]
+        public void CommentBeforeMixinCall()
+        {
+        	var input = @"/* COMMENT */.clb(@a) { font-size: @a; }
+.cla { .clb(10); }";
+			
+			var expected = @"/* COMMENT */.cla {
+  font-size: 10;
+}";
+
+            AssertLess(input, expected);
+        }
+		
+		[Test, Ignore("comments not supported after mixin calls at the moment")]
+        public void CommentBeforeAndAfterMixinCall()
+        {
+        	var input = @"/* COMMENT */.clb(@a)/* COMMENT */ { font-size: @a; }
+.cla { .clb(10); }";
+			
+			var expected = @"/* COMMENT */.cla {
+  font-size: 10;
+}";
+
+            AssertLess(input, expected);
+        }
+		
+		[Test]
+        public void CommentBeforeDirective()
+        {
+        	var input = @"/* COMMENT */@a : 10px;/* COMMENT */
+.cla { font-size: @a; }";
+			
+			var expected = @"/* COMMENT *//* COMMENT */.cla {
+  font-size: 10px;
+}";
+
+            AssertLess(input, expected);
+        }
+		
+		[Test, Ignore("Fails at the moment - comments not supported inside directives")]
+        public void CommentBeforeAndAfterDirective()
+        {
+        	var input = @"/* COMMENT */@a : 10px/* COMMENT */;
+.cla { font-size: @a; }";
+			
+			var expected = @"/* COMMENT *//* COMMENT */
+.cla { font-size: 10px; }";
+
+            AssertLess(input, expected);
+        }
+
     }
 }
