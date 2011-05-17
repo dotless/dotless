@@ -4,12 +4,12 @@
 
     public class CommentBug : SpecFixtureBase
     {
-        
+
         [Test]
         public void Block_comment_with_multiple_asterisks_before_closing_slash_does_not_cause_tokenizer_error()
         {
-        	var input =
-        		@"@xxx: yellow; 
+            var input =
+                @"@xxx: yellow; 
 /* Block comment ********************/ 
 body 
 { 
@@ -17,8 +17,8 @@ body
     /* Another block comment */ 
 }";
 
-        	var expected =
-        		@"/* Block comment ********************/body {
+            var expected =
+                @"/* Block comment ********************/body {
   background-color: yellow;
   /* Another block comment */
 }";

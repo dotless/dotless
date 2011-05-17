@@ -6,19 +6,19 @@ using NUnit.Framework;
 
 namespace dotless.Test.Unit.Engine
 {
-	public class NullVariableValueBug
-	{
+    public class NullVariableValueBug
+    {
 
-		[Test]
-		public void NullVariableValuesProduceSensibleErrorMessage()
-		{
-			var parameterSourceMock = new Mock<IParameterSource>();
+        [Test]
+        public void NullVariableValuesProduceSensibleErrorMessage()
+        {
+            var parameterSourceMock = new Mock<IParameterSource>();
 
-			parameterSourceMock.Setup(s => s.GetParameters()).Returns(new Dictionary<string, string> {{"color", null}});
+            parameterSourceMock.Setup(s => s.GetParameters()).Returns(new Dictionary<string, string> { { "color", null } });
 
-			var decorator = new ParameterDecorator(new LessEngine(), parameterSourceMock.Object);
+            var decorator = new ParameterDecorator(new LessEngine(), parameterSourceMock.Object);
 
-			Assert.DoesNotThrow(() => decorator.TransformToCss("", "test.less"));
-		}
-	}
+            Assert.DoesNotThrow(() => decorator.TransformToCss("", "test.less"));
+        }
+    }
 }

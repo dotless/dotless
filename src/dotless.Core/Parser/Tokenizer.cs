@@ -43,7 +43,7 @@ namespace dotless.Core.Parser
                 _chunks.Add(_input);
             else
             {
-                var chunkParts = new List<StringBuilder> { new StringBuilder() };
+                var chunkParts = new List<StringBuilder> {new StringBuilder()};
                 var chunkPart = chunkParts.Last();
                 var skip = new Regex(@"\G[^\""'{}/\\]+");
                 var comment = new Regex(@"\G(//[^\n]*|(/\*(.|[\r\n])*?\*/))");
@@ -51,30 +51,30 @@ namespace dotless.Core.Parser
                 var lastBlock = 0;
                 var lastQuote = 0;
                 char? inString = null;
-				
-				int i = 0;
-                while(i < _inputLength)
+
+                int i = 0;
+                while (i < _inputLength)
                 {
                     var match = skip.Match(_input, i);
-                    if(match.Success)
+                    if (match.Success)
                     {
                         chunkPart.Append(match.Value);
                         i += match.Length;
-						continue;
+                        continue;
                     }
 
 
-                    if(i < _inputLength - 1 && _input[i] == '/' && inString == null)
+                    if (i < _inputLength - 1 && _input[i] == '/' && inString == null)
                     {
                         var cc = _input[i + 1];
-                        if(cc == '/' || cc=='*')
+                        if (cc == '/' || cc == '*')
                         {
                             match = comment.Match(_input, i);
                             if (match.Success)
                             {
                                 i += match.Length;
                                 chunkPart.Append(match.Value);
-								continue;
+                                continue;
                             }
                         }
                     }
@@ -98,7 +98,7 @@ namespace dotless.Core.Parser
                     else if (inString != null && c == '\\' && i < _inputLength - 1)
                     {
                         chunkPart.Append(_input, i, 2);
-                        i+=2;
+                        i += 2;
                         continue;
                     }
                     else if (inString == null && c == '{')
@@ -116,18 +116,18 @@ namespace dotless.Core.Parser
                         chunkPart.Append(c);
                         chunkPart = new StringBuilder();
                         chunkParts.Add(chunkPart);
-						i++;
+                        i++;
                         continue;
                     }
 
                     chunkPart.Append(c);
-					i++;
+                    i++;
                 }
 
-                if(inString != null)
+                if (inString != null)
                     throw new ParsingException(string.Format("Missing closing quote ({0})", inString), lastQuote);
 
-                if(level > 0)
+                if (level > 0)
                     throw new ParsingException("Missing closing '}'", lastBlock);
 
                 _chunks = chunkParts.Select(p => p.ToString()).ToList();

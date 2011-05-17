@@ -89,18 +89,18 @@ namespace dotless.Core.Parser
             var index = parser.Tokenizer.Location.Index;
 
             var comment = parser.Tokenizer.Match(@"//.*");
-            if(comment)
+            if (comment)
                 return NodeProvider.Comment(comment.Value, true, index);
 
             comment = parser.Tokenizer.Match(@"/\*(.|[\r\n])*?\*/");
-            if (comment) {
-				
-				//Once CSS Hacks are supported, implement this exception
-				//if (comment.Value.EndsWith(@"\*/")) {
-				//	throw new ParsingException("The IE6 comment hack is not supported", parser.Tokenizer.Location.Index);
-				//}
+            if (comment)
+            {
+                //Once CSS Hacks are supported, implement this exception
+                //if (comment.Value.EndsWith(@"\*/")) {
+                //    throw new ParsingException("The IE6 comment hack is not supported", parser.Tokenizer.Location.Index);
+                //}
                 return NodeProvider.Comment(comment.Value, index);
-			}
+            }
 
             return null;
         }
@@ -556,34 +556,35 @@ namespace dotless.Core.Parser
         public Selector Selector(Parser parser)
         {
             Element e;
-			Comment c;
-			int realElements = 0;
-			
+            Comment c;
+            int realElements = 0;
+
             var elements = new NodeList<Element>();
-			var preComments = new NodeList<Comment>();
-			var postComments = new NodeList<Comment>();
+            var preComments = new NodeList<Comment>();
+            var postComments = new NodeList<Comment>();
             var index = parser.Tokenizer.Location.Index;
-			
-			// absorb comments at the start of selectors
-			while(c = Comment(parser)) preComments.Add(c);
-			
-            while (true) {
-				e = Element(parser); // combinator handles comments in the middle of selectors
-				if  (!e) {
-					break;
-				}
-				realElements++;
+
+            // absorb comments at the start of selectors
+            while (c = Comment(parser)) preComments.Add(c);
+
+            while (true)
+            {
+                e = Element(parser); // combinator handles comments in the middle of selectors
+                if (!e)
+                    break;
+
+                realElements++;
                 elements.Add(e);
-			}
-			
-			// absorb comments at the end of selectors
-			while(c = Comment(parser)) postComments.Add(c);
-			
+            }
+
+            // absorb comments at the end of selectors
+            while (c = Comment(parser)) postComments.Add(c);
+
             if (realElements > 0)
                 return NodeProvider.Selector(elements, preComments, postComments, index);
-			
-			//We have lost comments we have absorbed here.
-			//But comments should be absorbed before selectors...
+
+            //We have lost comments we have absorbed here.
+            //But comments should be absorbed before selectors...
             return null;
         }
 

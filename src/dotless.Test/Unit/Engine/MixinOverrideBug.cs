@@ -2,15 +2,15 @@
 
 namespace dotless.Test.Unit.Engine
 {
-	using NUnit.Framework;
+    using NUnit.Framework;
 
-	public class MixinOverrideBug : SpecFixtureBase
-	{
-		[Test]
-		public void Mixin_override_stack_overflow()
-		{
+    public class MixinOverrideBug : SpecFixtureBase
+    {
+        [Test]
+        public void Mixin_override_stack_overflow()
+        {
 
-			var input = @"
+            var input = @"
 .button
 {
     background-color: black;
@@ -27,7 +27,7 @@ namespace dotless.Test.Unit.Engine
     }
 }";
 
-			var expected = @"
+            var expected = @"
 .button {
   background-color: black;
   color: white;
@@ -39,7 +39,7 @@ namespace dotless.Test.Unit.Engine
 }
 ";
 
-			AssertLess(input, expected);
-		}
-	}
+            AssertLess(input, expected);
+        }
+    }
 }
