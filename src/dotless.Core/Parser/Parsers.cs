@@ -75,6 +75,7 @@ namespace dotless.Core.Parser
             {
                 root.Add(node);
             }
+
             return root;
         }
 
@@ -216,7 +217,7 @@ namespace dotless.Core.Parser
             var value = Quoted(parser) || parser.Tokenizer.Match(@"[-a-zA-Z0-9_%@$\/.&=:\|;#+?]+") || new TextNode("");
 
             if (!parser.Tokenizer.Match(')'))
-                throw new ParsingException("missing closing ) for url()", parser.Tokenizer.Location.Index);
+                throw CommentNotAllowedException(parser) ?? new ParsingException("missing closing ) for url()", parser.Tokenizer.Location.Index);
 
             return NodeProvider.Url(value, parser.Importer.Paths, index);
         }
@@ -430,7 +431,7 @@ namespace dotless.Core.Parser
                         if (value)
                             parameters.Add(NodeProvider.Rule(param.Value, value, i));
                         else
-                            throw new ParsingException("Expected value", i);
+                            throw CommentNotAllowedException (parser) ?? new ParsingException("Expected value", i);
                     }
                     else
                         parameters.Add(NodeProvider.Rule(param.Value, null, i));
@@ -444,7 +445,7 @@ namespace dotless.Core.Parser
                     break;
             }
             if (!parser.Tokenizer.Match(')'))
-                throw new ParsingException("Expected ')'", parser.Tokenizer.Location.Index);
+                throw CommentNotAllowedException (parser) ?? new ParsingException("Expected ')'", parser.Tokenizer.Location.Index);
 
             var rules = Block(parser);
 
@@ -491,7 +492,7 @@ namespace dotless.Core.Parser
             if (value = parser.Tokenizer.Match(@"[0-9]+") || Variable(parser))
             {
                 if (!parser.Tokenizer.Match(')'))
-                    throw new ParsingException("missing closing ) for alpha()", parser.Tokenizer.Location.Index);
+                    throw CommentNotAllowedException (parser) ?? new ParsingException("missing closing ) for alpha()", parser.Tokenizer.Location.Index);
 
                 return NodeProvider.Alpha(value, index);
             }
@@ -614,7 +615,7 @@ namespace dotless.Core.Parser
             }
 
             if (!parser.Tokenizer.Match(']'))
-                throw new ParsingException("Excpected ']'", parser.Tokenizer.Location.Index);
+                throw CommentNotAllowedException(parser) ?? new ParsingException("Excpected ']'", parser.Tokenizer.Location.Index);
 
             if (!string.IsNullOrEmpty(attr))
                 return NodeProvider.TextNode("[" + attr + "]", index);
@@ -636,7 +637,7 @@ namespace dotless.Core.Parser
             if (content != null && parser.Tokenizer.Match('}'))
                 return content;
 
-            throw new ParsingException("Expected '}'", parser.Tokenizer.Location.Index);
+            throw CommentNotAllowedException(parser) ?? new ParsingException("Expected '}'", parser.Tokenizer.Location.Index);
         }
 
         //
@@ -721,7 +722,7 @@ namespace dotless.Core.Parser
             if (parser.Tokenizer.Match(@"@import\s+") && (path = Quoted(parser) || Url(parser)))
             {
                 if (!parser.Tokenizer.Match(';'))
-                    throw new ParsingException("Expected ';'", parser.Tokenizer.Location.Index);
+                    throw CommentNotAllowedException(parser) ?? new ParsingException("Expected ';'", parser.Tokenizer.Location.Index);
 
                 if (path is Quoted)
                     return NodeProvider.Import(path as Quoted, parser.Importer, index);
@@ -849,7 +850,7 @@ namespace dotless.Core.Parser
             if (e != null && parser.Tokenizer.Match(')'))
                 return e;
 
-            throw new ParsingException("Expected ')'", parser.Tokenizer.Location.Index);
+            throw CommentNotAllowedException(parser) ?? new ParsingException("Expected ')'", parser.Tokenizer.Location.Index);
         }
 
         public Node Multiplication(Parser parser)
@@ -949,6 +950,15 @@ namespace dotless.Core.Parser
             if (name)
                 return name.Value;
 
+            return null;
+        }
+
+        private Exception CommentNotAllowedException(Parser parser)
+        {
+            if  (Comment(parser)) {
+                return new ParsingException("Comments are not supported in this location. Move to inbetween selectors or end of property ",
+                    parser.Tokenizer.Location.Index);
+            }
             return null;
         }
     }
