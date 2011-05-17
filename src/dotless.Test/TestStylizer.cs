@@ -11,7 +11,7 @@ namespace dotless.Test
           return GetErrorMessage(zone.Message, zone.Extract.Line, zone.LineNumber, zone.Position, callExtract, zone.CallLine);
         }
 
-      public static string GetErrorMessage(string error, string line, int lineNumber, int position, string callExtract, int callLine)
+        public static string GetErrorMessage(string error, string line, int lineNumber, int position, string callExtract, int callLine)
         {
             var format = @"
 {0}

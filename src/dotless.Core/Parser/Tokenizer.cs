@@ -39,95 +39,89 @@ namespace dotless.Core.Parser
             // delmited by '\n}' (see rationale above),
             // depending on the level of optimization.
 
-            if (Optimization == 0)
+            if(Optimization == 0)
                 _chunks.Add(_input);
             else
             {
-                var chunkParts = new List<StringBuilder> {new StringBuilder()};
+                var chunkParts = new List<StringBuilder> { new StringBuilder() };
                 var chunkPart = chunkParts.Last();
                 var skip = new Regex(@"\G[^\""'{}/\\]+");
+                // these two use the same regex as the parser. We could consider putting them somewhere global
                 var comment = new Regex(@"\G(//[^\n]*|(/\*(.|[\r\n])*?\*/))");
+                var quotedstring = new Regex(@"\G(""((?:[^""\\\r\n]|\\.)*)""|'((?:[^'\\\r\n]|\\.)*)')");
                 var level = 0;
                 var lastBlock = 0;
-                var lastQuote = 0;
-                char? inString = null;
-
+                
                 int i = 0;
-                while (i < _inputLength)
+                while(i < _inputLength)
                 {
+                    
                     var match = skip.Match(_input, i);
-                    if (match.Success)
+                    if(match.Success)
                     {
                         chunkPart.Append(match.Value);
                         i += match.Length;
                         continue;
                     }
-
-
-                    if (i < _inputLength - 1 && _input[i] == '/' && inString == null)
+                    
+                    var c = _input[i];
+                    
+                    if(i < _inputLength - 1 && c == '/')
                     {
                         var cc = _input[i + 1];
-                        if (cc == '/' || cc == '*')
+                        if(cc == '/' || cc == '*')
                         {
                             match = comment.Match(_input, i);
-                            if (match.Success)
+                            if(match.Success)
                             {
                                 i += match.Length;
                                 chunkPart.Append(match.Value);
                                 continue;
+                            } else
+                            {
+                                throw new ParsingException("Missing closing comment", i);
                             }
                         }
                     }
-
-                    var c = _input[i];
-
-                    if (c == '"' || c == '\'')
+                    
+                    if(c == '"' || c == '\'')
                     {
-                        if (inString == null)
+                        match = quotedstring.Match(_input, i);
+                        if(match.Success)
                         {
-                            inString = c;
-                            lastQuote = i;
+                            i += match.Length;
+                            chunkPart.Append(match.Value);
+                            continue;
+                        } else
+                        {
+                            throw new ParsingException(string.Format("Missing closing quote ({0})", c), i);
                         }
-                        else
-                            inString = inString == c ? null : inString;
                     }
-//                    else if (inString != null && c == '\n')
-//                    {
-//                        throw new ParsingException(string.Format("Missing closing quote ({0})", inString), lastQuote);
-//                    }
-                    else if (inString != null && c == '\\' && i < _inputLength - 1)
-                    {
-                        chunkPart.Append(_input, i, 2);
-                        i += 2;
-                        continue;
-                    }
-                    else if (inString == null && c == '{')
+                    
+                    // we are not in a quoted string or comment - process '{' level
+                    if(c == '{')
                     {
                         level++;
                         lastBlock = i;
-                    }
-                    else if (inString == null && c == '}')
+                    } else if(c == '}')
                     {
                         level--;
-
-                        if (level < 0)
+                        
+                        if(level < 0)
                             throw new ParsingException("Unexpected '}'", i);
-
+                        
                         chunkPart.Append(c);
                         chunkPart = new StringBuilder();
                         chunkParts.Add(chunkPart);
                         i++;
                         continue;
                     }
-
+                    
                     chunkPart.Append(c);
                     i++;
                 }
-
-                if (inString != null)
-                    throw new ParsingException(string.Format("Missing closing quote ({0})", inString), lastQuote);
-
-                if (level > 0)
+                
+                if(level > 0)
                     throw new ParsingException("Missing closing '}'", lastBlock);
 
                 _chunks = chunkParts.Select(p => p.ToString()).ToList();

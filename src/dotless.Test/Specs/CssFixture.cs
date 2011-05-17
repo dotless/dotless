@@ -289,5 +289,17 @@ form[data-disabled] {
 
             AssertLessUnchanged(input);
         }
+
+        [Test]
+        public void CheckUrlWithData()
+        {
+
+            var input = @".help-icon {
+  width: 16px;
+  height: 16px;
+  background: url(""data:image/gif;base64,R0lGODlhDAAMAMQAAAAAAP////T4/ujx/ery/UKP7k6W71CX71KY71Sa8Gak8XGr8nWu83ev83qv83ux83yx832y85XA9aHH96rN+KvO+KzO+K3O+LnV+cTc+tDj+9Xm+////wAAAAAAAAAAACH5BAEAABwALAAAAAAMAAwAAAVKIMcRVoMgjUWI3BYVcOxs41tIGqbAEQkvgshkECv9XopAzBQrKASX2KmZyTRRzUYia2lqdkWCrbAwxHqtRxMGoYkIFcbhwKCsOCEAOw=="") center bottom no-repeat;
+}";
+            AssertLessUnchanged(input);
+        }
     }
 }

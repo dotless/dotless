@@ -42,6 +42,12 @@ namespace dotless.Test.Specs
         }
 
         [Test]
+        public void BracesInQuotesUneven()
+        {
+            AssertExpressionUnchanged(@"""{"" """"");
+        }
+
+        [Test]
         public void SemiColonInQuotes()
         {
             AssertExpressionUnchanged(@"';'");
