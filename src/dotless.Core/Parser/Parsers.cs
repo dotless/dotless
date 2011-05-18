@@ -545,6 +545,9 @@ namespace dotless.Core.Parser
             if (e)
                 return NodeProvider.Element(c, e.Value, index);
 
+            if (!string.IsNullOrEmpty(c.Value) && c.Value[0] == '&')
+                return NodeProvider.Element(c, null, index);
+
             return null;
         }
 
@@ -562,7 +565,7 @@ namespace dotless.Core.Parser
             var index = parser.Tokenizer.Location.Index;
 
             Node match;
-            if (match = parser.Tokenizer.Match(@"[+>~]") || parser.Tokenizer.Match('&') || parser.Tokenizer.Match(@"::"))
+            if (match = parser.Tokenizer.Match(@"[+>~]") || parser.Tokenizer.Match(@"&[ ]?") || parser.Tokenizer.Match(@"::"))
                 return NodeProvider.Combinator(match.ToString(), index);
 
             return NodeProvider.Combinator(parser.Tokenizer.PreviousChar == ' ' ? " " : null, index);

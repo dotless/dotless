@@ -11,7 +11,7 @@
         public Element(Combinator combinator, string value)
         {
             Combinator = combinator ?? new Combinator("");
-            Value = value.Trim();
+            Value = value == null ? "" : value.Trim();
         }
 
         public override string ToCSS(Env env)

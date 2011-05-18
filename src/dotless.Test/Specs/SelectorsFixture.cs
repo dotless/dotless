@@ -33,7 +33,7 @@ h3 p:hover {
             AssertLess(input, expected);
         }
 
-        [Test, Ignore("Unsupported")]
+        [Test]
         public void ParentSelector2()
         {
             // Note: http://github.com/cloudhead/less.js/issues/issue/9
@@ -64,6 +64,38 @@ div a {
 }
 p a span {
   color: yellow;
+}
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void ParentSelector3()
+        {
+            // Note: http://github.com/cloudhead/less.js/issues/issue/9
+
+            var input =
+                @"
+.foo {
+  .bar, .baz {
+    & .qux {
+      display: block;
+    }
+    .qux & {
+      display:inline;
+    }
+  }
+}
+";
+
+            var expected =
+                @"
+.foo .bar .qux, .foo .baz .qux {
+  display: block;
+}
+.qux .foo .bar, .qux .foo .baz {
+  display: inline;
 }
 ";
 

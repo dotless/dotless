@@ -1,4 +1,6 @@
-﻿namespace dotless.Core.Parser.Infrastructure
+﻿using System;
+
+namespace dotless.Core.Parser.Infrastructure
 {
     using System.Collections;
     using System.Collections.Generic;
@@ -25,8 +27,31 @@
 
             foreach (var selector in selectors)
             {
-                Paths.AddRange(context.Paths.Select(path => path.Concat(new[] {selector}).ToList()));
+                AppendSelector(context, selector);
             }
+        }
+
+        private void AppendSelector(Context context, Selector selector)
+        {
+            if (!selector.Elements.Any(e => e.Combinator.Value[0] == '&'))
+            {
+                Paths.AddRange(context.Paths.Select(path => path.Concat(new[] {selector}).ToList()));
+                return;
+            }
+
+            var beforeEl = selector.Elements.TakeWhile(s => s.Combinator.Value[0] != '&');
+            var afterEl = selector.Elements.SkipWhile(s => s.Combinator.Value[0] != '&');
+
+            var before = new List<Selector>();
+            var after = new List<Selector>();
+
+            if (beforeEl.Any())
+                before.Add(new Selector(beforeEl));
+
+            if (afterEl.Any())
+                after.Add(new Selector(afterEl));
+
+            Paths.AddRange(context.Paths.Select(path => before.Concat(path).Concat(after).ToList()));
         }
 
         public string ToCSS(Env env)

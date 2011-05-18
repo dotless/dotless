@@ -13,9 +13,12 @@
         public NodeList<Comment> PreComments { get; set; }
         public NodeList<Comment> PostComments { get; set; }
 
-        public Selector(NodeList<Element> elements)
+        public Selector(IEnumerable<Element> elements)
         {
-            Elements = elements;
+            if (elements is NodeList<Element>)
+                Elements = elements as NodeList<Element>;
+            else
+                Elements = new NodeList<Element>(elements);
 
             if (Elements[0].Combinator.Value == "")
                 Elements[0].Combinator.Value = " ";

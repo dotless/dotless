@@ -14,6 +14,8 @@
                 Value = "";
             else if (value == " ")
                 Value = " ";
+            else if (value == "& ")
+                Value = "& ";
             else
                 Value = value.Trim();
         }
@@ -24,6 +26,7 @@
                   { "", "" }, 
                   { " ", " " },
                   { "&", "" },
+                  { "& ", " " },
                   { ":", " :" },
                   { "::", "::" },
                   { "+", env.Compress ? "+" : " + " },
