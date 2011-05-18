@@ -24,7 +24,7 @@ position: {3};";
 call: {4}
 call line: {5}";
 
-            return string.Format(format, error, line, lineNumber, position, callExtract, callLine);
+            return string.Format(format, error, line.Split('\r', '\n')[0], lineNumber, position, callExtract, callLine);
         }
     }
 }
