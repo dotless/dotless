@@ -292,6 +292,30 @@ namespace dotless.Test.Specs
         }
 
         [Test]
+        public void CanPassNamedArgumentsInDifferentOrder()
+        {
+            var input =
+                @".mixin (@a: 1px, @b: 50%) {
+  width: @a * 5;
+  height: @b - 1%;
+}
+ 
+.named-arg {
+  color: blue;
+  .mixin(@b: 100%, @a: 2px);
+}";
+
+            var expected =
+                @".named-arg {
+  color: blue;
+  width: 10px;
+  height: 99%;
+}";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
         public void CanPassVariablesAsPositionalArgs()
         {
             var input =
