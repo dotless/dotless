@@ -39,28 +39,10 @@ namespace dotless.Core.Parser.Tree
             var arguments = new Dictionary<string, Node>();
             args = args ?? new List<NamedArgument>();
 
-            for (var i = 0; i < Params.Count; i++)
-            {
-                if (!String.IsNullOrEmpty(Params[i].Name))
-                {
-                    Node val;
-                    if (i < args.Count && string.IsNullOrEmpty(args[i].Name))
-                        val = args[i].Value;
-                    else
-                        val = Params[i].Value;
-
-                    if (val)
-                        arguments[Params[i].Name] = new Rule(Params[i].Name, val.Evaluate(env)) { Index = val.Index };
-                    else
-                        throw new ParsingException(
-                            String.Format("wrong number of arguments for {0} ({1} for {2})", Name, args != null ? args.Count : 0, _arity), Index);
-                }
-            }
-
             var hasNamedArgs = false;
             foreach (var arg in args)
             {
-                if(!string.IsNullOrEmpty(arg.Name))
+                if (!string.IsNullOrEmpty(arg.Name))
                 {
                     hasNamedArgs = true;
 
@@ -68,6 +50,28 @@ namespace dotless.Core.Parser.Tree
                 }
                 else if (hasNamedArgs)
                     throw new ParsingException("Positional arguments must appear before all named arguments.", arg.Value.Index);
+            }
+
+            for (var i = 0; i < Params.Count; i++)
+            {
+                if (String.IsNullOrEmpty(Params[i].Name))
+                    continue;
+
+                if (arguments.ContainsKey(Params[i].Name))
+                    continue;
+
+                Node val;
+                if (i < args.Count && string.IsNullOrEmpty(args[i].Name))
+                    val = args[i].Value;
+                else
+                    val = Params[i].Value;
+
+                if (val)
+                    arguments[Params[i].Name] = new Rule(Params[i].Name, val.Evaluate(env)) {Index = val.Index};
+                else
+                    throw new ParsingException(
+                        String.Format("wrong number of arguments for {0} ({1} for {2})", Name,
+                                      args != null ? args.Count : 0, _arity), Index);
             }
 
             var frame = new Ruleset(null, new List<Node>());
