@@ -433,6 +433,43 @@ namespace dotless.Test.Specs
                 input);
         }
 
+        [Test]
+        public void PassAllVariablesAsNamedArgumentsWhereNoDefaultValues()
+        {
+            var input = @"
+.clb (@a, @b) {
+  background-position: @a @b;
+}
+.cla {
+  .clb(@a:23px, @b:12px);
+}";
+            
+            var expected = @"
+.cla {
+  background-position: 23px 12px;
+}";
+            
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void SupportOnePositionArgumentOneDefaultVariableAndOneNamed()
+        {
+            var input = @"
+.clb (@a, @b:12px, @c) {
+  background-position: @a @c;
+}
+.cla {
+  .clb(23px, @c:12px);
+}";
+
+            var expected = @"
+.cla {
+  background-position: 23px 12px;
+}";
+              AssertLess(input, expected);
+        }
+
         [Test, Ignore("Unsupported")]
         public void ThrowsIfArumentNotFound()
         {
