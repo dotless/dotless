@@ -370,10 +370,33 @@ namespace dotless.Core.Parser
                 c = match != null ? NodeProvider.Combinator(match.Value, i) : null;
             }
 
-            NodeList<Expression> args = null;
-            if (parser.Tokenizer.Match('(') && (args = Arguments(parser)) && parser.Tokenizer.Match(')'))
+            var args = new List<NamedArgument>();
+            if (parser.Tokenizer.Match('('))
             {
-                // arguments optional
+                Expression arg;
+                while (arg = Expression(parser))
+                {
+                    var value = arg;
+                    string name = null;
+
+                    if (arg.Value.Count == 1 && arg.Value[0] is Variable)
+                    {
+                        if (parser.Tokenizer.Match(':'))
+                        {
+                            if (value = Expression(parser))
+                                name = (arg.Value[0] as Variable).Name;
+                            else
+                                throw new ParsingException("Expected value", parser.Tokenizer.Location.Index);
+                        }
+                    }
+
+                    args.Add(new NamedArgument {Name = name, Value = value});
+
+                    if(! parser.Tokenizer.Match(','))
+                        break;
+                }
+                if (!parser.Tokenizer.Match(')'))
+                    throw new ParsingException("Expected ')'", parser.Tokenizer.Location.Index);
             }
 
             if (elements.Count > 0 && (parser.Tokenizer.Match(';') || parser.Tokenizer.Peek('}')))

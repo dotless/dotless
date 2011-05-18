@@ -267,7 +267,7 @@ namespace dotless.Test.Specs
             AssertLess(input, expected);
         }
 
-        [Test, Ignore("Unsupported")]
+        [Test]
         public void CanPassNamedArguments()
         {
             var input =
@@ -314,7 +314,7 @@ namespace dotless.Test.Specs
             AssertLess(input, expected);
         }
 
-        [Test, Ignore("Unsupported")]
+        [Test]
         public void CanPassVariablesAsNamedArgs()
         {
             var input =
@@ -337,7 +337,7 @@ namespace dotless.Test.Specs
             AssertLess(input, expected);
         }
 
-        [Test, Ignore("Unsupported")]
+        [Test]
         public void MixedPositionalAndNamedArguments()
         {
             var input =
@@ -361,7 +361,7 @@ namespace dotless.Test.Specs
             AssertLess(input, expected);
         }
 
-        [Test, Ignore("Unsupported")]
+        [Test]
         public void PositionalArgumentsMustAppearBeforeAllNamedArguments()
         {
             var input =
@@ -375,7 +375,14 @@ namespace dotless.Test.Specs
   .mixin(@c: 100, 3px);
 }";
 
-            AssertError("Positional arguments must appear before all named arguments. in '.mixin(@c: 100, 3px)'", input);
+            AssertError(
+                "Positional arguments must appear before all named arguments.", 
+                "  .mixin(@c: 100, 3px);", 
+                8, 
+                18,
+                "  .mixin(@c: 100, 3px);",
+                8,
+                input);
         }
 
         [Test, Ignore("Unsupported")]

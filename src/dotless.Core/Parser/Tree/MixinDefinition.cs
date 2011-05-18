@@ -31,28 +31,50 @@ namespace dotless.Core.Parser.Tree
             return this;
         }
 
-        public Ruleset Evaluate(NodeList<Expression> args, Env env, List<Ruleset> closureContext)
+        public Ruleset Evaluate(List<NamedArgument> args, Env env, List<Ruleset> closureContext)
         {
-            if (args)
+            if (args != null && args.Any())
                 Guard.ExpectMaxArguments(Params.Count, args.Count, String.Format("'{0}'", Name), Index);
 
-            var frame = new Ruleset(null, new List<Node>());
+            var arguments = new Dictionary<string, Node>();
+            args = args ?? new List<NamedArgument>();
 
             for (var i = 0; i < Params.Count; i++)
             {
                 if (!String.IsNullOrEmpty(Params[i].Name))
                 {
                     Node val;
-                    if (args && i < args.Count)
-                        val = args[i];
+                    if (i < args.Count && string.IsNullOrEmpty(args[i].Name))
+                        val = args[i].Value;
                     else
                         val = Params[i].Value;
 
                     if (val)
-                        frame.Rules.Add(new Rule(Params[i].Name, val.Evaluate(env)) { Index = val.Index });
+                        arguments[Params[i].Name] = new Rule(Params[i].Name, val.Evaluate(env)) { Index = val.Index };
                     else
-                        throw new ParsingException(String.Format("wrong number of arguments for {0} ({1} for {2})", Name, args.Count, _arity), Index);
+                        throw new ParsingException(
+                            String.Format("wrong number of arguments for {0} ({1} for {2})", Name, args != null ? args.Count : 0, _arity), Index);
                 }
+            }
+
+            var hasNamedArgs = false;
+            foreach (var arg in args)
+            {
+                if(!string.IsNullOrEmpty(arg.Name))
+                {
+                    hasNamedArgs = true;
+
+                    arguments[arg.Name] = new Rule(arg.Name, arg.Value.Evaluate(env)) { Index = arg.Value.Index };
+                }
+                else if (hasNamedArgs)
+                    throw new ParsingException("Positional arguments must appear before all named arguments.", arg.Value.Index);
+            }
+
+            var frame = new Ruleset(null, new List<Node>());
+
+            foreach (var arg in arguments)
+            {
+                frame.Rules.Add(arg.Value);
             }
 
             var frames = new[] { this, frame }.Concat(env.Frames).Concat(closureContext).Reverse();
@@ -94,7 +116,7 @@ namespace dotless.Core.Parser.Tree
             return new Ruleset(null, newRules);
         }
 
-        public override bool MatchArguments(NodeList<Expression> arguements, Env env)
+        public override bool MatchArguments(List<NamedArgument> arguements, Env env)
         {
             var argsLength = arguements != null ? arguements.Count : 0;
 
@@ -105,7 +127,7 @@ namespace dotless.Core.Parser.Tree
             {
                 if (String.IsNullOrEmpty(Params[i].Name))
                 {
-                    if (arguements[i].Evaluate(env).ToCSS(env) != Params[i].Value.Evaluate(env).ToCSS(env))
+                    if (arguements[i].Value.Evaluate(env).ToCSS(env) != Params[i].Value.Evaluate(env).ToCSS(env))
                     {
                         return false;
                     }

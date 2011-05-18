@@ -26,7 +26,7 @@ namespace dotless.Core.Parser.Infrastructure
         Script Script(string script, int index);
 
         //mixins
-        MixinCall MixinCall(NodeList<Element> elements, NodeList<Expression> arguments, int index);
+        MixinCall MixinCall(NodeList<Element> elements, List<NamedArgument> arguments, int index);
         MixinDefinition MixinDefinition(string name, NodeList<Rule> parameters, List<Node> rules, int index);
 
         //directives

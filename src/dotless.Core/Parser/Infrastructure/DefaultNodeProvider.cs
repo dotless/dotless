@@ -82,7 +82,7 @@ namespace dotless.Core.Parser.Infrastructure
             return new Script(script) { Index = index };
         }
 
-        public MixinCall MixinCall(NodeList<Element> elements, NodeList<Expression> arguments, int index)
+        public MixinCall MixinCall(NodeList<Element> elements, List<NamedArgument> arguments, int index)
         {
             return new MixinCall(elements, arguments) { Index = index };
         }

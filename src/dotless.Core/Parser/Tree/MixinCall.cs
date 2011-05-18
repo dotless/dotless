@@ -10,10 +10,10 @@ namespace dotless.Core.Parser.Tree
 
     public class MixinCall : Node
     {
-        public NodeList<Expression> Arguments { get; set; }
+        public List<NamedArgument> Arguments { get; set; }
         protected Selector Selector { get; set; }
 
-        public MixinCall(NodeList<Element> elements, NodeList<Expression> arguments)
+        public MixinCall(NodeList<Element> elements, List<NamedArgument> arguments)
         {
             Selector = new Selector(elements);
             Arguments = arguments;
@@ -69,7 +69,7 @@ namespace dotless.Core.Parser.Tree
             {
                 var message = String.Format("No matching definition was found for `{0}({1})`",
                                             Selector.ToCSS(env).Trim(),
-                                            StringExtensions.JoinStrings(Arguments.Select(a => a.ToCSS(env)), ", "));
+                                            StringExtensions.JoinStrings(Arguments.Select(a => a.Value.ToCSS(env)), ", "));
                 throw new ParsingException(message, Index);
             }
 
