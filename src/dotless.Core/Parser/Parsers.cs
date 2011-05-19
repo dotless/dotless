@@ -545,7 +545,7 @@ namespace dotless.Core.Parser
             if (e)
                 return NodeProvider.Element(c, e.Value, index);
 
-            if (!string.IsNullOrEmpty(c.Value) && c.Value[0] == '&')
+            if (c.Value.StartsWith("&"))
                 return NodeProvider.Element(c, null, index);
 
             return null;

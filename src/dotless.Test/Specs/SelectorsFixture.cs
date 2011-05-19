@@ -203,5 +203,21 @@ td input {
 
             AssertLess(input, expected);
         }
+        [Test]
+        public void NestedCombinedSelector()
+        {
+
+            var input = @"
+#parentRuleSet {
+  .selector1.selector2 { position: fixed; }
+}";
+
+            var expected = @"
+#parentRuleSet .selector1.selector2 {
+  position: fixed;
+}";
+
+            AssertLess(input, expected);
+        }
     }
 }
