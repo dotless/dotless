@@ -93,6 +93,7 @@
     <Compile Include="Specs\ScriptFixture.cs" />
     <Compile Include="TestStylizer.cs" />
     <Compile Include="Unit\Engine\CacheDecoratorFixture.cs" />
+    <Compile Include="Unit\Engine\CombinedSelectorBug.cs" />
     <Compile Include="Unit\Engine\CommentBug.cs" />
     <Compile Include="Unit\Engine\MixinOverrideBug.cs" />
     <Compile Include="Unit\Engine\NullVariableValueBug.cs" />
