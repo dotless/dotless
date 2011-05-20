@@ -386,7 +386,7 @@ namespace dotless.Core.Parser
                     throw new ParsingException("Expected ')'", parser.Tokenizer.Location.Index);
             }
 
-            if (elements.Count > 0 && (parser.Tokenizer.Match(';') || parser.Tokenizer.Peek('}')))
+            if (elements.Count > 0 && End(parser))
                 return NodeProvider.MixinCall(elements, args, index);
 
             return null;
@@ -481,7 +481,7 @@ namespace dotless.Core.Parser
         //
         public bool End(Parser parser)
         {
-            return parser.Tokenizer.Match(';') || parser.Tokenizer.Peek('}');
+            return parser.Tokenizer.Match(';') || parser.Tokenizer.PeekAfterComments('}');
         }
 
         //
