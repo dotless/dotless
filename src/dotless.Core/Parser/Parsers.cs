@@ -83,23 +83,12 @@ namespace dotless.Core.Parser
         // over them.
         public Comment Comment(Parser parser)
         {
-            if (parser.Tokenizer.CurrentChar != '/')
-                return null;
-
             var index = parser.Tokenizer.Location.Index;
+            string comment = parser.Tokenizer.GetComment();
 
-            var comment = parser.Tokenizer.Match(@"//.*");
-            if (comment)
-                return NodeProvider.Comment(comment.Value, true, index);
-
-            comment = parser.Tokenizer.Match(@"/\*(.|[\r\n])*?\*/");
-            if (comment)
+            if  (comment != null)
             {
-                //Once CSS Hacks are supported, implement this exception
-                //if (comment.Value.EndsWith(@"\*/")) {
-                //    throw new ParsingException("The IE6 comment hack is not supported", parser.Tokenizer.Location.Index);
-                //}
-                return NodeProvider.Comment(comment.Value, index);
+                return NodeProvider.Comment(comment, comment.StartsWith("//"), index);
             }
 
             return null;
@@ -116,16 +105,13 @@ namespace dotless.Core.Parser
         //
         public Quoted Quoted(Parser parser)
         {
-            if (parser.Tokenizer.CurrentChar != '"' && parser.Tokenizer.CurrentChar != '\'')
+            var index = parser.Tokenizer.Location.Index;
+            string str = parser.Tokenizer.GetQuotedString();
+
+            if  (str == null)
                 return null;
 
-            var index = parser.Tokenizer.Location.Index;
-
-            var str = parser.Tokenizer.Match(@"""((?:[^""\\\r\n]|\\.)*)""|'((?:[^'\\\r\n]|\\.)*)'");
-            if (str)
-                return NodeProvider.Quoted(str[0], str[1] ?? str[2], index);
-
-            return null;
+            return NodeProvider.Quoted(str, str.Substring(1, str.Length-2), index);
         }
 
         //
@@ -213,7 +199,7 @@ namespace dotless.Core.Parser
             if (parser.Tokenizer.CurrentChar != 'u' || !parser.Tokenizer.Match(@"url\("))
                 return null;
 
-            var value = Quoted(parser) || parser.Tokenizer.Match(@"[-a-zA-Z0-9_%@$\/.&=:\|;#+?]+") || new TextNode("");
+            var value = Quoted(parser) || parser.Tokenizer.MatchAny(@"[^\)""']*") || new TextNode("");
 
             if (!parser.Tokenizer.Match(')'))
                 throw new ParsingException("missing closing ) for url()", parser.Tokenizer.Location.Index);
@@ -292,12 +278,13 @@ namespace dotless.Core.Parser
 
             var index = parser.Tokenizer.Location.Index;
 
-            var script = parser.Tokenizer.Match(@"`([^`]*)`");
+            var script = parser.Tokenizer.MatchAny(@"`[^`]*`");
 
-            if (script != null)
-                return NodeProvider.Script(script[1], index);
+            if (!script) {
+                return null;
+            }
 
-            return null;
+            return NodeProvider.Script(script.Value, index);
         }
 
 
@@ -399,7 +386,7 @@ namespace dotless.Core.Parser
                     throw new ParsingException("Expected ')'", parser.Tokenizer.Location.Index);
             }
 
-            if (elements.Count > 0 && (parser.Tokenizer.Match(';') || parser.Tokenizer.Peek('}')))
+            if (elements.Count > 0 && End(parser))
                 return NodeProvider.MixinCall(elements, args, index);
 
             return null;
@@ -494,7 +481,7 @@ namespace dotless.Core.Parser
         //
         public bool End(Parser parser)
         {
-            return parser.Tokenizer.Match(';') || parser.Tokenizer.Peek('}');
+            return parser.Tokenizer.Match(';') || parser.Tokenizer.PeekAfterComments('}');
         }
 
         //
@@ -540,7 +527,7 @@ namespace dotless.Core.Parser
 
             Combinator c = Combinator(parser);
             var e = parser.Tokenizer.Match(@"[.#:]?[a-zA-Z0-9_-]+") || parser.Tokenizer.Match('*') || Attribute(parser) ||
-                    parser.Tokenizer.Match(@"\([^)@]+\)");
+                    parser.Tokenizer.MatchAny(@"\([^)@]+\)");
 
             if (e)
                 return NodeProvider.Element(c, e.Value, index);

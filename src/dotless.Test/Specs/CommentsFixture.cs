@@ -152,6 +152,52 @@ namespace dotless.Test.Specs
         }
 
         [Test]
+        public void BlockCommentAfterPropertyMissingSemiColon()
+        {
+            var input = @"
+#comments {
+  border: solid black;
+  color: red /* A C-style comment */
+}
+";
+            
+            var expected = @"
+#comments {
+  border: solid black;
+  color: red;
+  /* A C-style comment */
+}
+";
+            
+            AssertLess(input, expected);
+        }
+
+
+        [Test]
+        public void BlockCommentAfterMixinCallMissingSemiColon ()
+        {
+            var input = @"
+.cla (@a) {
+  color: @a;
+}
+#comments {
+border: solid black;
+  .cla(red) /* A C-style comment */
+}
+";
+
+var expected = @"
+#comments {
+  border: solid black;
+  color: red;
+  /* A C-style comment */
+}
+            ";
+        
+        AssertLess (input, expected);
+        }
+
+        [Test]
         public void BlockCommentAfterProperty()
         {
             var input =
