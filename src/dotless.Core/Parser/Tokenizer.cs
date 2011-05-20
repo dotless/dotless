@@ -13,11 +13,13 @@ namespace dotless.Core.Parser
         public int Optimization { get; set; }
 
         private string _input; // LeSS input string
-        private List<string> _chunks; // chunkified input
+        private List<Chunk> _chunks; // chunkified input
         private int _i; // current index in `input`
         private int _j; // current chunk
         private int _current; // index of current chunk, in `input`
         private int _inputLength;
+        private readonly string _commentRegEx = @"(//[^\n]*|(/\*(.|[\r\n])*?\*/))";
+        private readonly string _quotedRegEx = @"(""((?:[^""\\\r\n]|\\.)*)""|'((?:[^'\\\r\n]|\\.)*)')";
 
         //Increasing throughput through tracing of Regex
         private IDictionary<string, Regex> regexCache = new Dictionary<string, Regex>();
@@ -30,7 +32,7 @@ namespace dotless.Core.Parser
         public void SetupInput(string input)
         {
             _i = _j = _current = 0;
-            _chunks = new List<string>();
+            _chunks = new List<Chunk>();
             _input = input.Replace("\r\n", "\n");
             _inputLength = _input.Length;
 
@@ -40,26 +42,23 @@ namespace dotless.Core.Parser
             // depending on the level of optimization.
 
             if(Optimization == 0)
-                _chunks.Add(_input);
+                _chunks.Add(new Chunk(_input));
             else
             {
-                var chunkParts = new List<StringBuilder> { new StringBuilder() };
-                var chunkPart = chunkParts.Last();
                 var skip = new Regex(@"\G[^\""'{}/\\]+");
-                // these two use the same regex as the parser. We could consider putting them somewhere global
-                var comment = new Regex(@"\G(//[^\n]*|(/\*(.|[\r\n])*?\*/))");
-                var quotedstring = new Regex(@"\G(""((?:[^""\\\r\n]|\\.)*)""|'((?:[^'\\\r\n]|\\.)*)')");
+
+                var comment = GetRegex(this._commentRegEx, RegexOptions.None);
+                var quotedstring = GetRegex(this._quotedRegEx, RegexOptions.None);
                 var level = 0;
                 var lastBlock = 0;
                 
                 int i = 0;
                 while(i < _inputLength)
                 {
-                    
                     var match = skip.Match(_input, i);
                     if(match.Success)
                     {
-                        chunkPart.Append(match.Value);
+                        Chunk.Append(match.Value, _chunks);
                         i += match.Length;
                         continue;
                     }
@@ -75,7 +74,8 @@ namespace dotless.Core.Parser
                             if(match.Success)
                             {
                                 i += match.Length;
-                                chunkPart.Append(match.Value);
+                                _chunks.Add(new Chunk(match.Value, ChunkType.Comment));
+                                //Chunk.Append(match.Value, _chunks);
                                 continue;
                             } else
                             {
@@ -90,7 +90,8 @@ namespace dotless.Core.Parser
                         if(match.Success)
                         {
                             i += match.Length;
-                            chunkPart.Append(match.Value);
+                            _chunks.Add(new Chunk(match.Value, ChunkType.QuotedString));
+                            //Chunk.Append(match.Value, _chunks);
                             continue;
                         } else
                         {
@@ -110,23 +111,19 @@ namespace dotless.Core.Parser
                         if(level < 0)
                             throw new ParsingException("Unexpected '}'", i);
                         
-                        chunkPart.Append(c);
-                        chunkPart = new StringBuilder();
-                        chunkParts.Add(chunkPart);
+                        Chunk.Append(c, _chunks, true);
                         i++;
                         continue;
                     }
                     
-                    chunkPart.Append(c);
+                    Chunk.Append(c, _chunks);
                     i++;
                 }
                 
                 if(level > 0)
                     throw new ParsingException("Missing closing '}'", lastBlock);
 
-                _chunks = chunkParts.Select(p => p.ToString()).ToList();
-
-                _input = _chunks.JoinStrings("");
+                _input =  Chunk.CommitAll(_chunks);
 
                 _inputLength = _input.Length;
             }
@@ -134,6 +131,60 @@ namespace dotless.Core.Parser
             Advance(0); // skip any whitespace characters at the start.
         }
 
+        public string GetComment()
+        {
+            // if we've hit the end we might still be looking at a valid chunk, so return early
+            if (_i == _inputLength) {
+                return null;
+            }
+
+            if  (Optimization == 0)
+            {
+                if (this.CurrentChar != '/')
+                    return null;
+
+                //Once CSS Hacks are supported, implement this exception
+                //if (comment.Value.EndsWith(@"\*/")) {
+                //    throw new ParsingException("The IE6 comment hack is not supported", parser.Tokenizer.Location.Index);
+                //}
+
+                var comment = this.Match(this._commentRegEx);
+                return comment.Value;
+            }
+            else
+            {
+                if (_chunks[_j].Type == Tokenizer.ChunkType.Comment)
+                {
+                    string val = _chunks[_j].Value;
+                    Advance(_chunks[_j].Value.Length);
+                    return val;
+                }
+            }
+            return null;
+        }
+
+        public string GetQuotedString()
+        {
+            // if we've hit the end we might still be looking at a valid chunk, so return early
+            if (_i == _inputLength) {
+                return null;
+            }
+            
+            if (Optimization == 0) {
+                if (this.CurrentChar != '"' && this.CurrentChar != '\'')
+                    return null;
+                
+                var quotedstring = this.Match(this._quotedRegEx);
+                return quotedstring.Value;
+            } else {
+                if (_chunks[_j].Type == Tokenizer.ChunkType.QuotedString) {
+                    string val = _chunks[_j].Value;
+                    Advance(_chunks[_j].Value.Length);
+                    return val;
+                }
+            }
+            return null;
+        }
 
         public string MatchString(char tok)
         {
@@ -155,8 +206,9 @@ namespace dotless.Core.Parser
 
         public CharMatchResult Match(char tok)
         {
-            if (_i == _inputLength)
+            if  (_i == _inputLength || _chunks[_j].Type != Tokenizer.ChunkType.Text) {
                 return null;
+            }
 
             if (_input[_i] == tok)
             {
@@ -176,13 +228,17 @@ namespace dotless.Core.Parser
 
         public RegexMatchResult Match(string tok, bool caseInsensitive)
         {
+            if (_i == _inputLength || _chunks[_j].Type != Tokenizer.ChunkType.Text) {
+                return null;
+            }
+
             var options = RegexOptions.None;
             if (caseInsensitive)
                 options |= RegexOptions.IgnoreCase;
 
             var regex = GetRegex(tok, options);
 
-            var match = regex.Match(_chunks[_j], _i - _current);
+            var match = regex.Match(_chunks[_j].Value, _i - _current);
 
             if (!match.Success)
                 return null;
@@ -194,12 +250,15 @@ namespace dotless.Core.Parser
 
         public void Advance(int length)
         {
+            if (_i == _inputLength) //only for empty cases as there may not be any chunks
+                return;
+
             // The match is confirmed, add the match length to `i`,
             // and consume any extra white-space characters (' ' || '\n')
             // which come after that. The reason for this is that LeSS's
             // grammar is mostly white-space insensitive.
             _i += length;
-            var endIndex = _current + _chunks[_j].Length;
+            var endIndex = _current + _chunks[_j].Value.Length;
 
             while (true)
             {
@@ -211,7 +270,7 @@ namespace dotless.Core.Parser
                     if (_j < _chunks.Count - 1)
                     {
                         _current = endIndex;
-                        endIndex += _chunks[++_j].Length;
+                        endIndex += _chunks[++_j].Value.Length;
                     }
                     else
                         break;
@@ -307,6 +366,99 @@ namespace dotless.Core.Parser
                            Position = position - start,
                            Extract = new Extract(lines, line),
                        };
+        }
+
+        private enum ChunkType
+        {
+            Text,
+            Comment,
+            QuotedString
+        }
+
+        private class Chunk
+        {
+            private StringBuilder _builder;
+
+            public Chunk(string val)
+            {
+                Value = val;
+                Type = Tokenizer.ChunkType.Text;
+            }
+
+            public Chunk(string val, ChunkType type)
+            {
+                Value = val;
+                Type = type;
+            }
+
+            public Chunk()
+            {
+                _builder = new StringBuilder();
+                Type = Tokenizer.ChunkType.Text;
+            }
+
+            public Tokenizer.ChunkType Type { get; set; }
+
+            public string Value { get; set; }
+
+            private bool _final;
+
+            public void Append(string str)
+            {
+                _builder.Append(str);
+            }
+
+            public void Append(char c)
+            {
+                _builder.Append(c);
+            }
+
+            private static Chunk ReadyForText(List<Chunk> chunks)
+            {
+                Chunk last = chunks.LastOrDefault();
+                if  (last == null || last.Type != Tokenizer.ChunkType.Text || last._final == true)
+                {
+                    last = new Chunk();
+                    chunks.Add(last);
+                }
+                return last;
+            }
+
+            public static void Append(char c, List<Chunk> chunks, bool final)
+            {
+                Chunk chunk = Chunk.ReadyForText(chunks);
+                chunk.Append(c);
+                chunk._final = final;
+            }
+
+            public static void Append(char c, List<Chunk> chunks)
+            {
+                Chunk chunk = Chunk.ReadyForText(chunks);
+                chunk.Append(c);
+            }
+
+            public static void Append(string s, List<Chunk> chunks)
+            {
+                Chunk chunk = Chunk.ReadyForText(chunks);
+                chunk.Append(s);
+            }
+
+            public static string CommitAll(List<Chunk> chunks)
+            {
+                StringBuilder all = new StringBuilder();
+                foreach(Chunk chunk in chunks)
+                {
+                    if  (chunk._builder != null)
+                    {
+                        string val = chunk._builder.ToString();
+                        chunk._builder = null;
+                        chunk.Value = val;
+                    }
+
+                    all.Append(chunk.Value);
+                }
+                return all.ToString();
+            }
         }
     }
 

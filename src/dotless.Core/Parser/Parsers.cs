@@ -83,23 +83,12 @@ namespace dotless.Core.Parser
         // over them.
         public Comment Comment(Parser parser)
         {
-            if (parser.Tokenizer.CurrentChar != '/')
-                return null;
-
             var index = parser.Tokenizer.Location.Index;
+            string comment = parser.Tokenizer.GetComment();
 
-            var comment = parser.Tokenizer.Match(@"//.*");
-            if (comment)
-                return NodeProvider.Comment(comment.Value, true, index);
-
-            comment = parser.Tokenizer.Match(@"/\*(.|[\r\n])*?\*/");
-            if (comment)
+            if  (comment != null)
             {
-                //Once CSS Hacks are supported, implement this exception
-                //if (comment.Value.EndsWith(@"\*/")) {
-                //    throw new ParsingException("The IE6 comment hack is not supported", parser.Tokenizer.Location.Index);
-                //}
-                return NodeProvider.Comment(comment.Value, index);
+                return NodeProvider.Comment(comment, comment.StartsWith("//"), index);
             }
 
             return null;
@@ -116,16 +105,13 @@ namespace dotless.Core.Parser
         //
         public Quoted Quoted(Parser parser)
         {
-            if (parser.Tokenizer.CurrentChar != '"' && parser.Tokenizer.CurrentChar != '\'')
+            var index = parser.Tokenizer.Location.Index;
+            string str = parser.Tokenizer.GetQuotedString();
+
+            if  (str == null)
                 return null;
 
-            var index = parser.Tokenizer.Location.Index;
-
-            var str = parser.Tokenizer.Match(@"""((?:[^""\\\r\n]|\\.)*)""|'((?:[^'\\\r\n]|\\.)*)'");
-            if (str)
-                return NodeProvider.Quoted(str[0], str[1] ?? str[2], index);
-
-            return null;
+            return NodeProvider.Quoted(str, str.Substring(1, str.Length-2), index);
         }
 
         //
@@ -292,12 +278,26 @@ namespace dotless.Core.Parser
 
             var index = parser.Tokenizer.Location.Index;
 
-            var script = parser.Tokenizer.Match(@"`([^`]*)`");
+            var scriptStart = parser.Tokenizer.Match(@"`");
+            string scriptContent = null;
+            var scriptContentElement = parser.Tokenizer.Match(@"[^`]*");
 
-            if (script != null)
-                return NodeProvider.Script(script[1], index);
+            if  (scriptContentElement == null) {
+                scriptContent = parser.Tokenizer.GetQuotedString();
+                if  (scriptContent == null) {
+                    return null;
+                }
+            } else {
+                scriptContent = scriptContentElement.Value;
+            }
 
-            return null;
+            var scriptEnd = parser.Tokenizer.Match(@"`");
+
+            if (!scriptEnd) {
+                return null;
+            }
+
+            return NodeProvider.Script(scriptContent, index);
         }
 
 
@@ -539,11 +539,35 @@ namespace dotless.Core.Parser
             var index = parser.Tokenizer.Location.Index;
 
             Combinator c = Combinator(parser);
-            var e = parser.Tokenizer.Match(@"[.#:]?[a-zA-Z0-9_-]+") || parser.Tokenizer.Match('*') || Attribute(parser) ||
-                    parser.Tokenizer.Match(@"\([^)@]+\)");
+            var e = parser.Tokenizer.Match(@"[.#:]?[a-zA-Z0-9_-]+") || parser.Tokenizer.Match('*') || Attribute(parser);
+            string val = null;
+
+            if (e) {
+                val = e.Value;
+            } else if (!e && (e = parser.Tokenizer.Match(@"\([^)@]+"))) {
+                val = e.Value;
+                while(true) {
+                    var quoted = parser.Tokenizer.GetQuotedString();
+                    if  (quoted != null) {
+                        val += quoted;
+                    } else {
+                        break;
+                    }
+                    e = parser.Tokenizer.Match(@"[^)@]+");
+                    if (e) {
+                        val += e.Value;
+                    } else {
+                        break;
+                    }
+                }
+                if (!parser.Tokenizer.Match(@"\)")) {
+                    return null;
+                }
+                val += ")";
+            }
 
             if (e)
-                return NodeProvider.Element(c, e.Value, index);
+                return NodeProvider.Element(c, val, index);
 
             if (!string.IsNullOrEmpty(c.Value) && c.Value[0] == '&')
                 return NodeProvider.Element(c, null, index);
