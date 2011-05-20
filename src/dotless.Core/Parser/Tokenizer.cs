@@ -248,6 +248,30 @@ namespace dotless.Core.Parser
             return new RegexMatchResult(match);
         }
 
+        // Match a string, but include the possibility of matching quoted and comments
+        public RegexMatchResult MatchAny(string tok)
+        {
+            if (_i == _inputLength) {
+                return null;
+            }
+
+            var regex = GetRegex(tok, RegexOptions.None);
+            
+            var match = regex.Match(_input, _i);
+            
+            if (!match.Success)
+                return null;
+
+            Advance(match.Length);
+
+            //If we absorbed the start of a quote/comment then turn it into text so the rest can be absorbed
+            if  (_i != _inputLength && _i > _current && _i < _current + _chunks[_j].Value.Length) {
+                _chunks[_j].Type = Tokenizer.ChunkType.Text;
+            }
+
+            return new RegexMatchResult(match);
+        }
+
         public void Advance(int length)
         {
             if (_i == _inputLength) //only for empty cases as there may not be any chunks
@@ -265,12 +289,13 @@ namespace dotless.Core.Parser
                 if(_i == _inputLength)
                     break;
 
-                if (_i == endIndex)
+                if (_i >= endIndex)
                 {
                     if (_j < _chunks.Count - 1)
                     {
                         _current = endIndex;
                         endIndex += _chunks[++_j].Value.Length;
+                        continue; // allow skipping multiple chunks
                     }
                     else
                         break;

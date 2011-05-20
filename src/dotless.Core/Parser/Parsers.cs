@@ -199,7 +199,7 @@ namespace dotless.Core.Parser
             if (parser.Tokenizer.CurrentChar != 'u' || !parser.Tokenizer.Match(@"url\("))
                 return null;
 
-            var value = Quoted(parser) || parser.Tokenizer.Match(@"[-a-zA-Z0-9_%@$\/.&=:\|;#+?]+") || new TextNode("");
+            var value = Quoted(parser) || parser.Tokenizer.MatchAny(@"[^\)""']*") || new TextNode("");
 
             if (!parser.Tokenizer.Match(')'))
                 throw new ParsingException("missing closing ) for url()", parser.Tokenizer.Location.Index);
@@ -278,26 +278,13 @@ namespace dotless.Core.Parser
 
             var index = parser.Tokenizer.Location.Index;
 
-            var scriptStart = parser.Tokenizer.Match(@"`");
-            string scriptContent = null;
-            var scriptContentElement = parser.Tokenizer.Match(@"[^`]*");
+            var script = parser.Tokenizer.MatchAny(@"`[^`]*`");
 
-            if  (scriptContentElement == null) {
-                scriptContent = parser.Tokenizer.GetQuotedString();
-                if  (scriptContent == null) {
-                    return null;
-                }
-            } else {
-                scriptContent = scriptContentElement.Value;
-            }
-
-            var scriptEnd = parser.Tokenizer.Match(@"`");
-
-            if (!scriptEnd) {
+            if (!script) {
                 return null;
             }
 
-            return NodeProvider.Script(scriptContent, index);
+            return NodeProvider.Script(script.Value, index);
         }
 
 
@@ -539,35 +526,11 @@ namespace dotless.Core.Parser
             var index = parser.Tokenizer.Location.Index;
 
             Combinator c = Combinator(parser);
-            var e = parser.Tokenizer.Match(@"[.#:]?[a-zA-Z0-9_-]+") || parser.Tokenizer.Match('*') || Attribute(parser);
-            string val = null;
-
-            if (e) {
-                val = e.Value;
-            } else if (!e && (e = parser.Tokenizer.Match(@"\([^)@]+"))) {
-                val = e.Value;
-                while(true) {
-                    var quoted = parser.Tokenizer.GetQuotedString();
-                    if  (quoted != null) {
-                        val += quoted;
-                    } else {
-                        break;
-                    }
-                    e = parser.Tokenizer.Match(@"[^)@]+");
-                    if (e) {
-                        val += e.Value;
-                    } else {
-                        break;
-                    }
-                }
-                if (!parser.Tokenizer.Match(@"\)")) {
-                    return null;
-                }
-                val += ")";
-            }
+            var e = parser.Tokenizer.Match(@"[.#:]?[a-zA-Z0-9_-]+") || parser.Tokenizer.Match('*') || Attribute(parser) ||
+                    parser.Tokenizer.MatchAny(@"\([^)@]+\)");
 
             if (e)
-                return NodeProvider.Element(c, val, index);
+                return NodeProvider.Element(c, e.Value, index);
 
             if (!string.IsNullOrEmpty(c.Value) && c.Value[0] == '&')
                 return NodeProvider.Element(c, null, index);
