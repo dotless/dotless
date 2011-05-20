@@ -328,6 +328,19 @@ namespace dotless.Core.Parser
             return match.Success;
         }
 
+        public bool PeekAfterComments(char tok)
+        {
+            var memo = this.Location;
+
+            while(GetComment() != null);
+
+            var peekSuccess = Peek(tok);
+
+            this.Location = memo;
+
+            return peekSuccess;
+        }
+
         private Regex GetRegex(string pattern, RegexOptions options)
         {
             if (!regexCache.ContainsKey(pattern))
