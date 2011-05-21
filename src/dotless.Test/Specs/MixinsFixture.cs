@@ -1307,5 +1307,25 @@ important-rule {
 
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void StringMixinArgument()
+        {
+
+            var input = @"
+.mixin(@val) {
+  property: formatString(@val);
+}
+.box {
+  .mixin( ""5px 5px 10px rgba(0,0,0,0.3)"" );
+}";
+
+            var output = @"
+.box {
+  property: 5px 5px 10px rgba(0,0,0,0.3);
+}";
+
+            AssertLess(input, output);
+        }
     }
 }

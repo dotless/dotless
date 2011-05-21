@@ -264,9 +264,13 @@ namespace dotless.Core.Parser
 
             Advance(match.Length);
 
-            //If we absorbed the start of a quote/comment then turn it into text so the rest can be absorbed
-            if  (_i != _inputLength && _i > _current && _i < _current + _chunks[_j].Value.Length) {
-                _chunks[_j].Type = Tokenizer.ChunkType.Text;
+            if (_i > _current && _i < _current + _chunks[_j].Value.Length)
+            {
+                //If we absorbed the start of an inline comment then turn it into text so the rest can be absorbed
+                if (_chunks[_j].Type == ChunkType.Comment && _chunks[_j].Value.StartsWith("//"))
+                {
+                    _chunks[_j].Type = Tokenizer.ChunkType.Text;
+                }
             }
 
             return new RegexMatchResult(match);
