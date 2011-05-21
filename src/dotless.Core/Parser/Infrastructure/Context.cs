@@ -33,14 +33,14 @@ namespace dotless.Core.Parser.Infrastructure
 
         private void AppendSelector(Context context, Selector selector)
         {
-            if (!selector.Elements.Any(e => e.Combinator.Value[0] == '&'))
+            if (!selector.Elements.Any(e => e.Combinator.Value.StartsWith("&")))
             {
                 Paths.AddRange(context.Paths.Select(path => path.Concat(new[] {selector}).ToList()));
                 return;
             }
 
-            var beforeEl = selector.Elements.TakeWhile(s => s.Combinator.Value[0] != '&');
-            var afterEl = selector.Elements.SkipWhile(s => s.Combinator.Value[0] != '&');
+            var beforeEl = selector.Elements.TakeWhile(s => !s.Combinator.Value.StartsWith("&"));
+            var afterEl = selector.Elements.SkipWhile(s => !s.Combinator.Value.StartsWith("&"));
 
             var before = new List<Selector>();
             var after = new List<Selector>();
