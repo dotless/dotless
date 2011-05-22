@@ -5,12 +5,10 @@ namespace dotless.Test.Specs
 
     public class VariablesFixture : SpecFixtureBase
     {
-        [Test]
-        public void Variables()
-        {
-            // Todo: split into separate atomic tests.
-            var input =
-                @"
+		[Test]
+		public void VariableOerators()
+		{
+			var input = @"
 @a: 2;
 @x: @a * @a;
 @y: @x + 1;
@@ -18,21 +16,92 @@ namespace dotless.Test.Specs
 
 .variables {
   width: @z + 1cm; // 14cm
-}
+}";
+			var expected = @"
+.variables {
+  width: 14cm;
+}";
+			AssertLess(input, expected);
+		}
 
-@b: @a * 10;
-@c: #888;
-
+        [Test]
+        public void StringVariables()
+        {
+            var input =
+                @"
 @fonts: ""Trebuchet MS"", Verdana, sans-serif;
 @f: @fonts;
 
+.variables {
+  font-family: @f;
+}
+";
+
+            var expected =
+                @"
+.variables {
+  font-family: ""Trebuchet MS"", Verdana, sans-serif;
+}
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void VariablesChangingUnit()
+        {
+            var input =
+                @"
+@a: 2;
+@x: @a * @a;
+@b: @a * 10;
+
+.variables {
+  height: @b + @x + 0px; // 24px
+}
+";
+
+            var expected =
+                @"
+.variables {
+  height: 24px;
+}
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void VariablesColor()
+        {
+            var input =
+                @"
+@c: #888;
+
+.variables {
+  color: @c;
+}
+";
+
+            var expected =
+                @"
+.variables {
+  color: #888888;
+}
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void VariablesQuoted()
+        {
+            var input =
+                @"
 @quotes: ""~"" ""~"";
 @q: @quotes;
 
 .variables {
-  height: @b + @x + 0px; // 24px
-  color: @c;
-  font-family: @f;
   quotes: @q;
 }
 ";
@@ -40,12 +109,6 @@ namespace dotless.Test.Specs
             var expected =
                 @"
 .variables {
-  width: 14cm;
-}
-.variables {
-  height: 24px;
-  color: #888888;
-  font-family: ""Trebuchet MS"", Verdana, sans-serif;
   quotes: ""~"" ""~"";
 }
 ";
@@ -271,5 +334,82 @@ namespace dotless.Test.Specs
             AssertLess(input, expected);
         }
 
+		[Test]
+		public void VariableValuesMulti()
+		{
+			var input = @"
+.values {
+    @a: 'Trebuchet';
+    font-family: @a, @a, @a;
+}";
+			var expected = @"
+.values {
+  font-family: 'Trebuchet', 'Trebuchet', 'Trebuchet';
+}";
+			AssertLess(input, expected);
+		}
+
+		[Test]
+		[Ignore("Supported by less.js but not dotless")]
+		public void VariableValuesUrl()
+		{
+			var input = @"
+.values {
+    @a: 'Trebuchet';
+    url: url(@a);
+}";
+			var expected = @"
+.values {
+  url: url('Trebuchet');
+}";
+			AssertLess(input, expected);
+		}
+
+		[Test]
+		public void VariableValuesImportant()
+		{
+			var input = @"
+@c: #888;
+.values {
+    color: @c !important;
+}";
+			var expected = @"
+.values {
+  color: #888888 !important;
+}";
+			AssertLess(input, expected);
+		}
+
+		[Test]
+		public void VariableValuesMultipleValues()
+		{
+			var input = @"
+.values {
+    @a: 'Trebuchet';
+    @multi: 'A', B, C;
+    multi: something @multi, @a;
+}";
+			var expected = @"
+.values {
+  multi: something 'A', B, C, 'Trebuchet';
+}";
+			AssertLess(input, expected);
+		}
+
+		[Test]
+		[Ignore("Supported by less.js but not dotless")]
+		public void VariablesNames()
+		{
+			var input = @".variable-names {
+    @var: 'hello';
+    @name: 'var';
+    name: @@name;
+}";
+			var expected = @"
+.variable-names {
+	name: 'hello';
+}";
+			AssertLess(input, expected);
+		}
     }
 }
