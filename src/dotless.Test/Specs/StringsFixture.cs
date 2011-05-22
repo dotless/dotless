@@ -36,6 +36,126 @@ namespace dotless.Test.Specs
         }
 
         [Test]
+		[Ignore("Supported by less.js, not by dotless")]
+        public void EscapedWithTilde()
+        {
+            AssertExpression(@"DX.Transform.MS.BS.filter(opacity=50)", @"~""DX.Transform.MS.BS.filter(opacity=50)""");
+        }
+
+        [Test]
+		[Ignore("Supported by less.js, not by dotless")]
+        public void StringInterpolation1()
+        {
+			var input = @"
+#interpolation {
+  @var: '/dev';
+  url: ""http://lesscss.org@{var}/image.jpg"";
+}
+";
+			var expected = @"
+#interpolation {
+  url: ""http://lesscss.org/dev/image.jpg"";
+}";
+
+			AssertLess(input, expected);
+        }
+
+        [Test]
+		[Ignore("Supported by less.js, not by dotless")]
+        public void StringInterpolation2()
+        {
+			var input = @"
+#interpolation {
+  @var2: 256;
+  url2: ""http://lesscss.org/image-@{var2}.jpg"";
+}
+";
+			var expected = @"
+#interpolation {
+  url2: ""http://lesscss.org/image-256.jpg"";
+}";
+
+			AssertLess(input, expected);
+        }
+
+        [Test]
+		[Ignore("Supported by less.js, not by dotless")]
+        public void StringInterpolation3()
+        {
+			var input = @"
+#interpolation {
+  @var3: #456;
+  url3: ""http://lesscss.org@{var3}"";
+}
+";
+			var expected = @"
+#interpolation {
+  url3: ""http://lesscss.org#445566"";
+}";
+
+			AssertLess(input, expected);
+        }
+
+        [Test]
+		[Ignore("Supported by less.js, not by dotless")]
+        public void StringInterpolation4()
+        {
+			var input = @"
+#interpolation {
+  @var4: hello;
+  url4: ""http://lesscss.org/@{var4}"";
+}
+";
+			var expected = @"
+#interpolation {
+  url4: ""http://lesscss.org/hello"";
+}";
+
+			AssertLess(input, expected);
+        }
+
+        [Test]
+		[Ignore("Supported by less.js, not by dotless")]
+        public void StringInterpolation5()
+        {
+			var input = @"
+#interpolation {
+  @var5: 54.4px;
+  url5: ""http://lesscss.org/@{var5}"";
+}
+";
+			var expected = @"
+#interpolation {
+  url5: ""http://lesscss.org/54.4"";
+}";
+
+			AssertLess(input, expected);
+        }
+
+		[Test]
+		[Ignore("Supported by less.js, not by dotless")]
+		public void StringInterpolationMixMulClass()
+		{
+			var input = @".mix-mul (@a: green) {
+    color: ~""@{a}"";
+}
+.mix-mul-class {
+    .mix-mul(blue);
+    .mix-mul(red);
+    .mix-mul(blue);
+    .mix-mul(orange);
+}";
+			var expected = @"
+.mix-mul-class {
+  color: blue;
+  color: red;
+  color: blue;
+  color: orange;
+}";
+			AssertLess(input, expected);
+		}
+
+        [Test]
         public void BracesInQuotes()
         {
             AssertExpressionUnchanged(@"""{"" ""}""");
