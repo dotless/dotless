@@ -38,6 +38,31 @@ namespace dotless.Test.Specs
             AssertExpression("4px", "2px - @z", variables);
         }
 
+		[Test]
+        public void NegationsWorking()
+        {
+            var variables = new Dictionary<string, string>();
+            variables["z"] = "4px";
+
+            AssertExpression("- 4px", "-@z", variables); //ideally should not have space between - and 4
+        }
+
+		[Test]
+		[Ignore("Supported by less.js, not by dotless")]
+        public void NegationsBugs()
+        {
+            var variables = new Dictionary<string, string>();
+            variables["z"] = "4px";
+
+            AssertExpression("0px", "-@z + @z", variables);
+			AssertExpression("0px", "@z + -@z", variables);
+			AssertExpression("8px", "@z - -@z", variables);
+			AssertExpression("0px", "-@z - -@z", variables);
+
+			AssertExpression("- 4px", "-(@z)", variables);
+			AssertExpression("0px", "-(2 + 2) * -@z", variables);
+        }
+
         [Test]
         public void Shorthands()
         {
@@ -67,6 +92,14 @@ namespace dotless.Test.Specs
             AssertExpression("5", "round(10.34) / 2");
             AssertExpression("2", "6 / round(2.8)");
             AssertExpression("50%", "lightness(white) / 2");
+        }
+
+        [Test]
+        public void CanIncludeColorFunctionsInOperations()
+        {
+            AssertExpression("#646464", "rgb(200, 200, 200) / 2");
+            AssertExpression("#ff8080", "2 * hsl(0, 50%, 50%)");
+            AssertExpression("#c94a4a", "rgb(10, 10, 10) + hsl(0, 50%, 50%)");
         }
 
         [Test]

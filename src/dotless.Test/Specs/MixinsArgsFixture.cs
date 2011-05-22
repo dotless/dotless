@@ -5,9 +5,34 @@ namespace dotless.Test.Specs
     public class MixinsArgsFixture : SpecFixtureBase
     {
         [Test]
-        public void MixinsArgs()
+        public void MixinsArgsHidden()
         {
-            // Todo: split into separate atomic tests.
+            var input =
+                @"
+.hidden() {
+  color: transparent;
+}
+
+#hidden {
+  .hidden();
+  .hidden;
+}
+";
+
+            var expected =
+                @"
+#hidden {
+  color: transparent;
+  color: transparent;
+}
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void MixinsArgsTwoArgs()
+        {
             var input =
                 @"
 .mixin (@a: 1px, @b: 50%) {
@@ -19,68 +44,10 @@ namespace dotless.Test.Specs
     border: @width @style @color;
 }
 
-.mixiny
-(@a: 0, @b: 0) {
-  margin: @a;
-  padding: @b;
-}
-
-.hidden() {
-  color: transparent;
-}
-
 .two-args {
   color: blue;
   .mixin(2px, 100%);
   .mixina(dotted, 2px);
-}
-
-.one-arg {
-  .mixin(3px);
-}
-
-.no-parens {
-  .mixin;
-}
-
-.no-args {
-  .mixin();
-}
-
-.var-args {
-  @var: 9;
-  .mixin(@var, @var * 2);
-}
-
-.multi-mix {
-  .mixin(2px, 30%);
-  .mixiny(4, 5);
-}
-
-.maxa(@arg1: 10, @arg2: #f00) {
-  padding: @arg1 * 2px;
-  color: @arg2;
-}
-
-body {
-  .maxa(15);
-}
-
-@glob: 5;
-.global-mixin(@a:2) {
-  width: @glob + @a;
-}
-
-.scope-mix {
-  .global-mixin(3);
-}
-
-.nested-ruleset (@width: 200px) {
-    width: @width;
-    .column { margin: @width; }
-}
-.content {
-    .nested-ruleset(600px);
 }
 ";
 
@@ -92,35 +59,218 @@ body {
   height: 99%;
   border: 2px dotted black;
 }
+";
+
+            AssertLess(input, expected);
+        }
+
+		[Test]
+        public void MixinsArgsOneArg()
+        {
+            // Todo: split into separate atomic tests.
+            var input =
+                @"
+.mixin (@a: 1px, @b: 50%) {
+  width: @a * 5;
+  height: @b - 1%;
+}
+
+.one-arg {
+  .mixin(3px);
+}
+";
+
+            var expected =
+                @"
 .one-arg {
   width: 15px;
   height: 49%;
 }
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void MixinsArgsNoParens()
+        {
+            var input =
+                @"
+.mixin (@a: 1px, @b: 50%) {
+  width: @a * 5;
+  height: @b - 1%;
+}
+.no-parens {
+  .mixin;
+}
+";
+
+            var expected =
+                @"
 .no-parens {
   width: 5px;
   height: 49%;
 }
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void MixinsArgsNoArgs()
+        {
+            var input =
+                @"
+.mixin (@a: 1px, @b: 50%) {
+  width: @a * 5;
+  height: @b - 1%;
+}
+
+.no-args {
+  .mixin();
+}
+";
+
+            var expected =
+                @"
 .no-args {
   width: 5px;
   height: 49%;
 }
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void MixinsArgsVariableArgs()
+        {
+            var input =
+                @"
+.mixin (@a: 1px, @b: 50%) {
+  width: @a * 5;
+  height: @b - 1%;
+}
+
+.var-args {
+  @var: 9;
+  .mixin(@var, @var * 2);
+}
+";
+
+            var expected =
+                @"
 .var-args {
   width: 45;
   height: 17%;
 }
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void MixinsArgsMulti()
+        {
+            var input =
+                @"
+.mixin (@a: 1px, @b: 50%) {
+  width: @a * 5;
+  height: @b - 1%;
+}
+
+.mixiny
+(@a: 0, @b: 0) {
+  margin: @a;
+  padding: @b;
+}
+
+.multi-mix {
+  .mixin(2px, 30%);
+  .mixiny(4, 5);
+}
+";
+
+            var expected =
+                @"
 .multi-mix {
   width: 10px;
   height: 29%;
   margin: 4;
   padding: 5;
 }
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void MixinsArgs()
+        {
+            var input =
+                @"
+.maxa(@arg1: 10, @arg2: #f00) {
+  padding: @arg1 * 2px;
+  color: @arg2;
+}
+
+body {
+  .maxa(15);
+}
+";
+
+            var expected =
+                @"
 body {
   padding: 30px;
   color: red;
 }
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void MixinsArgsScopeMix()
+        {
+            var input =
+                @"
+@glob: 5;
+.global-mixin(@a:2) {
+  width: @glob + @a;
+}
+
+.scope-mix {
+  .global-mixin(3);
+}
+";
+
+            var expected =
+                @"
 .scope-mix {
   width: 8;
 }
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void MixinsArgsNestedRuleset()
+        {
+            var input =
+                @"
+.nested-ruleset (@width: 200px) {
+    width: @width;
+    .column { margin: @width; }
+}
+.content {
+    .nested-ruleset(600px);
+}
+";
+
+            var expected =
+                @"
 .content {
   width: 600px;
 }
@@ -154,7 +304,7 @@ body {
         }
 
         [Test]
-        public void CanUseVaiablesInsideMixins()
+        public void CanUseVariablesInsideMixins()
         {
             var input = @"
 @var: 5px;
@@ -174,7 +324,7 @@ body {
         }
 
         [Test]
-        public void CanUseSameVaiableName()
+        public void CanUseSameVariableName()
         {
             var input =
                 @"
@@ -194,8 +344,75 @@ body {
   radius: 5px;
 }
 ";
-
             AssertLess(input, expected);
         }
+
+		[Test]
+		[Ignore("Supported by less.js, not by dotless")]
+		public void MixinArgsHashMixin()
+		{
+
+			var input = @"
+#id-mixin () {
+    color: red;
+}
+.id-class {
+    #id-mixin();
+    #id-mixin;
+}
+";
+
+			var expected = @"
+.id-class {
+  color: red;
+  color: red;
+}
+";
+			AssertLess(input, expected);
+		}
+
+		[Test]
+		[Ignore("Supported by less.js, not by dotless")]
+		public void MixinArgsArgumentsGiven()
+		{
+
+			var input = @"
+.mixin-arguments (@width: 0px) {
+    border: @arguments;
+}
+
+.arguments {
+    .mixin-arguments(1px, solid, black);
+}
+";
+
+			var expected = @"
+.arguments {
+  border: 1px solid black;
+}
+";
+			AssertLess(input, expected);
+		}
+
+		[Test]
+		[Ignore("Supported by less.js, not by dotless")]
+		public void MixinArgsArgumentsEmpty()
+		{
+
+			var input = @"
+.mixin-arguments (@width: 0px) {
+    border: @arguments;
+}
+.arguments2 {
+    .mixin-arguments();
+}";
+
+			var expected = @"
+.arguments2 {
+  border: 0px;
+}";
+			AssertLess(input, expected);
+		}
+
     }
 }

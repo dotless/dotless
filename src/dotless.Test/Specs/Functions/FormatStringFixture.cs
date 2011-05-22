@@ -72,5 +72,92 @@ namespace dotless.Test.Specs.Functions
 
             AssertLess(input, expected);
         }
+
+		[Test]
+		[Ignore("Supported by less.js, not by dotless")]
+		public void EscapeFunction()
+		{
+			var input = @"
+#builtin {
+  @r: 32;
+  escaped: e(""-Some::weird(#thing, y)"");
+}
+";
+			var expected = @"
+#built-in {
+  escaped: -Some::weird(#thing, y);
+}";
+
+			AssertLess(input, expected);
+		}
+
+		[Test]
+		[Ignore("Supported by less.js, not by dotless")]
+		public void ShortFormatFunction()
+		{
+			var input = @"
+#builtin {
+  @r: 32;
+  format: %(""rgb(%d, %d, %d)"", @r, 128, 64);
+}
+";
+			var expected = @"
+#built-in {
+  format: ""rgb(32, 128, 64)"";
+}";
+
+			AssertLess(input, expected);
+		}
+
+		[Test]
+		[Ignore("Supported by less.js, not by dotless")]
+		public void ShortFormatFunctionAcceptingString()
+		{
+			var input = @"
+#builtin {
+  format-string: %(""hello %s"", ""world"");
+}
+";
+			var expected = @"
+#built-in {
+  format-string: ""hello world"";
+}";
+
+			AssertLess(input, expected);
+		}
+
+		[Test]
+		[Ignore("Supported by less.js, not by dotless")]
+		public void ShortFormatFunctionUrlEncode()
+		{
+			var input = @"
+#builtin {
+  format-url-encode: %('red is %A', #ff0000);
+}
+";
+			var expected = @"
+#built-in {
+  format-url-encode: ""red is %23ff0000"";
+}";
+
+			AssertLess(input, expected);
+		}
+
+		[Test]
+		[Ignore("Supported by less.js, not by dotless")]
+		public void EscapeAndShortFormatFunction()
+		{
+			var input = @"
+#builtin {
+  eformat: e(%(""rgb(%d, %d, %d)"", @r, 128, 64));
+}
+";
+			var expected = @"
+#built-in {
+  eformat: rgb(32, 128, 64);
+}";
+
+			AssertLess(input, expected);
+		}
     }
 }
