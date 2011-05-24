@@ -427,12 +427,13 @@ namespace dotless.Core.Parser
         //
         public MixinDefinition MixinDefinition(Parser parser)
         {
-            if (parser.Tokenizer.CurrentChar != '.' || parser.Tokenizer.Peek(@"[^{]*(;|})"))
+            if ((parser.Tokenizer.CurrentChar != '.' && parser.Tokenizer.CurrentChar != '#') || 
+                parser.Tokenizer.Peek(@"[^{]*(;|})"))
                 return null;
 
             var index = parser.Tokenizer.Location.Index;
 
-            var match = parser.Tokenizer.Match(@"([#.][a-zA-Z0-9_-]+)\s*\(");
+            var match = parser.Tokenizer.Match(@"([#.](?:[\w-]|\\(?:[a-fA-F0-9]{1,6} ?|[^a-fA-F0-9]))+)\s*\(");
             if (!match)
                 return null;
 

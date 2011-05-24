@@ -348,7 +348,6 @@ body {
         }
 
 		[Test]
-		[Ignore("Supported by less.js, not by dotless")]
 		public void MixinArgsHashMixin()
 		{
 
