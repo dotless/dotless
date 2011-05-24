@@ -33,8 +33,8 @@ namespace dotless.Core.Parser.Tree
 
         public Ruleset Evaluate(List<NamedArgument> args, Env env, List<Ruleset> closureContext)
         {
-            if (args != null && args.Any())
-                Guard.ExpectMaxArguments(Params.Count, args.Count, String.Format("'{0}'", Name), Index);
+//            if (args != null && args.Any())
+//                Guard.ExpectMaxArguments(Params.Count, args.Count, String.Format("'{0}'", Name), Index);
 
             var arguments = new Dictionary<string, Node>();
             args = args ?? new List<NamedArgument>();
@@ -74,7 +74,16 @@ namespace dotless.Core.Parser.Tree
                                       args != null ? args.Count : 0, _arity), Index);
             }
 
+            var _arguments = new NodeList();
+
+            for(var i = 0; i < Math.Max(Params.Count, args.Count); i++)
+            {
+              _arguments.Add(i < args.Count ? args[i].Value : Params[i].Value);
+            }
+
             var frame = new Ruleset(null, new List<Node>());
+
+            frame.Rules.Insert(0, new Rule("@arguments", new Expression(_arguments).Evaluate(env)));
 
             foreach (var arg in arguments)
             {
@@ -124,10 +133,12 @@ namespace dotless.Core.Parser.Tree
         {
             var argsLength = arguements != null ? arguements.Count : 0;
 
-            if (argsLength < _required || argsLength > _arity)
-                return false;
+            if (argsLength < _required)
+              return false;
+            if (_required > 0 && argsLength > _arity)
+              return false;
 
-            for (var i = 0; i < argsLength; i++)
+            for (var i = 0; i < Math.Min(argsLength, _arity); i++)
             {
                 if (String.IsNullOrEmpty(Params[i].Name))
                 {
