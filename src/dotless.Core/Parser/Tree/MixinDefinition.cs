@@ -74,7 +74,7 @@ namespace dotless.Core.Parser.Tree
                                       args != null ? args.Count : 0, _arity), Index);
             }
 
-            var _arguments = new NodeList();
+            var _arguments = new List<Node>();
 
             for(var i = 0; i < Math.Max(Params.Count, args.Count); i++)
             {
@@ -83,7 +83,7 @@ namespace dotless.Core.Parser.Tree
 
             var frame = new Ruleset(null, new List<Node>());
 
-            frame.Rules.Insert(0, new Rule("@arguments", new Expression(_arguments).Evaluate(env)));
+            frame.Rules.Insert(0, new Rule("@arguments", new Expression(_arguments.Where(a => a != null)).Evaluate(env)));
 
             foreach (var arg in arguments)
             {

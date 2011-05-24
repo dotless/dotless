@@ -456,11 +456,11 @@ namespace dotless.Test.Specs
         public void SupportOnePositionArgumentOneDefaultVariableAndOneNamed()
         {
             var input = @"
-.clb (@a, @b:12px, @c) {
+.clb (@a, @b: 12px, @c) {
   background-position: @a @c;
 }
 .cla {
-  .clb(23px, @c:12px);
+  .clb(23px, @c: 12px);
 }";
 
             var expected = @"
@@ -478,29 +478,12 @@ namespace dotless.Test.Specs
   width: @a * 3;
   height: @b - 1%;
 }
- 
+
 .override-inner-var {
   .mixin(@var: 6);
 }";
 
             AssertError("Argument '@var' not found. in '.mixin(@var: 6)'", input);
-        }
-
-        [Test]
-        public void ThrowsIfTooManyArguments()
-        {
-            var input =
-                @"
-.mixin (@a: 5) {  width: @a * 5; }
-
-.class { .mixin(1, 2, 3); }";
-
-            AssertError(
-                "No matching definition was found for `.mixin(1, 2, 3)`",
-                ".class { .mixin(1, 2, 3); }",
-                3,
-                9,
-                input);
         }
 
         [Test]
@@ -882,10 +865,11 @@ namespace dotless.Test.Specs
         {
             var input =
                 @"
-.mixin () { zero: 0; }
-.mixin (@a: 1px) { one: 1; }
-.mixin (@a) { one-req: 1; }
-.mixin (@a: 1px, @b: 2px) { two: 2; }
+.mixin ()                          { zero: 0; }
+.mixin (@a: 1px)                   { one: 1; }
+.mixin (@a)                        { one-req: 1; }
+.mixin (@a: 1px, @b: 2px)          { two: 2; }
+.mixin (@a, @b, @c)                { three-req: 3; }
 .mixin (@a: 1px, @b: 2px, @c: 3px) { three: 3; }
 
 .zero { .mixin(); }
@@ -906,16 +890,23 @@ namespace dotless.Test.Specs
   three: 3;
 }
 .one {
+  zero: 0;
   one: 1;
   one-req: 1;
   two: 2;
   three: 3;
 }
 .two {
+  zero: 0;
+  one: 1;
   two: 2;
   three: 3;
 }
 .three {
+  zero: 0;
+  one: 1;
+  two: 2;
+  three-req: 3;
   three: 3;
 }
 ";
