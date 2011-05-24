@@ -36,7 +36,6 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-		[Ignore("Supported by less.js, not by dotless")]
         public void EscapedWithTilde()
         {
             AssertExpression(@"DX.Transform.MS.BS.filter(opacity=50)", @"~""DX.Transform.MS.BS.filter(opacity=50)""");
@@ -136,7 +135,8 @@ namespace dotless.Test.Specs
 		[Ignore("Supported by less.js, not by dotless")]
 		public void StringInterpolationMixMulClass()
 		{
-			var input = @".mix-mul (@a: green) {
+			var input = @"
+.mix-mul (@a: green) {
     color: ~""@{a}"";
 }
 .mix-mul-class {

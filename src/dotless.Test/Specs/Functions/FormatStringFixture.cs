@@ -74,12 +74,10 @@ namespace dotless.Test.Specs.Functions
         }
 
 		[Test]
-		[Ignore("Supported by less.js, not by dotless")]
 		public void EscapeFunction()
 		{
 			var input = @"
-#builtin {
-  @r: 32;
+#built-in {
   escaped: e(""-Some::weird(#thing, y)"");
 }
 ";
@@ -92,11 +90,10 @@ namespace dotless.Test.Specs.Functions
 		}
 
 		[Test]
-		[Ignore("Supported by less.js, not by dotless")]
 		public void ShortFormatFunction()
 		{
 			var input = @"
-#builtin {
+#built-in {
   @r: 32;
   format: %(""rgb(%d, %d, %d)"", @r, 128, 64);
 }
@@ -110,11 +107,10 @@ namespace dotless.Test.Specs.Functions
 		}
 
 		[Test]
-		[Ignore("Supported by less.js, not by dotless")]
 		public void ShortFormatFunctionAcceptingString()
 		{
 			var input = @"
-#builtin {
+#built-in {
   format-string: %(""hello %s"", ""world"");
 }
 ";
@@ -131,7 +127,7 @@ namespace dotless.Test.Specs.Functions
 		public void ShortFormatFunctionUrlEncode()
 		{
 			var input = @"
-#builtin {
+#built-in {
   format-url-encode: %('red is %A', #ff0000);
 }
 ";
@@ -144,11 +140,11 @@ namespace dotless.Test.Specs.Functions
 		}
 
 		[Test]
-		[Ignore("Supported by less.js, not by dotless")]
 		public void EscapeAndShortFormatFunction()
 		{
 			var input = @"
-#builtin {
+#built-in {
+  @r: 32;
   eformat: e(%(""rgb(%d, %d, %d)"", @r, 128, 64));
 }
 ";
