@@ -15,6 +15,13 @@
             Quote = quote;
         }
 
+        public Quoted(string value, char? quote, bool escaped)
+            : base(value)
+        {
+            Escaped = escaped;
+            Quote = quote;
+        }
+
         public Quoted(string value, string contents, bool escaped)
             : base(contents)
         {
@@ -35,6 +42,18 @@
                 return Value;
 
             return Quote + Value + Quote;
+        }
+
+        public override Node Evaluate(Env env)
+        {
+          var value = Regex.Replace(Value, @"@\{([\w-]+)\}",
+                        m =>
+                          {
+                            var v = new Variable('@' + m.Groups[1].Value) {Index = Index + m.Index}.Evaluate(env);
+                            return v is TextNode ? (v as TextNode).Value : v.ToCSS(env);
+                          });
+
+          return new Quoted(value, Quote, Escaped) {Index = Index};
         }
 
         private readonly Regex _unescape = new Regex(@"(^|[^\\])\\(.)");

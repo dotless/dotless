@@ -42,7 +42,6 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-		[Ignore("Supported by less.js, not by dotless")]
         public void StringInterpolation1()
         {
 			var input = @"
@@ -60,7 +59,6 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-		[Ignore("Supported by less.js, not by dotless")]
         public void StringInterpolation2()
         {
 			var input = @"
@@ -78,7 +76,6 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-		[Ignore("Supported by less.js, not by dotless")]
         public void StringInterpolation3()
         {
 			var input = @"
@@ -96,7 +93,6 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-		[Ignore("Supported by less.js, not by dotless")]
         public void StringInterpolation4()
         {
 			var input = @"
@@ -114,7 +110,6 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-		[Ignore("Supported by less.js, not by dotless")]
         public void StringInterpolation5()
         {
 			var input = @"
@@ -125,15 +120,14 @@ namespace dotless.Test.Specs
 ";
 			var expected = @"
 #interpolation {
-  url5: ""http://lesscss.org/54.4"";
+  url5: ""http://lesscss.org/54.4px"";
 }";
 
 			AssertLess(input, expected);
         }
 
 		[Test]
-		[Ignore("Supported by less.js, not by dotless")]
-		public void StringInterpolationMixMulClass()
+		public void StringInterpolationMultipleCalls()
 		{
 			var input = @"
 .mix-mul (@a: green) {
