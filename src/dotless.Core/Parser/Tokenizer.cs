@@ -46,6 +46,7 @@ namespace dotless.Core.Parser
             else
             {
                 var skip = new Regex(@"\G[^\""'{}/\\]+");
+				var skipToEndOfUrl = new Regex(@"\G[^\""'\)]*\)");
 
                 var comment = GetRegex(this._commentRegEx, RegexOptions.None);
                 var quotedstring = GetRegex(this._quotedRegEx, RegexOptions.None);
@@ -68,6 +69,20 @@ namespace dotless.Core.Parser
                     if(i < _inputLength - 1 && c == '/')
                     {
                         var cc = _input[i + 1];
+						if (cc == '/')
+						{
+							if (Chunk.IsInUrl(_chunks))
+							{
+								match = skipToEndOfUrl.Match(_input, i);
+								if (!match.Success)
+								{
+									throw new ParsingException("Missing closing url bracket", i);
+								}
+								Chunk.Append(match.Value, _chunks);
+								i += match.Length;
+								continue;
+							}
+						}
                         if(cc == '/' || cc == '*')
                         {
                             match = comment.Match(_input, i);
@@ -263,15 +278,6 @@ namespace dotless.Core.Parser
                 return null;
 
             Advance(match.Length);
-
-            if (_i > _current && _i < _current + _chunks[_j].Value.Length)
-            {
-                //If we absorbed the start of an inline comment then turn it into text so the rest can be absorbed
-                if (_chunks[_j].Type == ChunkType.Comment && _chunks[_j].Value.StartsWith("//"))
-                {
-                    _chunks[_j].Type = Tokenizer.ChunkType.Text;
-                }
-            }
 
             return new RegexMatchResult(match);
         }
@@ -489,6 +495,22 @@ namespace dotless.Core.Parser
                 Chunk chunk = Chunk.ReadyForText(chunks);
                 chunk.Append(s);
             }
+
+			public static bool IsInUrl(List<Chunk> chunks)
+			{
+				Chunk last = chunks.LastOrDefault();
+				if (last == null || last.Type != Tokenizer.ChunkType.Text || last._final == true)
+					return false;
+
+				var chunk = last._builder.ToString();
+				var lastInvalidIndex = chunk.LastIndexOfAny(new char[] { ')', '(', '\'', '"' });
+				if (lastInvalidIndex < 0)
+					return false;
+				if (chunk[lastInvalidIndex] != '(')
+					return false;
+				chunk = chunk.Substring(0, lastInvalidIndex).TrimEnd();
+				return chunk.EndsWith("url");
+			}
 
             public static string CommitAll(List<Chunk> chunks)
             {

@@ -311,17 +311,12 @@ form[data-disabled] {
         }
 
 		[Test]
-		[Ignore("Bug in dotless")]
         public void HttpUrl()
         {
-			// In MatchAny where we consider if we hit a comment token, instead of changing
-			// it to text we should re-parse the comment?
-			// or does the tokenizer need to be aware of url() as a special case? (see next bug)
-            AssertExpressionUnchanged(@"image: url(http://), ""}"", url(""http://}"")");
+            AssertExpressionUnchanged(@"url(http://), ""}"", url(""http://}"")");
         }
 
 		[Test]
-		[Ignore("Bug in dotless")]
         public void HttpUrl2()
         {
 			var input = @".trickyurl {
@@ -331,5 +326,32 @@ image: url(http://); }";
 }";
             AssertLess(input, expected);
         }
+
+		[Test]
+        public void HttpUrl3()
+        {
+			var input = @".trickyurl {
+//url(
+//invalid dotless....
+image: url(http://); 
+}";
+			var expected = @".trickyurl {
+  image: url(http://);
+}";
+            AssertLess(input, expected);
+        }
+
+		[Test]
+        public void HttpUrl4()
+        {
+			var input = @".trickyurl {
+image: url(""""), url(http://); 
+}";
+			var expected = @".trickyurl {
+  image: url(""""), url(http://);
+}";
+            AssertLess(input, expected);
+        }
+
     }
 }
