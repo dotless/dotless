@@ -397,7 +397,6 @@ namespace dotless.Test.Specs
 		}
 
 		[Test]
-		[Ignore("Supported by less.js but not dotless")]
 		public void VariablesNames()
 		{
 			var input = @".variable-names {
@@ -407,7 +406,7 @@ namespace dotless.Test.Specs
 }";
 			var expected = @"
 .variable-names {
-	name: 'hello';
+  name: 'hello';
 }";
 			AssertLess(input, expected);
 		}

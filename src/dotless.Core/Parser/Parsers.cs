@@ -234,7 +234,7 @@ namespace dotless.Core.Parser
             RegexMatchResult name;
             var index = parser.Tokenizer.Location.Index;
 
-            if (parser.Tokenizer.CurrentChar == '@' && (name = parser.Tokenizer.Match(@"@[a-zA-Z0-9_-]+")))
+            if (parser.Tokenizer.CurrentChar == '@' && (name = parser.Tokenizer.Match(@"@?@[a-zA-Z0-9_-]+")))
                 return NodeProvider.Variable(name.Value, index);
 
             return null;

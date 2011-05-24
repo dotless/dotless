@@ -16,12 +16,19 @@ namespace dotless.Core.Parser.Tree
 
         public override Node Evaluate(Env env)
         {
-            var variable = env.FindVariable(Name);
+            var name = Name;
+            if (name.StartsWith("@@"))
+            {
+                var v = new Variable(name.Substring(1)).Evaluate(env);
+                name = '@' + (v is TextNode ? (v as TextNode).Value : v.ToCSS(env));
+            }
+
+            var variable = env.FindVariable(name);
 
             if (variable)
                 return variable.Value.Evaluate(env);
 
-            throw new ParsingException("variable " + Name + " is undefined", Index);
+            throw new ParsingException("variable " + name + " is undefined", Index);
         }
     }
 }
