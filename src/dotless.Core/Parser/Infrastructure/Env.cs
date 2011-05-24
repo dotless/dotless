@@ -56,7 +56,9 @@
                 _functionTypes = Assembly.GetExecutingAssembly()
                     .GetTypes()
                     .Where(t => functionType.IsAssignableFrom(t) && t != functionType)
-                    .ToDictionary(t => GetFunctionName(t));
+                    .ToDictionary(GetFunctionName);
+
+                _functionTypes["%"] = typeof (CFormatString);
             }
 
             name = name.ToLowerInvariant();

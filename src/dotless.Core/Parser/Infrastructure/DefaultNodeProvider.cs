@@ -142,9 +142,9 @@ namespace dotless.Core.Parser.Infrastructure
             return new TextNode(contents) { Index = index };
         }
 
-        public Quoted Quoted(string value, string contents, int index)
+        public Quoted Quoted(string value, string contents, bool escaped, int index)
         {
-            return new Quoted(value, contents) { Index = index };
+            return new Quoted(value, contents, escaped) { Index = index };
         }
     }
 }

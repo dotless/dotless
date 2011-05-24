@@ -92,6 +92,7 @@
     <Compile Include="Parameters\ConsoleArgumentParameterSource.cs" />
     <Compile Include="Parameters\IParameterSource.cs" />
     <Compile Include="Parameters\QueryStringParameterSource.cs" />
+    <Compile Include="Parser\Functions\StringFunctions.cs" />
     <Compile Include="Parser\Functions\HexFunction.cs" />
     <Compile Include="Parser\Functions\ContrastFunction.cs" />
     <Compile Include="Parser\Infrastructure\Closure.cs" />
@@ -139,7 +140,7 @@
     <Compile Include="Parser\Functions\ColorFunctionBase.cs" />
     <Compile Include="Parser\Functions\ComplementFunction.cs" />
     <Compile Include="Parser\Functions\FloorFunction.cs" />
-    <Compile Include="Parser\Functions\FormatFunction.cs" />
+    <Compile Include="Parser\Functions\FormatStringFunction.cs" />
     <Compile Include="Parser\Functions\Function.cs" />
     <Compile Include="Parser\Functions\GrayscaleFunction.cs" />
     <Compile Include="Parser\Functions\GreenFunction.cs" />

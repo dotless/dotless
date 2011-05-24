@@ -44,6 +44,6 @@ namespace dotless.Core.Parser.Infrastructure
         Comment Comment(string value, int index);
         Comment Comment(string value, bool silent, int index);
         TextNode TextNode(string contents, int index);
-        Quoted Quoted(string value, string contents, int index);
+        Quoted Quoted(string value, string contents, bool escaped, int index);
     }
 }

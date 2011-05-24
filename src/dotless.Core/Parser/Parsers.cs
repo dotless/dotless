@@ -106,12 +106,26 @@ namespace dotless.Core.Parser
         public Quoted Quoted(Parser parser)
         {
             var index = parser.Tokenizer.Location.Index;
+            var escaped = false;
+            var quote = parser.Tokenizer.CurrentChar;
+
+            if (parser.Tokenizer.CurrentChar == '~')
+            {
+                escaped = true;
+                quote = parser.Tokenizer.NextChar;
+            }
+            if (quote != '"' && quote != '\'')
+                return null;
+
+            if (escaped)
+                parser.Tokenizer.Match('~');
+
             string str = parser.Tokenizer.GetQuotedString();
 
             if  (str == null)
                 return null;
 
-            return NodeProvider.Quoted(str, str.Substring(1, str.Length-2), index);
+            return NodeProvider.Quoted(str, str.Substring(1, str.Length-2), escaped, index);
         }
 
         //
@@ -144,7 +158,7 @@ namespace dotless.Core.Parser
         {
             var index = parser.Tokenizer.Location.Index;
 
-            var name = parser.Tokenizer.Match(@"([a-zA-Z0-9_-]+)\(");
+            var name = parser.Tokenizer.Match(@"(%|[a-zA-Z0-9_-]+)\(");
 
             if (!name)
                 return null;

@@ -363,6 +363,11 @@ namespace dotless.Core.Parser
             get { return _i == _inputLength ? '\0' : _input[_i]; }
         }
 
+        public char NextChar
+        {
+            get { return _i + 1 == _inputLength ? '\0' : _input[_i + 1]; }
+        }
+
         public bool HasCompletedParsing()
         {
             return _i == _inputLength;

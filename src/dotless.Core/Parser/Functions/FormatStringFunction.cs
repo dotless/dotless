@@ -11,7 +11,7 @@ namespace dotless.Core.Parser.Functions
         protected override Node Evaluate(Env env)
         {
             if (Arguments.Count == 0)
-                return new Quoted("");
+                return new Quoted("", false);
 
             Func<Node, string> unescape = n => n is Quoted ? ((Quoted) n).UnescapeContents() : n.ToCSS(env);
 
@@ -21,7 +21,7 @@ namespace dotless.Core.Parser.Functions
 
             var result = string.Format(format, args);
 
-            return new Quoted(result);
+            return new Quoted(result, false);
         }
     }
 }
