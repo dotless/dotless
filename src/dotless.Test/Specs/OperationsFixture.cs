@@ -38,7 +38,7 @@ namespace dotless.Test.Specs
             AssertExpression("4px", "2px - @z", variables);
         }
 
-		[Test]
+        [Test]
         public void NegationsWorking()
         {
             var variables = new Dictionary<string, string>();
@@ -47,20 +47,20 @@ namespace dotless.Test.Specs
             AssertExpression("- 4px", "-@z", variables); //ideally should not have space between - and 4
         }
 
-		[Test]
-		[Ignore("Supported by less.js, not by dotless")]
+        [Test]
+        [Ignore("Supported by less.js, not by dotless")]
         public void NegationsBugs()
         {
             var variables = new Dictionary<string, string>();
             variables["z"] = "4px";
 
             AssertExpression("0px", "-@z + @z", variables);
-			AssertExpression("0px", "@z + -@z", variables);
-			AssertExpression("8px", "@z - -@z", variables);
-			AssertExpression("0px", "-@z - -@z", variables);
+            AssertExpression("0px", "@z + -@z", variables);
+            AssertExpression("8px", "@z - -@z", variables);
+            AssertExpression("0px", "-@z - -@z", variables);
 
-			AssertExpression("- 4px", "-(@z)", variables);
-			AssertExpression("0px", "-(2 + 2) * -@z", variables);
+            AssertExpression("- 4px", "-(@z)", variables);
+            AssertExpression("0px", "-(2 + 2) * -@z", variables);
         }
 
         [Test]

@@ -64,7 +64,7 @@ namespace dotless.Test.Specs
             AssertLess(input, expected);
         }
 
-		[Test]
+        [Test]
         public void MixinsArgsOneArg()
         {
             // Todo: split into separate atomic tests.
@@ -347,11 +347,10 @@ body {
             AssertLess(input, expected);
         }
 
-		[Test]
-		public void MixinArgsHashMixin()
-		{
-
-			var input = @"
+        [Test]
+        public void MixinArgsHashMixin()
+        {
+            var input = @"
 #id-mixin () {
     color: red;
 }
@@ -361,20 +360,20 @@ body {
 }
 ";
 
-			var expected = @"
+            var expected = @"
 .id-class {
   color: red;
   color: red;
 }
 ";
-			AssertLess(input, expected);
-		}
+            AssertLess(input, expected);
+        }
 
-		[Test]
-		public void MixinArgsArgumentsGiven()
-		{
-
-			var input = @"
+        [Test]
+        public void MixinArgsArgumentsGiven()
+        {
+            var input =
+                @"
 .mixin-arguments (@width: 0px) {
     border: @arguments;
 }
@@ -384,19 +383,19 @@ body {
 }
 ";
 
-			var expected = @"
+            var expected = @"
 .arguments {
   border: 1px solid black;
 }
 ";
-			AssertLess(input, expected);
-		}
+            AssertLess(input, expected);
+        }
 
-		[Test]
-		public void MixinArgsArgumentsEmpty()
-		{
-
-			var input = @"
+        [Test]
+        public void MixinArgsArgumentsEmpty()
+        {
+            var input =
+                @"
 .mixin-arguments (@width: 0px) {
     border: @arguments;
 }
@@ -404,12 +403,12 @@ body {
     .mixin-arguments();
 }";
 
-			var expected = @"
+            var expected = @"
 .arguments2 {
   border: 0px;
 }";
-			AssertLess(input, expected);
-		}
+            AssertLess(input, expected);
+        }
 
     }
 }

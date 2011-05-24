@@ -44,92 +44,92 @@ namespace dotless.Test.Specs
         [Test]
         public void StringInterpolation1()
         {
-			var input = @"
+            var input = @"
 #interpolation {
   @var: '/dev';
   url: ""http://lesscss.org@{var}/image.jpg"";
 }
 ";
-			var expected = @"
+            var expected = @"
 #interpolation {
   url: ""http://lesscss.org/dev/image.jpg"";
 }";
 
-			AssertLess(input, expected);
+            AssertLess(input, expected);
         }
 
         [Test]
         public void StringInterpolation2()
         {
-			var input = @"
+            var input = @"
 #interpolation {
   @var2: 256;
   url2: ""http://lesscss.org/image-@{var2}.jpg"";
 }
 ";
-			var expected = @"
+            var expected = @"
 #interpolation {
   url2: ""http://lesscss.org/image-256.jpg"";
 }";
 
-			AssertLess(input, expected);
+            AssertLess(input, expected);
         }
 
         [Test]
         public void StringInterpolation3()
         {
-			var input = @"
+            var input = @"
 #interpolation {
   @var3: #456;
   url3: ""http://lesscss.org@{var3}"";
 }
 ";
-			var expected = @"
+            var expected = @"
 #interpolation {
   url3: ""http://lesscss.org#445566"";
 }";
 
-			AssertLess(input, expected);
+            AssertLess(input, expected);
         }
 
         [Test]
         public void StringInterpolation4()
         {
-			var input = @"
+            var input = @"
 #interpolation {
   @var4: hello;
   url4: ""http://lesscss.org/@{var4}"";
 }
 ";
-			var expected = @"
+            var expected = @"
 #interpolation {
   url4: ""http://lesscss.org/hello"";
 }";
 
-			AssertLess(input, expected);
+            AssertLess(input, expected);
         }
 
         [Test]
         public void StringInterpolation5()
         {
-			var input = @"
+            var input = @"
 #interpolation {
   @var5: 54.4px;
   url5: ""http://lesscss.org/@{var5}"";
 }
 ";
-			var expected = @"
+            var expected = @"
 #interpolation {
   url5: ""http://lesscss.org/54.4px"";
 }";
 
-			AssertLess(input, expected);
+            AssertLess(input, expected);
         }
 
-		[Test]
-		public void StringInterpolationMultipleCalls()
-		{
-			var input = @"
+        [Test]
+        public void StringInterpolationMultipleCalls()
+        {
+            var input = @"
 .mix-mul (@a: green) {
     color: ~""@{a}"";
 }
@@ -139,15 +139,15 @@ namespace dotless.Test.Specs
     .mix-mul(blue);
     .mix-mul(orange);
 }";
-			var expected = @"
+            var expected = @"
 .mix-mul-class {
   color: blue;
   color: red;
   color: blue;
   color: orange;
 }";
-			AssertLess(input, expected);
-		}
+            AssertLess(input, expected);
+        }
 
         [Test]
         public void BracesInQuotes()

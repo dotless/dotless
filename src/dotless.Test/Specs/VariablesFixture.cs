@@ -5,10 +5,10 @@ namespace dotless.Test.Specs
 
     public class VariablesFixture : SpecFixtureBase
     {
-		[Test]
-		public void VariableOerators()
-		{
-			var input = @"
+        [Test]
+        public void VariableOerators()
+        {
+            var input = @"
 @a: 2;
 @x: @a * @a;
 @y: @x + 1;
@@ -17,12 +17,12 @@ namespace dotless.Test.Specs
 .variables {
   width: @z + 1cm; // 14cm
 }";
-			var expected = @"
+            var expected = @"
 .variables {
   width: 14cm;
 }";
-			AssertLess(input, expected);
-		}
+            AssertLess(input, expected);
+        }
 
         [Test]
         public void StringVariables()
@@ -159,7 +159,7 @@ namespace dotless.Test.Specs
   width: @var;
 }
 ";
-            
+
             var expected = @"
 .init {
   width: 10px;
@@ -184,7 +184,7 @@ namespace dotless.Test.Specs
   height: @var;
 }
 ";
-            
+
             var expected = @"
 .test {
   width: 10px;
@@ -208,7 +208,7 @@ namespace dotless.Test.Specs
   height: @var;
 }
 ";
-            
+
             var expected = @"
 .test {
   width: 15px;
@@ -232,7 +232,7 @@ namespace dotless.Test.Specs
   width: @var;
 }
 ";
-            
+
             var expected = @"
 .test1 {
   width: 20px;
@@ -260,7 +260,7 @@ namespace dotless.Test.Specs
   .mixin(@var);
 }
 ";
-            
+
             var expected = @"
 .test {
   width: 15px;
@@ -334,81 +334,81 @@ namespace dotless.Test.Specs
             AssertLess(input, expected);
         }
 
-		[Test]
-		public void VariableValuesMulti()
-		{
-			var input = @"
+        [Test]
+        public void VariableValuesMulti()
+        {
+            var input = @"
 .values {
     @a: 'Trebuchet';
     font-family: @a, @a, @a;
 }";
-			var expected = @"
+            var expected = @"
 .values {
   font-family: 'Trebuchet', 'Trebuchet', 'Trebuchet';
 }";
-			AssertLess(input, expected);
-		}
+            AssertLess(input, expected);
+        }
 
-		[Test]
-		[Ignore("Supported by less.js but not dotless")]
-		public void VariableValuesUrl()
-		{
-			var input = @"
+        [Test]
+        [Ignore("Supported by less.js but not dotless")]
+        public void VariableValuesUrl()
+        {
+            var input = @"
 .values {
     @a: 'Trebuchet';
     url: url(@a);
 }";
-			var expected = @"
+            var expected = @"
 .values {
   url: url('Trebuchet');
 }";
-			AssertLess(input, expected);
-		}
+            AssertLess(input, expected);
+        }
 
-		[Test]
-		public void VariableValuesImportant()
-		{
-			var input = @"
+        [Test]
+        public void VariableValuesImportant()
+        {
+            var input = @"
 @c: #888;
 .values {
     color: @c !important;
 }";
-			var expected = @"
+            var expected = @"
 .values {
   color: #888888 !important;
 }";
-			AssertLess(input, expected);
-		}
+            AssertLess(input, expected);
+        }
 
-		[Test]
-		public void VariableValuesMultipleValues()
-		{
-			var input = @"
+        [Test]
+        public void VariableValuesMultipleValues()
+        {
+            var input = @"
 .values {
     @a: 'Trebuchet';
     @multi: 'A', B, C;
     multi: something @multi, @a;
 }";
-			var expected = @"
+            var expected = @"
 .values {
   multi: something 'A', B, C, 'Trebuchet';
 }";
-			AssertLess(input, expected);
-		}
+            AssertLess(input, expected);
+        }
 
-		[Test]
-		public void VariablesNames()
-		{
-			var input = @".variable-names {
+        [Test]
+        public void VariablesNames()
+        {
+            var input = @".variable-names {
     @var: 'hello';
     @name: 'var';
     name: @@name;
 }";
-			var expected = @"
+            var expected = @"
 .variable-names {
   name: 'hello';
 }";
-			AssertLess(input, expected);
-		}
+            AssertLess(input, expected);
+        }
     }
 }

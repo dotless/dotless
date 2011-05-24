@@ -73,87 +73,87 @@ namespace dotless.Test.Specs.Functions
             AssertLess(input, expected);
         }
 
-		[Test]
-		public void EscapeFunction()
-		{
-			var input = @"
+        [Test]
+        public void EscapeFunction()
+        {
+            var input = @"
 #built-in {
   escaped: e(""-Some::weird(#thing, y)"");
 }
 ";
-			var expected = @"
+            var expected = @"
 #built-in {
   escaped: -Some::weird(#thing, y);
 }";
 
-			AssertLess(input, expected);
-		}
+            AssertLess(input, expected);
+        }
 
-		[Test]
-		public void ShortFormatFunction()
-		{
-			var input = @"
+        [Test]
+        public void ShortFormatFunction()
+        {
+            var input = @"
 #built-in {
   @r: 32;
   format: %(""rgb(%d, %d, %d)"", @r, 128, 64);
 }
 ";
-			var expected = @"
+            var expected = @"
 #built-in {
   format: ""rgb(32, 128, 64)"";
 }";
 
-			AssertLess(input, expected);
-		}
+            AssertLess(input, expected);
+        }
 
-		[Test]
-		public void ShortFormatFunctionAcceptingString()
-		{
-			var input = @"
+        [Test]
+        public void ShortFormatFunctionAcceptingString()
+        {
+            var input = @"
 #built-in {
   format-string: %(""hello %s"", ""world"");
 }
 ";
-			var expected = @"
+            var expected = @"
 #built-in {
   format-string: ""hello world"";
 }";
 
-			AssertLess(input, expected);
-		}
+            AssertLess(input, expected);
+        }
 
-		[Test]
-		[Ignore("Supported by less.js, not by dotless")]
-		public void ShortFormatFunctionUrlEncode()
-		{
-			var input = @"
+        [Test]
+        [Ignore("Supported by less.js, not by dotless")]
+        public void ShortFormatFunctionUrlEncode()
+        {
+            var input = @"
 #built-in {
   format-url-encode: %('red is %A', #ff0000);
 }
 ";
-			var expected = @"
+            var expected = @"
 #built-in {
   format-url-encode: ""red is %23ff0000"";
 }";
 
-			AssertLess(input, expected);
-		}
+            AssertLess(input, expected);
+        }
 
-		[Test]
-		public void EscapeAndShortFormatFunction()
-		{
-			var input = @"
+        [Test]
+        public void EscapeAndShortFormatFunction()
+        {
+            var input = @"
 #built-in {
   @r: 32;
   eformat: e(%(""rgb(%d, %d, %d)"", @r, 128, 64));
 }
 ";
-			var expected = @"
+            var expected = @"
 #built-in {
   eformat: rgb(32, 128, 64);
 }";
 
-			AssertLess(input, expected);
-		}
+            AssertLess(input, expected);
+        }
     }
 }
