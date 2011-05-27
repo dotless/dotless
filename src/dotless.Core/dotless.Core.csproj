@@ -92,6 +92,12 @@
     <Compile Include="Parameters\ConsoleArgumentParameterSource.cs" />
     <Compile Include="Parameters\IParameterSource.cs" />
     <Compile Include="Parameters\QueryStringParameterSource.cs" />
+    <Compile Include="Parser\Functions\DarkenFunction.cs" />
+    <Compile Include="Parser\Functions\DesaturateFunction.cs" />
+    <Compile Include="Parser\Functions\HslColorAdjustmentFunctionBase.cs" />
+    <Compile Include="Parser\Functions\LightenFunction.cs" />
+    <Compile Include="Parser\Functions\SaturateFunction.cs" />
+    <Compile Include="Parser\Functions\SpinFunction.cs" />
     <Compile Include="Parser\Functions\StringFunctions.cs" />
     <Compile Include="Parser\Functions\HexFunction.cs" />
     <Compile Include="Parser\Functions\ContrastFunction.cs" />
