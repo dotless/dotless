@@ -84,5 +84,13 @@
         {
             return Unit == "%" ? Value*max/100d : Value;
         }
+
+        public Number Inverse 
+        {
+            get 
+            {
+                return new Number(-Value, this.Unit);
+            }
+        }
     }
 }

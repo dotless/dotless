@@ -88,8 +88,13 @@
     <Compile Include="Specs\Compression\ImportFixture.cs" />
     <Compile Include="Specs\Compression\SelectorsFixture.cs" />
     <Compile Include="Specs\Compression\WhitespaceFixture.cs" />
+    <Compile Include="Specs\Functions\DarkenFixture.cs" />
+    <Compile Include="Specs\Functions\DesaturateFixture.cs" />
     <Compile Include="Specs\Functions\HexFixture.cs" />
     <Compile Include="Specs\Functions\ContrastFixture.cs" />
+    <Compile Include="Specs\Functions\LightenFixture.cs" />
+    <Compile Include="Specs\Functions\SaturateFixture.cs" />
+    <Compile Include="Specs\Functions\SpinFixture.cs" />
     <Compile Include="Specs\Functions\StringFunctionsFixture.cs" />
     <Compile Include="Specs\ScriptFixture.cs" />
     <Compile Include="TestStylizer.cs" />
