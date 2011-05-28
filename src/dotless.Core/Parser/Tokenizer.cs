@@ -75,7 +75,6 @@ namespace dotless.Core.Parser
                             {
                                 i += match.Length;
                                 _chunks.Add(new Chunk(match.Value, ChunkType.Comment));
-                                //Chunk.Append(match.Value, _chunks);
                                 continue;
                             } else
                             {
@@ -91,7 +90,6 @@ namespace dotless.Core.Parser
                         {
                             i += match.Length;
                             _chunks.Add(new Chunk(match.Value, ChunkType.QuotedString));
-                            //Chunk.Append(match.Value, _chunks);
                             continue;
                         } else
                         {
@@ -142,11 +140,6 @@ namespace dotless.Core.Parser
             {
                 if (this.CurrentChar != '/')
                     return null;
-
-                //Once CSS Hacks are supported, implement this exception
-                //if (comment.Value.EndsWith(@"\*/")) {
-                //    throw new ParsingException("The IE6 comment hack is not supported", parser.Tokenizer.Location.Index);
-                //}
 
                 var comment = this.Match(this._commentRegEx);
                 return comment.Value;

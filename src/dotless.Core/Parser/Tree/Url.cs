@@ -6,25 +6,45 @@
     using Infrastructure;
     using Infrastructure.Nodes;
     using Utils;
+	using dotless.Core.Exceptions;
 
     public class Url : Node
     {
-        public TextNode Value { get; set; }
+        public Node Value { get; set; }
 
-        public Url(TextNode value, IEnumerable<string> paths)
+        public Url(Node value, IEnumerable<string> paths)
         {
-            if (!Regex.IsMatch(value.Value, @"^(http:\/)?\/") && paths.Any())
+            TextNode textValue = value as TextNode;
+            if (textValue != null)
             {
-                value.Value = paths.Concat(new[] {value.Value}).AggregatePaths();
+                if (!Regex.IsMatch(textValue.Value, @"^(http:\/)?\/") && paths.Any())
+                {
+                    textValue.Value = paths.Concat(new[] { textValue.Value }).AggregatePaths();
+                }
             }
 
             Value = value;
         }
 
+		public Url(Node value)
+		{
+			Value = value;
+		}
+
         public string GetUrl()
         {
-            return Value.Value;
+			TextNode textValue = Value as TextNode;
+			if (textValue != null)
+			{
+				return textValue.Value;
+			}
+			throw new ParserException("Imports do not allow expressions");
         }
+
+		public override Node Evaluate(Env env)
+		{
+			return new Url(Value.Evaluate(env));
+		}
 
         public override string ToCSS(Env env)
         {

@@ -123,17 +123,16 @@ namespace dotless.Test.Specs.Functions
         }
 
         [Test]
-        [Ignore("Supported by less.js, not by dotless")]
         public void ShortFormatFunctionUrlEncode()
         {
             var input = @"
 #built-in {
-  format-url-encode: %('red is %A', #ff0000);
+  format-url-encode: %('red is %A', #ff1000);
 }
 ";
             var expected = @"
 #built-in {
-  format-url-encode: ""red is %23ff0000"";
+  format-url-encode: 'red is %23ff1000';
 }";
 
             AssertLess(input, expected);

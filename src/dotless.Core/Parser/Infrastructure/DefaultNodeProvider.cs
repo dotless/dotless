@@ -72,7 +72,7 @@ namespace dotless.Core.Parser.Infrastructure
             return new Variable(name) { Index = index };
         }
 
-        public Url Url(TextNode value, IEnumerable<string> paths, int index)
+        public Url Url(Node value, IEnumerable<string> paths, int index)
         {
             return new Url(value, paths) { Index = index };
         }
