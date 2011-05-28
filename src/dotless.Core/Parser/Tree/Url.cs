@@ -6,24 +6,42 @@
     using Infrastructure;
     using Infrastructure.Nodes;
     using Utils;
+    using Exceptions;
 
     public class Url : Node
     {
-        public TextNode Value { get; set; }
+        public Node Value { get; set; }
 
-        public Url(TextNode value, IEnumerable<string> paths)
+        public Url(Node value, IEnumerable<string> paths)
         {
-            if (!Regex.IsMatch(value.Value, @"^(http:\/)?\/") && paths.Any())
+            if (value is TextNode)
             {
-                value.Value = paths.Concat(new[] {value.Value}).AggregatePaths();
+                var textValue = value as TextNode;
+                if (!Regex.IsMatch(textValue.Value, @"^(http:\/)?\/") && paths.Any())
+                {
+                    textValue.Value = paths.Concat(new[] { textValue.Value }).AggregatePaths();
+                }
             }
 
             Value = value;
         }
 
+        public Url(Node value)
+        {
+            Value = value;
+        }
+
         public string GetUrl()
         {
-            return Value.Value;
+            if (Value is TextNode)
+                return (Value as TextNode).Value;
+
+            throw new ParserException("Imports do not allow expressions");
+        }
+
+        public override Node Evaluate(Env env)
+        {
+            return new Url(Value.Evaluate(env));
         }
 
         public override string ToCSS(Env env)

@@ -29,6 +29,13 @@ namespace dotless.Test.Specs
         {
             AssertExpression("#c8c8c8", "rgb(200, 200, 200)");
             AssertExpression("gray", "hsl(50, 0, 50)");
+            AssertExpression("gray", "hsl(50, 0%, 50%)");
+        }
+
+        [Test]
+        public void Green()
+        {
+            AssertExpression("lime", "hsl(120, 100%, 50%)");
         }
     }
 }
