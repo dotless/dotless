@@ -213,7 +213,21 @@ namespace dotless.Core.Parser
             if (parser.Tokenizer.CurrentChar != 'u' || !parser.Tokenizer.Match(@"url\("))
                 return null;
 
-            var value = Quoted(parser) || parser.Tokenizer.MatchAny(@"[^\)""']*") || new TextNode("");
+            Node value = Quoted(parser);
+            
+            if (!value) {
+                var memory = parser.Tokenizer.Location;
+                value = Expression(parser);
+
+                if (value && !parser.Tokenizer.Peek(')')) {
+                    value = null;
+                    parser.Tokenizer.Location = memory;
+                }
+            }
+            
+            if (!value) {
+                value = parser.Tokenizer.MatchAny(@"[^\)""']*") || new TextNode("");
+            }
 
             if (!parser.Tokenizer.Match(')'))
                 throw new ParsingException("missing closing ) for url()", parser.Tokenizer.Location.Index);
@@ -932,13 +946,24 @@ namespace dotless.Core.Parser
         //
         public Node Operand(Parser parser)
         {
+            CharMatchResult negate = null;
+
+            if (parser.Tokenizer.CurrentChar == '-' && parser.Tokenizer.Peek(@"-[@\(]"))
+            {
+                negate = parser.Tokenizer.Match('-');
+            }
+
             var operand = Sub(parser) ??
                           Dimension(parser) ??
                           Color(parser) ??
                           (Node) Variable(parser);
 
             if (operand != null)
-                return operand;
+            {
+                return negate ? 
+                    NodeProvider.Operation("*", NodeProvider.Number("-1", "", negate.Index), operand, negate.Index) : 
+                    operand;
+            }
 
             if (parser.Tokenizer.CurrentChar == 'u' && parser.Tokenizer.Peek(@"url\("))
                 return null;

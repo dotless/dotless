@@ -314,19 +314,49 @@ form[data-disabled] {
         [Ignore("Bug in dotless")]
         public void HttpUrl()
         {
-            // In MatchAny where we consider if we hit a comment token, instead of changing
-            // it to text we should re-parse the comment?
-            // or does the tokenizer need to be aware of url() as a special case? (see next bug)
-            AssertExpressionUnchanged(@"image: url(http://), ""}"", url(""http://}"")");
+            /* To be fixed by ignoring comments in brackets 
+               one way to do this would be to use
+               var skip = new Regex(@"\G([^\""'{}/\(]+|([^\""')]+)|()+");
+               in the Tokenizer      */
+            AssertExpressionUnchanged(@"url(http://), ""}"", url(""http://}"")");
         }
 
         [Test]
         [Ignore("Bug in dotless")]
         public void HttpUrlClosingBraceOnSameLine()
         {
-            var input = @".trickyurl { image: url(http://); }";
+            var input = @".trickyurl {
+image: url(http://); }";
             var expected = @".trickyurl {
   image: url(http://);
+}";
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        [Ignore("Bug in dotless")]
+        public void HttpUrl3()
+        {
+            var input = @".trickyurl {
+//url(
+//invalid dotless....
+image: url(http://); 
+}";
+            var expected = @".trickyurl {
+  image: url(http://);
+}";
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        [Ignore("Bug in dotless")]
+        public void HttpUrl4()
+        {
+            var input = @".trickyurl {
+image: url(""""), url(http://); 
+}";
+            var expected = @".trickyurl {
+  image: url(""""), url(http://);
 }";
             AssertLess(input, expected);
         }

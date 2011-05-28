@@ -42,9 +42,13 @@ namespace dotless.Core.Parser.Functions
 
             MatchEvaluator replacement = m =>
                                              {
-                                                 if (m.Value == "%s")
-                                                     return stringValue(args[i++]);
-                                                 return args[i++].ToCSS(env);
+                                                 var value = (m.Value == "%s") ?
+                                                                stringValue(args[i++]) :
+                                                                args[i++].ToCSS(env);
+
+                                                 return char.IsUpper(m.Value[1]) ?
+                                                     System.Web.HttpUtility.UrlEncode(value) :
+                                                     value;
                                              };
 
             str = Regex.Replace(str, "%[sda]", replacement, RegexOptions.IgnoreCase);

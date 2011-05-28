@@ -150,6 +150,24 @@ namespace dotless.Test.Specs
         }
 
         [Test]
+        public void StringInterpolationInUrl()
+        {
+            var input = @"
+#interpolation {
+  @var: '/dev';
+  url: url(""http://lesscss.org@{var}/image.jpg"");
+}
+";
+            var expected = @"
+#interpolation {
+  url: url(""http://lesscss.org/dev/image.jpg"");
+}";
+
+            AssertLess(input, expected);
+        }
+
+
+        [Test]
         public void BracesInQuotes()
         {
             AssertExpressionUnchanged(@"""{"" ""}""");

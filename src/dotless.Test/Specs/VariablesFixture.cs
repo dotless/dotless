@@ -350,7 +350,6 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        [Ignore("Supported by less.js but not dotless")]
         public void VariableValuesUrl()
         {
             var input = @"
