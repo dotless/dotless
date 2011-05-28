@@ -46,7 +46,6 @@ namespace dotless.Core.Parser
             else
             {
                 var skip = new Regex(@"\G([^\""'{}/\\u]+|url\([^\""'\)]+\)|u)+");
-				var skipToEndOfUrl = new Regex(@"\G[^\""'\)]*\)");
 
                 var comment = GetRegex(this._commentRegEx, RegexOptions.None);
                 var quotedstring = GetRegex(this._quotedRegEx, RegexOptions.None);
