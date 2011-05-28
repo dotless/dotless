@@ -45,7 +45,7 @@ namespace dotless.Core.Parser
                 _chunks.Add(new Chunk(_input));
             else
             {
-                var skip = new Regex(@"\G[^\""'{}/\\]+");
+                var skip = new Regex(@"\G([^\""'{}/\\u]+|url\([^\""'\)]+\)|u)+");
 				var skipToEndOfUrl = new Regex(@"\G[^\""'\)]*\)");
 
                 var comment = GetRegex(this._commentRegEx, RegexOptions.None);
@@ -69,20 +69,6 @@ namespace dotless.Core.Parser
                     if(i < _inputLength - 1 && c == '/')
                     {
                         var cc = _input[i + 1];
-						if (cc == '/')
-						{
-							if (Chunk.IsInUrl(_chunks))
-							{
-								match = skipToEndOfUrl.Match(_input, i);
-								if (!match.Success)
-								{
-									throw new ParsingException("Missing closing url bracket", i);
-								}
-								Chunk.Append(match.Value, _chunks);
-								i += match.Length;
-								continue;
-							}
-						}
                         if(cc == '/' || cc == '*')
                         {
                             match = comment.Match(_input, i);
@@ -90,7 +76,6 @@ namespace dotless.Core.Parser
                             {
                                 i += match.Length;
                                 _chunks.Add(new Chunk(match.Value, ChunkType.Comment));
-                                //Chunk.Append(match.Value, _chunks);
                                 continue;
                             } else
                             {
@@ -106,7 +91,6 @@ namespace dotless.Core.Parser
                         {
                             i += match.Length;
                             _chunks.Add(new Chunk(match.Value, ChunkType.QuotedString));
-                            //Chunk.Append(match.Value, _chunks);
                             continue;
                         } else
                         {
@@ -157,11 +141,6 @@ namespace dotless.Core.Parser
             {
                 if (this.CurrentChar != '/')
                     return null;
-
-                //Once CSS Hacks are supported, implement this exception
-                //if (comment.Value.EndsWith(@"\*/")) {
-                //    throw new ParsingException("The IE6 comment hack is not supported", parser.Tokenizer.Location.Index);
-                //}
 
                 var comment = this.Match(this._commentRegEx);
                 return comment.Value;
@@ -490,22 +469,6 @@ namespace dotless.Core.Parser
                 Chunk chunk = Chunk.ReadyForText(chunks);
                 chunk.Append(s);
             }
-
-			public static bool IsInUrl(List<Chunk> chunks)
-			{
-				Chunk last = chunks.LastOrDefault();
-				if (last == null || last.Type != Tokenizer.ChunkType.Text || last._final == true)
-					return false;
-
-				var chunk = last._builder.ToString();
-				var lastInvalidIndex = chunk.LastIndexOfAny(new char[] { ')', '(', '\'', '"' });
-				if (lastInvalidIndex < 0)
-					return false;
-				if (chunk[lastInvalidIndex] != '(')
-					return false;
-				chunk = chunk.Substring(0, lastInvalidIndex).TrimEnd();
-				return chunk.EndsWith("url");
-			}
 
             public static string CommitAll(List<Chunk> chunks)
             {
