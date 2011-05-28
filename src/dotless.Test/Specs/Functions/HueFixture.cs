@@ -30,10 +30,30 @@ namespace dotless.Test.Specs.Functions
         }
 
         [Test]
+        public void TestEditHue2()
+        {
+            AssertExpression("#deeded", "spin(hsl(120, 30, 90), 60)");
+            AssertExpression("#ededde", "spin(hsl(120, 30, 90), -60)");
+            AssertExpression("#886a11", "spin(#811, 45)");
+            AssertExpression("black", "spin(#000, 45)");
+            AssertExpression("white", "spin(#fff, 45)");
+            AssertExpression("#88aa88", "spin(#8a8, 360)");
+            AssertExpression("#88aa88", "spin(#8a8, 0)");
+            AssertExpression("rgba(136, 106, 17, 0.5)", "spin(rgba(136, 17, 17, .5), 45)");
+        }
+
+        [Test]
         public void TestEditHueTestsTypes()
         {
             AssertExpressionError("Expected color in function 'hue', found \"foo\"", 4, "hue(\"foo\", 10%)");
             AssertExpressionError("Expected number in function 'hue', found \"foo\"", 10, "hue(#fff, \"foo\")");
+        }
+
+        [Test]
+        public void TestEditHueTestsTypes2()
+        {
+            AssertExpressionError("Expected color in function 'spin', found \"foo\"", 5, "spin(\"foo\", 10%)");
+            AssertExpressionError("Expected number in function 'spin', found \"foo\"", 11, "spin(#fff, \"foo\")");
         }
     }
 }

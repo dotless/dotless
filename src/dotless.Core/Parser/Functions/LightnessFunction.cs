@@ -17,4 +17,14 @@
             return color.ToRgbColor();
         }
     }
+
+    public class LightenFunction : LightnessFunction {}
+
+    public class DarkenFunction : LightnessFunction
+    {
+        protected override Node EditHsl(HslColor color, Number number)
+        {
+            return base.EditHsl(color, -number);
+        }
+    }
 }

@@ -17,4 +17,6 @@
             return color.ToRgbColor();
         }
     }
+
+    public class SpinFunction : HueFunction { }
 }

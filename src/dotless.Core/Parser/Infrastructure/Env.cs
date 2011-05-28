@@ -1,4 +1,6 @@
-﻿namespace dotless.Core.Parser.Infrastructure
+﻿using System.Text.RegularExpressions;
+
+namespace dotless.Core.Parser.Infrastructure
 {
     using System;
     using System.Collections.Generic;
@@ -56,7 +58,9 @@
                 _functionTypes = Assembly.GetExecutingAssembly()
                     .GetTypes()
                     .Where(t => functionType.IsAssignableFrom(t) && t != functionType)
-                    .ToDictionary(GetFunctionName);
+                    .Where(t => !t.IsAbstract)
+                    .SelectMany(GetFunctionNames)
+                    .ToDictionary(p => p.Key, p => p.Value);
 
                 _functionTypes["%"] = typeof (CFormatString);
             }
@@ -69,10 +73,21 @@
             return null;
         }
 
-        private static string GetFunctionName(Type t)
+        private static IEnumerable<KeyValuePair<string, Type>> GetFunctionNames(Type t)
         {
-            var name = t.Name.ToLowerInvariant();
-            return name.EndsWith("function") ? name.Substring(0, name.Length - 8) : name;
+            var name = t.Name;
+
+            if (name.EndsWith("function", StringComparison.InvariantCultureIgnoreCase))
+                name = name.Substring(0, name.Length - 8);
+
+            name = Regex.Replace(name, @"\B[A-Z]", "-$0");
+
+            name = name.ToLowerInvariant();
+
+            yield return new KeyValuePair<string, Type>(name, t);
+
+            if(name.Contains("-"))
+                yield return new KeyValuePair<string, Type>(name.Replace("-", ""), t);
         }
     }
 }

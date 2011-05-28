@@ -84,5 +84,10 @@
         {
             return Unit == "%" ? Value*max/100d : Value;
         }
+
+        public static Number operator -(Number n)
+        {
+            return new Number(-n.Value, n.Unit);
+        }
     }
 }

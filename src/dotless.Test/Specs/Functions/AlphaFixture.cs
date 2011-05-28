@@ -54,6 +54,26 @@ namespace dotless.Test.Specs.Functions
         }
 
         [Test]
+        public void TestEditAlpha2()
+        {
+            // Opacify / Fade In
+            AssertExpression("rgba(0, 0, 0, 0.75)", "fade-in(rgba(0, 0, 0, 0.5), .25)");
+            AssertExpression("rgba(0, 0, 0, 0.3)", "fade-in(rgba(0, 0, 0, 0.2), .1)");
+            AssertExpression("rgba(0, 0, 0, 0.7)", "fade-in(rgba(0, 0, 0, 0.2), .5px)");
+            AssertExpression("black", "fade-in(rgba(0, 0, 0, 0.2), 0.8)");
+            AssertExpression("black", "fade-in(rgba(0, 0, 0, 0.2), 1)");
+            AssertExpression("rgba(0, 0, 0, 0.2)", "fade-in(rgba(0, 0, 0, 0.2), 0)");
+
+            // Transparentize / Fade Out
+            AssertExpression("rgba(0, 0, 0, 0.3)", "fade-out(rgba(0, 0, 0, 0.5), .2)");
+            AssertExpression("rgba(0, 0, 0, 0.1)", "fade-out(rgba(0, 0, 0, 0.2), .1)");
+            AssertExpression("rgba(0, 0, 0, 0.2)", "fade-out(rgba(0, 0, 0, 0.5), .3px)");
+            AssertExpression("rgba(0, 0, 0, 0)", "fade-out(rgba(0, 0, 0, 0.2), 0.2)");
+            AssertExpression("rgba(0, 0, 0, 0)", "fade-out(rgba(0, 0, 0, 0.2), 1)");
+            AssertExpression("rgba(0, 0, 0, 0.2)", "fade-out(rgba(0, 0, 0, 0.2), 0)");
+        }
+
+        [Test]
         public void TestEditAlphaPercent()
         {
             AssertExpression("rgba(0, 0, 0, 0.5)", "alpha(rgba(0, 0, 0, 0.5), 0%)");
@@ -61,12 +81,28 @@ namespace dotless.Test.Specs.Functions
             AssertExpression("rgba(0, 0, 0, 0.25)", "alpha(rgba(0, 0, 0, 0.5), -25%)");
         }
 
+        [Test]
+        public void TestEditAlphaPercent2()
+        {
+            AssertExpression("rgba(0, 0, 0, 0.5)", "fade-in(rgba(0, 0, 0, 0.5), 0%)");
+            AssertExpression("rgba(0, 0, 0, 0.75)", "fade-in(rgba(0, 0, 0, 0.5), 25%)");
+            AssertExpression("rgba(0, 0, 0, 0.25)", "fade-out(rgba(0, 0, 0, 0.5), 25%)");
+        }
 
         [Test]
         public void TestEditAlphaTestsTypes()
         {
             AssertExpressionError("Expected color in function 'alpha', found \"foo\"", 6, "alpha(\"foo\", 10%)");
             AssertExpressionError("Expected number in function 'alpha', found \"foo\"", 12, "alpha(#fff, \"foo\")");
+        }
+
+        [Test]
+        public void TestEditAlphaTestsTypes2()
+        {
+            AssertExpressionError("Expected color in function 'fade-in', found \"foo\"", 8, "fade-in(\"foo\", 10%)");
+            AssertExpressionError("Expected number in function 'fade-in', found \"foo\"", 14, "fade-in(#fff, \"foo\")");
+            AssertExpressionError("Expected color in function 'fade-out', found \"foo\"", 9, "fade-out(\"foo\", 10%)");
+            AssertExpressionError("Expected number in function 'fade-out', found \"foo\"", 15, "fade-out(#fff, \"foo\")");
         }
     }
 }

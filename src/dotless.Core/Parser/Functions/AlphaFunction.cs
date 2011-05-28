@@ -20,4 +20,14 @@
             return new Color(color.R, color.G, color.B, color.Alpha + alpha);
         }
     }
+
+    public class FadeInFunction : AlphaFunction {}
+
+    public class FadeOutFunction : AlphaFunction
+    {
+        protected override Node EditColor(Color color, Number number)
+        {
+            return base.EditColor(color, -number);
+        }
+    }
 }

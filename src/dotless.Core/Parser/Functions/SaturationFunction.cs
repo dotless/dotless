@@ -17,4 +17,14 @@
             return color.ToRgbColor();
         }
     }
+
+    public class SaturateFunction : SaturationFunction {}
+
+    public class DesaturateFunction : SaturationFunction
+    {
+        protected override Node EditHsl(HslColor color, Number number)
+        {
+            return base.EditHsl(color, -number);
+        }
+    }
 }
