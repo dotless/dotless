@@ -6,7 +6,7 @@
 
     public class SpinFunction : HslColorFunctionBase 
     {
-        protected override Infrastructure.Nodes.Node EvalHsl(HslColor color) 
+        protected override Node EvalHsl(HslColor color) 
         {
             // TODO: what should this be?
             return null;
