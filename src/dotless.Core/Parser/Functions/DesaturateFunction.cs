@@ -1,13 +1,13 @@
 ﻿namespace dotless.Core.Parser.Functions 
 {
+    using Infrastructure.Nodes;
     using Tree;
-    using Utils;
 
-    public class DesaturateFunction : HslColorAdjustmentFunctionBase 
+    public class DesaturateFunction : SaturationFunction
     {
-        protected override void AdjustColor(HslColor color, Number adjustment) 
+        protected override Node EditColor(Color color, Number number) 
         {
-            color.Saturation = Clamp(color.Saturation - adjustment.ToNumber());
+            return base.EditColor(color, number.Inverse);
         }
     }
 }

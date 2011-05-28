@@ -1,13 +1,7 @@
 ﻿namespace dotless.Core.Parser.Functions 
 {
-    using Tree;
-    using Utils;
-
-    public class LightenFunction : HslColorAdjustmentFunctionBase 
+    // Just used here as an alias
+    public class LightenFunction : LightnessFunction 
     {
-        protected override void AdjustColor(HslColor color, Number adjustment) 
-        {
-            color.Lightness = Clamp(color.Lightness + adjustment.ToNumber());
-        }
     }
 }

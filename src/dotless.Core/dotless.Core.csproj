@@ -94,7 +94,6 @@
     <Compile Include="Parameters\QueryStringParameterSource.cs" />
     <Compile Include="Parser\Functions\DarkenFunction.cs" />
     <Compile Include="Parser\Functions\DesaturateFunction.cs" />
-    <Compile Include="Parser\Functions\HslColorAdjustmentFunctionBase.cs" />
     <Compile Include="Parser\Functions\LightenFunction.cs" />
     <Compile Include="Parser\Functions\SaturateFunction.cs" />
     <Compile Include="Parser\Functions\SpinFunction.cs" />

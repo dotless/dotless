@@ -1,13 +1,12 @@
 ﻿namespace dotless.Core.Parser.Functions 
 {
     using Tree;
-    using Utils;
 
-    public class DarkenFunction : HslColorAdjustmentFunctionBase 
+    public class DarkenFunction : LightnessFunction 
     {
-        protected override void AdjustColor(HslColor color, Number adjustment) 
+        protected override Infrastructure.Nodes.Node EditColor(Color color, Number number) 
         {
-            color.Lightness = Clamp(color.Lightness - adjustment.ToNumber());
+            return base.EditColor(color, number.Inverse);
         }
     }
 }
