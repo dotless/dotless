@@ -409,5 +409,22 @@ namespace dotless.Test.Specs
 }";
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void CanHandleStringVariables()
+        {
+            var input = @"@buttonsprite : '/Images/button-sprite.png';
+a.button,
+a.button span,
+a.button input {
+background: url(@buttonsprite);
+}";
+
+            var expected = @"a.button, a.button span, a.button input {
+  background: url('/Images/button-sprite.png');
+}
+";
+            AssertLess(input, expected);
+        }
     }
 }
