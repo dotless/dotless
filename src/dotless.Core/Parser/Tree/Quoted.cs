@@ -37,17 +37,16 @@
             Quote = null;
         }
 
-        public override void ToCSS(Env env, StringBuilder output)
+        public override StringBuilder ToCSS(Env env, StringBuilder output)
         {
             if (Escaped)
             {
-                output.Append(Value);
-                return;
+                return output.Append(Value);
             }
 
-            output.Append(Quote);
-            output.Append(Value);
-            output.Append(Quote);
+            return output.Append(Quote)
+                .Append(Value)
+                .Append(Quote);
         }
 
         public override Node Evaluate(Env env)

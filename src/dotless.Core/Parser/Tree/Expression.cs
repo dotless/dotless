@@ -31,9 +31,9 @@ namespace dotless.Core.Parser.Tree
             return this;
         }
 
-        public override void ToCSS(Env env, StringBuilder output)
+        public override StringBuilder ToCSS(Env env, StringBuilder output)
         {
-            Value.JoinStringBuilder(output, Node.StringBuilderAction(env), " ");
+            return output.AppendCSS(Value, env, " ");
         }
     }
 }

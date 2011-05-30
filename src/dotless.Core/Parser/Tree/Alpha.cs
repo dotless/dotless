@@ -20,11 +20,11 @@
             return this;
         }
 
-        public override void ToCSS(Env env, StringBuilder output)
+        public override StringBuilder ToCSS(Env env, StringBuilder output)
         {
-            output.Append("alpha(opacity=");
-            Value.ToCSS(env, output);
-            output.Append(")");
+            return output.Append("alpha(opacity=")
+                .AppendCSS(Value, env)
+                .Append(")");
         }
     }
 }

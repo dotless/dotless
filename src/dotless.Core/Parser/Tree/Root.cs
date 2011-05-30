@@ -16,11 +16,11 @@ namespace dotless.Core.Parser.Tree
             Error = error;
         }
 
-        public override void ToCSS(Env env, StringBuilder output)
+        public override StringBuilder ToCSS(Env env, StringBuilder output)
         {
             try
             {
-                base.ToCSS(env, output);
+                return base.ToCSS(env, output);
             }
             catch (ParsingException e)
             {

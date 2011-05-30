@@ -45,11 +45,11 @@
             return new Url(Value.Evaluate(env));
         }
 
-        public override void ToCSS(Env env, StringBuilder output)
+        public override StringBuilder ToCSS(Env env, StringBuilder output)
         {
-            output.Append("url(");
-            Value.ToCSS(env, output);
-            output.Append(")");
+            return output.Append("url(")
+                .AppendCSS(Value, env)
+                .Append(")");
         }
     }
 }

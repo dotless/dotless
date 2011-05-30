@@ -42,24 +42,23 @@
             return this;
         }
 
-        protected override void ToCSS(Env env, Context context, StringBuilder output)
+        protected override StringBuilder ToCSS(Env env, Context context, StringBuilder output)
         {
             output.Append(Name);
 
             if (Rules != null)
             {
-                output.Append(env.Compress ? "{" : " {\n");
-                output.Append(Node.ToCSS(Rules, env, "\n")
+                return output.Append(env.Compress ? "{" : " {\n")
+                    .AppendCSS(Rules, env, "\n")
                     .Trim()
-                    .Indent(env.Compress ? 0 : 2));
-
-                output.Append(env.Compress ? "}" : "\n}\n");
+                    .Indent(env.Compress ? 0 : 2)
+                    .Append(env.Compress ? "}" : "\n}\n");
             }
             else
             {
-                output.Append(" ");
-                Value.ToCSS(env, output);
-                output.Append(";\n");
+                return output.Append(" ")
+                    .AppendCSS(Value, env)
+                    .Append(";\n");
             }
         }
     }

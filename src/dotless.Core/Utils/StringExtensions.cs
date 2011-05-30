@@ -8,15 +8,17 @@
 
     public static class StringExtensions
     {
-        public static void JoinStringBuilder<T1>(this IEnumerable<T1> list, StringBuilder output, Action<T1, StringBuilder> toString)
+        public static StringBuilder JoinStringBuilder<T1>(this IEnumerable<T1> list, StringBuilder output, Action<T1, StringBuilder> toString)
         {
-            list.JoinStringBuilder(output, toString, null);
+            return list.JoinStringBuilder(output, toString, null);
         }
 
-        public static void JoinStringBuilder<T1>(this IEnumerable<T1> list, StringBuilder output, Action<T1, StringBuilder> toString, string join)
+        public static StringBuilder JoinStringBuilder<T1>(this IEnumerable<T1> list, StringBuilder output, Action<T1, StringBuilder> toString, string join)
         {
             bool first = true,
                 hasJoinString = !string.IsNullOrEmpty(join);
+
+            output = output ?? new StringBuilder();
 
             foreach(T1 item in list)
             {
@@ -27,16 +29,18 @@
                 first = false;
                 toString(item, output);
             }
+
+            return output;
         }
 
-        public static void AppendJoin(this StringBuilder builderToAppendTo, IEnumerable<StringBuilder> buildersToAppend)
+        public static StringBuilder AppendJoin(this StringBuilder builderToAppendTo, IEnumerable<StringBuilder> buildersToAppend)
         {
-            builderToAppendTo.AppendJoin(buildersToAppend, null); 
+            return builderToAppendTo.AppendJoin(buildersToAppend, null); 
         }
 
-        public static void AppendJoin(this StringBuilder builderToAppendTo, IEnumerable<StringBuilder> buildersToAppend, string joinString)
+        public static StringBuilder AppendJoin(this StringBuilder builderToAppendTo, IEnumerable<StringBuilder> buildersToAppend, string joinString)
         {
-            buildersToAppend.JoinStringBuilder(builderToAppendTo, (builderToAppend, output) => output.Append(builderToAppend), joinString);
+            return buildersToAppend.JoinStringBuilder(builderToAppendTo, (builderToAppend, output) => output.Append(builderToAppend), joinString);
         }
 
         public static StringBuilder Indent(this StringBuilder builder, int amount)

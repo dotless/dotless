@@ -153,8 +153,9 @@ namespace dotless.Core.Parser.Tree
             return true;
         }
 
-        protected override void ToCSS(Env env, Context list, StringBuilder output)
+        protected override StringBuilder ToCSS(Env env, Context list, StringBuilder output)
         {
+            return output;
         }
     }
 }

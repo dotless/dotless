@@ -128,7 +128,7 @@ namespace dotless.Core.Parser.Tree
             set { RGB[2] = value; }
         }
 
-        public override void ToCSS(Env env, StringBuilder output)
+        public override StringBuilder ToCSS(Env env, StringBuilder output)
         {
             var rgb = RGB
                 .Select(d => (int) Math.Round(d, MidpointRounding.AwayFromZero))
@@ -137,8 +137,7 @@ namespace dotless.Core.Parser.Tree
 
             if (Alpha < 1.0)
             {
-                output.AppendFormat(CultureInfo.InvariantCulture, "rgba({0}, {1}, {2}, {3})", rgb[0], rgb[1], rgb[2], Alpha);
-                return;
+                return output.AppendFormat(CultureInfo.InvariantCulture, "rgba({0}, {1}, {2}, {3})", rgb[0], rgb[1], rgb[2], Alpha);
             }
 
             var keyword = GetKeyword(rgb);
@@ -151,11 +150,11 @@ namespace dotless.Core.Parser.Tree
             if (env.Compress)
             {
                 hexString = Regex.Replace(hexString, @"#(.)\1(.)\2(.)\3", "#$1$2$3");
-                output.Append(string.IsNullOrEmpty(keyword) || hexString.Length < keyword.Length ? hexString : keyword);
+                return output.Append(string.IsNullOrEmpty(keyword) || hexString.Length < keyword.Length ? hexString : keyword);
             }
             else
             {
-                output.Append(!string.IsNullOrEmpty(keyword) ? keyword : hexString);
+                return output.Append(!string.IsNullOrEmpty(keyword) ? keyword : hexString);
             }
         }
 

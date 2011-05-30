@@ -28,22 +28,22 @@
         {
         }
 
-        private void FormatValue(StringBuilder output)
+        private StringBuilder FormatValue(StringBuilder output)
         {
             if (Value == 0)
             {
-                output.Append("0");
+                return output.Append("0");
             }
             else
             {
-                output.AppendFormat(CultureInfo.InvariantCulture, "{0:0.##}", Value);
+                return output.AppendFormat(CultureInfo.InvariantCulture, "{0:0.##}", Value);
             }
         }
 
-        public override void ToCSS(Env env, StringBuilder output)
+        public override StringBuilder ToCSS(Env env, StringBuilder output)
         {
-            FormatValue(output);
-            output.Append(Unit);
+            return FormatValue(output)
+                .Append(Unit);
         }
 
 

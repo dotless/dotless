@@ -21,9 +21,9 @@
                 Value = value.Trim();
         }
 
-        public override void ToCSS(Env env, StringBuilder output)
+        public override StringBuilder ToCSS(Env env, StringBuilder output)
         {
-            output.Append(
+            return output.Append(
                 new Dictionary<string, string> { 
                   { "", "" }, 
                   { " ", " " },

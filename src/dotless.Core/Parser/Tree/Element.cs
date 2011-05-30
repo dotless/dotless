@@ -15,10 +15,10 @@
             Value = value == null ? "" : value.Trim();
         }
 
-        public override void ToCSS(Env env, StringBuilder output)
+        public override StringBuilder ToCSS(Env env, StringBuilder output)
         {
-            Combinator.ToCSS(env, output);
-            output.Append(Value);
+            return output.AppendCSS(Combinator, env)
+                .Append(Value);
         }
     }
 }

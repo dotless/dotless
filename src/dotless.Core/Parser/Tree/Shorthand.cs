@@ -15,11 +15,11 @@
             Second = second;
         }
 
-        public override void ToCSS(Env env, StringBuilder output)
+        public override StringBuilder ToCSS(Env env, StringBuilder output)
         {
-            First.ToCSS(env, output);
-            output.Append("/");
-            Second.ToCSS(env, output);
+            return output.AppendCSS(First, env)
+                    .Append("/")
+                    .AppendCSS(Second, env);
         }
     }
 }

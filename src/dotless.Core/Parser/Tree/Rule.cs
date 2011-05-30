@@ -35,16 +35,15 @@ namespace dotless.Core.Parser.Tree
             return rule;
         }
 
-        public override void ToCSS(Env env, StringBuilder output)
+        public override StringBuilder ToCSS(Env env, StringBuilder output)
         {
             if (Variable)
-                return;
+                return output;
 
-            output.Append(Name);
-
-            output.Append(env.Compress ? ":" : ": ");
-            Value.ToCSS(env, output);
-            output.Append(";");
+            return output.Append(Name)
+                .Append(env.Compress ? ":" : ": ")
+                .AppendCSS(Value, env)
+                .Append(";");
         }
     }
 }

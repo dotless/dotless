@@ -8,6 +8,7 @@ namespace dotless.Core.Parser.Infrastructure
     using Tree;
     using Utils;
     using System.Text;
+    using dotless.Core.Parser.Infrastructure.Nodes;
 
     public class Context : IEnumerable<IEnumerable<Selector>>
     {
@@ -55,12 +56,11 @@ namespace dotless.Core.Parser.Infrastructure
             Paths.AddRange(context.Paths.Select(path => before.Concat(path).Concat(after).ToList()));
         }
 
-        public void ToCSS(Env env, StringBuilder output)
+        public StringBuilder ToCSS(Env env, StringBuilder output)
         {
-            Paths.JoinStringBuilder(output, (path, suboutput) => {
-                StringBuilder sb = new StringBuilder();
-                path.JoinStringBuilder(sb, (selector, subsuboutput) => selector.ToCSS(env, subsuboutput));
-                suboutput.Append(sb.Trim());
+            return Paths.JoinStringBuilder(output, (path, suboutput) => {
+                suboutput.Append(
+                    path.ToCSS(env).Trim());
             }, env.Compress ? "," : (Paths.Count > 3 ? ",\n" : ", "));
         }
 

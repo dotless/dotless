@@ -111,31 +111,29 @@ namespace dotless.Core.Parser.Tree
 
         public string ToCSS()
         {
-            return ToCSS(new Env());
+            return this.ToCSS(new Env());
         }
 
-        public override void ToCSS(Env env, StringBuilder output)
+        public override StringBuilder ToCSS(Env env, StringBuilder output)
         {
             if (!Rules.Any())
-                return;
+                return output;
 
             Evaluate(env);
 
-            StringBuilder suboutput = new StringBuilder();
-
-            ToCSS(env, new Context(), suboutput);
+            StringBuilder suboutput = ToCSS(env, new Context(), new StringBuilder());
 
             if (env.Compress)
             {
-                output.Append(Regex.Replace(suboutput.ToString(), @"(\s)+", " "));
+                return output.Append(Regex.Replace(suboutput.ToString(), @"(\s)+", " "));
             }
             else
             {
-                output.Append(suboutput);
+                return output.Append(suboutput);
             }
         }
 
-        protected virtual void ToCSS(Env env, Context context, StringBuilder output)
+        protected virtual StringBuilder ToCSS(Env env, Context context, StringBuilder output)
         {
             var css = new List<string>(); // The CSS output
             StringBuilder rulesetOutput = new StringBuilder();
@@ -199,7 +197,7 @@ namespace dotless.Core.Parser.Tree
                 }
             }
 
-            output.Append(rulesetOutput);
+            return output.Append(rulesetOutput);
         }
 
         public override string ToString()

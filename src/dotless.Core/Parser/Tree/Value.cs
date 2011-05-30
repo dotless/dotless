@@ -18,19 +18,21 @@
             Important = important;
         }
 
-        public override void ToCSS(Env env, StringBuilder output)
+        public override StringBuilder ToCSS(Env env, StringBuilder output)
         {
-            Values.JoinStringBuilder(output, (v, builder) => v.ToCSS(env, builder), env.Compress ? "," : ", ");
+            output.AppendCSS(Values, env, env.Compress ? "," : ", ");
  
             if  (!string.IsNullOrEmpty(Important)) {
                 output.Append(" ");
                 output.Append(Important);
             }
+
+            return output;
         }
 
         public override string ToString()
         {
-            return ToCSS(new Env()); // only used during debugging.
+            return this.ToCSS(new Env()); // only used during debugging.
         }
 
         public override Node Evaluate(Env env)

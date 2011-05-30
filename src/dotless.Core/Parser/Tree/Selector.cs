@@ -32,34 +32,33 @@
                 Elements[0].Value == other.Elements[0].Value;
         }
 
-        public override void ToCSS(Env env, StringBuilder output)
+        public override StringBuilder ToCSS(Env env, StringBuilder output)
         {
             if (_css != null)
             {
-                output.AppendJoin(_css);
-                return;
+                return output.AppendJoin(_css);
             }
 
             var css = new List<StringBuilder>();
 
             if (PreComments)
             {
-                css.Add(Node.ToCSS(PreComments.Cast<Node>(), env));
+                css.Add(PreComments.ToCSS<Comment>(env));
             }
 
-            css.Add(Node.ToCSS(Elements.Cast<Node>(), env));
+            css.Add(Elements.ToCSS<Element>(env));
 
             if (PostComments)
             {
-                css.Add(Node.ToCSS(PostComments.Cast<Node>(), env));
+                css.Add(PostComments.ToCSS<Comment>(env));
             }
 
-            output.AppendJoin(_css = css);
+            return output.AppendJoin(_css = css);
         }
 
         public override string ToString()
         {
-            return ToCSS(new Env());
+            return this.ToCSS(new Env());
         }
     }
 }

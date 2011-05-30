@@ -15,9 +15,9 @@
             Silent = silent;
         }
 
-        public override void ToCSS(Env env, StringBuilder output)
+        public override StringBuilder ToCSS(Env env, StringBuilder output)
         {
-            output.Append(env.Compress ? "" : Value);
+            return output.Append(env.Compress ? "" : Value);
         }
     }
 }

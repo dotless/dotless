@@ -40,9 +40,9 @@ namespace dotless.Core.Parser.Tree
                 Importer.Import(this);
         }
 
-        protected override void ToCSS(Env env, Context context, StringBuilder output)
+        protected override StringBuilder ToCSS(Env env, Context context, StringBuilder output)
         {
-            base.ToCSS(env, output); // should throw InvalidOperationException
+            return base.ToCSS(env, output); // should throw InvalidOperationException
         }
 
         public override Node Evaluate(Env env)

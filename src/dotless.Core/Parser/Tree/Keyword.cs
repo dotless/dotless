@@ -18,9 +18,9 @@
             return (Node) Color.GetColorFromKeyword(Value) ?? this;
         }
 
-        public override void ToCSS(Env env, StringBuilder output)
+        public override StringBuilder ToCSS(Env env, StringBuilder output)
         {
-            output.Append(Value);
+            return output.Append(Value);
         }
     }
 }
