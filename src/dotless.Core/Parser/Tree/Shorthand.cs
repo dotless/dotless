@@ -2,6 +2,8 @@
 {
     using Infrastructure;
     using Infrastructure.Nodes;
+    using Utils;
+    using System.Text;
 
     public class Shorthand : Node
     {
@@ -14,9 +16,12 @@
             Second = second;
         }
 
-        public override string ToCSS(Env env)
+        public override StringBuilder ToCSS(Env env, StringBuilder output)
         {
-            return First.ToCSS(env) + "/" + Second.ToCSS(env);
+            return output
+                .AppendCSS(First, env)
+                .Append("/")
+                .AppendCSS(Second, env);
         }
     }
 }

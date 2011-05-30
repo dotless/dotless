@@ -5,10 +5,11 @@
     using Infrastructure.Nodes;
     using Utils;
     using System.Collections.Generic;
+    using System.Text;
 
     public class Selector : Node
     {
-        private string _css;
+        private List<StringBuilder> _css;
         public NodeList<Element> Elements { get; set; }
         public NodeList<Comment> PreComments { get; set; }
         public NodeList<Comment> PostComments { get; set; }
@@ -31,26 +32,28 @@
                 Elements[0].Value == other.Elements[0].Value;
         }
 
-        public override string ToCSS(Env env)
+        public override StringBuilder ToCSS(Env env, StringBuilder output)
         {
-            if (!string.IsNullOrEmpty(_css))
-                return _css;
+            if (_css != null)
+            {
+                return output.AppendJoin(_css);
+            }
 
-            var css = new List<string>();
+            var css = new List<StringBuilder>();
 
             if (PreComments)
             {
-                css.AddRange(PreComments.Select(c => c.ToCSS(env)));
+                css.Add(PreComments.ToCSS<Comment>(env));
             }
 
-            css.AddRange(Elements.Select(e => e.ToCSS(env)));
+            css.Add(Elements.ToCSS<Element>(env));
 
             if (PostComments)
             {
-                css.AddRange(PostComments.Select(c => c.ToCSS(env)));
+                css.Add(PostComments.ToCSS<Comment>(env));
             }
 
-            return _css = css.JoinStrings("");
+            return output.AppendJoin(_css = css);
         }
 
         public override string ToString()

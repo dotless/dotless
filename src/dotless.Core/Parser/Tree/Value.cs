@@ -5,6 +5,7 @@
     using Infrastructure;
     using Infrastructure.Nodes;
     using Utils;
+    using System.Text;
 
     public class Value : Node
     {
@@ -17,16 +18,21 @@
             Important = important;
         }
 
-        public override string ToCSS(Env env)
+        public override StringBuilder ToCSS(Env env, StringBuilder output)
         {
-            return 
-                Values.Select(v => v.ToCSS(env)).JoinStrings(env.Compress ? "," : ", ") + 
-                (string.IsNullOrEmpty(Important) ? "" : " " + Important);
+            output.AppendCSS(Values, env, env.Compress ? "," : ", ");
+ 
+            if  (!string.IsNullOrEmpty(Important)) {
+                output.Append(" ")
+                      .Append(Important);
+            }
+
+            return output;
         }
 
         public override string ToString()
         {
-            return ToCSS(new Env()); // only used during debugging.
+            return this.ToCSS(new Env()); // only used during debugging.
         }
 
         public override Node Evaluate(Env env)
