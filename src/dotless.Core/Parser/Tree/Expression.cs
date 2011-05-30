@@ -6,6 +6,7 @@ namespace dotless.Core.Parser.Tree
     using Infrastructure;
     using Infrastructure.Nodes;
     using Utils;
+    using System.Text;
 
     public class Expression : Node
     {
@@ -30,9 +31,9 @@ namespace dotless.Core.Parser.Tree
             return this;
         }
 
-        public override string ToCSS(Env env)
+        public override void ToCSS(Env env, StringBuilder output)
         {
-            return Value.Select(e => e.ToCSS(env)).JoinStrings(" ");
+            Value.JoinStringBuilder(output, Node.StringBuilderAction(env), " ");
         }
     }
 }

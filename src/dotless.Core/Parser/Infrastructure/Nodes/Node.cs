@@ -1,10 +1,30 @@
 ﻿namespace dotless.Core.Parser.Infrastructure.Nodes
 {
     using System;
+    using System.Text;
+    using System.Collections.Generic;
+    using dotless.Core.Utils;
 
     public abstract class Node
     {
         public int Index { get; set; }
+
+        protected static StringBuilder ToCSS(IEnumerable<Node> nodes, Env env)
+        {
+            return ToCSS(nodes, env, null);
+        }
+
+        protected static StringBuilder ToCSS(IEnumerable<Node> nodes, Env env, string joinString)
+        {
+            StringBuilder output = new StringBuilder();
+            nodes.JoinStringBuilder(output, Node.StringBuilderAction(env), joinString);
+            return output;
+        }
+
+        protected static Action<Node, StringBuilder> StringBuilderAction(Env env)
+        {
+            return (node, builder) => { node.ToCSS(env, builder); };
+        }
 
         #region Boolean Operators
 
@@ -40,10 +60,17 @@
 
         #endregion
 
-        public virtual string ToCSS(Env env)
+        public virtual void ToCSS(Env env, StringBuilder output)
         {
             throw new InvalidOperationException(string.Format("ToCSS() not valid on this type of node. '{0}'",
                                                               GetType().Name));
+        }
+
+        public virtual string ToCSS(Env env)
+        {
+            StringBuilder sb = new StringBuilder();
+            ToCSS(env, sb);
+            return sb.ToString();
         }
 
         public virtual Node Evaluate(Env env)

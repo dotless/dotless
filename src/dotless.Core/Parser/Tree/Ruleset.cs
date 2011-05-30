@@ -6,6 +6,7 @@ namespace dotless.Core.Parser.Tree
     using Infrastructure;
     using Infrastructure.Nodes;
     using Utils;
+    using System.Text;
 
     public class Ruleset : Node
     {
@@ -13,8 +14,6 @@ namespace dotless.Core.Parser.Tree
         public List<Node> Rules { get; set; }
 
         private Dictionary<string, List<Closure>> _lookups;
-        private Dictionary<string, Rule> _variables;
-
 
         public Ruleset(NodeList<Selector> selectors, List<Node> rules)
             : this()
@@ -115,84 +114,92 @@ namespace dotless.Core.Parser.Tree
             return ToCSS(new Env());
         }
 
-        public override string ToCSS(Env env)
+        public override void ToCSS(Env env, StringBuilder output)
         {
             if (!Rules.Any())
-                return "";
+                return;
 
             Evaluate(env);
 
-            var css = ToCSS(env, new Context());
+            StringBuilder suboutput = new StringBuilder();
+
+            ToCSS(env, new Context(), suboutput);
 
             if (env.Compress)
-                return Regex.Replace(css, @"(\s)+", " ");
-
-            return css;
+            {
+                output.Append(Regex.Replace(suboutput.ToString(), @"(\s)+", " "));
+            }
+            else
+            {
+                output.Append(suboutput);
+            }
         }
 
-        protected virtual string ToCSS(Env env, Context context)
+        protected virtual void ToCSS(Env env, Context context, StringBuilder output)
         {
             var css = new List<string>(); // The CSS output
-            var rules = new List<string>(); // node.Rule instances
-            var rulesets = new List<string>(); // node.Ruleset instances
+            StringBuilder rulesetOutput = new StringBuilder();
+            var rules = new List<StringBuilder>(); // node.Ruleset instances
             var paths = new Context(); // Current selectors
+            bool isRoot = this is Root;
 
-            if (!(this is Root))
+            if (!isRoot)
             {
                 paths.AppendSelectors(context, Selectors);
             }
 
-            foreach (var rule in Rules)
+            foreach (var node in Rules)
             {
-                if (rule.IgnoreOutput())
+                if (node.IgnoreOutput())
                     continue;
 
-                if(rule is Comment && ((Comment)rule).Silent)
+                var comment = node as Comment;
+                if(comment != null && comment.Silent)
                     continue;
 
-                if (rule is Ruleset)
+                var ruleset = node as Ruleset;
+                if (ruleset != null)
                 {
-                    var ruleset = (Ruleset) rule;
-                    rulesets.Add(ruleset.ToCSS(env, paths));
+                    ruleset.ToCSS(env, paths, rulesetOutput);
                 }
-                else if (rule is Rule)
-                {
-                    var r = (rule as Rule);
-
-                    if (!r.Variable)
-                        rules.Add(r.ToCSS(env));
-                }
-                else
-                {
-                  if (this is Root)
-                    rulesets.Add(rule.ToCSS(env));
-                  else
-                    rules.Add(rule.ToCSS(env));
+                else {
+                    var rule = node as Rule;
+                    if ((rule != null && !rule.Variable) || (rule == null && !isRoot))
+                    {
+                        var ruleStringBuilder = new StringBuilder();
+                        node.ToCSS(env, ruleStringBuilder);
+                        rules.Add(ruleStringBuilder);
+                    }
+                    else if (rule == null)
+                    {
+                        node.ToCSS(env, rulesetOutput);
+                    }
                 }
             }
-
-            var rulesetsStr = rulesets.JoinStrings("");
 
             // If this is the root node, we don't render
             // a selector, or {}.
             // Otherwise, only output if this ruleset has rules.
             if (this is Root)
-                css.Add(rules.JoinStrings(env.Compress ? "" : "\n"));
+            {
+                output.AppendJoin(rules, env.Compress ? "" : "\n");
+            }
             else
             {
                 if (rules.Count > 0)
                 {
-                    css.Add(paths.ToCSS(env));
+                    paths.ToCSS(env, output);
 
-                    css.Add(
-                        (env.Compress ? "{" : " {\n  ") +
-                        rules.JoinStrings(env.Compress ? "" : "\n  ") +
-                        (env.Compress ? "}" : "\n}\n"));
+                    output.Append(env.Compress ? "{" : " {\n  ");
+
+                    output.AppendJoin(rules, env.Compress ? "" : "\n  ");
+                    
+                    output.Append(env.Compress ? "}" : "\n}\n");
+
                 }
             }
-            css.Add(rulesetsStr);
 
-            return css.JoinStrings("");
+            output.Append(rulesetOutput);
         }
 
         public override string ToString()

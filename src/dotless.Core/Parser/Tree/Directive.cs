@@ -5,6 +5,7 @@
     using Infrastructure;
     using Infrastructure.Nodes;
     using Utils;
+    using System.Text;
 
     public class Directive : Ruleset
     {
@@ -41,15 +42,25 @@
             return this;
         }
 
-        protected override string ToCSS(Env env, Context context)
+        protected override void ToCSS(Env env, Context context, StringBuilder output)
         {
-            if (Rules != null)
-                return Name + 
-                    (env.Compress ? "{" : " {\n") + 
-                    Rules.Select(r => r.ToCSS(env)).JoinStrings("\n").Trim().Indent(env.Compress ? 0 : 2) + 
-                    (env.Compress ? "}" : "\n}\n");
+            output.Append(Name);
 
-            return Name + " " + Value.ToCSS(env) + ";\n";
+            if (Rules != null)
+            {
+                output.Append(env.Compress ? "{" : " {\n");
+                output.Append(Node.ToCSS(Rules, env, "\n")
+                    .Trim()
+                    .Indent(env.Compress ? 0 : 2));
+
+                output.Append(env.Compress ? "}" : "\n}\n");
+            }
+            else
+            {
+                output.Append(" ");
+                Value.ToCSS(env, output);
+                output.Append(";\n");
+            }
         }
     }
 }

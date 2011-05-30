@@ -2,6 +2,7 @@
 {
     using Infrastructure;
     using Infrastructure.Nodes;
+    using System.Text;
 
     public class Element : Node
     {
@@ -14,9 +15,10 @@
             Value = value == null ? "" : value.Trim();
         }
 
-        public override string ToCSS(Env env)
+        public override void ToCSS(Env env, StringBuilder output)
         {
-            return Combinator.ToCSS(env) + Value;
+            Combinator.ToCSS(env, output);
+            output.Append(Value);
         }
     }
 }

@@ -2,6 +2,7 @@
 {
     using Infrastructure;
     using Infrastructure.Nodes;
+    using System.Text;
 
     public class Alpha : Call
     {
@@ -19,9 +20,11 @@
             return this;
         }
 
-        public override string ToCSS(Env env)
+        public override void ToCSS(Env env, StringBuilder output)
         {
-            return string.Format("alpha(opacity={0})", Value.ToCSS(env));
+            output.Append("alpha(opacity=");
+            Value.ToCSS(env, output);
+            output.Append(")");
         }
     }
 }

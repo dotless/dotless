@@ -51,8 +51,6 @@
             {
                 throw new ParsingException(e, Index);
             }
-
-            return null;
         }
 
         public static double Operate(string op, double first, double second)

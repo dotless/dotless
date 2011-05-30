@@ -2,6 +2,7 @@
 {
     using Infrastructure;
     using Infrastructure.Nodes;
+    using System.Text;
 
     public class Comment : Node
     {
@@ -14,9 +15,9 @@
             Silent = silent;
         }
 
-        public override string ToCSS(Env env)
+        public override void ToCSS(Env env, StringBuilder output)
         {
-            return env.Compress ? "" : Value;
+            output.Append(env.Compress ? "" : Value);
         }
     }
 }
