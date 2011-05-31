@@ -49,9 +49,10 @@
             if (Rules != null)
             {
                 return output.Append(env.Compress ? "{" : " {\n")
-                    .AppendCSS(Rules, env, "\n")
-                    .Trim()
-                    .Indent(env.Compress ? 0 : 2)
+                    .Append(
+                        Rules.ToCSS(env, "\n")
+                        .Trim()
+                        .Indent(env.Compress ? 0 : 2))
                     .Append(env.Compress ? "}" : "\n}\n");
             }
             else

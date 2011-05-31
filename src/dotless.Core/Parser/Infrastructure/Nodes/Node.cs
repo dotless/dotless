@@ -49,6 +49,12 @@
                                                               GetType().Name));
         }
 
+        public string ToCSS(Env env)
+        {
+            return this.ToCSS(env, new StringBuilder())
+                        .ToString();
+        }
+
         public virtual Node Evaluate(Env env)
         {
             return this;

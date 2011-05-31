@@ -23,8 +23,8 @@
             output.AppendCSS(Values, env, env.Compress ? "," : ", ");
  
             if  (!string.IsNullOrEmpty(Important)) {
-                output.Append(" ");
-                output.Append(Important);
+                output.Append(" ")
+                    .Append(Important);
             }
 
             return output;

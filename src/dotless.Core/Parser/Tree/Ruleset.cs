@@ -178,7 +178,7 @@ namespace dotless.Core.Parser.Tree
             // If this is the root node, we don't render
             // a selector, or {}.
             // Otherwise, only output if this ruleset has rules.
-            if (this is Root)
+            if (isRoot)
             {
                 output.AppendJoin(rules, env.Compress ? "" : "\n");
             }
