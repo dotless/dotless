@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using Infrastructure;
     using Infrastructure.Nodes;
+    using System.Text;
 
     public class Combinator : Node
     {
@@ -20,9 +21,10 @@
                 Value = value.Trim();
         }
 
-        public override string ToCSS(Env env)
+        public override StringBuilder ToCSS(Env env, StringBuilder output)
         {
-            return new Dictionary<string, string> { 
+            return output.Append(
+                new Dictionary<string, string> { 
                   { "", "" }, 
                   { " ", " " },
                   { "&", "" },
@@ -32,7 +34,7 @@
                   { "+", env.Compress ? "+" : " + " },
                   { "~", env.Compress ? "~" : " ~ " },
                   { ">", env.Compress ? ">" : " > " } 
-              }[Value];
+              }[Value]);
         }
     }
 }

@@ -6,6 +6,7 @@ namespace dotless.Core
     using Exceptions;
     using Loggers;
     using Parser.Infrastructure;
+    using dotless.Core.Parser.Infrastructure.Nodes;
 
     public class LessEngine : ILessEngine
     {

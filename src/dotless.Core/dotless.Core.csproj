@@ -97,6 +97,7 @@
     <Compile Include="Parser\Functions\ContrastFunction.cs" />
     <Compile Include="Parser\Infrastructure\Closure.cs" />
     <Compile Include="Parser\Infrastructure\NamedArgument.cs" />
+    <Compile Include="Parser\Infrastructure\Nodes\NodeUtils.cs" />
     <Compile Include="Parser\Tree\Script.cs" />
     <Compile Include="Parser\Tree\Root.cs" />
     <Compile Include="Response\CachedCssResponse.cs">

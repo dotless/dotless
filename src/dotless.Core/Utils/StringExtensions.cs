@@ -3,9 +3,87 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Text;
+    using System;
 
     public static class StringExtensions
     {
+        public static StringBuilder JoinStringBuilder<T1>(this IEnumerable<T1> list, StringBuilder output, Action<T1, StringBuilder> toString)
+        {
+            return list.JoinStringBuilder(output, toString, null);
+        }
+
+        public static StringBuilder JoinStringBuilder<T1>(this IEnumerable<T1> list, StringBuilder output, Action<T1, StringBuilder> toString, string join)
+        {
+            bool first = true,
+                hasJoinString = !string.IsNullOrEmpty(join);
+
+            output = output ?? new StringBuilder();
+
+            foreach(T1 item in list)
+            {
+                if  (!first && hasJoinString)
+                {
+                    output.Append(join);
+                }
+                first = false;
+                toString(item, output);
+            }
+
+            return output;
+        }
+
+        public static StringBuilder AppendJoin(this StringBuilder builderToAppendTo, IEnumerable<StringBuilder> buildersToAppend)
+        {
+            return builderToAppendTo.AppendJoin(buildersToAppend, null); 
+        }
+
+        public static StringBuilder AppendJoin(this StringBuilder builderToAppendTo, IEnumerable<StringBuilder> buildersToAppend, string joinString)
+        {
+            return buildersToAppend.JoinStringBuilder(builderToAppendTo, (builderToAppend, output) => output.Append(builderToAppend), joinString);
+        }
+
+        public static StringBuilder Indent(this StringBuilder builder, int amount)
+        {
+            if (amount > 0)
+            {
+                string indentation = new string(' ', amount);
+                builder.Replace("\n", "\n" + indentation);
+                builder.Insert(0, indentation);
+            }
+
+            return builder;
+        }
+
+        public static StringBuilder Trim(this StringBuilder builder)
+        {
+            int trimLLength = 0;
+            int length = builder.Length;
+
+            while (trimLLength < length && char.IsWhiteSpace(builder[trimLLength]))
+            {
+                trimLLength++;
+            }
+
+            if (trimLLength > 0)
+            {
+                builder.Remove(0, trimLLength);
+                length -= trimLLength;
+            }
+
+            int trimRLength = 0;
+            while (trimRLength < length && char.IsWhiteSpace(builder[length - (trimRLength + 1)]))
+            {
+                trimRLength++;
+            }
+            if (trimRLength > 0)
+            {
+                builder.Remove(length - trimRLength, trimRLength);
+            }
+
+            return builder;
+        }
+
         public static string Indent(this string str, int indent)
         {
             if(indent == 0) return str;

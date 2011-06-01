@@ -1,4 +1,5 @@
-﻿namespace dotless.Core.Parser.Infrastructure.Nodes
+﻿using System.Text;
+namespace dotless.Core.Parser.Infrastructure.Nodes
 {
     public class TextNode : Node
     {
@@ -19,9 +20,10 @@
             return n1 ?? n2;
         }
 
-        public override string ToCSS(Env env)
+        public override StringBuilder ToCSS(Env env, StringBuilder output)
         {
-            return env != null && env.Compress ? Value.Trim() : Value;
+            return output.Append(
+                env != null && env.Compress ? Value.Trim() : Value);
         }
 
         public override string ToString()

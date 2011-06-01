@@ -3,6 +3,7 @@
     using System.Text.RegularExpressions;
     using Infrastructure;
     using Infrastructure.Nodes;
+    using System.Text;
 
     public class Quoted : TextNode
     {
@@ -36,12 +37,16 @@
             Quote = null;
         }
 
-        public override string ToCSS(Env env)
+        public override StringBuilder ToCSS(Env env, StringBuilder output)
         {
-            if(Escaped)
-                return Value;
+            if (Escaped)
+            {
+                return output.Append(Value);
+            }
 
-            return Quote + Value + Quote;
+            return output.Append(Quote)
+                .Append(Value)
+                .Append(Quote);
         }
 
         public override Node Evaluate(Env env)

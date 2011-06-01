@@ -5,6 +5,7 @@ namespace dotless.Core.Parser.Tree
     using Exceptions;
     using Infrastructure;
     using Infrastructure.Nodes;
+    using System.Text;
 
     public class Root : Ruleset
     {
@@ -15,11 +16,11 @@ namespace dotless.Core.Parser.Tree
             Error = error;
         }
 
-        public override string ToCSS(Env env)
+        public override StringBuilder ToCSS(Env env, StringBuilder output)
         {
             try
             {
-                return base.ToCSS(env);
+                return base.ToCSS(env, output);
             }
             catch (ParsingException e)
             {
