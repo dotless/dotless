@@ -59,7 +59,7 @@
                     .GetTypes()
                     .Where(t => functionType.IsAssignableFrom(t) && t != functionType)
                     .Where(t => !t.IsAbstract)
-                    .SelectMany(GetFunctionNames)
+                    .SelectMany<Type, KeyValuePair<string, Type>>(GetFunctionNames)
                     .ToDictionary(p => p.Key, p => p.Value);
 
                 _functionTypes["%"] = typeof (CFormatString);
