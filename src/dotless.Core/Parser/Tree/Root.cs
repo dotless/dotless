@@ -1,9 +1,8 @@
-using System.Text.RegularExpressions;
-
 namespace dotless.Core.Parser.Tree
 {
     using System;
     using System.Collections.Generic;
+    using System.Text.RegularExpressions;
     using Exceptions;
     using Infrastructure;
     using Infrastructure.Nodes;

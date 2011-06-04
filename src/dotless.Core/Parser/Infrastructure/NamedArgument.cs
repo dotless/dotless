@@ -1,7 +1,7 @@
-﻿using dotless.Core.Parser.Tree;
-
-namespace dotless.Core.Parser.Infrastructure
+﻿namespace dotless.Core.Parser.Infrastructure
 {
+    using Tree;
+
     public class NamedArgument
     {
         public string Name { get; set; }

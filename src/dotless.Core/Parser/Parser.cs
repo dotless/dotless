@@ -2,7 +2,6 @@
 
 namespace dotless.Core.Parser
 {
-    using System.Collections.Generic;
     using Exceptions;
     using Importers;
     using Infrastructure;

@@ -1,9 +1,9 @@
 ﻿namespace dotless.Core
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Text;
     using Parameters;
-    using System.Linq;
 
     public class ParameterDecorator : ILessEngine
     {

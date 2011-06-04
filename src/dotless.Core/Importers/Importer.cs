@@ -5,8 +5,8 @@ namespace dotless.Core.Importers
     using System.IO;
     using System.Linq;
     using Input;
-    using Parser.Tree;
     using Parser;
+    using Parser.Tree;
     using Utils;
 
     public class Importer

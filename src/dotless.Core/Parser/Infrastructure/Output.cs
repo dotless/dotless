@@ -1,9 +1,9 @@
 ﻿namespace dotless.Core.Parser.Infrastructure
 {
-    using Nodes;
     using System;
     using System.Collections.Generic;
     using System.Text;
+    using Nodes;
 
     public class Output
     {

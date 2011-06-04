@@ -1,7 +1,6 @@
-using dotless.Core.Exceptions;
-
 namespace dotless.Core.Parser.Functions
 {
+    using Exceptions;
     using Infrastructure;
     using Infrastructure.Nodes;
     using Tree;

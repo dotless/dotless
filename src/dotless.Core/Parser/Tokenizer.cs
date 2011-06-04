@@ -146,7 +146,7 @@ namespace dotless.Core.Parser
             }
             else
             {
-                if (_chunks[_j].Type == Tokenizer.ChunkType.Comment)
+                if (_chunks[_j].Type == ChunkType.Comment)
                 {
                     string val = _chunks[_j].Value;
                     Advance(_chunks[_j].Value.Length);
@@ -170,7 +170,7 @@ namespace dotless.Core.Parser
                 var quotedstring = this.Match(this._quotedRegEx);
                 return quotedstring.Value;
             } else {
-                if (_chunks[_j].Type == Tokenizer.ChunkType.QuotedString) {
+                if (_chunks[_j].Type == ChunkType.QuotedString) {
                     string val = _chunks[_j].Value;
                     Advance(_chunks[_j].Value.Length);
                     return val;
@@ -199,7 +199,7 @@ namespace dotless.Core.Parser
 
         public CharMatchResult Match(char tok)
         {
-            if  (_i == _inputLength || _chunks[_j].Type != Tokenizer.ChunkType.Text) {
+            if  (_i == _inputLength || _chunks[_j].Type != ChunkType.Text) {
                 return null;
             }
 
@@ -221,7 +221,7 @@ namespace dotless.Core.Parser
 
         public RegexMatchResult Match(string tok, bool caseInsensitive)
         {
-            if (_i == _inputLength || _chunks[_j].Type != Tokenizer.ChunkType.Text) {
+            if (_i == _inputLength || _chunks[_j].Type != ChunkType.Text) {
                 return null;
             }
 
@@ -262,7 +262,7 @@ namespace dotless.Core.Parser
                 //If we absorbed the start of an inline comment then turn it into text so the rest can be absorbed
                 if (_chunks[_j].Type == ChunkType.Comment && _chunks[_j].Value.StartsWith("//"))
                 {
-                    _chunks[_j].Type = Tokenizer.ChunkType.Text;
+                    _chunks[_j].Type = ChunkType.Text;
                 }
             }
 
@@ -422,7 +422,7 @@ namespace dotless.Core.Parser
             public Chunk(string val)
             {
                 Value = val;
-                Type = Tokenizer.ChunkType.Text;
+                Type = ChunkType.Text;
             }
 
             public Chunk(string val, ChunkType type)
@@ -434,10 +434,10 @@ namespace dotless.Core.Parser
             public Chunk()
             {
                 _builder = new StringBuilder();
-                Type = Tokenizer.ChunkType.Text;
+                Type = ChunkType.Text;
             }
 
-            public Tokenizer.ChunkType Type { get; set; }
+            public ChunkType Type { get; set; }
 
             public string Value { get; set; }
 
@@ -456,7 +456,7 @@ namespace dotless.Core.Parser
             private static Chunk ReadyForText(List<Chunk> chunks)
             {
                 Chunk last = chunks.LastOrDefault();
-                if  (last == null || last.Type != Tokenizer.ChunkType.Text || last._final == true)
+                if  (last == null || last.Type != ChunkType.Text || last._final == true)
                 {
                     last = new Chunk();
                     chunks.Add(last);
@@ -466,20 +466,20 @@ namespace dotless.Core.Parser
 
             public static void Append(char c, List<Chunk> chunks, bool final)
             {
-                Chunk chunk = Chunk.ReadyForText(chunks);
+                Chunk chunk = ReadyForText(chunks);
                 chunk.Append(c);
                 chunk._final = final;
             }
 
             public static void Append(char c, List<Chunk> chunks)
             {
-                Chunk chunk = Chunk.ReadyForText(chunks);
+                Chunk chunk = ReadyForText(chunks);
                 chunk.Append(c);
             }
 
             public static void Append(string s, List<Chunk> chunks)
             {
-                Chunk chunk = Chunk.ReadyForText(chunks);
+                Chunk chunk = ReadyForText(chunks);
                 chunk.Append(s);
             }
 

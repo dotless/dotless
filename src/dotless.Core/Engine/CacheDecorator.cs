@@ -4,6 +4,7 @@ namespace dotless.Core
     using System.Collections.Generic;
     using System.Linq;
     using System.Security.Cryptography;
+    using System.Text;
     using Cache;
     using Loggers;
 
@@ -46,7 +47,7 @@ namespace dotless.Core
         private string ComputeContentHash(string source)
         {
             MD5 md5 = MD5.Create();
-            byte[] computeHash = md5.ComputeHash(System.Text.Encoding.Default.GetBytes(source));
+            byte[] computeHash = md5.ComputeHash(Encoding.Default.GetBytes(source));
             return Convert.ToBase64String(computeHash);
         }
 

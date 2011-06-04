@@ -1,13 +1,13 @@
-using System.Linq;
-using System.Text.RegularExpressions;
-using dotless.Core.Utils;
-
 namespace dotless.Core.Parser.Functions
 {
     using System;
+    using System.Linq;
+    using System.Text.RegularExpressions;
+    using System.Web;
     using Infrastructure;
     using Infrastructure.Nodes;
     using Tree;
+    using Utils;
 
     public class EFunction : Function
     {
@@ -47,7 +47,7 @@ namespace dotless.Core.Parser.Functions
                                                                 args[i++].ToCSS(env);
 
                                                  return char.IsUpper(m.Value[1]) ?
-                                                     System.Web.HttpUtility.UrlEncode(value) :
+                                                     HttpUtility.UrlEncode(value) :
                                                      value;
                                              };
 
