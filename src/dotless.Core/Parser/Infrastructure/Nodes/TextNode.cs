@@ -20,10 +20,9 @@ namespace dotless.Core.Parser.Infrastructure.Nodes
             return n1 ?? n2;
         }
 
-        public override StringBuilder ToCSS(Env env, StringBuilder output)
+        public override void AppendCSS(Env env)
         {
-            return output.Append(
-                env != null && env.Compress ? Value.Trim() : Value);
+            env.Output.Append(env.Compress ? Value.Trim() : Value);
         }
 
         public override string ToString()

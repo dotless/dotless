@@ -1,12 +1,9 @@
-﻿using System.Collections.Generic;
-
-namespace dotless.Core.Parser.Tree
+﻿namespace dotless.Core.Parser.Tree
 {
-    using System.Linq;
     using Infrastructure;
     using Infrastructure.Nodes;
-    using Utils;
-    using System.Text;
+    using System.Linq;
+    using System.Collections.Generic;
 
     public class Expression : Node
     {
@@ -31,9 +28,9 @@ namespace dotless.Core.Parser.Tree
             return this;
         }
 
-        public override StringBuilder ToCSS(Env env, StringBuilder output)
+        public override void AppendCSS(Env env)
         {
-            return output.AppendCSS(Value, env, " ");
+            env.Output.AppendMany(Value, " ");
         }
     }
 }

@@ -3,7 +3,6 @@ namespace dotless.Core.Parser.Tree
     using System.Linq;
     using Infrastructure;
     using Infrastructure.Nodes;
-    using Utils;
 
     public class Call : Node
     {
@@ -36,7 +35,17 @@ namespace dotless.Core.Parser.Tree
                 }
             }
 
-            return new TextNode(Name + "(" + Arguments.Select(a => a.Evaluate(env).ToCSS(env)).JoinStrings(", ") + ")");
+            env.Output.Push();
+
+            env.Output
+                .Append(Name)
+                .Append("(")
+                .AppendMany(Arguments.Select(a => a.Evaluate(env)), ", ")
+                .Append(")");
+
+            var css = env.Output.Pop();
+
+            return new TextNode(css.ToString());
         }
     }
 }

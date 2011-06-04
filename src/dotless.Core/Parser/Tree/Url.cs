@@ -7,7 +7,6 @@
     using Infrastructure.Nodes;
     using Utils;
     using Exceptions;
-    using System.Text;
 
     public class Url : Node
     {
@@ -45,11 +44,11 @@
             return new Url(Value.Evaluate(env));
         }
 
-        public override StringBuilder ToCSS(Env env, StringBuilder output)
+        public override void AppendCSS(Env env)
         {
-            return output
+            env.Output
                 .Append("url(")
-                .AppendCSS(Value, env)
+                .Append(Value)
                 .Append(")");
         }
     }

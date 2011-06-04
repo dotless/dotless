@@ -41,6 +41,11 @@
             Inner = new List<TNode>(nodes);
         }
 
+        public override void AppendCSS(Env env)
+        {
+            env.Output.AppendMany(Inner);
+        }
+
         public void AddRange(IEnumerable<TNode> nodes)
         {
             Inner.AddRange(nodes);

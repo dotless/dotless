@@ -4,8 +4,6 @@ namespace dotless.Core.Parser.Tree
 {
     using Infrastructure;
     using Infrastructure.Nodes;
-    using Utils;
-    using System.Text;
 
     public class Rule : Node
     {
@@ -36,15 +34,15 @@ namespace dotless.Core.Parser.Tree
             return rule;
         }
 
-        public override StringBuilder ToCSS(Env env, StringBuilder output)
+        public override void AppendCSS(Env env)
         {
             if (Variable)
-                return output;
+                return;
 
-            return output
+            env.Output
                 .Append(Name)
                 .Append(env.Compress ? ":" : ": ")
-                .AppendCSS(Value, env)
+                .Append(Value)
                 .Append(";");
         }
     }

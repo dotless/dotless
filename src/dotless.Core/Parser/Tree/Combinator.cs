@@ -3,7 +3,6 @@
     using System.Collections.Generic;
     using Infrastructure;
     using Infrastructure.Nodes;
-    using System.Text;
 
     public class Combinator : Node
     {
@@ -21,9 +20,9 @@
                 Value = value.Trim();
         }
 
-        public override StringBuilder ToCSS(Env env, StringBuilder output)
+        public override void AppendCSS(Env env)
         {
-            return output.Append(
+            env.Output.Append(
                 new Dictionary<string, string> { 
                   { "", "" }, 
                   { " ", " " },

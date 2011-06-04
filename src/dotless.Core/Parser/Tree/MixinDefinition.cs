@@ -7,7 +7,6 @@ namespace dotless.Core.Parser.Tree
     using Infrastructure;
     using Infrastructure.Nodes;
     using Utils;
-    using System.Text;
 
     public class MixinDefinition : Ruleset
     {
@@ -153,9 +152,9 @@ namespace dotless.Core.Parser.Tree
             return true;
         }
 
-        protected override StringBuilder ToCSS(Env env, Context list, StringBuilder output)
+        protected override void AppendCSS(Env env, Context context)
         {
-            return output;
+
         }
     }
 }

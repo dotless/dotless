@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 namespace dotless.Core.Parser.Tree
 {
     using System;
@@ -5,7 +7,6 @@ namespace dotless.Core.Parser.Tree
     using Exceptions;
     using Infrastructure;
     using Infrastructure.Nodes;
-    using System.Text;
 
     public class Root : Ruleset
     {
@@ -16,11 +17,14 @@ namespace dotless.Core.Parser.Tree
             Error = error;
         }
 
-        public override StringBuilder ToCSS(Env env, StringBuilder output)
+        public override void AppendCSS(Env env)
         {
             try
             {
-                return base.ToCSS(env, output);
+                base.AppendCSS(env);
+
+                if (env.Compress)
+                    env.Output.Reset(Regex.Replace(env.Output.ToString(), @"(\s)+", " "));
             }
             catch (ParsingException e)
             {

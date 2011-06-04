@@ -2,7 +2,6 @@ namespace dotless.Core.Parser.Tree
 {
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text.RegularExpressions;
     using Infrastructure;
     using Infrastructure.Nodes;
     using Utils;
@@ -109,34 +108,28 @@ namespace dotless.Core.Parser.Tree
             return Rules;
         }
 
-        public string ToCSS()
+        public string AppendCSS()
         {
-            return ToCSS(new Env());
+            var env = new Env();
+
+            AppendCSS(env);
+
+            return env.Output.ToString();
         }
 
-        public override StringBuilder ToCSS(Env env, StringBuilder output)
+        public override void AppendCSS(Env env)
         {
             if (!Rules.Any())
-                return output;
+                return;
 
             Evaluate(env);
 
-            StringBuilder suboutput = ToCSS(env, new Context(), new StringBuilder());
-
-            if (env.Compress)
-            {
-                return output.Append(Regex.Replace(suboutput.ToString(), @"(\s)+", " "));
-            }
-            else
-            {
-                return output.Append(suboutput);
-            }
+            AppendCSS(env, new Context());
         }
 
-        protected virtual StringBuilder ToCSS(Env env, Context context, StringBuilder output)
+        protected virtual void AppendCSS(Env env, Context context)
         {
             var css = new List<string>(); // The CSS output
-            StringBuilder rulesetOutput = new StringBuilder();
             var rules = new List<StringBuilder>(); // node.Ruleset instances
             var paths = new Context(); // Current selectors
             bool isRoot = this is Root;
@@ -145,6 +138,8 @@ namespace dotless.Core.Parser.Tree
             {
                 paths.AppendSelectors(context, Selectors);
             }
+
+            env.Output.Push();
 
             foreach (var node in Rules)
             {
@@ -158,46 +153,48 @@ namespace dotless.Core.Parser.Tree
                 var ruleset = node as Ruleset;
                 if (ruleset != null)
                 {
-                    ruleset.ToCSS(env, paths, rulesetOutput);
+                    ruleset.AppendCSS(env, paths);
                 }
                 else {
                     var rule = node as Rule;
                     if ((rule != null && !rule.Variable) || (rule == null && !isRoot))
                     {
-                        var ruleStringBuilder = new StringBuilder();
-                        node.ToCSS(env, ruleStringBuilder);
-                        rules.Add(ruleStringBuilder);
+                        env.Output.Push();
+                        node.AppendCSS(env);
+                        rules.Add(env.Output.Pop());
                     }
                     else if (rule == null)
                     {
-                        node.ToCSS(env, rulesetOutput);
+                        node.AppendCSS(env);
                     }
                 }
             }
+
+            var rulesetOutput = env.Output.Pop();
 
             // If this is the root node, we don't render
             // a selector, or {}.
             // Otherwise, only output if this ruleset has rules.
             if (isRoot)
             {
-                output.AppendJoin(rules, env.Compress ? "" : "\n");
+                env.Output.AppendMany(rules, env.Compress ? "" : "\n");
             }
             else
             {
                 if (rules.Count > 0)
                 {
-                    paths.ToCSS(env, output);
+                    paths.AppendCSS(env);
 
-                    output.Append(env.Compress ? "{" : " {\n  ");
+                    env.Output.Append(env.Compress ? "{" : " {\n  ");
 
-                    output.AppendJoin(rules, env.Compress ? "" : "\n  ");
+                    env.Output.AppendMany(rules, env.Compress ? "" : "\n  ");
                     
-                    output.Append(env.Compress ? "}" : "\n}\n");
+                    env.Output.Append(env.Compress ? "}" : "\n}\n");
 
                 }
             }
 
-            return output.Append(rulesetOutput);
+            env.Output.Append(rulesetOutput);
         }
 
         public override string ToString()

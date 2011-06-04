@@ -4,8 +4,6 @@
     using System.Linq;
     using Infrastructure;
     using Infrastructure.Nodes;
-    using Utils;
-    using System.Text;
 
     public class Value : Node
     {
@@ -18,21 +16,21 @@
             Important = important;
         }
 
-        public override StringBuilder ToCSS(Env env, StringBuilder output)
+        public override void AppendCSS(Env env)
         {
-            output.AppendCSS(Values, env, env.Compress ? "," : ", ");
+            env.Output.AppendMany(Values, env.Compress ? "," : ", ");
  
-            if  (!string.IsNullOrEmpty(Important)) {
-                output.Append(" ")
-                      .Append(Important);
+            if  (!string.IsNullOrEmpty(Important)) 
+            {
+                env.Output
+                    .Append(" ")
+                    .Append(Important);
             }
-
-            return output;
         }
 
         public override string ToString()
         {
-            return this.ToCSS(new Env()); // only used during debugging.
+            return ToCSS(new Env()); // only used during debugging.
         }
 
         public override Node Evaluate(Env env)

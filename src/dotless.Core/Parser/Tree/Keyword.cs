@@ -2,7 +2,6 @@
 {
     using Infrastructure;
     using Infrastructure.Nodes;
-    using System.Text;
 
     public class Keyword : Node
     {
@@ -18,9 +17,9 @@
             return (Node) Color.GetColorFromKeyword(Value) ?? this;
         }
 
-        public override StringBuilder ToCSS(Env env, StringBuilder output)
+        public override void AppendCSS(Env env)
         {
-            return output.Append(Value);
+            env.Output.Append(Value);
         }
     }
 }

@@ -4,7 +4,6 @@
     using Infrastructure;
     using Infrastructure.Nodes;
     using Utils;
-    using System.Text;
 
     public class Number : Node, IOperable
     {
@@ -28,21 +27,18 @@
         {
         }
 
-        private StringBuilder FormatValue(StringBuilder output)
+        private string FormatValue()
         {
             if (Value == 0)
-            {
-                return output.Append("0");
-            }
-            else
-            {
-                return output.AppendFormat(CultureInfo.InvariantCulture, "{0:0.##}", Value);
-            }
+                return "0";
+
+            return string.Format(CultureInfo.InvariantCulture, "{0:0.##}", Value);
         }
 
-        public override StringBuilder ToCSS(Env env, StringBuilder output)
+        public override void AppendCSS(Env env)
         {
-            return FormatValue(output)
+            env.Output
+                .Append(FormatValue())
                 .Append(Unit);
         }
 

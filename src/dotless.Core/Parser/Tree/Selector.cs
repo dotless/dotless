@@ -1,15 +1,12 @@
 ﻿namespace dotless.Core.Parser.Tree
 {
-    using System.Linq;
     using Infrastructure;
     using Infrastructure.Nodes;
-    using Utils;
     using System.Collections.Generic;
-    using System.Text;
 
     public class Selector : Node
     {
-        private List<StringBuilder> _css;
+        private string _css;
         public NodeList<Element> Elements { get; set; }
         public NodeList<Comment> PreComments { get; set; }
         public NodeList<Comment> PostComments { get; set; }
@@ -32,28 +29,27 @@
                 Elements[0].Value == other.Elements[0].Value;
         }
 
-        public override StringBuilder ToCSS(Env env, StringBuilder output)
+        public override void AppendCSS(Env env)
         {
             if (_css != null)
             {
-                return output.AppendJoin(_css);
+                env.Output.Append(_css);
+                return;
             }
 
-            var css = new List<StringBuilder>();
+            env.Output.Push();
 
             if (PreComments)
-            {
-                css.Add(PreComments.ToCSS<Comment>(env));
-            }
+                env.Output.Append(PreComments);
 
-            css.Add(Elements.ToCSS<Element>(env));
+            env.Output.Append(Elements);
 
             if (PostComments)
-            {
-                css.Add(PostComments.ToCSS<Comment>(env));
-            }
+                env.Output.Append(PostComments);
 
-            return output.AppendJoin(_css = css);
+            _css = env.Output.Pop().ToString();
+
+            env.Output.Append(_css);
         }
 
         public override string ToString()

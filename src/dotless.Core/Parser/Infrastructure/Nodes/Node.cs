@@ -1,9 +1,6 @@
 ﻿namespace dotless.Core.Parser.Infrastructure.Nodes
 {
     using System;
-    using System.Text;
-    using System.Collections.Generic;
-    using dotless.Core.Utils;
 
     public abstract class Node
     {
@@ -43,16 +40,17 @@
 
         #endregion
 
-        public virtual StringBuilder ToCSS(Env env, StringBuilder output)
+        public virtual void AppendCSS(Env env)
         {
-            throw new InvalidOperationException(string.Format("ToCSS() not valid on this type of node. '{0}'",
+            throw new InvalidOperationException(string.Format("AppendCSS() not valid on this type of node. '{0}'",
                                                               GetType().Name));
         }
 
-        public string ToCSS(Env env)
+        public virtual string ToCSS(Env env)
         {
-            return ToCSS(env, new StringBuilder())
-                .ToString();
+            env.Output.Push();
+            AppendCSS(env);
+            return env.Output.Pop().ToString();
         }
 
         public virtual Node Evaluate(Env env)

@@ -4,8 +4,6 @@
     using System.Linq;
     using Infrastructure;
     using Infrastructure.Nodes;
-    using Utils;
-    using System.Text;
 
     public class Directive : Ruleset
     {
@@ -42,27 +40,30 @@
             return this;
         }
 
-        protected override StringBuilder ToCSS(Env env, Context context, StringBuilder output)
+        protected override void AppendCSS(Env env, Context context)
         {
-            output.Append(Name);
+            env.Output.Append(Name);
 
             if (Rules != null)
             {
-                return output
+                env.Output
                     .Append(env.Compress ? "{" : " {\n")
-                    .Append(
-                        Rules.ToCSS(env, "\n")
-                             .Trim()
-                             .Indent(env.Compress ? 0 : 2))
+
+                    .Push()
+                    .AppendMany(Rules, "\n")
+                    .Trim()
+                    .Indent(env.Compress ? 0 : 2)
+                    .PopAndAppend()
+
                     .Append(env.Compress ? "}" : "\n}\n");
+
+                return;
             }
-            else
-            {
-                return output
-                    .Append(" ")
-                    .AppendCSS(Value, env)
-                    .Append(";\n");
-            }
+
+            env.Output
+                .Append(" ")
+                .Append(Value)
+                .Append(";\n");
         }
     }
 }

@@ -1,15 +1,13 @@
-﻿using System.Text.RegularExpressions;
-
-namespace dotless.Core.Parser.Infrastructure
+﻿namespace dotless.Core.Parser.Infrastructure
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using System.Text.RegularExpressions;
     using Functions;
     using Nodes;
     using Tree;
-    using Utils;
 
     public class Env
     {
@@ -18,10 +16,12 @@ namespace dotless.Core.Parser.Infrastructure
         public Stack<Ruleset> Frames { get; set; }
         public bool Compress { get; set; }
         public Node Rule { get; set; }
+        public Output Output { get; private set; }
 
         public Env()
         {
             Frames = new Stack<Ruleset>();
+            Output = new Output(this);
         }
 
         public Rule FindVariable(string name)

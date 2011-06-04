@@ -5,7 +5,6 @@ namespace dotless.Core.Parser.Tree
     using Infrastructure;
     using Infrastructure.Nodes;
     using Utils;
-    using System.Text;
 
     public class Import : Directive
     {
@@ -40,9 +39,9 @@ namespace dotless.Core.Parser.Tree
                 Importer.Import(this);
         }
 
-        protected override StringBuilder ToCSS(Env env, Context context, StringBuilder output)
+        protected override void AppendCSS(Env env, Context context)
         {
-            return base.ToCSS(env, output); // should throw InvalidOperationException
+             base.AppendCSS(env); // should throw InvalidOperationException
         }
 
         public override Node Evaluate(Env env)

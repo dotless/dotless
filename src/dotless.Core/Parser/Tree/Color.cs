@@ -9,7 +9,6 @@ namespace dotless.Core.Parser.Tree
     using Infrastructure;
     using Infrastructure.Nodes;
     using Utils;
-    using System.Text;
 
     public class Color : Node, IOperable
     {
@@ -128,7 +127,7 @@ namespace dotless.Core.Parser.Tree
             set { RGB[2] = value; }
         }
 
-        public override StringBuilder ToCSS(Env env, StringBuilder output)
+        public override void AppendCSS(Env env)
         {
             var rgb = RGB
                 .Select(d => (int) Math.Round(d, MidpointRounding.AwayFromZero))
@@ -137,7 +136,8 @@ namespace dotless.Core.Parser.Tree
 
             if (Alpha < 1.0)
             {
-                return output.AppendFormat(CultureInfo.InvariantCulture, "rgba({0}, {1}, {2}, {3})", rgb[0], rgb[1], rgb[2], Alpha);
+                env.Output.AppendFormat(CultureInfo.InvariantCulture, "rgba({0}, {1}, {2}, {3})", rgb[0], rgb[1], rgb[2], Alpha);
+                return;
             }
 
             var keyword = GetKeyword(rgb);
@@ -150,12 +150,11 @@ namespace dotless.Core.Parser.Tree
             if (env.Compress)
             {
                 hexString = Regex.Replace(hexString, @"#(.)\1(.)\2(.)\3", "#$1$2$3");
-                return output.Append(string.IsNullOrEmpty(keyword) || hexString.Length < keyword.Length ? hexString : keyword);
+                env.Output.Append(string.IsNullOrEmpty(keyword) || hexString.Length < keyword.Length ? hexString : keyword);
+                return;
             }
-            else
-            {
-                return output.Append(!string.IsNullOrEmpty(keyword) ? keyword : hexString);
-            }
+
+            env.Output.Append(!string.IsNullOrEmpty(keyword) ? keyword : hexString);
         }
 
         public Node Operate(Operation op, Node other)
