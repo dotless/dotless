@@ -149,5 +149,18 @@ white;
 
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void Tabs()
+        {
+            var input = "div\ta\t{\tdisplay:\tnone;\t}";
+
+            var expected = @"
+div a {
+  display: none;
+}";
+
+            AssertLess(input, expected);
+        }
     }
 }

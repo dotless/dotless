@@ -581,10 +581,10 @@ namespace dotless.Core.Parser
             var index = parser.Tokenizer.Location.Index;
 
             Node match;
-            if (match = parser.Tokenizer.Match(@"[+>~]") || parser.Tokenizer.Match(@"&[ ]?") || parser.Tokenizer.Match(@"::"))
+            if (match = parser.Tokenizer.Match(@"[+>~]") || parser.Tokenizer.Match(@"&\s?") || parser.Tokenizer.Match(@"::"))
                 return NodeProvider.Combinator(match.ToString(), index);
 
-            return NodeProvider.Combinator(parser.Tokenizer.PreviousChar == ' ' ? " " : null, index);
+            return NodeProvider.Combinator(char.IsWhiteSpace(parser.Tokenizer.PreviousChar) ? " " : null, index);
         }
 
         //
@@ -928,7 +928,7 @@ namespace dotless.Core.Parser
             {
                 var index = parser.Tokenizer.Location.Index;
                 var op = parser.Tokenizer.Match(@"[-+]\s+");
-                if (!op && parser.Tokenizer.PreviousChar != ' ')
+                if (!op && !char.IsWhiteSpace(parser.Tokenizer.PreviousChar))
                     op = parser.Tokenizer.Match(@"[-+]");
 
                 Node a = null;
