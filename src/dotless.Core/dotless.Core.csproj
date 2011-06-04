@@ -79,10 +79,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\Pandora\Pandora.dll</HintPath>
     </Reference>
-    <Reference Include="PegBase, Version=1.0.0.0, Culture=neutral, PublicKeyToken=363110382254af27">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\PegBase.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Loggers\AspNetTraceLogger.cs" />
