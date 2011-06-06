@@ -26,7 +26,7 @@ namespace dotless.Core.Parser.Tree
                 throw new ParsingException("No value found for rule " + Name, Index);
             }
             
-            var rule = new Rule(Name, Value.Evaluate(env)) {Index = Index};
+            var rule = new Rule(Name, Value.Evaluate(env)).CopiedFrom<Rule>(this);
 
             env.Rule = null;
             

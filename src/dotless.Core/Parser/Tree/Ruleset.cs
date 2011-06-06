@@ -159,13 +159,13 @@ namespace dotless.Core.Parser.Tree
                     var rule = node as Rule;
                     if ((rule != null && !rule.Variable) || (rule == null && !isRoot))
                     {
-                        env.Output.Push();
-                        node.AppendCSS(env);
+                        env.Output.Push()
+							.Append(node);
                         rules.Add(env.Output.Pop());
                     }
                     else if (rule == null)
                     {
-                        node.AppendCSS(env);
+                        env.Output.Append(node);
                     }
                 }
             }

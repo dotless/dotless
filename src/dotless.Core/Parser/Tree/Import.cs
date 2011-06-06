@@ -51,7 +51,7 @@ namespace dotless.Core.Parser.Tree
 
             NodeHelper.ExpandNodes<Import>(env, InnerRoot.Rules);
 
-            return new NodeList(InnerRoot.Rules);
+            return new NodeList(InnerRoot.Rules).CopiedFrom<NodeList>(this);
         }
     }
 }

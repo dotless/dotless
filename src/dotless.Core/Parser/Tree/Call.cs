@@ -45,7 +45,7 @@ namespace dotless.Core.Parser.Tree
 
             var css = env.Output.Pop();
 
-            return new TextNode(css.ToString());
+            return new TextNode(css.ToString()).CopiedFrom<TextNode>(this);
         }
     }
 }

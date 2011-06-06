@@ -8,8 +8,6 @@
     {
         private string _css;
         public NodeList<Element> Elements { get; set; }
-        public NodeList<Comment> PreComments { get; set; }
-        public NodeList<Comment> PostComments { get; set; }
 
         public Selector(IEnumerable<Element> elements)
         {
@@ -39,13 +37,7 @@
 
             env.Output.Push();
 
-            if (PreComments)
-                env.Output.Append(PreComments);
-
             env.Output.Append(Elements);
-
-            if (PostComments)
-                env.Output.Append(PostComments);
 
             _css = env.Output.Pop().ToString();
 
