@@ -398,37 +398,13 @@ var expected = @"
             AssertLess(input, expected);
         }
 
-        [Test, Ignore("Bug to fix in the future - dotLess still doesn't allow comments everywhere")]
+        [Test]
         public void CheckCommentsAreAcceptedWhereWhitespaceIsAllowed()
         {
             // Note: https://github.com/dotless/dotless/issues/31
             var input = @"/* COMMENT */body/* COMMENT */, /* COMMENT */.cls/* COMMENT */ .cla,/* COMMENT */ .clb /* COMMENT */ {background-image: url(pickture.asp);}";
 
-            var expected = @"body, .cls .cla, .clb {
-  background-image: url(pickture.asp);
-}";
-
-            AssertLess(input, expected);
-        }
-
-        [Test, Ignore("Bug to fix in the future - dotLess still doesn't allow comments everywhere")]
-        public void CheckCommentsAreTakenToBeWhitespace1()
-        {
-            var input = @".cls/* COMMENT */.cla {background-image: url(pickture.asp);}";
-
-            var expected = @".cls .cla {
-  background-image: url(pickture.asp);
-}";
-
-            AssertLess(input, expected);
-        }
-
-        [Test, Ignore("Bug to fix in the future - dotLess still doesn't allow comments everywhere")]
-        public void CheckCommentsAreTakenToBeWhitespace2()
-        {
-            var input = @".cls/* COMMENT */ + /* COMMENT */.cla {background-image: url(pickture.asp);}";
-
-            var expected = @".cls + .cla {
+            var expected = @"/* COMMENT */body/* COMMENT */, /* COMMENT */ .cls/* COMMENT */ .cla, /* COMMENT */ .clb/* COMMENT */ {
   background-image: url(pickture.asp);
 }";
 
@@ -469,7 +445,7 @@ var expected = @"
             AssertLess(input, expected);
         }
 
-        [Test, Ignore("comments not supported after mixin calls at the moment")]
+        [Test]
         public void CommentBeforeAndAfterMixinCall()
         {
             var input = @"/* COMMENT */.clb(@a)/* COMMENT */ { font-size: @a; }
@@ -495,7 +471,7 @@ var expected = @"
             AssertLess(input, expected);
         }
 
-        [Test, Ignore("Fails at the moment - comments not supported inside directives")]
+        [Test]
         public void CommentBeforeAndAfterDirective()
         {
             var input = @"/* COMMENT */@a : 10px/* COMMENT */;
@@ -507,5 +483,15 @@ var expected = @"
             AssertLess(input, expected);
         }
 
+        [Test]
+        public void CommentsInComplicatedSelectorWithPsuedosAndAttribute()
+        {
+            var input = @"p/*CO1*/:not/*CO1*/([class*=""lead""])/*CO2*/[/*CO3*/type=""checkbox""/*CO5*/]/*CO6*/[/*CO7*/type/*CO8*/] { font-size: 10px; }";
+            var expected = @"p/*CO1*/:not/*CO1*/([class*=""lead""])/*CO2*/[/*CO3*/type=""checkbox""/*CO5*/]/*CO6*/[/*CO7*/type/*CO8*/] {
+  font-size: 10px;
+}";
+
+            AssertLess(input, expected);
+        }
     }
 }

@@ -505,6 +505,10 @@ namespace dotless.Core.Parser
             if (!match)
                 return null;
 
+			//mixin definition ignores comments before it - a css hack can't be part of a mixin definition,
+			//so it may as well be a rule before the definition
+			PushComments();
+
             var name = match[1];
 
             var parameters = new NodeList<Rule>();
@@ -540,6 +544,8 @@ namespace dotless.Core.Parser
                 throw new ParsingException("Expected ')'", parser.Tokenizer.Location.Index);
 
             var rules = Block(parser);
+
+            PopComments();
 
             if (rules != null)
                 return NodeProvider.MixinDefinition(name, parameters, rules, index);
@@ -608,16 +614,26 @@ namespace dotless.Core.Parser
         {
             var index = parser.Tokenizer.Location.Index;
 
+            CollectComments(parser);
+
             Combinator c = Combinator(parser);
+
+            PushComments();
+            CollectComments(parser); // to collect, combinator must have picked up something which would require memory anyway
             var e = parser.Tokenizer.Match(@"[.#:]?[a-zA-Z0-9_-]+") || parser.Tokenizer.Match('*') || Attribute(parser) ||
                     parser.Tokenizer.MatchAny(@"\([^)@]+\)");
 
-            if (e)
-                return NodeProvider.Element(c, e.Value, index);
+            bool isCombinatorAnd = !e && c.Value.StartsWith("&");
 
-            if (c.Value.StartsWith("&"))
-                return NodeProvider.Element(c, null, index);
+            if (e || isCombinatorAnd)
+            {
+                c.PostComments = PullComments();
+                PopComments();
+                c.PreComments = PullComments();
+                return NodeProvider.Element(c, isCombinatorAnd ? null : e.Value, index);
+            }
 
+            PopComments();
             return null;
         }
 
@@ -657,6 +673,8 @@ namespace dotless.Core.Parser
             var elements = new NodeList<Element>();
             var index = parser.Tokenizer.Location.Index;
 
+            PushComments();
+
             while (true)
             {
                 e = Element(parser);
@@ -670,11 +688,14 @@ namespace dotless.Core.Parser
 			if (realElements > 0)
 			{
 				var selector = NodeProvider.Selector(elements, index);
+                selector.PostComments = GatherComments(parser);
+                PopComments();
 				selector.PreComments = PullComments();
-				selector.PostComments = GatherComments(parser);
+				
 				return selector;
 			}
 
+            PopComments();
             //We have lost comments we have absorbed here.
             //But comments should be absorbed before selectors...
             return null;
@@ -757,6 +778,8 @@ namespace dotless.Core.Parser
                     selectors.Add(s);
                     if (!parser.Tokenizer.Match(','))
                         break;
+
+					CollectComments(parser);
                 }
             }
 
