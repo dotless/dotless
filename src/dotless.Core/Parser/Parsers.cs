@@ -68,69 +68,69 @@ namespace dotless.Core.Parser
         public List<Node> Primary(Parser parser)
         {
             Node node;
-			var root = new List<Node>();
-			NodeList comments = null;
+            var root = new List<Node>();
+            NodeList comments = null;
 
-			CollectComments(parser);
+            CollectComments(parser);
 
             while (node = MixinDefinition(parser) || Rule(parser) || PullComments() || Ruleset(parser) ||
                           MixinCall(parser) || Directive(parser))
             {
-				if (comments = PullComments())
-				{
-					root.AddRange(comments);
-				}
+                if (comments = PullComments())
+                {
+                    root.AddRange(comments);
+                }
 
-				comments = node as NodeList;
-				if (comments)
-					root.AddRange(comments);
-				else 
-					root.Add(node);
+                comments = node as NodeList;
+                if (comments)
+                    root.AddRange(comments);
+                else
+                    root.Add(node);
 
-				CollectComments(parser);
+                CollectComments(parser);
             }
             return root;
         }
 
-		private NodeList CurrentComments { get; set; }
+        private NodeList CurrentComments { get; set; }
 
-		private void CollectComments(Parser parser)
-		{
-			Comment comment;
-			while (comment = Comment(parser))
-			{
-				if (CurrentComments == null)
-				{
-					CurrentComments = new NodeList();
-				}
-				CurrentComments.Add(comment);
-			}
-		}
+        private void CollectComments(Parser parser)
+        {
+            Comment comment;
+            while (comment = Comment(parser))
+            {
+                if (CurrentComments == null)
+                {
+                    CurrentComments = new NodeList();
+                }
+                CurrentComments.Add(comment);
+            }
+        }
 
-		private NodeList PullComments()
-		{
-			NodeList comments = CurrentComments;
-			CurrentComments = null;
-			return comments;
-		}
+        private NodeList PullComments()
+        {
+            NodeList comments = CurrentComments;
+            CurrentComments = null;
+            return comments;
+        }
 
-		private NodeList GatherComments(Parser parser)
-		{
-			CollectComments(parser);
-			return PullComments();
-		}
+        private NodeList GatherComments(Parser parser)
+        {
+            CollectComments(parser);
+            return PullComments();
+        }
 
-		private Stack<NodeList> CommentsStack = new Stack<NodeList>();
+        private Stack<NodeList> CommentsStack = new Stack<NodeList>();
 
-		private void PushComments()
-		{
-			CommentsStack.Push(PullComments());
-		}
+        private void PushComments()
+        {
+            CommentsStack.Push(PullComments());
+        }
 
-		private void PopComments()
-		{
-			CurrentComments = CommentsStack.Pop();
-		}
+        private void PopComments()
+        {
+            CurrentComments = CommentsStack.Pop();
+        }
 
         // We create a Comment node for CSS comments `/* */`,
         // but keep the LeSS comments `//` silent, by just skipping
@@ -140,7 +140,7 @@ namespace dotless.Core.Parser
             var index = parser.Tokenizer.Location.Index;
             string comment = parser.Tokenizer.GetComment();
 
-            if  (comment != null)
+            if (comment != null)
             {
                 return NodeProvider.Comment(comment, comment.StartsWith("//"), index);
             }
@@ -176,10 +176,10 @@ namespace dotless.Core.Parser
 
             string str = parser.Tokenizer.GetQuotedString();
 
-            if  (str == null)
+            if (str == null)
                 return null;
 
-            return NodeProvider.Quoted(str, str.Substring(1, str.Length-2), escaped, index);
+            return NodeProvider.Quoted(str, str.Substring(1, str.Length - 2), escaped, index);
         }
 
         //
@@ -268,18 +268,21 @@ namespace dotless.Core.Parser
                 return null;
 
             Node value = Quoted(parser);
-            
-            if (!value) {
+
+            if (!value)
+            {
                 var memo = Remember(parser);
                 value = Expression(parser);
 
-                if (value && !parser.Tokenizer.Peek(')')) {
+                if (value && !parser.Tokenizer.Peek(')'))
+                {
                     value = null;
                     Recall(parser, memo);
                 }
             }
-            
-            if (!value) {
+
+            if (!value)
+            {
                 value = parser.Tokenizer.MatchAny(@"[^\)""']*") || new TextNode("");
             }
 
@@ -355,14 +358,15 @@ namespace dotless.Core.Parser
         //
         public Script Script(Parser parser)
         {
-            if (parser.Tokenizer.CurrentChar != '`') 
+            if (parser.Tokenizer.CurrentChar != '`')
                 return null;
 
             var index = parser.Tokenizer.Location.Index;
 
             var script = parser.Tokenizer.MatchAny(@"`[^`]*`");
 
-            if (!script) {
+            if (!script)
+            {
                 return null;
             }
 
@@ -459,9 +463,9 @@ namespace dotless.Core.Parser
                         }
                     }
 
-                    args.Add(new NamedArgument {Name = name, Value = value});
+                    args.Add(new NamedArgument { Name = name, Value = value });
 
-                    if(! parser.Tokenizer.Match(','))
+                    if (!parser.Tokenizer.Match(','))
                         break;
                 }
                 if (!parser.Tokenizer.Match(')'))
@@ -495,7 +499,7 @@ namespace dotless.Core.Parser
         //
         public MixinDefinition MixinDefinition(Parser parser)
         {
-            if ((parser.Tokenizer.CurrentChar != '.' && parser.Tokenizer.CurrentChar != '#') || 
+            if ((parser.Tokenizer.CurrentChar != '.' && parser.Tokenizer.CurrentChar != '#') ||
                 parser.Tokenizer.Peek(@"[^{]*(;|})"))
                 return null;
 
@@ -505,9 +509,9 @@ namespace dotless.Core.Parser
             if (!match)
                 return null;
 
-			//mixin definition ignores comments before it - a css hack can't be part of a mixin definition,
-			//so it may as well be a rule before the definition
-			PushComments();
+            //mixin definition ignores comments before it - a css hack can't be part of a mixin definition,
+            //so it may as well be a rule before the definition
+            PushComments();
 
             var name = match[1];
 
@@ -560,7 +564,7 @@ namespace dotless.Core.Parser
         public Node Entity(Parser parser)
         {
             return Literal(parser) || Variable(parser) || Url(parser) ||
-                   Call(parser)    || Keyword(parser)  || Script(parser);
+                   Call(parser) || Keyword(parser) || Script(parser);
         }
 
         //
@@ -685,15 +689,15 @@ namespace dotless.Core.Parser
                 elements.Add(e);
             }
 
-			if (realElements > 0)
-			{
-				var selector = NodeProvider.Selector(elements, index);
+            if (realElements > 0)
+            {
+                var selector = NodeProvider.Selector(elements, index);
                 selector.PostComments = GatherComments(parser);
                 PopComments();
-				selector.PreComments = PullComments();
-				
-				return selector;
-			}
+                selector.PreComments = PullComments();
+
+                return selector;
+            }
 
             PopComments();
             //We have lost comments we have absorbed here.
@@ -760,8 +764,8 @@ namespace dotless.Core.Parser
         {
             var selectors = new NodeList<Selector>();
 
-			var memo = Remember(parser);
-			var index = memo.TokenizerLocation.Index;
+            var memo = Remember(parser);
+            var index = memo.TokenizerLocation.Index;
 
             if (parser.Tokenizer.Peek(@"([a-z.#: _-]+)[\s\n]*\{")) //simple case with no comments
             {
@@ -779,7 +783,7 @@ namespace dotless.Core.Parser
                     if (!parser.Tokenizer.Match(','))
                         break;
 
-					CollectComments(parser);
+                    CollectComments(parser);
                 }
             }
 
@@ -796,7 +800,7 @@ namespace dotless.Core.Parser
         public Rule Rule(Parser parser)
         {
             var memo = parser.Tokenizer.Location;
-			PushComments();
+            PushComments();
 
             var name = Property(parser) ?? VariableName(parser);
 
@@ -811,15 +815,15 @@ namespace dotless.Core.Parser
                 else
                     value = Value(parser);
 
-				if (End(parser))
-				{
-					PopComments();
-					return NodeProvider.Rule(name, value, memo.Index);
-				}
+                if (End(parser))
+                {
+                    PopComments();
+                    return NodeProvider.Rule(name, value, memo.Index);
+                }
             }
 
-			parser.Tokenizer.Location = memo;
-			PopComments();
+            parser.Tokenizer.Location = memo;
+            PopComments();
 
             return null;
         }
@@ -1046,12 +1050,12 @@ namespace dotless.Core.Parser
             var operand = Sub(parser) ??
                           Dimension(parser) ??
                           Color(parser) ??
-                          (Node) Variable(parser);
+                          (Node)Variable(parser);
 
             if (operand != null)
             {
-                return negate ? 
-                    NodeProvider.Operation("*", NodeProvider.Number("-1", "", negate.Index), operand, negate.Index) : 
+                return negate ?
+                    NodeProvider.Operation("*", NodeProvider.Number("-1", "", negate.Index), operand, negate.Index) :
                     operand;
             }
 
@@ -1096,21 +1100,21 @@ namespace dotless.Core.Parser
             return null;
         }
 
-		public class ParserLocation
-		{
-			public NodeList Comments { get;set;}
-			public Location TokenizerLocation { get; set; }
-		}
+        public class ParserLocation
+        {
+            public NodeList Comments { get; set; }
+            public Location TokenizerLocation { get; set; }
+        }
 
-		public ParserLocation Remember(Parser parser)
-		{
-			return new ParserLocation() { Comments = CurrentComments, TokenizerLocation = parser.Tokenizer.Location };
-		}
+        public ParserLocation Remember(Parser parser)
+        {
+            return new ParserLocation() { Comments = CurrentComments, TokenizerLocation = parser.Tokenizer.Location };
+        }
 
-		public void Recall(Parser parser, ParserLocation location)
-		{
-			CurrentComments = location.Comments;
-			parser.Tokenizer.Location = location.TokenizerLocation;
-		}
+        public void Recall(Parser parser, ParserLocation location)
+        {
+            CurrentComments = location.Comments;
+            parser.Tokenizer.Location = location.TokenizerLocation;
+        }
     }
 }

@@ -160,7 +160,7 @@ namespace dotless.Test.Specs
   color: red /* A C-style comment */
 }
 ";
-            
+
             var expected = @"
 #comments {
   border: solid black;
@@ -168,13 +168,13 @@ namespace dotless.Test.Specs
   /* A C-style comment */
 }
 ";
-            
+
             AssertLess(input, expected);
         }
 
 
         [Test]
-        public void BlockCommentAfterMixinCallMissingSemiColon ()
+        public void BlockCommentAfterMixinCallMissingSemiColon()
         {
             var input = @"
 .cla (@a) {
@@ -186,15 +186,15 @@ border: solid black;
 }
 ";
 
-var expected = @"
+            var expected = @"
 #comments {
   border: solid black;
   color: red;
   /* A C-style comment */
 }
             ";
-        
-        AssertLess (input, expected);
+
+            AssertLess(input, expected);
         }
 
         [Test]

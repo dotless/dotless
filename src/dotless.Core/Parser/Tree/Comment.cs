@@ -16,8 +16,8 @@
 
         public override void AppendCSS(Env env)
         {
-			if (!Silent)
-				env.Output.Append(env.Compress ? "" : Value);
+            if (!Silent)
+                env.Output.Append(env.Compress ? "" : Value);
         }
     }
 }

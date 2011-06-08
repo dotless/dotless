@@ -148,7 +148,7 @@ namespace dotless.Core.Parser.Tree
                     continue;
 
                 var comment = node as Comment;
-                if(comment != null && comment.Silent)
+                if (comment != null && comment.Silent)
                     continue;
 
                 var ruleset = node as Ruleset;
@@ -156,7 +156,8 @@ namespace dotless.Core.Parser.Tree
                 {
                     ruleset.AppendCSS(env, paths);
                 }
-                else {
+                else
+                {
                     var rule = node as Rule;
                     if ((rule != null && !rule.Variable) || (rule == null && !isRoot))
                     {
@@ -164,7 +165,7 @@ namespace dotless.Core.Parser.Tree
                             nonCommentRules++;
 
                         env.Output.Push()
-							.Append(node);
+                            .Append(node);
                         rules.Add(env.Output.Pop());
                     }
                     else if (rule == null)
@@ -192,7 +193,7 @@ namespace dotless.Core.Parser.Tree
                     env.Output.Append(env.Compress ? "{" : " {\n  ");
 
                     env.Output.AppendMany(rules, env.Compress ? "" : "\n  ");
-                    
+
                     env.Output.Append(env.Compress ? "}" : "\n}\n");
 
                 }
