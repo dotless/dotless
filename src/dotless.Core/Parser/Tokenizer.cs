@@ -17,6 +17,8 @@ namespace dotless.Core.Parser
         private int _i; // current index in `input`
         private int _j; // current chunk
         private int _current; // index of current chunk, in `input`
+        private int _lastCommentStart = -1; // the start of the last collection of comments
+        private int _lastCommentEnd = -1; // the end of the last collection of comments
         private int _inputLength;
         private readonly string _commentRegEx = @"(//[^\n]*|(/\*(.|[\r\n])*?\*/))";
         private readonly string _quotedRegEx = @"(""((?:[^""\\\r\n]|\\.)*)""|'((?:[^'\\\r\n]|\\.)*)')";
@@ -136,24 +138,45 @@ namespace dotless.Core.Parser
                 return null;
             }
 
+            string val;
+            int startI = _i;
+            int endI = 0;
+
             if  (Optimization == 0)
             {
                 if (this.CurrentChar != '/')
                     return null;
 
                 var comment = this.Match(this._commentRegEx);
-                return comment.Value;
+                if (comment == null)
+                {
+                    return null;
+                }
+                val = comment.Value;
+                endI = startI + comment.Value.Length;
             }
             else
             {
                 if (_chunks[_j].Type == ChunkType.Comment)
                 {
-                    string val = _chunks[_j].Value;
+                    val = _chunks[_j].Value;
+                    endI = _i + _chunks[_j].Value.Length;
                     Advance(_chunks[_j].Value.Length);
-                    return val;
+                }
+                else
+                {
+                    return null;
                 }
             }
-            return null;
+
+            if (_lastCommentEnd != startI)
+            {
+                _lastCommentStart = startI;
+            }
+
+            _lastCommentEnd = endI;
+
+            return val;
         }
 
         public string GetQuotedString()
@@ -344,6 +367,25 @@ namespace dotless.Core.Parser
                 regexCache.Add(pattern, new Regex(@"\G" + pattern, options));
 
             return regexCache[pattern];
+        }
+
+        public char GetPreviousCharIgnoringComments()
+        {
+            if  (_i == 0) {
+                return '\0';
+            }
+
+            if  (_i != _lastCommentEnd) {
+                return PreviousChar;
+            }
+
+            int i = _lastCommentStart - 1;
+
+            if  (i < 0) {
+                return '\0';
+            }
+
+            return _input[i];
         }
 
         public char PreviousChar

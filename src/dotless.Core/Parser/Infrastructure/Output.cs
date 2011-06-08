@@ -96,7 +96,7 @@
         public Output AppendMany<TNode>(IEnumerable<TNode> nodes, string join)
             where TNode : Node
         {
-            return AppendMany(nodes, n => n.AppendCSS(Env), join);
+            return AppendMany(nodes, n => Env.Output.Append(n), join);
         }
 
         public Output AppendMany<T>(IEnumerable<T> list, Func<T, string> toString, string join)

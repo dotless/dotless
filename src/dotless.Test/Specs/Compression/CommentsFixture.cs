@@ -26,11 +26,61 @@ namespace dotless.Test.Specs.Compression
         }
 
         [Test]
-        public void CheckCommentsAreTakenToBeWhitespace2()
+        public void CheckCommentsAreNotTakenToBeWhitespace2()
         {
             var input = @".cls/* COMMENT */ + /* COMMENT */.cla {background-image: url(pickture.asp);}";
 
             var expected = @".cls+.cla{background-image:url(pickture.asp);}";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void CheckCommentsAreNotObscuringWhitepsace1()
+        {
+            var input = @".cls /* COMMENT *//* COMMENT */.cla {background-image: url(pickture.asp);}";
+
+            var expected = @".cls .cla{background-image:url(pickture.asp);}";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void CheckCommentsAreNotObscuringWhitepsace2()
+        {
+            var input = @".cls/* COMMENT */ /* COMMENT */.cla {background-image: url(pickture.asp);}";
+
+            var expected = @".cls .cla{background-image:url(pickture.asp);}";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void CheckCommentsAreNotObscuringWhitepsace3()
+        {
+            var input = @".cls/* COMMENT *//* COMMENT */ .cla {background-image: url(pickture.asp);}";
+
+            var expected = @".cls .cla{background-image:url(pickture.asp);}";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void CheckEmptyRuleSetsAreNotCreatedBecauseOfComments()
+        {
+            // inspired by https://github.com/cloudhead/less.js/issues/147
+            var input = @"
+.wrapper {
+    /* the header */
+    .header {
+        font-weight: bold;
+    }
+    /* the footer */
+    .footer {
+        /* color: #fff; */
+    }
+}";
+            var expected = @".wrapper .header{font-weight:bold;}";
 
             AssertLess(input, expected);
         }

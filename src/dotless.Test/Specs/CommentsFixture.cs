@@ -459,7 +459,7 @@ var expected = @"
         }
 
         [Test]
-        public void CommentBeforeDirective()
+        public void CommentBeforeVariableRuleKept()
         {
             var input = @"/* COMMENT */@a : 10px;/* COMMENT */
 .cla { font-size: @a; }";
@@ -472,22 +472,66 @@ var expected = @"
         }
 
         [Test]
-        public void CommentBeforeAndAfterDirective()
+        public void CommentsInVariableRuleAccepted()
         {
-            var input = @"/* COMMENT */@a : 10px/* COMMENT */;
+            var input = @"/* COM1 */@a /* COM2 */: /* COM3 */10px/* COM4 */;/* COM5 */
 .cla { font-size: @a; }";
 
-            var expected = @"/* COMMENT *//* COMMENT */
-.cla { font-size: 10px; }";
+            var expected = @"/* COM1 *//* COM5 */.cla {
+  font-size: 10px;
+}";
 
             AssertLess(input, expected);
         }
 
         [Test]
-        public void CommentsInComplicatedSelectorWithPsuedosAndAttribute()
+        public void CommentsInDirective1()
         {
-            var input = @"p/*CO1*/:not/*CO1*/([class*=""lead""])/*CO2*/[/*CO3*/type=""checkbox""/*CO5*/]/*CO6*/[/*CO7*/type/*CO8*/] { font-size: 10px; }";
-            var expected = @"p/*CO1*/:not/*CO1*/([class*=""lead""])/*CO2*/[/*CO3*/type=""checkbox""/*CO5*/]/*CO6*/[/*CO7*/type/*CO8*/] {
+            var input = @"/* COMMENT */@charset /* COMMENT */""utf-8""/* COMMENT */;";
+
+            var expected = @"/* COMMENT */@charset /* COMMENT */""utf-8""/* COMMENT */;";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void CommentsInDirective2()
+        {
+            var input = @"@media/*COM1*/ print /*COM2*/ {/*COM3*/
+  font-size: 3em;
+}/*COM 6*/
+@font-face /*COM4*/ { /*COM5*/
+  font-size: 3em;
+}/*COM 6*/
+";
+
+            var expected = @"@media/*COM1*/ print /*COM2*/ {/*COM3*/
+  font-size: 3em;
+}/*COM 6*/
+@font-face /*COM4*/ { /*COM5*/
+  font-size: 3em;
+}/*COM 6*/";
+
+            AssertLess(input, expected);
+        }
+
+
+        [Test]
+        public void CommentsInSelectorPsuedos()
+        {
+            var input = @"p/*CO1*/:not/*CO1*/([class*=""lead""])/*CO2*/{ font-size: 10px; }";
+            var expected = @"p/*CO1*/:not/*CO1*/([class*=""lead""])/*CO2*/ {
+  font-size: 10px;
+}";
+
+            AssertLess(input, expected);
+        }
+
+        [Test, Ignore("Unsupported - Requires an attribute node")]
+        public void CommentsInSelectorAttributes()
+        {
+            var input = @"p/*CO2*/[/*CO3*/type=""checkbox""/*CO5*/]/*CO6*/[/*CO7*/type/*CO8*/] { font-size: 10px; }";
+            var expected = @"p/*CO2*/[/*CO3*/type=""checkbox""/*CO5*/]/*CO6*/[/*CO7*/type/*CO8*/] {
   font-size: 10px;
 }";
 

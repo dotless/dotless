@@ -131,6 +131,7 @@ namespace dotless.Core.Parser.Tree
         {
             var css = new List<string>(); // The CSS output
             var rules = new List<StringBuilder>(); // node.Ruleset instances
+            int nonCommentRules = 0;
             var paths = new Context(); // Current selectors
             bool isRoot = this is Root;
 
@@ -159,6 +160,9 @@ namespace dotless.Core.Parser.Tree
                     var rule = node as Rule;
                     if ((rule != null && !rule.Variable) || (rule == null && !isRoot))
                     {
+                        if (comment == null)
+                            nonCommentRules++;
+
                         env.Output.Push()
 							.Append(node);
                         rules.Add(env.Output.Pop());
@@ -181,7 +185,7 @@ namespace dotless.Core.Parser.Tree
             }
             else
             {
-                if (rules.Count > 0)
+                if (nonCommentRules > 0)
                 {
                     paths.AppendCSS(env);
 
