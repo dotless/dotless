@@ -69,7 +69,7 @@
                 // convert units
             }
 
-            return new Number(Operation.Operate(op.Operator, Value, dim.Value), unit);
+            return new Number(Operation.Operate(op.Operator, Value, dim.Value), unit).CopiedFrom<Number>(this);
         }
 
         public Color ToColor()

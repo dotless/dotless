@@ -10,11 +10,11 @@ namespace dotless.Core.Parser.Tree
     public class Ruleset : Node
     {
         public NodeList<Selector> Selectors { get; set; }
-        public List<Node> Rules { get; set; }
+        public NodeList Rules { get; set; }
 
         private Dictionary<string, List<Closure>> _lookups;
 
-        public Ruleset(NodeList<Selector> selectors, List<Node> rules)
+        public Ruleset(NodeList<Selector> selectors, NodeList rules)
             : this()
         {
             Selectors = selectors;
@@ -92,7 +92,7 @@ namespace dotless.Core.Parser.Tree
             return this;
         }
 
-        public List<Node> EvaluateRules(Env env)
+        public NodeList EvaluateRules(Env env)
         {
             env.Frames.Push(this);
 

@@ -10,7 +10,7 @@
         public string Name { get; set; }
         public Node Value { get; set; }
 
-        public Directive(string name, List<Node> rules)
+        public Directive(string name, NodeList rules)
         {
             Name = name;
             Rules = rules;
@@ -31,7 +31,7 @@
             env.Frames.Push(this);
 
             if (Rules != null)
-                Rules = new List<Node>(Rules.Select(r => r.Evaluate(env)));
+                Rules = new NodeList(Rules.Select(r => r.Evaluate(env)));
             else
                 Value = Value.Evaluate(env);
 

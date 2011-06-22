@@ -11,7 +11,7 @@ namespace dotless.Core.Parser.Infrastructure
         Combinator Combinator(string value, int index);
         Selector Selector(NodeList<Element> elements, int index);
         Rule Rule(string name, Node value, int index);
-        Ruleset Ruleset(NodeList<Selector> selectors, List<Node> rules, int index);
+        Ruleset Ruleset(NodeList<Selector> selectors, NodeList rules, int index);
 
         //entities
         Alpha Alpha(Node value, int index);
@@ -26,12 +26,12 @@ namespace dotless.Core.Parser.Infrastructure
 
         //mixins
         MixinCall MixinCall(NodeList<Element> elements, List<NamedArgument> arguments, int index);
-        MixinDefinition MixinDefinition(string name, NodeList<Rule> parameters, List<Node> rules, int index);
+        MixinDefinition MixinDefinition(string name, NodeList<Rule> parameters, NodeList rules, int index);
 
         //directives
         Import Import(Url path, Importer importer, int index);
         Import Import(Quoted path, Importer importer, int index);
-        Directive Directive(string name, List<Node> rules, int index);
+        Directive Directive(string name, NodeList rules, int index);
         Directive Directive(string name, Node value, int index);
 
         //expressions

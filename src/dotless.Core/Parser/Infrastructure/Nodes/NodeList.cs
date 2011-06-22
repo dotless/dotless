@@ -19,6 +19,10 @@
         {
             Inner = new List<Node>(nodes);
         }
+
+        public NodeList(NodeList nodes) : this((IEnumerable<Node>)nodes)
+        {
+        }
     }
 
     public class NodeList<TNode> : Node, IList<TNode>
@@ -59,6 +63,11 @@
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public void InsertRange(int index, IEnumerable<TNode> collection)
+        {
+            Inner.InsertRange(index, collection);
         }
 
         public void Add(TNode item)

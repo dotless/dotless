@@ -164,13 +164,49 @@ namespace dotless.Test.Specs
             var expected = @"
 #comments {
   border: solid black;
-  color: red;
-  /* A C-style comment */
+  color: red/* A C-style comment */;
 }
 ";
 
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void BlockCommentAfterPropertyMissingSemiColonDimension()
+        {
+            var input = @"
+#comments {
+  border: 1px /* A C-style comment */
+}
+";
+
+            var expected = @"
+#comments {
+  border: 1px/* A C-style comment */;
+}
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void BlockCommentAfterPropertyMissingSemiColonColor()
+        {
+            var input = @"
+#comments {
+  color: #ff1000 /* A C-style comment */
+}
+";
+
+            var expected = @"
+#comments {
+  color: #ff1000/* A C-style comment */;
+}
+";
+
+            AssertLess(input, expected);
+        }
+
 
 
         [Test]
@@ -433,7 +469,7 @@ border: solid black;
         }
 
         [Test]
-        public void CommentBeforeMixinCall()
+        public void CommentBeforeMixinDefinition()
         {
             var input = @"/* COMMENT */.clb(@a) { font-size: @a; }
 .cla { .clb(10); }";
@@ -446,10 +482,10 @@ border: solid black;
         }
 
         [Test]
-        public void CommentBeforeAndAfterMixinCall()
+        public void CommentBeforeAndAfterMixinDefinition()
         {
-            var input = @"/* COMMENT */.clb(@a)/* COMMENT */ { font-size: @a; }
-.cla { .clb(10); }";
+            var input = @"/* COMMENT */.clb(/* COMMENT */@a/* COMMENT */,/* COMMENT */@b)/* COMMENT */ { font-size: @a; }
+.cla { .clb(10, 10); }";
 
             var expected = @"/* COMMENT */.cla {
   font-size: 10;
@@ -457,6 +493,20 @@ border: solid black;
 
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void CommentBeforeAndAfterMixinDefinitionWithDefaultArgs()
+        {
+            var input = @"/* COMMENT */.clb(/* COMMENT */@a/* COMMENT */:/* COMMENT */10/* COMMENT */,/* COMMENT */@b/* COMMENT */:/* COMMENT */7px/* COMMENT */)/* COMMENT */ { font-size: @a; }
+.cla { .clb(10, 10); }";
+
+            var expected = @"/* COMMENT */.cla {
+  font-size: 10;
+}";
+
+            AssertLess(input, expected);
+        }
+
 
         [Test]
         public void CommentBeforeVariableRuleKept()

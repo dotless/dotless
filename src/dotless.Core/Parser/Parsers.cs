@@ -65,10 +65,10 @@ namespace dotless.Core.Parser
         // Only at one point is the primary rule not called from the
         // block rule: at the root level.
         //
-        public List<Node> Primary(Parser parser)
+        public NodeList Primary(Parser parser)
         {
             Node node;
-            var root = new List<Node>();
+            var root = new NodeList();
             NodeList comments = null;
 
             CollectComments(parser);
@@ -434,6 +434,8 @@ namespace dotless.Core.Parser
             RegexMatchResult e;
             Combinator c = null;
 
+            PushComments();
+
             for (var i = parser.Tokenizer.Location.Index; e = parser.Tokenizer.Match(@"[#.][a-zA-Z0-9_-]+"); i = parser.Tokenizer.Location.Index)
             {
                 elements.Add(NodeProvider.Element(c, e.Value, i));
@@ -472,9 +474,21 @@ namespace dotless.Core.Parser
                     throw new ParsingException("Expected ')'", parser.Tokenizer.Location.Index);
             }
 
-            if (elements.Count > 0 && End(parser))
-                return NodeProvider.MixinCall(elements, args, index);
+            if (elements.Count > 0)
+            {
+                // if elements then we've picked up chars so don't need to worry about remembering
+                var postComments = GatherComments(parser);
 
+                if (End(parser))
+                {
+                    var mixinCall = NodeProvider.MixinCall(elements, args, index);
+                    mixinCall.PostComments = postComments;
+                    PopComments();
+                    return mixinCall;
+                }
+            }
+
+            PopComments();
             return null;
         }
 
@@ -512,6 +526,7 @@ namespace dotless.Core.Parser
             //mixin definition ignores comments before it - a css hack can't be part of a mixin definition,
             //so it may as well be a rule before the definition
             PushComments();
+            GatherComments(parser); // no store as mixin definition not output
 
             var name = match[1];
 
@@ -525,8 +540,10 @@ namespace dotless.Core.Parser
             {
                 if (param != null)
                 {
+                    GatherComments(parser);
                     if (parser.Tokenizer.Match(':'))
                     {
+                        CollectComments(parser);
                         var value = Expression(parser);
                         if (value)
                             parameters.Add(NodeProvider.Rule(param.Value, value, i));
@@ -541,11 +558,17 @@ namespace dotless.Core.Parser
                     parameters.Add(NodeProvider.Rule(null, param2, i));
                 }
 
+                GatherComments(parser);
+
                 if (!parser.Tokenizer.Match(','))
                     break;
+
+                GatherComments(parser);
             }
             if (!parser.Tokenizer.Match(')'))
                 throw new ParsingException("Expected ')'", parser.Tokenizer.Location.Index);
+
+            GatherComments(parser);
 
             var rules = Block(parser);
 
@@ -574,7 +597,7 @@ namespace dotless.Core.Parser
         //
         public bool End(Parser parser)
         {
-            return parser.Tokenizer.Match(';') || parser.Tokenizer.PeekAfterComments('}');
+            return parser.Tokenizer.Match(';') || parser.Tokenizer.Peek('}');
         }
 
         //
@@ -744,7 +767,7 @@ namespace dotless.Core.Parser
         // The `block` rule is used by `ruleset` and `mixin.definition`.
         // It's a wrapper around the `primary` rule, with added `{}`.
         //
-        public List<Node> Block(Parser parser)
+        public NodeList Block(Parser parser)
         {
             if (!parser.Tokenizer.Match('{'))
                 return null;
@@ -787,7 +810,7 @@ namespace dotless.Core.Parser
                 }
             }
 
-            List<Node> rules;
+            NodeList rules;
 
             if (selectors.Count > 0 && (rules = Block(parser)) != null)
                 return NodeProvider.Ruleset(selectors, rules, index);
@@ -799,14 +822,18 @@ namespace dotless.Core.Parser
 
         public Rule Rule(Parser parser)
         {
-            var memo = parser.Tokenizer.Location;
+            var memo = Remember(parser);
             PushComments();
 
             var name = Property(parser) ?? VariableName(parser);
 
+            var postNameComments = GatherComments(parser);
+
             if (name != null && parser.Tokenizer.Match(':'))
             {
                 Node value;
+
+                var preValueComments = GatherComments(parser);
 
                 if ((name[0] != '@') && (parser.Tokenizer.Peek(@"([^@+\/*`(;{}'""-]*);")))
                     value = parser.Tokenizer.Match(@"[^@+\/*`(;{}'""-]*");
@@ -815,15 +842,22 @@ namespace dotless.Core.Parser
                 else
                     value = Value(parser);
 
+                var postValueComments = GatherComments(parser);
+
                 if (End(parser))
                 {
+                    value.PreComments = preValueComments;
+                    value.PostComments = postValueComments;
+
+                    var rule = NodeProvider.Rule(name, value, memo.TokenizerLocation.Index);
+                    rule.PostNameComments = postNameComments;
                     PopComments();
-                    return NodeProvider.Rule(name, value, memo.Index);
+                    return rule;
                 }
             }
 
-            parser.Tokenizer.Location = memo;
             PopComments();
+            Recall(parser, memo);
 
             return null;
         }
@@ -875,14 +909,19 @@ namespace dotless.Core.Parser
 
             var index = parser.Tokenizer.Location.Index;
 
-            List<Node> rules;
+            NodeList rules;
             var name = parser.Tokenizer.MatchString(@"@media|@page");
             if (!string.IsNullOrEmpty(name))
             {
+                var preTypeComments = GatherComments(parser);
                 var types = parser.Tokenizer.MatchString(@"[^{]+").Trim();
+                var preRulesComments = GatherComments(parser);
                 rules = Block(parser);
                 if (rules != null)
+                {
+                    rules.PreComments = preRulesComments;
                     return NodeProvider.Directive(name + " " + types, rules, index);
+                }
             }
             else
             {

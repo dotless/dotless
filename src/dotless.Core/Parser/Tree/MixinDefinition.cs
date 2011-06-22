@@ -15,7 +15,7 @@ namespace dotless.Core.Parser.Tree
         public string Name { get; set; }
         public NodeList<Rule> Params { get; set; }
 
-        public MixinDefinition(string name, NodeList<Rule> parameters, List<Node> rules)
+        public MixinDefinition(string name, NodeList<Rule> parameters, NodeList rules)
         {
             Name = name;
             Params = parameters;
@@ -81,7 +81,7 @@ namespace dotless.Core.Parser.Tree
               _arguments.Add(i < args.Count ? args[i].Value : Params[i].Value);
             }
 
-            var frame = new Ruleset(null, new List<Node>());
+            var frame = new Ruleset(null, new NodeList());
 
             frame.Rules.Insert(0, new Rule("@arguments", new Expression(_arguments.Where(a => a != null)).Evaluate(env)));
 
@@ -93,7 +93,7 @@ namespace dotless.Core.Parser.Tree
             var frames = new[] { this, frame }.Concat(env.Frames).Concat(closureContext).Reverse();
             var context = new Env {Frames = new Stack<Ruleset>(frames)};
 
-            var newRules = new List<Node>();
+            var newRules = new NodeList();
 
             foreach (var rule in Rules)
             {
@@ -109,8 +109,8 @@ namespace dotless.Core.Parser.Tree
 
                     context.Frames.Push(ruleset);
 
-                    var rules = NodeHelper.NonDestructiveExpandNodes<MixinCall>(context, ruleset.Rules)
-                        .Select(r => r.Evaluate(context)).ToList();
+                    var rules = new NodeList(NodeHelper.NonDestructiveExpandNodes<MixinCall>(context, ruleset.Rules)
+                        .Select(r => r.Evaluate(context)));
 
                     context.Frames.Pop();
 

@@ -55,13 +55,16 @@
 
         public Output Append(Node node)
         {
-			if (node.PreComments)
-				node.PreComments.AppendCSS(Env);
+            if (node != null)
+            {
+                if (node.PreComments)
+                    node.PreComments.AppendCSS(Env);
 
-            node.AppendCSS(Env);
+                node.AppendCSS(Env);
 
-			if (node.PostComments)
-				node.PostComments.AppendCSS(Env);
+                if (node.PostComments)
+                    node.PostComments.AppendCSS(Env);
+            }
 
             return this;
         }

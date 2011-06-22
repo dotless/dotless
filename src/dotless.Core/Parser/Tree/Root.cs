@@ -11,7 +11,7 @@ namespace dotless.Core.Parser.Tree
     {
         public Func<ParsingException, ParserException> Error { get; set; }
 
-        public Root(List<Node> rules, Func<ParsingException, ParserException> error) :base(new NodeList<Selector>(), rules)
+        public Root(NodeList rules, Func<ParsingException, ParserException> error) :base(new NodeList<Selector>(), rules)
         {
             Error = error;
         }

@@ -35,10 +35,16 @@
 
         public override Node Evaluate(Env env)
         {
+            Node value;
             if (Values.Count == 1 && string.IsNullOrEmpty(Important))
-                return Values[0].Evaluate(env);
+                value = Values[0].Evaluate(env);
+            else 
+                value = new Value(Values.Select(n => n.Evaluate(env)), Important);
 
-            return new Value(Values.Select(n => n.Evaluate(env)), Important);
+            value.PreComments = this.PreComments;
+            value.PostComments = this.PostComments;
+
+            return value;
         }
     }
 }

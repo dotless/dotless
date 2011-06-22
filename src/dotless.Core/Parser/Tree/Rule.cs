@@ -9,6 +9,7 @@ namespace dotless.Core.Parser.Tree
         public string Name { get; set; }
         public Node Value { get; set; }
         public bool Variable { get; set; }
+        public NodeList PostNameComments { get; set; }
 
         public Rule(string name, Node value)
         {
@@ -27,6 +28,7 @@ namespace dotless.Core.Parser.Tree
             }
 
             var rule = new Rule(Name, Value.Evaluate(env)).CopiedFrom<Rule>(this);
+            rule.PostNameComments = this.PostNameComments;
 
             env.Rule = null;
 
@@ -40,6 +42,7 @@ namespace dotless.Core.Parser.Tree
 
             env.Output
                 .Append(Name)
+                .Append(PostNameComments)
                 .Append(env.Compress ? ":" : ": ")
                 .Append(Value)
                 .Append(";");

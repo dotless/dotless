@@ -5,6 +5,7 @@ namespace dotless.Core.Parser.Tree
     using Infrastructure;
     using Infrastructure.Nodes;
     using Utils;
+    using System.Collections.Generic;
 
     public class Import : Directive
     {
