@@ -2,6 +2,7 @@ namespace dotless.Test.Specs
 {
     using NUnit.Framework;
     using dotless.Core.Exceptions;
+    using System.Text.RegularExpressions;
 
     public class CommentsFixture : SpecFixtureBase
     {
@@ -528,7 +529,7 @@ border: solid black;
 .cla { font-size: @a; }";
 
             var expected = @"/* COM1 *//* COM5 */.cla {
-  font-size: 10px;
+  font-size: /* COM3 */10px/* COM4 */;
 }";
 
             AssertLess(input, expected);
@@ -555,16 +556,34 @@ border: solid black;
 }/*COM 6*/
 ";
 
-            var expected = @"@media/*COM1*/ print /*COM2*/ {/*COM3*/
+            var expected = @"@media print/*COM2*/ {
+  /*COM3*/
   font-size: 3em;
-}/*COM 6*/
-@font-face /*COM4*/ { /*COM5*/
+}
+/*COM 6*/@font-face/*COM4*/ {
+  /*COM5*/
   font-size: 3em;
-}/*COM 6*/";
+}
+/*COM 6*/";
 
             AssertLess(input, expected);
         }
 
+        [Test]
+        [Ignore("Preserving of comments between @media and type not supported")]
+        public void CommentsInDirective3()
+        {
+            var input = @"@media/*COM1*/ print {
+  font-size: 3em;
+}
+";
+
+            var expected = @"@media/*COM1*/ print {
+  font-size: 3em;
+}";
+
+            AssertLess(input, expected);
+        }
 
         [Test]
         public void CommentsInSelectorPsuedos()
@@ -586,6 +605,70 @@ border: solid black;
 }";
 
             AssertLess(input, expected);
+        }
+
+        [Test]
+        public void CommentsInUrl()
+        {
+            var input = @"url(/*A*/""test""/*R*/)/*S*/";
+            var expected = @"url(/*A*/""test""/*R*/)/*S*/";
+
+            AssertExpression(expected, input);
+        }
+
+        private void AssertExpressionWithAndWithoutComments(string expected, string input) 
+        {
+            Regex removeComments = new Regex(@"(//[^\n]*|(/\*(.|[\r\n])*?\*/))");
+            string inputNC = removeComments.Replace(input, "");
+            string expectedNC = removeComments.Replace(expected, "");
+
+            AssertExpression(expectedNC, inputNC);
+            AssertExpression(expected, input);
+        }
+
+        [Test]
+        public void CommentsInExpression1Paren()
+        {
+            var input = @"/*A*/(/*B*/12/*C*/+/*D*/(/*E*/7/*F*/-/*G*/(/*H*/8px/*I*/*/*J*/(/*K*/9/*L*/-/*M*/3/*N*/)/*O*/)/*P*/)/*Q*/)/*R*/";
+            var expected = @"/*A*/-29px/*B*//*C*//*D*//*E*//*F*//*G*//*H*//*I*//*J*//*K*//*L*//*M*//*N*//*O*//*P*//*Q*//*R*/";
+
+            AssertExpressionWithAndWithoutComments(expected, input);
+        }
+
+        [Test]
+        public void CommentsInExpression1NoParen()
+        {
+            var input = @"/*A*/12/*B*/+/*C*/7/*D*/-/*E*/8px/*F*/*/*G*/9/*H*/-/*I*/3/*J*/";
+            var expected = @"/*A*/-56px/*B*//*C*//*D*//*E*//*F*//*G*//*H*//*I*//*J*/";
+
+            AssertExpressionWithAndWithoutComments(expected, input);
+        }
+
+        [Test]
+        public void CommentsInExpressionMultiplication()
+        {
+            var input = @"8/*A*/*/*B*/1";
+            var expected = @"8/*A*//*B*/";
+
+            AssertExpressionWithAndWithoutComments(expected, input);
+        }
+
+        [Test]
+        public void CommentsInExpression2()
+        {
+            var input = @"/*A*/12px/*B*/ /*C*/4px/*D*/";
+            var expected = @"/*A*/12px/*B*//*C*/ 4px/*D*/";
+
+            AssertExpressionWithAndWithoutComments(expected, input);
+        }
+
+        [Test]
+        public void CommentsInExpression3()
+        {
+            var input = @"/*A*/12px/*B*/!important";
+            var expected = @"/*A*/12px/*B*/!important";
+
+            AssertExpressionWithAndWithoutComments(expected, input);
         }
     }
 }

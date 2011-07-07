@@ -909,13 +909,13 @@ namespace dotless.Core.Parser
 
             var index = parser.Tokenizer.Location.Index;
 
-            NodeList rules;
+            NodeList rules, preRulesComments;
             var name = parser.Tokenizer.MatchString(@"@media|@page");
             if (!string.IsNullOrEmpty(name))
             {
-                var preTypeComments = GatherComments(parser);
+                GatherComments(parser);
                 var types = parser.Tokenizer.MatchString(@"[^{]+").Trim();
-                var preRulesComments = GatherComments(parser);
+                preRulesComments = GatherComments(parser);
                 rules = Block(parser);
                 if (rules != null)
                 {
@@ -926,20 +926,25 @@ namespace dotless.Core.Parser
             else
             {
                 name = parser.Tokenizer.MatchString(@"@[-a-z]+");
+                var preComments = PullComments();
+                preRulesComments = GatherComments(parser);
                 if (name == "@font-face")
                 {
                     rules = Block(parser);
                     if (rules != null)
-                        return NodeProvider.Directive(name, rules, index);
+                    {
+                        rules.PreComments = preRulesComments;
+                        var directive = NodeProvider.Directive(name, rules, index);
+                        directive.PreComments = preComments;
+                        return directive;
+                    }
                 }
                 else
                 {
-                    var preComments = PullComments();
-                    CollectComments(parser);
                     Node value = Entity(parser);
                     if (value)
                     {
-                        value.PreComments = PullComments();
+                        value.PreComments = preRulesComments;
                         value.PostComments = GatherComments(parser);
                         if (parser.Tokenizer.Match(';'))
                         {
@@ -1001,10 +1006,22 @@ namespace dotless.Core.Parser
                 if (!parser.Tokenizer.Match(','))
                     break;
             }
+
+            CollectComments(parser);
+
             var important = Important(parser);
 
             if (expressions.Count > 0)
-                return NodeProvider.Value(expressions, important, index);
+            {
+                var value = NodeProvider.Value(expressions, important, index);
+
+                if (!string.IsNullOrEmpty(important))
+                {
+                    value.PreImportantComments = PullComments();
+                }
+
+                return value;
+            }
 
             return null;
         }
@@ -1030,24 +1047,30 @@ namespace dotless.Core.Parser
 
         public Node Multiplication(Parser parser)
         {
+            CollectComments(parser);
+
             var m = Operand(parser);
             if (!m)
                 return null;
 
-            Operation operation = null;
+            Node operation = m;
 
             while (true)
             {
+                CollectComments(parser); // after left operand
+
                 var index = parser.Tokenizer.Location.Index;
                 var op = parser.Tokenizer.Match(@"[\/*]");
 
+                CollectComments(parser); // after operation
+
                 Node a = null;
                 if (op && (a = Operand(parser)))
-                    operation = NodeProvider.Operation(op.Value, operation ?? m, a, index);
+                    operation = NodeProvider.Operation(op.Value, operation, a, index);
                 else
                     break;
             }
-            return operation ?? m;
+            return operation;
         }
 
         public Node Addition(Parser parser)
@@ -1059,6 +1082,8 @@ namespace dotless.Core.Parser
             Operation operation = null;
             while (true)
             {
+                CollectComments(parser);
+
                 var index = parser.Tokenizer.Location.Index;
                 var op = parser.Tokenizer.Match(@"[-+]\s+");
                 if (!op && !char.IsWhiteSpace(parser.Tokenizer.GetPreviousCharIgnoringComments()))
@@ -1084,6 +1109,7 @@ namespace dotless.Core.Parser
             if (parser.Tokenizer.CurrentChar == '-' && parser.Tokenizer.Peek(@"-[@\(]"))
             {
                 negate = parser.Tokenizer.Match('-');
+                CollectComments(parser);
             }
 
             var operand = Sub(parser) ??
@@ -1120,6 +1146,7 @@ namespace dotless.Core.Parser
 
             while (e = Addition(parser) || Entity(parser))
             {
+                e.PostComments = PullComments();
                 entities.Add(e);
             }
 

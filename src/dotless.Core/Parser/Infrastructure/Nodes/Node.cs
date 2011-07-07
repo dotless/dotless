@@ -45,10 +45,36 @@
 
 		public TN1 CopiedFrom<TN1>(Node node) where TN1 : Node
 		{
+            if (node == this)
+            {
+                return (TN1)node;
+            }
 			//TODO - only used in one place?
 			Index = node.Index;
-			PreComments = node.PreComments;
-			PostComments = node.PostComments;
+
+            if (node.PreComments)
+            {
+                if (PreComments)
+                {
+                    PreComments.AddRange(node.PreComments);
+                }
+                else
+                {
+                    PreComments = node.PreComments;
+                }
+            }
+
+            if (node.PostComments)
+            {
+                if (PostComments)
+                {
+                    PostComments.AddRange(node.PostComments);
+                }
+                else
+                {
+                    PostComments = node.PostComments;
+                }
+            }
 			
 			return (TN1)this;
 		}

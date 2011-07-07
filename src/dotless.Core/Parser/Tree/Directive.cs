@@ -31,7 +31,7 @@
             env.Frames.Push(this);
 
             if (Rules != null)
-                Rules = new NodeList(Rules.Select(r => r.Evaluate(env)));
+                Rules = new NodeList(Rules.Select(r => r.Evaluate(env))).CopiedFrom<NodeList>(Rules);
             else
                 Value = Value.Evaluate(env);
 
@@ -46,6 +46,12 @@
 
             if (Rules != null)
             {
+                // Append pre comments as we out put each rule ourselves
+                if (Rules.PreComments)
+                {
+                    env.Output.Append(Rules.PreComments);
+                }
+
                 env.Output
                     .Append(env.Compress ? "{" : " {\n")
 
