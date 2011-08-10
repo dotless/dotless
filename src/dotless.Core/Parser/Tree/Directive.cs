@@ -31,7 +31,7 @@
             env.Frames.Push(this);
 
             if (Rules != null)
-                Rules = new NodeList(Rules.Select(r => r.Evaluate(env))).CopiedFrom<NodeList>(Rules);
+                Rules = new NodeList(Rules.Select(r => r.Evaluate(env))).ReducedFrom<NodeList>(Rules);
             else
                 Value = Value.Evaluate(env);
 

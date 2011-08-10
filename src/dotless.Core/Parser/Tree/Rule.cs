@@ -27,7 +27,7 @@ namespace dotless.Core.Parser.Tree
                 throw new ParsingException("No value found for rule " + Name, Index);
             }
 
-            var rule = new Rule(Name, Value.Evaluate(env)).CopiedFrom<Rule>(this);
+            var rule = new Rule(Name, Value.Evaluate(env)).ReducedFrom<Rule>(this);
             rule.PostNameComments = this.PostNameComments;
 
             env.Rule = null;

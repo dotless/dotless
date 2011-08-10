@@ -175,7 +175,8 @@ namespace dotless.Core.Parser.Tree
             {
                 result[c] = Operation.Operate(op.Operator, RGB[c], otherColor.RGB[c]);
             }
-            return new Color(result);
+            return new Color(result)
+                .ReducedFrom<Node>(this, other);
         }
 
         public Color ToColor()

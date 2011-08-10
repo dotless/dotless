@@ -43,36 +43,45 @@
 
         #endregion
 
-		public TN1 CopiedFrom<TN1>(Node node) where TN1 : Node
+        /// <summary>
+        ///  Copies common properties when evaluating multiple nodes into one
+        /// </summary>
+        /// <typeparam name="TN1">Type to return - for convenience</typeparam>
+        /// <param name="nodes">The nodes this new node is derived from</param>
+        /// <returns>The new node</returns>
+		public TN1 ReducedFrom<TN1>(params Node[] nodes) where TN1 : Node
 		{
-            if (node == this)
+            foreach (Node node in nodes)
             {
-                return (TN1)node;
-            }
-			//TODO - only used in one place?
-			Index = node.Index;
+                if (node == this)
+                {
+                    continue;
+                }
 
-            if (node.PreComments)
-            {
-                if (PreComments)
-                {
-                    PreComments.AddRange(node.PreComments);
-                }
-                else
-                {
-                    PreComments = node.PreComments;
-                }
-            }
+                Index = node.Index;
 
-            if (node.PostComments)
-            {
-                if (PostComments)
+                if (node.PreComments)
                 {
-                    PostComments.AddRange(node.PostComments);
+                    if (PreComments)
+                    {
+                        PreComments.AddRange(node.PreComments);
+                    }
+                    else
+                    {
+                        PreComments = node.PreComments;
+                    }
                 }
-                else
+
+                if (node.PostComments)
                 {
-                    PostComments = node.PostComments;
+                    if (PostComments)
+                    {
+                        PostComments.AddRange(node.PostComments);
+                    }
+                    else
+                    {
+                        PostComments = node.PostComments;
+                    }
                 }
             }
 			

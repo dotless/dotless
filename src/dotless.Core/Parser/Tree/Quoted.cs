@@ -59,7 +59,7 @@
                             return v is TextNode ? (v as TextNode).Value : v.ToCSS(env);
                           });
 
-          return new Quoted(value, Quote, Escaped).CopiedFrom<Quoted>(this);
+          return new Quoted(value, Quote, Escaped).ReducedFrom<Quoted>(this);
         }
 
         private readonly Regex _unescape = new Regex(@"(^|[^\\])\\(.)");

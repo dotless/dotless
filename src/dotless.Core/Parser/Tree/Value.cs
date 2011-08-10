@@ -41,16 +41,18 @@
 
         public override Node Evaluate(Env env)
         {
+            Node returnNode = null;
+            Value value;
+
             if (Values.Count == 1 && string.IsNullOrEmpty(Important))
-            {
-                return Values[0].Evaluate(env).CopiedFrom<Node>(this);
-            }
+                returnNode = Values[0].Evaluate(env);
             else
             {
-                Value value = new Value(Values.Select(n => n.Evaluate(env)), Important);
+                returnNode = value = new Value(Values.Select(n => n.Evaluate(env)), Important);
                 value.PreImportantComments = this.PreImportantComments;
-                return value.CopiedFrom<Value>(this);
             }
+
+            return returnNode.ReducedFrom<Node>(this);
         }
     }
 }

@@ -629,6 +629,7 @@ border: solid black;
         [Test]
         public void CommentsInExpression1Paren()
         {
+            // drops some comments, but this is better than throwing an exception
             var input = @"/*A*/(/*B*/12/*C*/+/*D*/(/*E*/7/*F*/-/*G*/(/*H*/8px/*I*/*/*J*/(/*K*/9/*L*/-/*M*/3/*N*/)/*O*/)/*P*/)/*Q*/)/*R*/";
             var expected = @"/*A*/-29px/*B*//*C*//*D*//*E*//*F*//*G*//*H*//*I*//*J*//*K*//*L*//*M*//*N*//*O*//*P*//*Q*//*R*/";
 
@@ -665,8 +666,8 @@ border: solid black;
         [Test]
         public void CommentsInExpression3()
         {
-            var input = @"/*A*/12px/*B*/!important";
-            var expected = @"/*A*/12px/*B*/!important";
+            var input = @"/*A*/12px/*B*/ !important";
+            var expected = @"/*A*/12px/*B*/ !important";
 
             AssertExpressionWithAndWithoutComments(expected, input);
         }

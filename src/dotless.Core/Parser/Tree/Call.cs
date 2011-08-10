@@ -31,7 +31,7 @@ namespace dotless.Core.Parser.Tree
                 {
                     function.Name = Name;
                     function.Index = Index;
-                    return function.Call(env, args);
+                    return function.Call(env, args).ReducedFrom<Node>(this);
                 }
             }
 
@@ -45,7 +45,7 @@ namespace dotless.Core.Parser.Tree
 
             var css = env.Output.Pop();
 
-            return new TextNode(css.ToString()).CopiedFrom<TextNode>(this);
+            return new TextNode(css.ToString()).ReducedFrom<Node>(this);
         }
     }
 }

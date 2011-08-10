@@ -7,17 +7,19 @@
     {
         public string Value { get; set; }
         public bool Silent { get; set; }
+        private bool IsCSSHack { get; set; }
 
         public Comment(string value, bool silent)
         {
             Value = value;
             Silent = silent;
+            IsCSSHack = value == "/**/" || value == "/*\\*/";
         }
 
         public override void AppendCSS(Env env)
         {
-            if (!Silent)
-                env.Output.Append(env.Compress ? "" : Value);
+            if (!Silent && (!env.Compress || IsCSSHack))
+                env.Output.Append(Value);
         }
     }
 }

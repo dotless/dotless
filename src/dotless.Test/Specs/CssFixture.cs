@@ -33,6 +33,24 @@ namespace dotless.Test.Specs
         }
 
         [Test]
+        public void DirectiveWithNoSpace()
+        {
+            // fixes bug in 1.2
+            var input =
+                @"
+@media print{
+  font-size: 3em;
+}";
+
+            var expected = @"
+@media print {
+  font-size: 3em;
+}";
+            AssertLess(input, expected);
+        }
+
+
+        [Test]
         public void TagSelector()
         {
             var input = @"

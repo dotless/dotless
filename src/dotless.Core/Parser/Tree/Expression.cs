@@ -20,10 +20,10 @@
         public override Node Evaluate(Env env)
         {
             if (Value.Count > 1)
-                return new Expression(new NodeList(Value.Select(e => e.Evaluate(env).CopiedFrom<Node>(e)))).CopiedFrom<Expression>(this);
+                return new Expression(new NodeList(Value.Select(e => e.Evaluate(env)))).ReducedFrom<Node>(this);
 
             if (Value.Count == 1)
-                return Value[0].Evaluate(env).CopiedFrom<Node>(Value[0]);
+                return Value[0].Evaluate(env).ReducedFrom<Node>(this);
 
             return this;
         }
