@@ -10,7 +10,8 @@ namespace dotless.Compiler
 
     public class Program
     {
-        public static void Main(string[] args)
+        static int returnCode = 0;
+        public static int Main(string[] args)
         {
             var arguments = new List<string>();
 
@@ -19,12 +20,12 @@ namespace dotless.Compiler
             var configuration = GetConfigurationFromArguments(arguments);
 
             if(configuration.Help)
-                return;
+                return -1;
 
             if (arguments.Count == 0)
             {
                 WriteHelp();
-                return;
+                return -1;
             }
 
             var inputDirectoryPath = Path.GetDirectoryName(arguments[0]);
@@ -75,6 +76,7 @@ namespace dotless.Compiler
                     System.Threading.Thread.Sleep(200);
                 }
             }
+            return returnCode;
         }
         private static CompilationDelegate CreationImpl(ILessEngine engine, string inputFilePath, string outputDirectoryPath)
         {
@@ -95,6 +97,10 @@ namespace dotless.Compiler
                 var source = new dotless.Core.Input.FileReader().GetFileContents(inputFilePath);
                 Directory.SetCurrentDirectory(directoryPath);
                 var css = engine.TransformToCss(source, inputFilePath);
+                if (string.IsNullOrEmpty(css) && !string.IsNullOrEmpty(source))
+                {
+                    returnCode++;
+                }
                 File.WriteAllText(outputFilePath, css);
                 Console.WriteLine("[Done]");
 
