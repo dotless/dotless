@@ -136,6 +136,25 @@ input[type=""text""].class#id[attr=32]:not(1) {
         }
 
         [Test]
+        public void AttributeSelectorsInsideMixin()
+        {
+            // See github.com/dotless/issues/65
+            var input = @"
+.Grid {
+    input[type=""checkbox""] {
+        margin-right: 4px;
+    }
+}
+";
+            var expected = @"
+.Grid input[type=""checkbox""] {
+  margin-right: 4px;
+}
+";
+            AssertLess(input, expected);
+        }
+
+        [Test]
         public void MultipleAttributeSelectors2()
         {
             var input = @"
