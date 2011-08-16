@@ -8,6 +8,7 @@
     public class Value : Node
     {
         public NodeList Values { get; set; }
+        public NodeList PreImportantComments { get; set; }
         public string Important { get; set; }
 
         public Value(IEnumerable<Node> values, string important)
@@ -22,6 +23,11 @@
  
             if  (!string.IsNullOrEmpty(Important)) 
             {
+                if (PreImportantComments)
+                {
+                    env.Output.Append(PreImportantComments);
+                }
+
                 env.Output
                     .Append(" ")
                     .Append(Important);
@@ -35,10 +41,18 @@
 
         public override Node Evaluate(Env env)
         {
-            if (Values.Count == 1 && string.IsNullOrEmpty(Important))
-                return Values[0].Evaluate(env);
+            Node returnNode = null;
+            Value value;
 
-            return new Value(Values.Select(n => n.Evaluate(env)), Important);
+            if (Values.Count == 1 && string.IsNullOrEmpty(Important))
+                returnNode = Values[0].Evaluate(env);
+            else
+            {
+                returnNode = value = new Value(Values.Select(n => n.Evaluate(env)), Important);
+                value.PreImportantComments = this.PreImportantComments;
+            }
+
+            return returnNode.ReducedFrom<Node>(this);
         }
     }
 }

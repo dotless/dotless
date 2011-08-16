@@ -14,7 +14,7 @@
 
         public override Node Evaluate(Env env)
         {
-            return (Node) Color.GetColorFromKeyword(Value) ?? this;
+            return ((Node) Color.GetColorFromKeyword(Value) ?? this).ReducedFrom<Node>(this);
         }
 
         public override void AppendCSS(Env env)

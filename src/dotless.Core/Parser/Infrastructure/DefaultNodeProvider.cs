@@ -22,17 +22,12 @@ namespace dotless.Core.Parser.Infrastructure
             return new Selector(elements) { Index = index };
         }
 
-        public Selector Selector(NodeList<Element> elements, NodeList<Comment> preComments, NodeList<Comment> postComments, int index)
-        {
-            return new Selector(elements) { Index = index, PreComments = preComments, PostComments = postComments };
-        }
-
         public Rule Rule(string name, Node value, int index)
         {
             return new Rule(name, value) { Index = index };
         }
 
-        public Ruleset Ruleset(NodeList<Selector> selectors, List<Node> rules, int index)
+        public Ruleset Ruleset(NodeList<Selector> selectors, NodeList rules, int index)
         {
             return new Ruleset(selectors, rules) { Index = index };
         }
@@ -87,7 +82,7 @@ namespace dotless.Core.Parser.Infrastructure
             return new MixinCall(elements, arguments) { Index = index };
         }
 
-        public MixinDefinition MixinDefinition(string name, NodeList<Rule> parameters, List<Node> rules, int index)
+        public MixinDefinition MixinDefinition(string name, NodeList<Rule> parameters, NodeList rules, int index)
         {
             return new MixinDefinition(name, parameters, rules) { Index = index };
         }
@@ -102,7 +97,7 @@ namespace dotless.Core.Parser.Infrastructure
             return new Import(path, importer) { Index = index };
         }
 
-        public Directive Directive(string name, List<Node> rules, int index)
+        public Directive Directive(string name, NodeList rules, int index)
         {
             return new Directive(name, rules) { Index = index };
         }

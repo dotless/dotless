@@ -5,6 +5,7 @@ namespace dotless.Core.Parser.Tree
     using Infrastructure;
     using Infrastructure.Nodes;
     using Utils;
+    using System.Collections.Generic;
 
     public class Import : Directive
     {
@@ -51,7 +52,7 @@ namespace dotless.Core.Parser.Tree
 
             NodeHelper.ExpandNodes<Import>(env, InnerRoot.Rules);
 
-            return new NodeList(InnerRoot.Rules);
+            return new NodeList(InnerRoot.Rules).ReducedFrom<NodeList>(this);
         }
     }
 }

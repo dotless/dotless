@@ -6,7 +6,7 @@ namespace dotless.Core.Utils
 
     internal class NodeHelper
     {
-        public static void ExpandNodes<TNode>(Env env, List<Node> rules)
+        public static void ExpandNodes<TNode>(Env env, NodeList rules)
             where TNode : Node
         {
             for (var i = 0; i < rules.Count; i++)
@@ -22,7 +22,7 @@ namespace dotless.Core.Utils
             }
         }
 
-        public static IEnumerable<Node> NonDestructiveExpandNodes<TNode>(Env env, List<Node> rules)
+        public static IEnumerable<Node> NonDestructiveExpandNodes<TNode>(Env env, NodeList rules)
             where TNode : Node
         {
             foreach (var node in rules)

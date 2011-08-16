@@ -65,17 +65,86 @@ namespace dotless.Core.Parser
         // Only at one point is the primary rule not called from the
         // block rule: at the root level.
         //
-        public List<Node> Primary(Parser parser)
+        public NodeList Primary(Parser parser)
         {
             Node node;
-            var root = new List<Node>();
+            var root = new NodeList();
+            NodeList comments = null;
 
-            while (node = MixinDefinition(parser) || Rule(parser) || Comment(parser) || Ruleset(parser) ||
+            GatherComments(parser);
+
+            while (node = MixinDefinition(parser) || Rule(parser) || PullComments() || Ruleset(parser) ||
                           MixinCall(parser) || Directive(parser))
             {
-                root.Add(node);
+                if (comments = PullComments())
+                {
+                    root.AddRange(comments);
+                }
+
+                comments = node as NodeList;
+                if (comments)
+                    root.AddRange(comments);
+                else
+                    root.Add(node);
+
+                GatherComments(parser);
             }
             return root;
+        }
+
+        private NodeList CurrentComments { get; set; }
+
+        /// <summary>
+        ///  Gathers the comments and put them on the stack
+        /// </summary>
+        private void GatherComments(Parser parser)
+        {
+            Comment comment;
+            while (comment = Comment(parser))
+            {
+                if (CurrentComments == null)
+                {
+                    CurrentComments = new NodeList();
+                }
+                CurrentComments.Add(comment);
+            }
+        }
+
+        /// <summary>
+        ///  Collects comments from the stack retrived when gathering comments
+        /// </summary>
+        private NodeList PullComments()
+        {
+            NodeList comments = CurrentComments;
+            CurrentComments = null;
+            return comments;
+        }
+
+        /// <summary>
+        ///  The equivalent of gathering any more comments and pulling everything on the stack
+        /// </summary>
+        private NodeList GatherAndPullComments(Parser parser)
+        {
+            GatherComments(parser);
+            return PullComments();
+        }
+
+        private Stack<NodeList> CommentsStack = new Stack<NodeList>();
+
+        /// <summary>
+        ///  Pushes comments on to a stack for later use
+        /// </summary>
+        private void PushComments()
+        {
+            CommentsStack.Push(PullComments());
+        }
+
+        /// <summary>
+        ///  Pops the comments stack
+        /// </summary>
+        private void PopComments()
+        {
+            CurrentComments = CommentsStack.Pop();
         }
 
         // We create a Comment node for CSS comments `/* */`,
@@ -86,7 +155,7 @@ namespace dotless.Core.Parser
             var index = parser.Tokenizer.Location.Index;
             string comment = parser.Tokenizer.GetComment();
 
-            if  (comment != null)
+            if (comment != null)
             {
                 return NodeProvider.Comment(comment, comment.StartsWith("//"), index);
             }
@@ -122,10 +191,10 @@ namespace dotless.Core.Parser
 
             string str = parser.Tokenizer.GetQuotedString();
 
-            if  (str == null)
+            if (str == null)
                 return null;
 
-            return NodeProvider.Quoted(str, str.Substring(1, str.Length-2), escaped, index);
+            return NodeProvider.Quoted(str, str.Substring(1, str.Length - 2), escaped, index);
         }
 
         //
@@ -156,6 +225,7 @@ namespace dotless.Core.Parser
         //
         public Call Call(Parser parser)
         {
+            var memo = Remember(parser);
             var index = parser.Tokenizer.Location.Index;
 
             var name = parser.Tokenizer.Match(@"(%|[a-zA-Z0-9_-]+)\(");
@@ -173,7 +243,10 @@ namespace dotless.Core.Parser
             var args = Arguments(parser);
 
             if (!parser.Tokenizer.Match(')'))
+            {
+                Recall(parser, memo);
                 return null;
+            }
 
             return NodeProvider.Call(name[1], args, index);
         }
@@ -213,19 +286,29 @@ namespace dotless.Core.Parser
             if (parser.Tokenizer.CurrentChar != 'u' || !parser.Tokenizer.Match(@"url\("))
                 return null;
 
+            GatherComments(parser);
+
             Node value = Quoted(parser);
-            
-            if (!value) {
-                var memory = parser.Tokenizer.Location;
+
+            if (!value)
+            {
+                var memo = Remember(parser);
                 value = Expression(parser);
 
-                if (value && !parser.Tokenizer.Peek(')')) {
+                if (value && !parser.Tokenizer.Peek(')'))
+                {
                     value = null;
-                    parser.Tokenizer.Location = memory;
+                    Recall(parser, memo);
                 }
             }
-            
-            if (!value) {
+            else
+            {
+                value.PreComments = PullComments();
+                value.PostComments = GatherAndPullComments(parser);
+            }
+
+            if (!value)
+            {
                 value = parser.Tokenizer.MatchAny(@"[^\)""']*") || new TextNode("");
             }
 
@@ -301,14 +384,15 @@ namespace dotless.Core.Parser
         //
         public Script Script(Parser parser)
         {
-            if (parser.Tokenizer.CurrentChar != '`') 
+            if (parser.Tokenizer.CurrentChar != '`')
                 return null;
 
             var index = parser.Tokenizer.Location.Index;
 
             var script = parser.Tokenizer.MatchAny(@"`[^`]*`");
 
-            if (!script) {
+            if (!script)
+            {
                 return null;
             }
 
@@ -376,6 +460,8 @@ namespace dotless.Core.Parser
             RegexMatchResult e;
             Combinator c = null;
 
+            PushComments();
+
             for (var i = parser.Tokenizer.Location.Index; e = parser.Tokenizer.Match(@"[#.][a-zA-Z0-9_-]+"); i = parser.Tokenizer.Location.Index)
             {
                 elements.Add(NodeProvider.Element(c, e.Value, i));
@@ -405,18 +491,30 @@ namespace dotless.Core.Parser
                         }
                     }
 
-                    args.Add(new NamedArgument {Name = name, Value = value});
+                    args.Add(new NamedArgument { Name = name, Value = value });
 
-                    if(! parser.Tokenizer.Match(','))
+                    if (!parser.Tokenizer.Match(','))
                         break;
                 }
                 if (!parser.Tokenizer.Match(')'))
                     throw new ParsingException("Expected ')'", parser.Tokenizer.Location.Index);
             }
 
-            if (elements.Count > 0 && End(parser))
-                return NodeProvider.MixinCall(elements, args, index);
+            if (elements.Count > 0)
+            {
+                // if elements then we've picked up chars so don't need to worry about remembering
+                var postComments = GatherAndPullComments(parser);
 
+                if (End(parser))
+                {
+                    var mixinCall = NodeProvider.MixinCall(elements, args, index);
+                    mixinCall.PostComments = postComments;
+                    PopComments();
+                    return mixinCall;
+                }
+            }
+
+            PopComments();
             return null;
         }
 
@@ -441,7 +539,7 @@ namespace dotless.Core.Parser
         //
         public MixinDefinition MixinDefinition(Parser parser)
         {
-            if ((parser.Tokenizer.CurrentChar != '.' && parser.Tokenizer.CurrentChar != '#') || 
+            if ((parser.Tokenizer.CurrentChar != '.' && parser.Tokenizer.CurrentChar != '#') ||
                 parser.Tokenizer.Peek(@"[^{]*(;|})"))
                 return null;
 
@@ -450,6 +548,11 @@ namespace dotless.Core.Parser
             var match = parser.Tokenizer.Match(@"([#.](?:[\w-]|\\(?:[a-fA-F0-9]{1,6} ?|[^a-fA-F0-9]))+)\s*\(");
             if (!match)
                 return null;
+
+            //mixin definition ignores comments before it - a css hack can't be part of a mixin definition,
+            //so it may as well be a rule before the definition
+            PushComments();
+            GatherAndPullComments(parser); // no store as mixin definition not output
 
             var name = match[1];
 
@@ -463,8 +566,10 @@ namespace dotless.Core.Parser
             {
                 if (param != null)
                 {
+                    GatherAndPullComments(parser);
                     if (parser.Tokenizer.Match(':'))
                     {
+                        GatherComments(parser);
                         var value = Expression(parser);
                         if (value)
                             parameters.Add(NodeProvider.Rule(param.Value, value, i));
@@ -479,13 +584,21 @@ namespace dotless.Core.Parser
                     parameters.Add(NodeProvider.Rule(null, param2, i));
                 }
 
+                GatherAndPullComments(parser);
+
                 if (!parser.Tokenizer.Match(','))
                     break;
+
+                GatherAndPullComments(parser);
             }
             if (!parser.Tokenizer.Match(')'))
                 throw new ParsingException("Expected ')'", parser.Tokenizer.Location.Index);
 
+            GatherAndPullComments(parser);
+
             var rules = Block(parser);
+
+            PopComments();
 
             if (rules != null)
                 return NodeProvider.MixinDefinition(name, parameters, rules, index);
@@ -500,7 +613,7 @@ namespace dotless.Core.Parser
         public Node Entity(Parser parser)
         {
             return Literal(parser) || Variable(parser) || Url(parser) ||
-                   Call(parser)    || Keyword(parser)  || Script(parser);
+                   Call(parser) || Keyword(parser) || Script(parser);
         }
 
         //
@@ -510,7 +623,7 @@ namespace dotless.Core.Parser
         //
         public bool End(Parser parser)
         {
-            return parser.Tokenizer.Match(';') || parser.Tokenizer.PeekAfterComments('}');
+            return parser.Tokenizer.Match(';') || parser.Tokenizer.Peek('}');
         }
 
         //
@@ -554,16 +667,26 @@ namespace dotless.Core.Parser
         {
             var index = parser.Tokenizer.Location.Index;
 
+            GatherComments(parser);
+
             Combinator c = Combinator(parser);
+
+            PushComments();
+            GatherComments(parser); // to collect, combinator must have picked up something which would require memory anyway
             var e = parser.Tokenizer.Match(@"[.#:]?[a-zA-Z0-9_-]+") || parser.Tokenizer.Match('*') || Attribute(parser) ||
                     parser.Tokenizer.MatchAny(@"\([^)@]+\)");
 
-            if (e)
-                return NodeProvider.Element(c, e.Value, index);
+            bool isCombinatorAnd = !e && c.Value.StartsWith("&");
 
-            if (c.Value.StartsWith("&"))
-                return NodeProvider.Element(c, null, index);
+            if (e || isCombinatorAnd)
+            {
+                c.PostComments = PullComments();
+                PopComments();
+                c.PreComments = PullComments();
+                return NodeProvider.Element(c, isCombinatorAnd ? null : e.Value, index);
+            }
 
+            PopComments();
             return null;
         }
 
@@ -584,7 +707,7 @@ namespace dotless.Core.Parser
             if (match = parser.Tokenizer.Match(@"[+>~]") || parser.Tokenizer.Match(@"&\s?") || parser.Tokenizer.Match(@"::"))
                 return NodeProvider.Combinator(match.ToString(), index);
 
-            return NodeProvider.Combinator(char.IsWhiteSpace(parser.Tokenizer.PreviousChar) ? " " : null, index);
+            return NodeProvider.Combinator(char.IsWhiteSpace(parser.Tokenizer.GetPreviousCharIgnoringComments()) ? " " : null, index);
         }
 
         //
@@ -598,20 +721,16 @@ namespace dotless.Core.Parser
         public Selector Selector(Parser parser)
         {
             Element e;
-            Comment c;
             int realElements = 0;
 
             var elements = new NodeList<Element>();
-            var preComments = new NodeList<Comment>();
-            var postComments = new NodeList<Comment>();
             var index = parser.Tokenizer.Location.Index;
 
-            // absorb comments at the start of selectors
-            while (c = Comment(parser)) preComments.Add(c);
+            PushComments();
 
             while (true)
             {
-                e = Element(parser); // combinator handles comments in the middle of selectors
+                e = Element(parser);
                 if (!e)
                     break;
 
@@ -619,12 +738,17 @@ namespace dotless.Core.Parser
                 elements.Add(e);
             }
 
-            // absorb comments at the end of selectors
-            while (c = Comment(parser)) postComments.Add(c);
-
             if (realElements > 0)
-                return NodeProvider.Selector(elements, preComments, postComments, index);
+            {
+                var selector = NodeProvider.Selector(elements, index);
+                selector.PostComments = GatherAndPullComments(parser);
+                PopComments();
+                selector.PreComments = PullComments();
 
+                return selector;
+            }
+
+            PopComments();
             //We have lost comments we have absorbed here.
             //But comments should be absorbed before selectors...
             return null;
@@ -651,7 +775,9 @@ namespace dotless.Core.Parser
                 Node op;
                 if ((op = parser.Tokenizer.Match(@"[|~*$^]?=")) &&
                     (val = Quoted(parser) || parser.Tokenizer.Match(@"[\w-]+")))
-                    attr = string.Format("{0}{1}{2}", key, op, val.ToCSS(new Env())); // TODO: make Attribute node
+                    // Would be nice if this wasn't one block - we could make Attribute node
+                    // see CommentsInSelectorAttributes in CommentsFixture.cs
+                    attr = string.Format("{0}{1}{2}", key, op, val.ToCSS(new Env())); 
                 else
                     attr = key.ToString();
             }
@@ -669,7 +795,7 @@ namespace dotless.Core.Parser
         // The `block` rule is used by `ruleset` and `mixin.definition`.
         // It's a wrapper around the `primary` rule, with added `{}`.
         //
-        public List<Node> Block(Parser parser)
+        public NodeList Block(Parser parser)
         {
             if (!parser.Tokenizer.Match('{'))
                 return null;
@@ -689,14 +815,15 @@ namespace dotless.Core.Parser
         {
             var selectors = new NodeList<Selector>();
 
-            var memo = parser.Tokenizer.Location;
+            var memo = Remember(parser);
+            var index = memo.TokenizerLocation.Index;
 
             if (parser.Tokenizer.Peek(@"([a-z.#: _-]+)[\s\n]*\{")) //simple case with no comments
             {
                 var match = parser.Tokenizer.Match(@"[a-z.#: _-]+");
                 selectors =
                     new NodeList<Selector>(
-                        NodeProvider.Selector(new NodeList<Element>(NodeProvider.Element(null, match.Value, memo.Index)), memo.Index));
+                        NodeProvider.Selector(new NodeList<Element>(NodeProvider.Element(null, match.Value, index)), index));
             }
             else
             {
@@ -706,28 +833,35 @@ namespace dotless.Core.Parser
                     selectors.Add(s);
                     if (!parser.Tokenizer.Match(','))
                         break;
+
+                    GatherComments(parser);
                 }
             }
 
-            List<Node> rules;
+            NodeList rules;
 
             if (selectors.Count > 0 && (rules = Block(parser)) != null)
-                return NodeProvider.Ruleset(selectors, rules, memo.Index);
+                return NodeProvider.Ruleset(selectors, rules, index);
 
-            parser.Tokenizer.Location = memo;
+            Recall(parser, memo);
 
             return null;
         }
 
         public Rule Rule(Parser parser)
         {
-            var memo = parser.Tokenizer.Location;
+            var memo = Remember(parser);
+            PushComments();
 
             var name = Property(parser) ?? VariableName(parser);
+
+            var postNameComments = GatherAndPullComments(parser);
 
             if (name != null && parser.Tokenizer.Match(':'))
             {
                 Node value;
+
+                var preValueComments = GatherAndPullComments(parser);
 
                 if ((name[0] != '@') && (parser.Tokenizer.Peek(@"([^@+\/*`(;{}'""-]*);")))
                     value = parser.Tokenizer.Match(@"[^@+\/*`(;{}'""-]*");
@@ -736,11 +870,22 @@ namespace dotless.Core.Parser
                 else
                     value = Value(parser);
 
+                var postValueComments = GatherAndPullComments(parser);
+
                 if (End(parser))
-                    return NodeProvider.Rule(name, value, memo.Index);
+                {
+                    value.PreComments = preValueComments;
+                    value.PostComments = postValueComments;
+
+                    var rule = NodeProvider.Rule(name, value, memo.TokenizerLocation.Index);
+                    rule.PostNameComments = postNameComments;
+                    PopComments();
+                    return rule;
+                }
             }
 
-            parser.Tokenizer.Location = memo;
+            PopComments();
+            Recall(parser, memo);
 
             return null;
         }
@@ -792,29 +937,52 @@ namespace dotless.Core.Parser
 
             var index = parser.Tokenizer.Location.Index;
 
-            List<Node> rules;
+            NodeList rules, preRulesComments;
             var name = parser.Tokenizer.MatchString(@"@media|@page");
             if (!string.IsNullOrEmpty(name))
             {
-                var types = parser.Tokenizer.MatchString(@"[^{]+").Trim();
+                GatherAndPullComments(parser);
+                var types = parser.Tokenizer.MatchString(@"[^{]+");
+                types = types == null ? String.Empty : types.Trim();
+
+                preRulesComments = GatherAndPullComments(parser);
                 rules = Block(parser);
                 if (rules != null)
+                {
+                    rules.PreComments = preRulesComments;
                     return NodeProvider.Directive(name + " " + types, rules, index);
+                }
             }
             else
             {
                 name = parser.Tokenizer.MatchString(@"@[-a-z]+");
+                var preComments = PullComments();
+                preRulesComments = GatherAndPullComments(parser);
                 if (name == "@font-face")
                 {
                     rules = Block(parser);
                     if (rules != null)
-                        return NodeProvider.Directive(name, rules, index);
+                    {
+                        rules.PreComments = preRulesComments;
+                        var directive = NodeProvider.Directive(name, rules, index);
+                        directive.PreComments = preComments;
+                        return directive;
+                    }
                 }
                 else
                 {
-                    Node value;
-                    if ((value = Entity(parser)) && parser.Tokenizer.Match(';'))
-                        return NodeProvider.Directive(name, value, index);
+                    Node value = Entity(parser);
+                    if (value)
+                    {
+                        value.PreComments = preRulesComments;
+                        value.PostComments = GatherAndPullComments(parser);
+                        if (parser.Tokenizer.Match(';'))
+                        {
+                            var directive = NodeProvider.Directive(name, value, index);
+                            directive.PreComments = preComments;
+                            return directive;
+                        }
+                    }
                 }
             }
 
@@ -868,10 +1036,22 @@ namespace dotless.Core.Parser
                 if (!parser.Tokenizer.Match(','))
                     break;
             }
+
+            GatherComments(parser);
+
             var important = Important(parser);
 
             if (expressions.Count > 0)
-                return NodeProvider.Value(expressions, important, index);
+            {
+                var value = NodeProvider.Value(expressions, important, index);
+
+                if (!string.IsNullOrEmpty(important))
+                {
+                    value.PreImportantComments = PullComments();
+                }
+
+                return value;
+            }
 
             return null;
         }
@@ -892,29 +1072,35 @@ namespace dotless.Core.Parser
             if (e != null && parser.Tokenizer.Match(')'))
                 return e;
 
-            throw new ParsingException("Expected ')'", parser.Tokenizer.Location.Index);
+            return null; // might be an attribute selector or something else
         }
 
         public Node Multiplication(Parser parser)
         {
+            GatherComments(parser);
+
             var m = Operand(parser);
             if (!m)
                 return null;
 
-            Operation operation = null;
+            Node operation = m;
 
             while (true)
             {
+                GatherComments(parser); // after left operand
+
                 var index = parser.Tokenizer.Location.Index;
                 var op = parser.Tokenizer.Match(@"[\/*]");
 
+                GatherComments(parser); // after operation
+
                 Node a = null;
                 if (op && (a = Operand(parser)))
-                    operation = NodeProvider.Operation(op.Value, operation ?? m, a, index);
+                    operation = NodeProvider.Operation(op.Value, operation, a, index);
                 else
                     break;
             }
-            return operation ?? m;
+            return operation;
         }
 
         public Node Addition(Parser parser)
@@ -926,9 +1112,11 @@ namespace dotless.Core.Parser
             Operation operation = null;
             while (true)
             {
+                GatherComments(parser);
+
                 var index = parser.Tokenizer.Location.Index;
                 var op = parser.Tokenizer.Match(@"[-+]\s+");
-                if (!op && !char.IsWhiteSpace(parser.Tokenizer.PreviousChar))
+                if (!op && !char.IsWhiteSpace(parser.Tokenizer.GetPreviousCharIgnoringComments()))
                     op = parser.Tokenizer.Match(@"[-+]");
 
                 Node a = null;
@@ -951,17 +1139,18 @@ namespace dotless.Core.Parser
             if (parser.Tokenizer.CurrentChar == '-' && parser.Tokenizer.Peek(@"-[@\(]"))
             {
                 negate = parser.Tokenizer.Match('-');
+                GatherComments(parser);
             }
 
             var operand = Sub(parser) ??
                           Dimension(parser) ??
                           Color(parser) ??
-                          (Node) Variable(parser);
+                          (Node)Variable(parser);
 
             if (operand != null)
             {
-                return negate ? 
-                    NodeProvider.Operation("*", NodeProvider.Number("-1", "", negate.Index), operand, negate.Index) : 
+                return negate ?
+                    NodeProvider.Operation("*", NodeProvider.Number("-1", "", negate.Index), operand, negate.Index) :
                     operand;
             }
 
@@ -987,6 +1176,7 @@ namespace dotless.Core.Parser
 
             while (e = Addition(parser) || Entity(parser))
             {
+                e.PostComments = PullComments();
                 entities.Add(e);
             }
 
@@ -1004,6 +1194,23 @@ namespace dotless.Core.Parser
                 return name.Value;
 
             return null;
+        }
+
+        public class ParserLocation
+        {
+            public NodeList Comments { get; set; }
+            public Location TokenizerLocation { get; set; }
+        }
+
+        public ParserLocation Remember(Parser parser)
+        {
+            return new ParserLocation() { Comments = CurrentComments, TokenizerLocation = parser.Tokenizer.Location };
+        }
+
+        public void Recall(Parser parser, ParserLocation location)
+        {
+            CurrentComments = location.Comments;
+            parser.Tokenizer.Location = location.TokenizerLocation;
         }
     }
 }

@@ -9,6 +9,7 @@ namespace dotless.Core.Parser.Tree
         public string Name { get; set; }
         public Node Value { get; set; }
         public bool Variable { get; set; }
+        public NodeList PostNameComments { get; set; }
 
         public Rule(string name, Node value)
         {
@@ -25,11 +26,12 @@ namespace dotless.Core.Parser.Tree
             {
                 throw new ParsingException("No value found for rule " + Name, Index);
             }
-            
-            var rule = new Rule(Name, Value.Evaluate(env)) {Index = Index};
+
+            var rule = new Rule(Name, Value.Evaluate(env)).ReducedFrom<Rule>(this);
+            rule.PostNameComments = this.PostNameComments;
 
             env.Rule = null;
-            
+
             return rule;
         }
 
@@ -40,6 +42,7 @@ namespace dotless.Core.Parser.Tree
 
             env.Output
                 .Append(Name)
+                .Append(PostNameComments)
                 .Append(env.Compress ? ":" : ": ")
                 .Append(Value)
                 .Append(";");

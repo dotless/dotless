@@ -10,11 +10,11 @@ namespace dotless.Core.Parser.Tree
     public class Ruleset : Node
     {
         public NodeList<Selector> Selectors { get; set; }
-        public List<Node> Rules { get; set; }
+        public NodeList Rules { get; set; }
 
         private Dictionary<string, List<Closure>> _lookups;
 
-        public Ruleset(NodeList<Selector> selectors, List<Node> rules)
+        public Ruleset(NodeList<Selector> selectors, NodeList rules)
             : this()
         {
             Selectors = selectors;
@@ -92,7 +92,7 @@ namespace dotless.Core.Parser.Tree
             return this;
         }
 
-        public List<Node> EvaluateRules(Env env)
+        public NodeList EvaluateRules(Env env)
         {
             env.Frames.Push(this);
 
@@ -131,6 +131,7 @@ namespace dotless.Core.Parser.Tree
         {
             var css = new List<string>(); // The CSS output
             var rules = new List<StringBuilder>(); // node.Ruleset instances
+            int nonCommentRules = 0;
             var paths = new Context(); // Current selectors
             bool isRoot = this is Root;
 
@@ -147,7 +148,7 @@ namespace dotless.Core.Parser.Tree
                     continue;
 
                 var comment = node as Comment;
-                if(comment != null && comment.Silent)
+                if (comment != null && comment.Silent)
                     continue;
 
                 var ruleset = node as Ruleset;
@@ -155,17 +156,21 @@ namespace dotless.Core.Parser.Tree
                 {
                     ruleset.AppendCSS(env, paths);
                 }
-                else {
+                else
+                {
                     var rule = node as Rule;
                     if ((rule != null && !rule.Variable) || (rule == null && !isRoot))
                     {
-                        env.Output.Push();
-                        node.AppendCSS(env);
+                        if (comment == null)
+                            nonCommentRules++;
+
+                        env.Output.Push()
+                            .Append(node);
                         rules.Add(env.Output.Pop());
                     }
                     else if (rule == null)
                     {
-                        node.AppendCSS(env);
+                        env.Output.Append(node);
                     }
                 }
             }
@@ -181,14 +186,14 @@ namespace dotless.Core.Parser.Tree
             }
             else
             {
-                if (rules.Count > 0)
+                if (nonCommentRules > 0)
                 {
                     paths.AppendCSS(env);
 
                     env.Output.Append(env.Compress ? "{" : " {\n  ");
 
                     env.Output.AppendMany(rules, env.Compress ? "" : "\n  ");
-                    
+
                     env.Output.Append(env.Compress ? "}" : "\n}\n");
 
                 }

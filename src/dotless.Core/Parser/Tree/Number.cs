@@ -69,7 +69,8 @@
                 // convert units
             }
 
-            return new Number(Operation.Operate(op.Operator, Value, dim.Value), unit);
+            return new Number(Operation.Operate(op.Operator, Value, dim.Value), unit)
+                .ReducedFrom<Node>(this, other);
         }
 
         public Color ToColor()

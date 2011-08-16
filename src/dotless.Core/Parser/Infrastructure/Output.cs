@@ -55,7 +55,16 @@
 
         public Output Append(Node node)
         {
-            node.AppendCSS(Env);
+            if (node != null)
+            {
+                if (node.PreComments)
+                    node.PreComments.AppendCSS(Env);
+
+                node.AppendCSS(Env);
+
+                if (node.PostComments)
+                    node.PostComments.AppendCSS(Env);
+            }
 
             return this;
         }
@@ -90,7 +99,7 @@
         public Output AppendMany<TNode>(IEnumerable<TNode> nodes, string join)
             where TNode : Node
         {
-            return AppendMany(nodes, n => n.AppendCSS(Env), join);
+            return AppendMany(nodes, n => Env.Output.Append(n), join);
         }
 
         public Output AppendMany<T>(IEnumerable<T> list, Func<T, string> toString, string join)

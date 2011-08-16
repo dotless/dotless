@@ -30,6 +30,9 @@ namespace dotless.Core.Parser.Tree
             env.Rule = this;
 
             var rules = new NodeList();
+
+            if (PreComments)
+                rules.Add(PreComments);
             foreach (var closure in closures)
             {
                 var ruleset = closure.Ruleset;
@@ -55,13 +58,15 @@ namespace dotless.Core.Parser.Tree
                 {
                     if (ruleset.Rules != null)
                     {
-                        var nodes = new List<Node>(ruleset.Rules);
+                        var nodes = new NodeList(ruleset.Rules);
                         NodeHelper.ExpandNodes<MixinCall>(env, nodes);
 
                         rules.AddRange(nodes);
                     }
                 }
             }
+            if (PostComments)
+                rules.Add(PostComments);
 
             env.Rule = null;
 
