@@ -556,7 +556,7 @@ border: solid black;
 }/*COM 6*/
 ";
 
-            var expected = @"@media print/*COM2*/ {
+            var expected = @"@media print/*COM1*//*COM2*/ {
   /*COM3*/
   font-size: 3em;
 }

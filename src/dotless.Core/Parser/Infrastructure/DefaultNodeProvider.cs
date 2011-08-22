@@ -97,9 +97,14 @@ namespace dotless.Core.Parser.Infrastructure
             return new Import(path, importer) { Index = index };
         }
 
-        public Directive Directive(string name, NodeList rules, int index)
+        public Directive Directive(string name, string identifier, NodeList rules, int index)
         {
-            return new Directive(name, rules) { Index = index };
+            return new Directive(name, identifier, rules) { Index = index };
+        }
+
+        public KeyFrame KeyFrame(string identifier, NodeList rules, int index)
+        {
+            return new KeyFrame(identifier, rules) { Index = index };
         }
 
         public Directive Directive(string name, Node value, int index)
