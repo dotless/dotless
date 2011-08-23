@@ -100,6 +100,232 @@ namespace dotless.Test.Specs
         }
 
         [Test]
+        public void MediaDirectiveCanHavePageDirective1()
+        {
+            // see https://github.com/dotless/dotless/issues/27
+            var input =
+                @"
+@media print {
+  @page {
+    margin: 0.5cm;
+  }
+}
+";
+
+            AssertLessUnchanged(input);
+        }
+
+        [Test]
+        public void MediaDirectiveCanHavePageDirective2()
+        {
+            var input =
+                @"
+@media print {
+  @page :left {
+    margin: 0.5cm;
+  }
+  
+  @page :right {
+    margin: 0.5cm;
+  }
+  
+  @page Test:first {
+    margin: 1cm;
+  }
+  
+  @page :first {
+    size: 8.5in 11in;
+    @top-left {
+      margin: 1cm;
+    }
+    
+    @top-left-corner {
+      margin: 1cm;
+    }
+    
+    @top-center {
+      margin: 1cm;
+    }
+    
+    @top-right {
+      margin: 1cm;
+    }
+    
+    @top-right-corner {
+      margin: 1cm;
+    }
+    
+    @bottom-left {
+      margin: 1cm;
+    }
+    
+    @bottom-left-corner {
+      margin: 1cm;
+    }
+    
+    @bottom-center {
+      margin: 1cm;
+    }
+    
+    @bottom-right {
+      margin: 1cm;
+    }
+    
+    @bottom-right-corner {
+      margin: 1cm;
+    }
+    
+    @left-top {
+      margin: 1cm;
+    }
+    
+    @left-middle {
+      margin: 1cm;
+    }
+    
+    @left-bottom {
+      margin: 1cm;
+    }
+    
+    @right-top {
+      margin: 1cm;
+    }
+    
+    @right-middle {
+      content: ""Page "" counter(page);
+    }
+    
+    @right-bottom {
+      margin: 1cm;
+    }
+  }
+}
+";
+
+            AssertLessUnchanged(input);
+        }
+
+        [Test]
+        public void MediaDirectiveCanHavePageDirective3()
+        {
+            var input =
+                @"
+@media print {
+  @page:first {
+    margin: 0.5cm;
+  }
+}";
+            var expected =
+                @"
+@media print {
+  @page :first {
+    margin: 0.5cm;
+  }
+}";
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void NamespaceDirective()
+        {
+            // see https://github.com/dotless/dotless/issues/27
+            var input =
+                @"
+@namespace lq ""http://example.com/q-markup"";";
+
+            AssertLessUnchanged(input);
+        }
+
+
+        [Test]
+        public void KeyFrameDirectiveWebKit()
+        {
+            var input = @"
+@-webkit-keyframes fontbulger {
+  0% {
+    font-size: 10px;
+  }
+  30% {
+    font-size: 15px;
+  }
+  100% {
+    font-size: 12px;
+  }
+}
+#box {
+  -webkit-animation: fontbulger 2s infinite;
+}";
+            AssertLessUnchanged(input);
+        }
+
+        [Test]
+        public void KeyFrameDirectiveMoz()
+        {
+            var input = @"
+@-moz-keyframes fontbulger {
+  0% {
+    font-size: 10px;
+  }
+  30% {
+    font-size: 15px;
+  }
+  100% {
+    font-size: 12px;
+  }
+}
+#box {
+  -moz-animation: fontbulger 2s infinite;
+}";
+            AssertLessUnchanged(input);
+        }
+
+        [Test]
+        public void KeyFrameDirective()
+        {
+            var input = @"
+@keyframes fontbulger {
+  0% {
+    font-size: 10px;
+  }
+  30% {
+    font-size: 15px;
+  }
+  100% {
+    font-size: 12px;
+  }
+}
+#box {
+  animation: fontbulger 2s infinite;
+}";
+            AssertLessUnchanged(input);
+        }
+
+        [Test]
+        public void KeyFrameDirective2()
+        {
+            // would not happen but tests syntax
+            var input = @"
+@keyframes fontbulger1 {
+  from {
+    font-size: 10px;
+  }
+  to {
+    font-size: 15px;
+  }
+  from,to {
+    font-size: 12px;
+  }
+  0%,100% {
+    font-size: 12px;
+  }
+}
+#box {
+  animation: fontbulger1 2s infinite;
+}";
+            AssertLessUnchanged(input);
+        }
+
+        [Test]
         public void MozTransform()
         {
             var input = @"

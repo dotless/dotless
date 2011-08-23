@@ -8,12 +8,14 @@
     public class Directive : Ruleset
     {
         public string Name { get; set; }
+        public string Identifier { get; set; }
         public Node Value { get; set; }
 
-        public Directive(string name, NodeList rules)
+        public Directive(string name, string identifier, NodeList rules)
         {
             Name = name;
             Rules = rules;
+            Identifier = identifier;
         }
 
         public Directive(string name, Node value)
@@ -44,6 +46,12 @@
         {
             env.Output.Append(Name);
 
+            if (!string.IsNullOrEmpty(Identifier))
+            {
+                env.Output.Append(" ");
+                env.Output.Append(Identifier);
+            }
+
             if (Rules != null)
             {
                 // Append pre comments as we out put each rule ourselves
@@ -52,24 +60,16 @@
                     env.Output.Append(Rules.PreComments);
                 }
 
-                env.Output
-                    .Append(env.Compress ? "{" : " {\n")
-
-                    .Push()
-                    .AppendMany(Rules, "\n")
-                    .Trim()
-                    .Indent(env.Compress ? 0 : 2)
-                    .PopAndAppend()
-
-                    .Append(env.Compress ? "}" : "\n}\n");
-
-                return;
+                AppendRules(env);
+                env.Output.Append("\n");
             }
-
-            env.Output
-                .Append(" ")
-                .Append(Value)
-                .Append(";\n");
+            else
+            {
+                env.Output
+                    .Append(" ")
+                    .Append(Value)
+                    .Append(";\n");
+            }
         }
     }
 }

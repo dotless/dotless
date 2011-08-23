@@ -935,58 +935,150 @@ namespace dotless.Core.Parser
             if (import)
                 return import;
 
+            GatherComments(parser);
+
             var index = parser.Tokenizer.Location.Index;
 
-            NodeList rules, preRulesComments;
-            var name = parser.Tokenizer.MatchString(@"@media|@page");
-            if (!string.IsNullOrEmpty(name))
-            {
-                GatherAndPullComments(parser);
-                var types = parser.Tokenizer.MatchString(@"[^{]+");
-                types = types == null ? String.Empty : types.Trim();
+            var name = parser.Tokenizer.MatchString(@"@[-a-z]+");
+            bool hasIdentifier = false, hasBlock = false, isKeyFrame = false;
+            NodeList rules, preRulesComments = null, preComments = null;
+            string identifierRegEx = @"[^{]+";
 
-                preRulesComments = GatherAndPullComments(parser);
-                rules = Block(parser);
-                if (rules != null)
+            switch (name)
+            {
+                case "@media":
+                    hasIdentifier = true;
+                    hasBlock = true;
+                    break;
+                case "@font-face":
+                    hasBlock = true;
+                    break;
+                case "@page":
+                    hasBlock = true;
+                    hasIdentifier = true;
+                    break;
+                case "@top-left":
+                case "@top-left-corner":
+                case "@top-center":
+                case "@top-right":
+                case "@top-right-corner":
+                case "@bottom-left":
+                case "@bottom-left-corner":
+                case "@bottom-center":
+                case "@bottom-right":
+                case "@bottom-right-corner":
+                case "@left-top":
+                case "@left-middle":
+                case "@left-bottom":
+                case "@right-top":
+                case "@right-middle":
+                case "@right-bottom":
+                    hasBlock = true;
+                    break;
+                case "@keyframes":
+                case "@-webkit-keyframes":
+                case "@-moz-keyframes":
+                    isKeyFrame = true;
+                    hasIdentifier = true;
+                    break;
+            }
+
+            string identifier = "";
+
+            preComments = PullComments();
+
+            if (hasIdentifier)
+            {
+                GatherComments(parser);
+
+                identifier = parser.Tokenizer.MatchString(identifierRegEx);
+                if (identifier != null)
                 {
-                    rules.PreComments = preRulesComments;
-                    return NodeProvider.Directive(name + " " + types, rules, index);
+                    identifier = identifier.Trim();
                 }
+            }
+
+            preRulesComments = GatherAndPullComments(parser);
+
+            if (hasBlock)
+            {
+                rules = Block(parser);
+
+                if (rules != null) {
+                    rules.PreComments = preRulesComments;
+                    return NodeProvider.Directive(name, identifier, rules, index);
+                }
+            }
+            else if (isKeyFrame)
+            {
+                var keyframeblock = KeyFrameBlock(parser, name, identifier, index);
+                keyframeblock.PreComments = preRulesComments;
+                return keyframeblock;
             }
             else
             {
-                name = parser.Tokenizer.MatchString(@"@[-a-z]+");
-                var preComments = PullComments();
-                preRulesComments = GatherAndPullComments(parser);
-                if (name == "@font-face")
-                {
-                    rules = Block(parser);
-                    if (rules != null)
-                    {
-                        rules.PreComments = preRulesComments;
-                        var directive = NodeProvider.Directive(name, rules, index);
+                Node value;
+                if (value = Expression(parser)) {
+                    value.PreComments = preRulesComments;
+                    value.PostComments = GatherAndPullComments(parser);
+                    if (parser.Tokenizer.Match(';')) {
+                        var directive = NodeProvider.Directive(name, value, index);
                         directive.PreComments = preComments;
                         return directive;
-                    }
-                }
-                else
-                {
-                    Node value = Entity(parser);
-                    if (value)
-                    {
-                        value.PreComments = preRulesComments;
-                        value.PostComments = GatherAndPullComments(parser);
-                        if (parser.Tokenizer.Match(';'))
-                        {
-                            var directive = NodeProvider.Directive(name, value, index);
-                            directive.PreComments = preComments;
-                            return directive;
-                        }
                     }
                 }
             }
 
             return null;
+        }
+
+        public Directive KeyFrameBlock(Parser parser, string name, string identifier, int index)
+        {
+            if (!parser.Tokenizer.Match('{'))
+                return null;
+
+            NodeList keyFrames = new NodeList();
+            const string identifierRegEx = "from|to|([0-9]+%)";
+
+            while (true)
+            {
+                GatherComments(parser);
+
+                string keyFrameIdentifier;
+                var keyFrameIdentifier1 = parser.Tokenizer.Match(identifierRegEx);
+
+                if (!keyFrameIdentifier1)
+                    break;
+
+                keyFrameIdentifier = keyFrameIdentifier1.Value;
+
+                if (parser.Tokenizer.Match(","))
+                {
+                    var keyFrameIdentifier2 = parser.Tokenizer.Match(identifierRegEx);
+
+                    if (!keyFrameIdentifier2)
+                        throw new ParsingException("Comma in @keyframe followed by unknown identifier", parser.Tokenizer.Location.Index);
+
+                    keyFrameIdentifier += "," + keyFrameIdentifier2;
+                }
+
+                var preComments = GatherAndPullComments(parser);
+
+                var block = Block(parser);
+
+                if (block == null)
+                    throw new ParsingException("Expected css block after key frame identifier", parser.Tokenizer.Location.Index);
+
+                block.PreComments = preComments;
+                block.PostComments = GatherAndPullComments(parser);
+
+                keyFrames.Add(NodeProvider.KeyFrame(keyFrameIdentifier, block, parser.Tokenizer.Location.Index));
+            }
+
+            if (!parser.Tokenizer.Match('}'))
+                throw new ParsingException("Expected start, finish, % or '}'", parser.Tokenizer.Location.Index);
+
+            return NodeProvider.Directive(name, identifier, keyFrames, index);
         }
 
         public Value Font(Parser parser)

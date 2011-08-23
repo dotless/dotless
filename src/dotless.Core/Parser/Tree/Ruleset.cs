@@ -127,6 +127,23 @@ namespace dotless.Core.Parser.Tree
             AppendCSS(env, new Context());
         }
 
+        /// <summary>
+        ///  Append the rules in a {} block. Used by sub classes.
+        /// </summary>
+        protected void AppendRules(Env env)
+        {
+            env.Output
+                .Append(env.Compress ? "{" : " {\n")
+
+                .Push()
+                .AppendMany(Rules, "\n")
+                .Trim()
+                .Indent(env.Compress ? 0 : 2)
+                .PopAndAppend()
+
+                .Append(env.Compress ? "}" : "\n}");
+        }
+
         protected virtual void AppendCSS(Env env, Context context)
         {
             var css = new List<string>(); // The CSS output
