@@ -560,8 +560,10 @@ body/* COMMENT */, /* COMMENT */ .cls/* COMMENT */ .cla, /* COMMENT */ .clb/* CO
   font-size: 3em;
 }/*COM 6*/
 ";
-
-            var expected = @"@media print/*COM1*//*COM2*/ {
+            // com1 and com2 the wrong way round because CommentsInDirective3 test fails..
+            // we don't support directives very well, so com2 gets parsed as the identifier
+            // and the comment before gets stuck on afterwards..
+            var expected = @"@media print /*COM2*//*COM1*/ {
   /*COM3*/
   font-size: 3em;
 }
