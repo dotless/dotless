@@ -20,7 +20,7 @@ namespace dotless.Test.Specs.Compression
             //  e.g. it does not count toward the descendent selector. IE7 Quirks applies both .cls.cla and .cls .cla
             var input = @".cls/* COMMENT */.cla {background-image: url(pickture.asp);}";
 
-            var expected = @".cls.cla{background-image:url(pickture.asp);}";
+            var expected = @".cls.cla{background-image:url(pickture.asp)}";
 
             AssertLess(input, expected);
         }
@@ -30,7 +30,7 @@ namespace dotless.Test.Specs.Compression
         {
             var input = @".cls/* COMMENT */ + /* COMMENT */.cla {background-image: url(pickture.asp);}";
 
-            var expected = @".cls+.cla{background-image:url(pickture.asp);}";
+            var expected = @".cls+.cla{background-image:url(pickture.asp)}";
 
             AssertLess(input, expected);
         }
@@ -40,7 +40,7 @@ namespace dotless.Test.Specs.Compression
         {
             var input = @".cls /* COMMENT *//* COMMENT */.cla {background-image: url(pickture.asp);}";
 
-            var expected = @".cls .cla{background-image:url(pickture.asp);}";
+            var expected = @".cls .cla{background-image:url(pickture.asp)}";
 
             AssertLess(input, expected);
         }
@@ -50,7 +50,7 @@ namespace dotless.Test.Specs.Compression
         {
             var input = @".cls/* COMMENT */ /* COMMENT */.cla {background-image: url(pickture.asp);}";
 
-            var expected = @".cls .cla{background-image:url(pickture.asp);}";
+            var expected = @".cls .cla{background-image:url(pickture.asp)}";
 
             AssertLess(input, expected);
         }
@@ -60,7 +60,7 @@ namespace dotless.Test.Specs.Compression
         {
             var input = @".cls/* COMMENT *//* COMMENT */ .cla {background-image: url(pickture.asp);}";
 
-            var expected = @".cls .cla{background-image:url(pickture.asp);}";
+            var expected = @".cls .cla{background-image:url(pickture.asp)}";
 
             AssertLess(input, expected);
         }
@@ -80,7 +80,7 @@ namespace dotless.Test.Specs.Compression
         /* color: #fff; */
     }
 }";
-            var expected = @".wrapper .header{font-weight:bold;}";
+            var expected = @".wrapper .header{font-weight:bold}";
 
             AssertLess(input, expected);
         }

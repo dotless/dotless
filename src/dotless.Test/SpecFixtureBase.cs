@@ -120,7 +120,7 @@
                 return "";
 
             var start = css.IndexOf("expression:");
-            var end = css.LastIndexOf(";");
+            var end =  css.LastIndexOf(DefaultEnv().Compress ? '}' : ';');
 
             return css.Substring(start + 11, end - start - 11).Trim();
         }

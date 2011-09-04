@@ -132,6 +132,11 @@ namespace dotless.Core.Parser.Tree
         /// </summary>
         protected void AppendRules(Env env)
         {
+            if (env.Compress && Rules.Count == 0)
+            {
+                return;
+            }
+
             env.Output
                 .Append(env.Compress ? "{" : " {\n")
 
@@ -139,9 +144,14 @@ namespace dotless.Core.Parser.Tree
                 .AppendMany(Rules, "\n")
                 .Trim()
                 .Indent(env.Compress ? 0 : 2)
-                .PopAndAppend()
+                .PopAndAppend();
 
-                .Append(env.Compress ? "}" : "\n}");
+            if (env.Compress)
+            {
+                env.Output.TrimRight(';');
+            }
+
+            env.Output.Append(env.Compress ? "}" : "\n}");
         }
 
         protected virtual void AppendCSS(Env env, Context context)
@@ -210,6 +220,11 @@ namespace dotless.Core.Parser.Tree
                     env.Output.Append(env.Compress ? "{" : " {\n  ");
 
                     env.Output.AppendMany(rules, env.Compress ? "" : "\n  ");
+
+                    if (env.Compress)
+                    {
+                        env.Output.TrimRight(';');
+                    }
 
                     env.Output.Append(env.Compress ? "}" : "\n}\n");
 
