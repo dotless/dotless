@@ -100,6 +100,59 @@ namespace dotless.Test.Specs
         }
 
         [Test]
+        public void SupportMozDocument()
+        {
+            // see https://github.com/dotless/dotless/issues/73
+            var input =
+                @"
+@-moz-document url-prefix(""https://github.com"") {
+  h1 {
+    color: red;
+  }
+}
+";
+
+            AssertLessUnchanged(input);
+        }
+
+        [Test]
+        public void SupportVendorXDocument()
+        {
+            var input =
+                @"
+@-x-document url-prefix(""github.com"") {
+  h1 {
+    color: red;
+  }
+}
+";
+
+            AssertLessUnchanged(input);
+        }
+
+        [Test]
+        public void SupportSupports()
+        {
+            // example from http://www.w3.org/TR/2011/WD-css3-conditional-20110901/
+            var input =
+                @"
+@supports ( box-shadow: 2px 2px 2px black ) or
+          ( -moz-box-shadow: 2px 2px 2px black ) or
+          ( -webkit-box-shadow: 2px 2px 2px black ) or
+          ( -o-box-shadow: 2px 2px 2px black ) {
+  .outline {
+    color: white;
+    box-shadow: 2px 2px 2px black;
+    -moz-box-shadow: 2px 2px 2px black;
+    -webkit-box-shadow: 2px 2px 2px black;
+    -o-box-shadow: 2px 2px 2px black;
+  }
+}";
+
+            AssertLessUnchanged(input);
+        }
+
+        [Test]
         public void MediaDirectiveCanHavePageDirective1()
         {
             // see https://github.com/dotless/dotless/issues/27

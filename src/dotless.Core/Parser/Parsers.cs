@@ -943,17 +943,22 @@ namespace dotless.Core.Parser
             bool hasIdentifier = false, hasBlock = false, isKeyFrame = false;
             NodeList rules, preRulesComments = null, preComments = null;
             string identifierRegEx = @"[^{]+";
+            string nonVendorSpecificName = name;
 
-            switch (name)
+            if (name.StartsWith("@-") && name.IndexOf('-', 2) > 0)
             {
-                case "@media":
-                    hasIdentifier = true;
-                    hasBlock = true;
-                    break;
+                nonVendorSpecificName = "@" + name.Substring(name.IndexOf('-', 2) + 1);
+            }
+
+            switch (nonVendorSpecificName)
+            {
                 case "@font-face":
                     hasBlock = true;
                     break;
                 case "@page":
+                case "@document":
+                case "@media":
+                case "@supports":
                     hasBlock = true;
                     hasIdentifier = true;
                     break;
@@ -976,8 +981,6 @@ namespace dotless.Core.Parser
                     hasBlock = true;
                     break;
                 case "@keyframes":
-                case "@-webkit-keyframes":
-                case "@-moz-keyframes":
                     isKeyFrame = true;
                     hasIdentifier = true;
                     break;
@@ -991,10 +994,10 @@ namespace dotless.Core.Parser
             {
                 GatherComments(parser);
 
-                identifier = parser.Tokenizer.MatchString(identifierRegEx);
-                if (identifier != null)
+                var identifierRegResult = parser.Tokenizer.MatchAny(identifierRegEx);
+                if (identifierRegResult != null)
                 {
-                    identifier = identifier.Trim();
+                    identifier = identifierRegResult.Value.Trim();
                 }
             }
 
