@@ -18,7 +18,7 @@ h1, h2, h3 {
 }
 ";
 
-            var expected = "h1 a:hover,h2 a:hover,h3 a:hover,h1 p:hover,h2 p:hover,h3 p:hover{color:red;}";
+            var expected = "h1 a:hover,h2 a:hover,h3 a:hover,h1 p:hover,h2 p:hover,h3 p:hover{color:red}";
 
             AssertLess(input, expected);
         }
@@ -33,7 +33,7 @@ h1, h2, h3 {
 #same { color: blue; }
 ";
 
-            var expected = "#all{color:blue;}#the{color:blue;}#same{color:blue;}";
+            var expected = "#all{color:blue}#the{color:blue}#same{color:blue}";
 
             AssertLess(input, expected);
         }
@@ -48,7 +48,7 @@ td {
 }
 ";
 
-            var expected = "td{margin:0;padding:0;}";
+            var expected = "td{margin:0;padding:0}";
 
             AssertLess(input, expected);
         }
@@ -62,7 +62,7 @@ td, input {
 }
 ";
 
-            var expected = "td,input{line-height:1em;}";
+            var expected = "td,input{line-height:1em}";
 
             AssertLess(input, expected);
         }
@@ -77,7 +77,7 @@ ul, li, div, q, blockquote, textarea {
 }
 ";
 
-            var expected = "ul,li,div,q,blockquote,textarea{margin:0;}";
+            var expected = "ul,li,div,q,blockquote,textarea{margin:0}";
 
             AssertLess(input, expected);
         }
@@ -88,7 +88,7 @@ ul, li, div, q, blockquote, textarea {
         {
             var input = "td \t input { line-height: 1em; }";
 
-            var expected = "td input{line-height:1em;}";
+            var expected = "td input{line-height:1em}";
 
             AssertLess(input, expected);
         }

@@ -158,13 +158,25 @@
             return this;
         }
 
+        /// <summary>
+        ///  Trims whitespace
+        /// </summary>
         public Output Trim()
         {
+            return this.TrimLeft(null).TrimRight(null);
+        }
+
+        /// <summary>
+        /// Trims the character passed or whitespace if it has no value from the left
+        /// </summary>
+        public Output TrimLeft(char? c)
+        {
             int trimLLength = 0;
-            int trimRLength = 0;
             int length = Builder.Length;
 
-            while (trimLLength < length && char.IsWhiteSpace(Builder[trimLLength]))
+            while (trimLLength < length && 
+                    c.HasValue ? Builder[trimLLength] == c.Value : 
+                                char.IsWhiteSpace(Builder[trimLLength]))
             {
                 trimLLength++;
             }
@@ -172,10 +184,22 @@
             if (trimLLength > 0)
             {
                 Builder.Remove(0, trimLLength);
-                length -= trimLLength;
             }
 
-            while (trimRLength < length && char.IsWhiteSpace(Builder[length - (trimRLength + 1)]))
+            return this;
+        }
+
+        /// <summary>
+        /// Trims the character passed or whitespace if it has no value from the left
+        /// </summary>
+        public Output TrimRight(char? c)
+        {
+            int trimRLength = 0;
+            int length = Builder.Length;
+
+            while (trimRLength < length && 
+                   c.HasValue ? Builder[length - (trimRLength + 1)] == c.Value :
+                        char.IsWhiteSpace(Builder[length - (trimRLength + 1)]))
             {
                 trimRLength++;
             }
@@ -187,6 +211,7 @@
 
             return this;
         }
+
 
         public override string ToString()
         {
