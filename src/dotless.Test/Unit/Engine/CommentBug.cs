@@ -18,9 +18,11 @@ body
 }";
 
             var expected =
-                @"/* Block comment ********************/body {
+                @"/* Block comment ********************/
+body {
   background-color: yellow;
   /* Another block comment */
+
 }";
 
             AssertLess(input, expected);
