@@ -6,12 +6,19 @@ namespace dotless.Core.Parser.Tree
     using Exceptions;
     using Infrastructure;
     using Infrastructure.Nodes;
+    using dotless.Core.Utils;
 
     public class Root : Ruleset
     {
         public Func<ParsingException, ParserException> Error { get; set; }
 
-        public Root(NodeList rules, Func<ParsingException, ParserException> error) :base(new NodeList<Selector>(), rules)
+        public Root(NodeList rules, Func<ParsingException, ParserException> error) 
+            : this(rules, error, null)
+        {
+        }
+
+        protected Root(NodeList rules, Func<ParsingException, ParserException> error, Ruleset master) 
+            : base(new NodeList<Selector>(), rules, master)
         {
             Error = error;
         }
@@ -31,5 +38,16 @@ namespace dotless.Core.Parser.Tree
             }
         }
 
+        public override Node Evaluate(Env env)
+        {
+            env = env ?? new Env();
+
+            NodeHelper.ExpandNodes<Import>(env, this.Rules);
+
+            Root clone = new Root(new NodeList(Rules), Error, OriginalRuleset).ReducedFrom<Root>(this);
+            clone.EvaluateRules(env);
+
+            return clone;
+        }
     }
 }

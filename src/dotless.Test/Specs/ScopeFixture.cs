@@ -5,36 +5,17 @@ namespace dotless.Test.Specs
     public class ScopeFixture : SpecFixtureBase
     {
         [Test]
-        public void Scope()
+        public void TestVariablesFromDifferentScopes()
         {
-            // Todo: split into separate atomic tests.
             var input =
                 @"
-@x: blue;
 @z: transparent;
-@mix: none;
-
-.mixin {
-  @mix: #989;
-}
-
-.tiny-scope {
-  color: @mix; // none
-  .mixin;
-  color: @mix; // #989
-}
 
 .scope1 {
   @y: orange;
   @z: black;
-  color: @x; // blue
-  border-color: @z; // black
-  .hidden {
-    @x: #131313;
-  }
   .scope2 {
     @y: red;
-    color: @x; // blue
     .scope3 {
       @local: white;
       color: @y; // red
@@ -47,21 +28,94 @@ namespace dotless.Test.Specs
 
             var expected =
                 @"
-.tiny-scope {
-  color: none;
-  color: #998899;
-}
-.scope1 {
-  color: blue;
-  border-color: black;
-}
-.scope1 .scope2 {
-  color: blue;
-}
 .scope1 .scope2 .scope3 {
   color: red;
   border-color: black;
   background-color: white;
+}
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void VariableAssignmentDoesntEscapeScope()
+        {
+            var input =
+                @"
+@x: blue;
+
+.scope1 {
+  .hidden {
+    @x: #131313;
+  }
+  .scope2 {
+    color: @x; // blue
+  }
+}
+";
+
+            var expected =
+                @"
+.scope1 .scope2 {
+  color: blue;
+}
+";
+
+            AssertLess(input, expected);
+        }
+
+
+        [Test]
+        public void VariableInClosestScopeUsed()
+        {
+            var input =
+                @"
+@x: blue;
+@z: transparent;
+
+.scope1 {
+  @y: orange;
+  @z: black;
+  color: @x; // blue
+  border-color: @z; // black
+}
+";
+
+            var expected =
+                @"
+.scope1 {
+  color: blue;
+  border-color: black;
+}
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void MixinVariableKeepsScope()
+        {
+            var input =
+                @"
+@mix: none;
+
+.mixin {
+  @mix: #989;
+}
+
+.tiny-scope {
+  color: @mix; // none
+  .mixin;
+  color: @mix; // #998899
+}
+";
+
+            var expected =
+                @"
+.tiny-scope {
+  color: none;
+  color: #998899;
 }
 ";
 

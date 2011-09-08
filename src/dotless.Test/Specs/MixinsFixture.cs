@@ -1318,5 +1318,85 @@ important-rule {
 
             AssertLess(input, output);
         }
+
+        [Test]
+        public void MultipleCallsToMixinsUsingAndHoisting()
+        {
+            // bug https://github.com/dotless/dotless/issues/78
+            var input =
+                @"
+@host: ""https://github.com/"";
+@grey8: #f5f5f5;
+@grey5: #ccc;
+@colorA: #E5225B;
+@colorB: #C7C823;
+
+.buttonIcon(@filename) {
+    &.fancy {
+        @imgbg: formatString(""url({0}images/icons/{1})"", @host, @filename);
+        &:hover {
+            background-image: @imgbg, formatString(""-webkit-gradient(linear, 0% 0%, 0% 100%, from({0}), to({1}))"", @colorA + 30%, @colorA - 20%);
+            background-image: @imgbg, formatString(""-moz-linear-gradient(0% 100% 90deg,{1}, {0})"", @colorA + 30%, @colorA - 20%);
+        }
+    }
+}
+
+.button, button, input[type=""submit""] {
+    &.lefticon.icon-tick {
+        .buttonIcon(""fugue/tick.png"");
+    }
+    &.lefticon.icon24-tick.extralarge {
+        .buttonIcon(""fugue/icons-24/tick.png"");
+    }
+}";
+
+            var expected =
+                @"
+.button.lefticon.icon-tick.fancy:hover, button.lefticon.icon-tick.fancy:hover, input[type=""submit""].lefticon.icon-tick.fancy:hover {
+  background-image: url(https://github.com/images/icons/fugue/tick.png), -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ff4079), to(#d10e47));
+  background-image: url(https://github.com/images/icons/fugue/tick.png), -moz-linear-gradient(0% 100% 90deg,#d10e47, #ff4079);
+}
+.button.lefticon.icon24-tick.extralarge.fancy:hover, button.lefticon.icon24-tick.extralarge.fancy:hover, input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
+  background-image: url(https://github.com/images/icons/fugue/icons-24/tick.png), -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ff4079), to(#d10e47));
+  background-image: url(https://github.com/images/icons/fugue/icons-24/tick.png), -moz-linear-gradient(0% 100% 90deg,#d10e47, #ff4079);
+}";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void MultipleCallsToMixinsUsingAndHoistingSimple()
+        {
+            // bug https://github.com/dotless/dotless/issues/78
+            var input =
+                @"
+.test(@arg) {
+    .outer {
+        .inner {
+            border: @arg;        
+        }
+    }
+}
+
+.one {
+    .test(1);
+}
+.two {
+    .test(2);
+}
+";
+
+            var expected =
+                @"
+.one .outer .inner {
+  border: 1;
+}
+.two .outer .inner {
+  border: 2;
+}";
+
+            AssertLess(input, expected);
+        }
+
     }
 }

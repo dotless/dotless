@@ -12,24 +12,64 @@ namespace dotless.Core.Parser.Tree
         public NodeList<Selector> Selectors { get; set; }
         public NodeList Rules { get; set; }
 
+        /// <summary>
+        ///  The original Ruleset this was cloned from during evaluation
+        ///   (may == this if this is the orginal)
+        /// </summary>
+        public Ruleset OriginalRuleset
+        {
+            get;
+            set;
+        }
+
         private Dictionary<string, List<Closure>> _lookups;
 
         public Ruleset(NodeList<Selector> selectors, NodeList rules)
+            : this(selectors, rules, null)
+        {
+        }
+
+        protected Ruleset(NodeList<Selector> selectors, NodeList rules, Ruleset originalRuleset)
             : this()
         {
             Selectors = selectors;
             Rules = rules;
+            OriginalRuleset = originalRuleset ?? this;
         }
 
         protected Ruleset()
         {
             _lookups = new Dictionary<string, List<Closure>>();
+            OriginalRuleset = this;
+        }
+
+        /// <summary>
+        ///  returns whether this rulset is equal to or cloned from another node
+        /// </summary>
+        public bool IsEqualOrClonedFrom(Node node)
+        {
+            Ruleset ruleset = node as Ruleset;
+            if (ruleset)
+            {
+                return IsEqualOrClonedFrom(ruleset);
+            }
+            return false;
+        }
+
+        /// <summary>
+        ///  returns whether this rulset is equal to or cloned from another ruleset
+        /// </summary>
+        public bool IsEqualOrClonedFrom(Ruleset ruleset)
+        {
+            return ruleset.OriginalRuleset == OriginalRuleset;
         }
 
         public Rule Variable(string name, Node startNode)
         {
+            Ruleset startNodeRuleset = startNode as Ruleset;
+
             return Rules
-                .TakeWhile(r => r != startNode)
+                .TakeWhile(r => r != startNode && (startNodeRuleset == null || !startNodeRuleset.IsEqualOrClonedFrom(r)))
                 .OfType<Rule>()
                 .Where(r => r.Variable)
                 .Reverse()
@@ -80,19 +120,18 @@ namespace dotless.Core.Parser.Tree
 
         public override Node Evaluate(Env env)
         {
-            if (this is Root)
-            {
-                env = env ?? new Env();
-
-                NodeHelper.ExpandNodes<Import>(env, this.Rules);
-            }
-
-            EvaluateRules(env);
-
-            return this;
+            // create a clone so it is non destructive
+            Ruleset clone = new Ruleset(Selectors, new NodeList(Rules), this.OriginalRuleset)
+                .ReducedFrom<Ruleset>(this);
+            clone.EvaluateRules(env);
+            return clone;
         }
 
-        public NodeList EvaluateRules(Env env)
+        /// <summary>
+        ///  Evaluate Rules. Must only be run on a copy of the ruleset otherwise it will
+        ///  overwrite defintions that might be required later..
+        /// </summary>
+        protected void EvaluateRules(Env env)
         {
             env.Frames.Push(this);
 
@@ -104,8 +143,6 @@ namespace dotless.Core.Parser.Tree
             }
 
             env.Frames.Pop();
-
-            return Rules;
         }
 
         public string AppendCSS()
@@ -122,9 +159,8 @@ namespace dotless.Core.Parser.Tree
             if (!Rules.Any())
                 return;
 
-            Evaluate(env);
-
-            AppendCSS(env, new Context());
+            ((Ruleset)Evaluate(env))
+                .AppendCSS(env, new Context());
         }
 
         /// <summary>
