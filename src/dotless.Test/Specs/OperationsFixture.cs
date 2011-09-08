@@ -17,6 +17,15 @@ namespace dotless.Test.Specs
         }
 
         [Test]
+        public void OperationsAndPrecisions()
+        {
+            AssertExpression("3.33px", "10px / 3"); // TODO - check px allowed precision
+            AssertExpression("3.33px", "10 / 3px"); // TODO - check px allowed precision
+            AssertExpression("1.875em", "15 / 8em");
+            AssertExpression("1.875em", "15em / 8");
+        }
+
+        [Test]
         public void WithVariables()
         {
             var variables = new Dictionary<string, string>();

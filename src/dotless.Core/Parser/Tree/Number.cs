@@ -4,6 +4,7 @@
     using Infrastructure;
     using Infrastructure.Nodes;
     using Utils;
+    using System;
 
     public class Number : Node, IOperable
     {
@@ -27,12 +28,29 @@
         {
         }
 
+        /// <summary>
+        ///  Formats the value (no unit) based on precision.
+        /// </summary>
         private string FormatValue()
         {
-            if (Value == 0)
-                return "0";
+            return Value.ToString("0." +new string('#', GetPrecision()), CultureInfo.InvariantCulture);
+        }
 
-            return string.Format(CultureInfo.InvariantCulture, "{0:0.##}", Value);
+        /// <summary>
+        ///  Gets the precision for the value based on the unit
+        /// </summary>
+        private int GetPrecision()
+        {
+            //TODO: It would be nice to look up which units have sensible precision.
+            //      e.g. do sub pixels or sub points make sense?
+            //      e.g. does it make sense for anything other than em to have more precision? Radians?
+            switch (Unit)
+            {
+                case "em":
+                    return 4;
+                default:
+                    return 2;
+            }
         }
 
         public override void AppendCSS(Env env)
