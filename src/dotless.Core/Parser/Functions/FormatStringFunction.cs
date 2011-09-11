@@ -5,6 +5,7 @@ namespace dotless.Core.Parser.Functions
     using Infrastructure;
     using Infrastructure.Nodes;
     using Tree;
+    using dotless.Core.Exceptions;
 
     public class FormatStringFunction : Function
     {
@@ -19,7 +20,16 @@ namespace dotless.Core.Parser.Functions
 
             var args = Arguments.Skip(1).Select(unescape).ToArray();
 
-            var result = string.Format(format, args);
+            string result;
+
+            try
+            {
+                result = string.Format(format, args);
+            }
+            catch (FormatException e)
+            {
+                throw new ParserException(string.Format("Error in formatString :{0}", e.Message), e);
+            }
 
             return new Quoted(result, false);
         }
