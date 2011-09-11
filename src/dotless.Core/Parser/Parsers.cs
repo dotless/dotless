@@ -376,7 +376,8 @@ namespace dotless.Core.Parser
 
             var index = parser.Tokenizer.Location.Index;
 
-            var value = parser.Tokenizer.Match(@"(-?[0-9]*\.?[0-9]+)(px|%|em|pc|ex|in|deg|s|ms|pt|cm|mm)?");
+            var value = parser.Tokenizer.Match(@"(-?[0-9]*\.?[0-9]+)(px|%|em|pc|ex|in|deg|s|ms|pt|cm|mm|ch|rem|vw|vh|vm|grad|rad|fr|gr|Hz|kHz)?");
+
             if (value)
                 return NodeProvider.Number(value[1], value[2], index);
 
