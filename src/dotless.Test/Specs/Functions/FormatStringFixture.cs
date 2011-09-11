@@ -20,9 +20,21 @@ namespace dotless.Test.Specs.Functions
         }
 
         [Test]
-        public void SubsequentArgumentssIgnored()
+        public void SubsequentArgumentsIgnored()
         {
             AssertExpression("abc", "formatstring('abc', 'd', 'e')");
+        }
+
+        [Test, ExpectedException(typeof(dotless.Core.Exceptions.ParserException))]
+        public void ExceptionOnMissingArguments1()
+        {
+            AssertExpression("abc", "formatstring('abc{0}')");
+        }
+
+        [Test, ExpectedException(typeof(dotless.Core.Exceptions.ParserException))]
+        public void ExceptionOnMissingArguments2()
+        {
+            AssertExpression("abc", "formatstring('{2}abc')");
         }
 
         [Test]
