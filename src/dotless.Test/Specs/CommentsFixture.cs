@@ -428,7 +428,8 @@ border: solid black;
             // Note: https://github.com/dotless/dotless/issues/31
             var input = @"/* COMMENT */body/* COMMENT */,/* COMMENT */ .clb /* COMMENT */ {background-image: url(pickture.asp);}";
 
-            var expected = @"/* COMMENT */body/* COMMENT */, /* COMMENT */ .clb/* COMMENT */ {
+            var expected = @"/* COMMENT */
+body/* COMMENT */, /* COMMENT */ .clb/* COMMENT */ {
   background-image: url(pickture.asp);
 }";
 
@@ -441,7 +442,8 @@ border: solid black;
             // Note: https://github.com/dotless/dotless/issues/31
             var input = @"/* COMMENT */body/* COMMENT */, /* COMMENT */.cls/* COMMENT */ .cla,/* COMMENT */ .clb /* COMMENT */ {background-image: url(pickture.asp);}";
 
-            var expected = @"/* COMMENT */body/* COMMENT */, /* COMMENT */ .cls/* COMMENT */ .cla, /* COMMENT */ .clb/* COMMENT */ {
+            var expected = @"/* COMMENT */
+body/* COMMENT */, /* COMMENT */ .cls/* COMMENT */ .cla, /* COMMENT */ .clb/* COMMENT */ {
   background-image: url(pickture.asp);
 }";
 
@@ -515,7 +517,8 @@ border: solid black;
             var input = @"/* COMMENT */@a : 10px;/* COMMENT */
 .cla { font-size: @a; }";
 
-            var expected = @"/* COMMENT *//* COMMENT */.cla {
+            var expected = @"/* COMMENT *//* COMMENT */
+.cla {
   font-size: 10px;
 }";
 
@@ -528,7 +531,8 @@ border: solid black;
             var input = @"/* COM1 */@a /* COM2 */: /* COM3 */10px/* COM4 */;/* COM5 */
 .cla { font-size: @a; }";
 
-            var expected = @"/* COM1 *//* COM5 */.cla {
+            var expected = @"/* COM1 *//* COM5 */
+.cla {
   font-size: /* COM3 */10px/* COM4 */;
 }";
 
@@ -540,7 +544,8 @@ border: solid black;
         {
             var input = @"/* COMMENT */@charset /* COMMENT */""utf-8""/* COMMENT */;";
 
-            var expected = @"/* COMMENT */@charset /* COMMENT */""utf-8""/* COMMENT */;";
+            var expected = @"/* COMMENT */
+@charset /* COMMENT */""utf-8""/* COMMENT */;";
 
             AssertLess(input, expected);
         }
@@ -560,7 +565,8 @@ border: solid black;
   /*COM3*/
   font-size: 3em;
 }
-/*COM 6*/@font-face/*COM4*/ {
+/*COM 6*/
+@font-face/*COM4*/ {
   /*COM5*/
   font-size: 3em;
 }

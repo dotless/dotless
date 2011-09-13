@@ -83,7 +83,13 @@ namespace dotless.Core.Parser
 
                 comments = node as NodeList;
                 if (comments)
+                {
+                    foreach (Comment c in comments)
+                    {
+                        c.IsPreSelectorComment = true;
+                    }
                     root.AddRange(comments);
+                }
                 else
                     root.Add(node);
 
@@ -726,6 +732,7 @@ namespace dotless.Core.Parser
             var elements = new NodeList<Element>();
             var index = parser.Tokenizer.Location.Index;
 
+            GatherComments(parser);
             PushComments();
 
             while (true)
