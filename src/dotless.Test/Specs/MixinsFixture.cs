@@ -487,6 +487,34 @@ namespace dotless.Test.Specs
         }
 
         [Test]
+        public void OverrideMixinToAddNonSimpleDefaultArguments()
+        {
+            // see https://github.com/dotless/dotless/issues/79
+
+            var input = @"
+.gradient(@from, @to)
+{
+    background: -moz-linear-gradient(@from, @to);
+}
+
+.gradient(@colour) {
+    .gradient(@colour, darken(@colour, 10%));
+}
+
+.test {
+    .gradient(#aaaaaa);
+}";
+
+
+            var expected = @"
+.test {
+  background: -moz-linear-gradient(#aaaaaa, #909090);
+}
+";
+            AssertLess(input, expected);
+        }
+
+        [Test]
         public void MixinWithArgsInsideNamespace()
         {
             var input =

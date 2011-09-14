@@ -42,12 +42,12 @@
             return null;
         }
 
-        public List<Closure> FindRulesets(Selector selector)
+        public IEnumerable<Closure> FindRulesets(Selector selector)
         {
             return Frames.Select(frame => frame.Find(this, selector, null))
-                .Where(matchedClosuresList => !matchedClosuresList.Any(
-                            matchedClosure => Frames.Any(frame => frame.IsEqualOrClonedFrom(matchedClosure.Ruleset))))
-                .FirstOrDefault(matchedClosuresList => matchedClosuresList.Count != 0);
+                .Select(matchedClosuresList => matchedClosuresList.Where(
+                            matchedClosure => !Frames.Any(frame => frame.IsEqualOrClonedFrom(matchedClosure.Ruleset))))
+                .FirstOrDefault(matchedClosuresList => matchedClosuresList.Count() != 0);
         }
 
         public virtual Function GetFunction(string name)
