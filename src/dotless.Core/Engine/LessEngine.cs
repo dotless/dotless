@@ -40,12 +40,17 @@ namespace dotless.Core
             {
                 var tree = Parser.Parse(source, fileName);
 
-                foreach (var plugin in Plugins)
-                {
-                    tree = plugin.Apply(tree);
-                }
+                tree = Plugins
+                    .Where(p => p.AppliesTo == PluginType.BeforeEvaluation)
+                    .Aggregate(tree, (current, plugin) => plugin.Apply(current));
 
                 var env = Env ?? new Env { Compress = Compress };
+
+                tree.Evaluate(env);
+
+                tree = Plugins
+                    .Where(p => p.AppliesTo == PluginType.AfterEvaluation)
+                    .Aggregate(tree, (current, plugin) => plugin.Apply(current));
 
                 var css = tree.ToCSS(env);
 

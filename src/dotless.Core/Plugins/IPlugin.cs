@@ -5,5 +5,13 @@ namespace dotless.Core.Plugins
     public interface IPlugin
     {
         Ruleset Apply(Ruleset tree);
+
+        PluginType AppliesTo { get; }
+    }
+
+    public enum PluginType
+    {
+        BeforeEvaluation,
+        AfterEvaluation
     }
 }

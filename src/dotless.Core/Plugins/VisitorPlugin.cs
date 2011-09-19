@@ -1,5 +1,6 @@
 ﻿namespace dotless.Core.Plugins
 {
+    using System;
     using Parser.Infrastructure.Nodes;
     using Parser.Tree;
 
@@ -11,6 +12,8 @@
 
             return tree;
         }
+
+        public abstract PluginType AppliesTo { get; }
 
         public void Visit(Node node)
         {
