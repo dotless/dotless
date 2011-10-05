@@ -92,6 +92,7 @@
     <Compile Include="Parser\Functions\HexFunction.cs" />
     <Compile Include="Parser\Functions\ContrastFunction.cs" />
     <Compile Include="Parser\Infrastructure\Closure.cs" />
+    <Compile Include="Parser\Infrastructure\IExtension.cs" />
     <Compile Include="Parser\Infrastructure\NamedArgument.cs" />
     <Compile Include="Parser\Infrastructure\Output.cs" />
     <Compile Include="Parser\Tree\KeyFrame.cs" />

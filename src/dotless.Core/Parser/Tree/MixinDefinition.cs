@@ -91,7 +91,7 @@ namespace dotless.Core.Parser.Tree
             }
 
             var frames = new[] { this, frame }.Concat(env.Frames).Concat(closureContext).Reverse();
-            var context = new Env {Frames = new Stack<Ruleset>(frames)};
+            var context = env.CreateChildEnv(new Stack<Ruleset>(frames));
 
             var newRules = new NodeList();
 

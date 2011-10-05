@@ -12,23 +12,76 @@
     public class Env
     {
         private Dictionary<string, Type> _functionTypes;
+        private Dictionary<int, IExtension> _extensions;
 
-        public Stack<Ruleset> Frames { get; set; }
+        public Stack<Ruleset> Frames { get; protected set; }
         public bool Compress { get; set; }
         public Node Rule { get; set; }
         public Output Output { get; private set; }
 
         public Env()
         {
+            AddCoreFunctions();
             Frames = new Stack<Ruleset>();
             Output = new Output(this);
         }
 
+        protected Env(Stack<Ruleset> frames, Dictionary<string, Type> functions, Dictionary<int, IExtension> extensions)
+        {
+            Output = new Output(this);
+            _functionTypes = functions;
+            _extensions = extensions;
+            Frames = frames;
+        }
+
+        /// <summary>
+        ///  Creates a new Env variable for the purposes of scope
+        /// </summary>
+        public virtual Env CreateChildEnv(Stack<Ruleset> frames)
+        {
+            return new Env(frames, _functionTypes, _extensions);
+        }
+
+        /// <summary>
+        ///  Adds an extension to this Env to be used whenever this Env is used
+        /// </summary>
+        public void AddExension(IExtension extension)
+        {
+            if (_extensions == null)
+            {
+                _extensions = new Dictionary<int, IExtension>();
+            }
+
+            int hashCode = extension.GetType().GetHashCode();
+
+            if (_extensions.ContainsKey(hashCode))
+            {
+                throw new Exception("Extension type is already loaded");
+            }
+
+            _extensions.Add(hashCode, extension);
+            extension.Setup(this);
+        }
+
+        /// <summary>
+        ///  Returns an extension of this type (if loaded). Otherwise will return null.
+        /// </summary>
+        public T1 GetExtension<T1>() where T1 : IExtension
+        {
+            return (T1)_extensions[typeof(T1).GetHashCode()];
+        }
+
+        /// <summary>
+        ///  Finds the first scoped variable with this name
+        /// </summary>
         public Rule FindVariable(string name)
         {
             return FindVariable(name, Rule);
         }
 
+        /// <summary>
+        ///  Finds the first scoped variable matching the name, using Rule as the current rule to work backwards from
+        /// </summary>
         public Rule FindVariable(string name, Node rule)
         {
             var previousNode = rule;
@@ -42,6 +95,9 @@
             return null;
         }
 
+        /// <summary>
+        ///  Finds the first Ruleset matching the selector argument
+        /// </summary>
         public IEnumerable<Closure> FindRulesets(Selector selector)
         {
             return Frames.Select(frame => frame.Find(this, selector, null))
@@ -50,22 +106,40 @@
                 .FirstOrDefault(matchedClosuresList => matchedClosuresList.Count() != 0);
         }
 
-        public virtual Function GetFunction(string name)
+        /// <summary>
+        ///  Given an assembly, loads all the dotless Functions in that assembly into this Env.
+        /// </summary>
+        public void AddFunctionsFromAssembly(Assembly assembly)
         {
             if (_functionTypes == null)
             {
-                var functionType = typeof (Function);
+                _functionTypes = new Dictionary<string, Type>();
 
-                _functionTypes = Assembly.GetExecutingAssembly()
-                    .GetTypes()
-                    .Where(t => functionType.IsAssignableFrom(t) && t != functionType)
-                    .Where(t => !t.IsAbstract)
-                    .SelectMany<Type, KeyValuePair<string, Type>>(GetFunctionNames)
-                    .ToDictionary(p => p.Key, p => p.Value);
-
-                _functionTypes["%"] = typeof (CFormatString);
             }
 
+            var functionType = typeof (Function);
+
+            foreach (var func in assembly
+                .GetTypes()
+                .Where(t => functionType.IsAssignableFrom(t) && t != functionType)
+                .Where(t => !t.IsAbstract)
+                .SelectMany<Type, KeyValuePair<string, Type>>(GetFunctionNames))
+            {
+                _functionTypes.Add(func.Key, func.Value);
+            }
+        }
+
+        private void AddCoreFunctions()
+        {
+            AddFunctionsFromAssembly(Assembly.GetExecutingAssembly());
+            _functionTypes["%"] = typeof (CFormatString);
+        }
+
+        /// <summary>
+        ///  Given a function name, returns a new Function matching that name.
+        /// </summary>
+        public virtual Function GetFunction(string name)
+        {
             name = name.ToLowerInvariant();
 
             if (_functionTypes.ContainsKey(name))
