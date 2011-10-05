@@ -145,15 +145,6 @@ namespace dotless.Core.Parser.Tree
             env.Frames.Pop();
         }
 
-        public string AppendCSS()
-        {
-            var env = new Env();
-
-            AppendCSS(env);
-
-            return env.Output.ToString();
-        }
-
         public override void AppendCSS(Env env)
         {
             if (!Rules.Any())
