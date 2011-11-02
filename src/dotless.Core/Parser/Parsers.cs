@@ -1291,7 +1291,7 @@ namespace dotless.Core.Parser
 
         public string Property(Parser parser)
         {
-            var name = parser.Tokenizer.Match(@"\*?-?[-_a-z][-_a-z0-9]*");
+            var name = parser.Tokenizer.Match(@"\*?-?[-_a-zA-Z][-_a-z0-9A-Z]*");
 
             if (name)
                 return name.Value;

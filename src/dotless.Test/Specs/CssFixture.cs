@@ -226,6 +226,22 @@ p {
         }
 
         [Test]
+        public void CapitalProperties()
+        {
+            var input =
+                @"
+.misc {
+  -Moz-Border-Radius: 2Px;
+  dISplay: NONE;
+  WIDTH: .1EM;
+}
+";
+
+            AssertLessUnchanged(input);
+        }
+
+
+        [Test]
         public void Important()
         {
             var input =
