@@ -70,6 +70,11 @@
             Assert.That(() => Evaluate(input), Throws.Exception.Message.EqualTo(message));
         }
 
+        protected void AssertError(string message, string input, Parser parser)
+        {
+            Assert.That(() => Evaluate(input, parser), Throws.Exception.Message.EqualTo(message));
+        }
+
         public void AssertError(string message, string line, int lineNumber, int position, string input)
         {
             AssertError(message, line, lineNumber, position, null, 0, input);

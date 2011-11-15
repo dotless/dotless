@@ -26,12 +26,27 @@ namespace dotless.Core.Importers
             Imports = new List<string>();
         }
 
-        public virtual void Import(Import import)
+        /// <summary>
+        ///  Imports the file inside the import as a dot-less file.
+        /// </summary>
+        /// <param name="import"></param>
+        /// <returns> Whether the file was found - so false if it cannot be found</returns>
+        public virtual bool Import(Import import)
         {
             if (Parser == null)
                 throw new InvalidOperationException("Parser cannot be null.");
 
             var file = Paths.Concat(new[] { import.Path }).AggregatePaths();
+
+            if (!FileReader.DoesFileExist(file) && !file.EndsWith(".less"))
+            {
+                file = file + ".less";
+            }
+
+            if (!FileReader.DoesFileExist(file))
+            {
+                return false;
+            }
 
             var contents = FileReader.GetFileContents(file);
 
@@ -51,6 +66,8 @@ namespace dotless.Core.Importers
             {
                 Paths.RemoveAt(Paths.Count - 1);
             }
+
+            return true;
         }
     }
 }
