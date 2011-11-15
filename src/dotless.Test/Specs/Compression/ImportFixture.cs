@@ -60,5 +60,6 @@ namespace dotless.Test.Specs.Compression
 
             AssertLess(input, expected, parser);
         }
+
     }
 }

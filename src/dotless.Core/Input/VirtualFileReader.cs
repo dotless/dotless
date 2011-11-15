@@ -14,5 +14,11 @@ namespace dotless.Core.Input
                 return streamReader.ReadToEnd();
             }
         }
+
+        public bool DoesFileExist(string fileName)
+        {
+            var virtualPathProvider = HostingEnvironment.VirtualPathProvider;
+            return virtualPathProvider.GetFile(fileName) != null;
+        }
     }
 }

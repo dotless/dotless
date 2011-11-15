@@ -157,5 +157,65 @@ namespace dotless.Test.Specs
 
             AssertLess(input, expected, parser);
         }
+
+        [Test]
+        public void ImportFileExtensionNotNecessary()
+        {
+            var input = @"@import url(""import/import-test-c"");";
+
+            var expected = @"
+@import ""import-test-d.css"";
+#import {
+  color: red;
+}";
+
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ImportForUrlGetsOutput()
+        {
+            var input =
+                @"
+@import url(""http://www.someone.com/external1.css"");
+@import ""http://www.someone.com/external2.css"";
+";
+
+            var parser = GetParser();
+
+            AssertLessUnchanged(input, parser);
+        }
+
+        [Test]
+        public void ImportForMissingLessFileThrowsError1()
+        {
+            var input = @"@import url(""http://www.someone.com/external1.less"");";
+
+            var parser = GetParser();
+
+            AssertError("You are importing a file ending in .less that cannot be found", input, parser);
+        }
+
+        [Test]
+        public void ImportForMissingLessFileThrowsError2()
+        {
+            var input = @"@import ""external1.less"";";
+
+            var parser = GetParser();
+
+            AssertError("You are importing a file ending in .less that cannot be found", input, parser);
+        }
+
+        [Test]
+        public void ImportForMissingLessFileThrowsError3()
+        {
+            var input = @"@import ""http://www.someone.com/external1.less"";";
+
+            var parser = GetParser();
+
+            AssertError("You are importing a file ending in .less that cannot be found", input, parser);
+        }
     }
 }
