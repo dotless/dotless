@@ -11,6 +11,7 @@ namespace dotless.Core
         public Parser.Parser Parser { get; set; }
         public ILogger Logger { get; set; }
         public bool Compress { get; set; }
+        public Env Env { get; set; }
 
         public LessEngine(Parser.Parser parser, ILogger logger, bool compress)
         {
@@ -35,7 +36,7 @@ namespace dotless.Core
             {
                 var tree = Parser.Parse(source, fileName);
 
-                var env = new Env { Compress = Compress };
+                var env = Env ?? new Env { Compress = Compress };
 
                 var css = tree.ToCSS(env);
 
