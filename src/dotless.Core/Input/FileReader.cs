@@ -21,5 +21,12 @@ namespace dotless.Core.Input
 
             return File.ReadAllText(fileName);
         }
+
+        public bool DoesFileExist(string fileName)
+        {
+            fileName = PathResolver.GetFullPath(fileName);
+
+            return File.Exists(fileName);
+        }
     }
 }

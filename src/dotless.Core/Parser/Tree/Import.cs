@@ -6,6 +6,7 @@ namespace dotless.Core.Parser.Tree
     using Infrastructure.Nodes;
     using Utils;
     using System.Collections.Generic;
+    using System;
 
     public class Import : Directive
     {
@@ -30,14 +31,20 @@ namespace dotless.Core.Parser.Tree
         private Import(string path, Importer importer)
         {
             Importer = importer;
-            var regex = new Regex(@"\.(le|c)ss$");
+            Path = path;
 
-            Path = regex.IsMatch(path) ? path : path + ".less";
+            if (path.EndsWith(".css"))
+            {
+                Css = true;
+            } else
+            {
+                Css = !Importer.Import(this); // it is assumed to be css if it cannot be found as less
 
-            Css = Path.EndsWith("css");
-
-            if(!Css)
-                Importer.Import(this);
+                if (Css && path.EndsWith(".less"))
+                {
+                    throw new Exception("You are importing a file ending in .less that cannot be found");
+                }
+            }
         }
 
         protected override void AppendCSS(Env env, Context context)
