@@ -7,6 +7,8 @@
     using System.Collections.Generic;
     using System.Linq;
     using Core.Parser.Infrastructure;
+    using Core.Parser.Tree;
+    using Core.Plugins;
     using Core.Stylizers;
     using NUnit.Framework;
 
@@ -15,6 +17,7 @@
         protected Func<IStylizer> DefaultStylizer;
         protected Func<Parser> DefaultParser;
         protected Func<Env> DefaultEnv;
+        protected List<IPlugin> Plugins { get; set; }
         protected int Optimisation { get; set; }
 
         [SetUp]
@@ -24,6 +27,7 @@
             DefaultStylizer = () => new PlainStylizer();
             DefaultParser = () => new Parser(Optimisation, DefaultStylizer(), new Importer());
             DefaultEnv = () => new Env();
+            Plugins = new List<IPlugin>();
         }
 
         protected void AssertLess(string input, string expected)
@@ -138,7 +142,20 @@
         public string Evaluate(string input, Parser parser)
         {
             var tree = parser.Parse(input.Trim(), null);
-            return tree.ToCSS(DefaultEnv());
+
+            var env = DefaultEnv();
+
+            tree = Plugins
+                .Where(p => p.AppliesTo == PluginType.BeforeEvaluation)
+                .Aggregate(tree, (current, plugin) => plugin.Apply(current));
+
+            tree = (Ruleset) tree.Evaluate(env);
+
+            tree = Plugins
+                .Where(p => p.AppliesTo == PluginType.AfterEvaluation)
+                .Aggregate(tree, (current, plugin) => plugin.Apply(current));
+
+            return tree.ToCSS(env);
         }
     }
 }

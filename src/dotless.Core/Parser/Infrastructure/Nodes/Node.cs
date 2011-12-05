@@ -48,12 +48,12 @@ namespace dotless.Core.Parser.Infrastructure.Nodes
         /// <summary>
         ///  Copies common properties when evaluating multiple nodes into one
         /// </summary>
-        /// <typeparam name="TN1">Type to return - for convenience</typeparam>
+        /// <typeparam name="T">Type to return - for convenience</typeparam>
         /// <param name="nodes">The nodes this new node is derived from</param>
         /// <returns>The new node</returns>
-		public TN1 ReducedFrom<TN1>(params Node[] nodes) where TN1 : Node
-		{
-            foreach (Node node in nodes)
+        public T ReducedFrom<T>(params Node[] nodes) where T : Node
+        {
+            foreach (var node in nodes)
             {
                 if (node == this)
                 {
@@ -86,9 +86,9 @@ namespace dotless.Core.Parser.Infrastructure.Nodes
                     }
                 }
             }
-			
-			return (TN1)this;
-		}
+            
+            return (T)this;
+        }
 
         public virtual void AppendCSS(Env env)
         {
@@ -100,9 +100,11 @@ namespace dotless.Core.Parser.Infrastructure.Nodes
 
         public virtual string ToCSS(Env env)
         {
-            env.Output.Push()
-				.Append(this);
-            return env.Output.Pop().ToString();
+            return env.Output
+                .Push()
+                .Append(this)
+                .Pop()
+                .ToString();
         }
 
         public virtual Node Evaluate(Env env)

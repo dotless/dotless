@@ -99,6 +99,7 @@
     <Compile Include="Parser\Tree\KeyFrame.cs" />
     <Compile Include="Parser\Tree\Script.cs" />
     <Compile Include="Parser\Tree\Root.cs" />
+    <Compile Include="Plugins\ColorSpinPlugin.cs" />
     <Compile Include="Plugins\IPlugin.cs" />
     <Compile Include="Plugins\IVisitor.cs" />
     <Compile Include="Plugins\VisitorPlugin.cs" />

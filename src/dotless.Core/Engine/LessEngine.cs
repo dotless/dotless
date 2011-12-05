@@ -7,6 +7,7 @@ namespace dotless.Core
     using Exceptions;
     using Loggers;
     using Parser.Infrastructure;
+    using Parser.Tree;
 
     public class LessEngine : ILessEngine
     {
@@ -46,7 +47,7 @@ namespace dotless.Core
 
                 var env = Env ?? new Env { Compress = Compress };
 
-                tree.Evaluate(env);
+                tree = (Ruleset) tree.Evaluate(env);
 
                 tree = Plugins
                     .Where(p => p.AppliesTo == PluginType.AfterEvaluation)

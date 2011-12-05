@@ -40,14 +40,25 @@ namespace dotless.Core.Parser.Tree
 
         public override Node Evaluate(Env env)
         {
-            env = env ?? new Env();
+            if(Evaluated) return this;
 
-            NodeHelper.ExpandNodes<Import>(env, this.Rules);
+            try
+            {
+                env = env ?? new Env();
 
-            Root clone = new Root(new NodeList(Rules), Error, OriginalRuleset).ReducedFrom<Root>(this);
-            clone.EvaluateRules(env);
+                NodeHelper.ExpandNodes<Import>(env, Rules);
 
-            return clone;
+                var clone = new Root(new NodeList(Rules), Error, OriginalRuleset).ReducedFrom<Root>(this);
+
+                clone.EvaluateRules(env);
+                clone.Evaluated = true;
+
+                return clone;
+            }
+            catch (ParsingException e)
+            {
+                throw Error(e);
+            }
         }
     }
 }

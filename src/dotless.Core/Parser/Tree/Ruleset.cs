@@ -12,6 +12,7 @@ namespace dotless.Core.Parser.Tree
     {
         public NodeList<Selector> Selectors { get; set; }
         public NodeList Rules { get; set; }
+        public bool Evaluated { get; protected set; }
 
         /// <summary>
         ///  The original Ruleset this was cloned from during evaluation
@@ -121,11 +122,25 @@ namespace dotless.Core.Parser.Tree
 
         public override Node Evaluate(Env env)
         {
+            if(Evaluated) return this;
+
             // create a clone so it is non destructive
-            Ruleset clone = new Ruleset(Selectors, new NodeList(Rules), this.OriginalRuleset)
-                .ReducedFrom<Ruleset>(this);
+            var clone = new Ruleset(Selectors, new NodeList(Rules), OriginalRuleset).ReducedFrom<Ruleset>(this);
+
             clone.EvaluateRules(env);
+            clone.Evaluated = true;
+
             return clone;
+        }
+
+        public override void Accept(IVisitor visitor)
+        {
+            visitor.Visit(Selectors);
+
+            foreach (var rule in Rules)
+            {
+                rule.Accept(visitor);
+            }
         }
 
         /// <summary>
@@ -133,14 +148,6 @@ namespace dotless.Core.Parser.Tree
         ///  overwrite defintions that might be required later..
         /// </summary>
         protected void EvaluateRules(Env env)
-
-        public override void Accept(IVisitor visitor)
-        {
-            visitor.Visit(Selectors);
-
-            Rules.ForEach(visitor.Visit);
-        }
-
         {
             env.Frames.Push(this);
 
@@ -159,8 +166,7 @@ namespace dotless.Core.Parser.Tree
             if (!Rules.Any())
                 return;
 
-            ((Ruleset)Evaluate(env))
-                .AppendCSS(env, new Context());
+            ((Ruleset) Evaluate(env)).AppendCSS(env, new Context());
         }
 
         /// <summary>
