@@ -11,8 +11,8 @@
 
     public class Env
     {
-        private Dictionary<string, Type> _functionTypes;
-        private Dictionary<int, IExtension> _extensions;
+        private readonly Dictionary<string, Type> _functionTypes;
+        private readonly Dictionary<int, IExtension> _extensions;
 
         public Stack<Ruleset> Frames { get; protected set; }
         public bool Compress { get; set; }
@@ -21,17 +21,25 @@
 
         public Env()
         {
-            AddCoreFunctions();
             Frames = new Stack<Ruleset>();
             Output = new Output(this);
+
+            _extensions = new Dictionary<int, IExtension>();
+            _functionTypes = new Dictionary<string, Type>();
+
+            AddCoreFunctions();
         }
 
         protected Env(Stack<Ruleset> frames, Dictionary<string, Type> functions, Dictionary<int, IExtension> extensions)
         {
-            Output = new Output(this);
-            _functionTypes = functions;
-            _extensions = extensions;
             Frames = frames;
+            Output = new Output(this);
+
+            _extensions = extensions ?? new Dictionary<int, IExtension>();
+            _functionTypes = functions ?? new Dictionary<string, Type>();
+
+            if (_functionTypes.Count == 0)
+                AddCoreFunctions();
         }
 
         /// <summary>
@@ -47,12 +55,9 @@
         /// </summary>
         public void AddExension(IExtension extension)
         {
-            if (_extensions == null)
-            {
-                _extensions = new Dictionary<int, IExtension>();
-            }
+            if (extension == null) throw new ArgumentNullException("extension");
 
-            int hashCode = extension.GetType().GetHashCode();
+            var hashCode = extension.GetType().GetHashCode();
 
             if (_extensions.ContainsKey(hashCode))
             {
@@ -108,15 +113,22 @@
         }
 
         /// <summary>
-        ///  Given an assembly, loads all the dotless Functions in that assembly into this Env.
+        ///  Adds a Function to this Env object
+        /// </summary>
+        public void AddFunction(string name, Type type)
+        {
+            if (name == null) throw new ArgumentNullException("name");
+            if (type == null) throw new ArgumentNullException("type");
+
+            _functionTypes[name] = type;
+        }
+
+        /// <summary>
+        ///  Given an assembly, adds all the dotless Functions in that assembly into this Env.
         /// </summary>
         public void AddFunctionsFromAssembly(Assembly assembly)
         {
-            if (_functionTypes == null)
-            {
-                _functionTypes = new Dictionary<string, Type>();
-
-            }
+            if (assembly == null) throw new ArgumentNullException("assembly");
 
             var functionType = typeof (Function);
 
@@ -124,16 +136,16 @@
                 .GetTypes()
                 .Where(t => functionType.IsAssignableFrom(t) && t != functionType)
                 .Where(t => !t.IsAbstract)
-                .SelectMany<Type, KeyValuePair<string, Type>>(GetFunctionNames))
+                .SelectMany(GetFunctionNames))
             {
-                _functionTypes.Add(func.Key, func.Value);
+                AddFunction(func.Key, func.Value);
             }
         }
 
         private void AddCoreFunctions()
         {
             AddFunctionsFromAssembly(Assembly.GetExecutingAssembly());
-            _functionTypes["%"] = typeof (CFormatString);
+            AddFunction("%", typeof (CFormatString));
         }
 
         /// <summary>
