@@ -7,6 +7,7 @@
     using System.Text.RegularExpressions;
     using Functions;
     using Nodes;
+    using Plugins;
     using Tree;
 
     public class Env
@@ -14,6 +15,7 @@
         private readonly Dictionary<string, Type> _functionTypes;
         private readonly Dictionary<int, IExtension> _extensions;
 
+        public List<IPlugin> Plugins { get; set; }
         public Stack<Ruleset> Frames { get; protected set; }
         public bool Compress { get; set; }
         public Node Rule { get; set; }
@@ -24,6 +26,7 @@
             Frames = new Stack<Ruleset>();
             Output = new Output(this);
 
+            Plugins = new List<IPlugin>();
             _extensions = new Dictionary<int, IExtension>();
             _functionTypes = new Dictionary<string, Type>();
 

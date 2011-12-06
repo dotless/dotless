@@ -17,7 +17,6 @@
         protected Func<IStylizer> DefaultStylizer;
         protected Func<Parser> DefaultParser;
         protected Func<Env> DefaultEnv;
-        protected List<IPlugin> Plugins { get; set; }
         protected int Optimisation { get; set; }
 
         [SetUp]
@@ -27,7 +26,6 @@
             DefaultStylizer = () => new PlainStylizer();
             DefaultParser = () => new Parser(Optimisation, DefaultStylizer(), new Importer());
             DefaultEnv = () => new Env();
-            Plugins = new List<IPlugin>();
         }
 
         protected void AssertLess(string input, string expected)
@@ -143,19 +141,7 @@
         {
             var tree = parser.Parse(input.Trim(), null);
 
-            var env = DefaultEnv();
-
-            tree = Plugins
-                .Where(p => p.AppliesTo == PluginType.BeforeEvaluation)
-                .Aggregate(tree, (current, plugin) => plugin.Apply(current));
-
-            tree = (Ruleset) tree.Evaluate(env);
-
-            tree = Plugins
-                .Where(p => p.AppliesTo == PluginType.AfterEvaluation)
-                .Aggregate(tree, (current, plugin) => plugin.Apply(current));
-
-            return tree.ToCSS(env);
+            return tree.ToCSS(DefaultEnv());
         }
     }
 }

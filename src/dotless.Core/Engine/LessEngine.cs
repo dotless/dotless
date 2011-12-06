@@ -15,14 +15,12 @@ namespace dotless.Core
         public ILogger Logger { get; set; }
         public bool Compress { get; set; }
         public Env Env { get; set; }
-        public List<IPlugin> Plugins { get; private set; }
 
         public LessEngine(Parser.Parser parser, ILogger logger, bool compress)
         {
             Parser = parser;
             Logger = logger;
             Compress = compress;
-            Plugins = new List<IPlugin>();
         }
 
         public LessEngine(Parser.Parser parser)
@@ -41,17 +39,7 @@ namespace dotless.Core
             {
                 var tree = Parser.Parse(source, fileName);
 
-                tree = Plugins
-                    .Where(p => p.AppliesTo == PluginType.BeforeEvaluation)
-                    .Aggregate(tree, (current, plugin) => plugin.Apply(current));
-
                 var env = Env ?? new Env { Compress = Compress };
-
-                tree = (Ruleset) tree.Evaluate(env);
-
-                tree = Plugins
-                    .Where(p => p.AppliesTo == PluginType.AfterEvaluation)
-                    .Aggregate(tree, (current, plugin) => plugin.Apply(current));
 
                 var css = tree.ToCSS(env);
 
