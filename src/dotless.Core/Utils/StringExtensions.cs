@@ -5,6 +5,7 @@
     using System.Linq;
     using Parser.Infrastructure;
     using Parser.Infrastructure.Nodes;
+    using System;
 
     public static class StringExtensions
     {
@@ -43,10 +44,49 @@
                     pathStack.Push(segment);
             }
 
+            IEnumerable<string> pathList = pathStack.Reverse().ToList();
+
+            // if the imported file is outside the path of the first file then
+            // path re-writing won't work.. so we can check to see if we can further
+            // reduce the path. e.g.
+            //
+            // base/css/a.less
+            //   @import "../../theme/b.less";
+            // theme/b.less
+            //   url("../base/file.png")
+            //
+            // then we end up with ../../base/file.png
+            // which we re-write as ../file.png
+            if (pathList.First().Equals(".."))
+            {
+                // get the total number of parent segments (../) in the path list
+                var numberOfParents = pathList.TakeWhile(segment => segment.Equals("..")).Count();
+                // get the relevant part of the current directory that the ../ goes down too
+                var currentPathList = System.Environment.CurrentDirectory
+                    .Split('\\', '/')
+                    .Reverse()
+                    .Take(numberOfParents)
+                    .Reverse();
+                // now see how many match going outwards
+                int numberOfMatchingParents = 0, i = numberOfParents;
+
+                foreach (var currentPathSegment in currentPathList)
+                {
+                    if (i < pathList.Count() && string.Equals(currentPathSegment, pathList.ElementAt(i++), StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        numberOfMatchingParents++;
+                    }
+                }
+
+                // skip out the ../ that match directories we are already in
+                pathList = pathList.Take(numberOfParents - numberOfMatchingParents)
+                    .Concat(pathList.Skip((numberOfParents - numberOfMatchingParents) + (numberOfMatchingParents*2)));
+            }
+
             // Recombine the path segments. Note that there is a difference between doing this
             // and pathStack.Reverse().Aggregate("", Path.Combine), which would discard empty path
             // segments (and therefore strip leading slashes)
-            return string.Join("/", pathStack.Reverse().ToArray());
+            return string.Join("/", pathList.ToArray());
         }
     }
 }
