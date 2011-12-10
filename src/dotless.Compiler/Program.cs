@@ -43,8 +43,12 @@ namespace dotless.Compiler
                 outputFilename = Path.GetFileName(arguments[1]);
                 outputFilename = Path.ChangeExtension(outputFilename, "css");
             }
-            else outputDirectoryPath = inputDirectoryPath;
-            if (HasWildcards(inputFilePattern)) outputFilename = string.Empty;
+            
+            if (string.IsNullOrEmpty(outputDirectoryPath))
+                outputDirectoryPath = inputDirectoryPath;
+
+            if (HasWildcards(inputFilePattern)) 
+                outputFilename = string.Empty;
 
             var filenames = Directory.GetFiles(inputDirectoryPath, inputFilePattern);
             var engine = new EngineFactory(configuration).GetEngine();
@@ -60,17 +64,27 @@ namespace dotless.Compiler
                 foreach (var filename in filenames)
                 {
                     var inputFile = new FileInfo(filename);
-                    var pathbuilder = new System.Text.StringBuilder(outputDirectoryPath + Path.DirectorySeparatorChar);
-                    if (string.IsNullOrEmpty(outputFilename)) pathbuilder.Append(Path.ChangeExtension(inputFile.Name, "css"));
-                    else pathbuilder.Append(outputFilename);
-                    var outputFilePath = Path.GetFullPath(pathbuilder.ToString());
+
+                    var outputFile = 
+                        string.IsNullOrEmpty(outputFilename) ? 
+                            Path.Combine(outputDirectoryPath, Path.ChangeExtension(inputFile.Name, "css")) :
+                            Path.Combine(outputDirectoryPath, outputFilename);
+
+                    var outputFilePath = Path.GetFullPath(outputFile);
 
                     CompilationDelegate compilationDelegate = () => CompileImpl(engine, inputFile.FullName, outputFilePath);
+
                     Console.WriteLine("[Compile]");
+
                     var files = compilationDelegate();
-                    if (watcher.Watch) watcher.SetupWatchers(files, compilationDelegate);
+
+                    if (watcher.Watch)
+                        watcher.SetupWatchers(files, compilationDelegate);
                 }
-                if (configuration.Watch) WriteAbortInstructions();
+
+                if (configuration.Watch) 
+                    WriteAbortInstructions();
+
                 while (watcher.Watch && Console.ReadKey(true).Key != ConsoleKey.Enter) 
                 {
                     System.Threading.Thread.Sleep(200);
