@@ -90,8 +90,10 @@
 
         public virtual void AppendCSS(Env env)
         {
-            throw new InvalidOperationException(string.Format("AppendCSS() not valid on this type of node. '{0}'",
-                                                              GetType().Name));
+            //if there is no implementation then it will be a node that
+            //evalutes to something.
+            //ideally this shouldn't be called, but when creating error message it may be
+            Evaluate(env).AppendCSS(env);
         }
 
         public virtual string ToCSS(Env env)

@@ -65,6 +65,31 @@ namespace dotless.Test.Specs
         }
 
         [Test]
+        public void MixinCallError()
+        {
+            var input =
+                @"
+.mixin (@a, @b) {
+  width: @a;
+  height: @b;
+}
+
+@c: 1px;
+
+.one-arg {
+  .mixin(@c);
+}
+";
+
+            AssertError(@"
+No matching definition was found for `.mixin(1px)` on line 9:
+  [8]: .one-arg {
+  [9]:   .mixin(@c);
+       --^
+ [10]: }", input);
+        }
+
+        [Test]
         public void MixinsArgsOneArg()
         {
             // Todo: split into separate atomic tests.
