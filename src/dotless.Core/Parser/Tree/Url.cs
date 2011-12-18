@@ -17,7 +17,7 @@
             if (value is TextNode)
             {
                 var textValue = value as TextNode;
-                if (!Regex.IsMatch(textValue.Value, @"^(http:\/)?\/") && paths.Any())
+                if (!Regex.IsMatch(textValue.Value, @"^(([A-z]+:)|(\/))") && paths.Any())
                 {
                     textValue.Value = paths.Concat(new[] { textValue.Value }).AggregatePaths();
                 }

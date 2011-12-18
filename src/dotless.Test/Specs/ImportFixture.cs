@@ -15,6 +15,14 @@ namespace dotless.Test.Specs
 @import ""import-test-b.less"";
 @a: 20%;
 ";
+            imports["import/other-protocol-test.less"] = @"
+.first {
+    background-image: url('http://some.com/file.gif');
+    background-image: url('https://some.com/file.gif');
+    background-image: url('ftp://some.com/file.gif');
+    background-image: url('data:xxyhjgjshgjs');
+}
+";
             imports["import/import-test-b.less"] =
                 @"
 @import 'import-test-c';
@@ -51,6 +59,7 @@ namespace dotless.Test.Specs
   background: url(../image.gif);
   background: url(image.gif);
   background: url(sub2/image.gif);
+  background: url(/sub2/image.gif);
 }
 ";
 
@@ -99,6 +108,25 @@ namespace dotless.Test.Specs
         }
 
         [Test]
+        public void OtherProtocolImportTest()
+        {
+            var input = @"
+@import 'import/other-protocol-test.less';
+";
+            var expected = @"
+.first {
+  background-image: url('http://some.com/file.gif');
+  background-image: url('https://some.com/file.gif');
+  background-image: url('ftp://some.com/file.gif');
+  background-image: url('data:xxyhjgjshgjs');
+}
+";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
         public void RelativeUrls()
         {
             var input =
@@ -112,6 +140,7 @@ namespace dotless.Test.Specs
   background: url(import/image.gif);
   background: url(import/sub1/image.gif);
   background: url(import/sub1/sub2/image.gif);
+  background: url(/sub2/image.gif);
 }
 #first {
   background: url('image.gif');
