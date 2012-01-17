@@ -1,12 +1,10 @@
 namespace dotless.Core.Parser.Tree
 {
-    using System.Text.RegularExpressions;
+    using System.IO;
     using Importers;
     using Infrastructure;
     using Infrastructure.Nodes;
     using Utils;
-    using System.Collections.Generic;
-    using System;
 
     public class Import : Directive
     {
@@ -42,7 +40,7 @@ namespace dotless.Core.Parser.Tree
 
                 if (Css && path.EndsWith(".less"))
                 {
-                    throw new Exception("You are importing a file ending in .less that cannot be found");
+                    throw new FileNotFoundException("You are importing a file ending in .less that cannot be found.", path);
                 }
             }
         }
