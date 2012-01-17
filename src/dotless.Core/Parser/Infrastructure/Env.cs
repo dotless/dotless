@@ -56,7 +56,8 @@
 
             if (_extensions.ContainsKey(hashCode))
             {
-                throw new Exception("Extension type is already loaded");
+                string message = String.Format("Extension type is already loaded: {0}", extension.GetType().FullName);
+                throw new InvalidOperationException(message);
             }
 
             _extensions.Add(hashCode, extension);

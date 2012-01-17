@@ -224,7 +224,7 @@ namespace dotless.Test.Specs
 
             var parser = GetParser();
 
-            AssertError("You are importing a file ending in .less that cannot be found", input, parser);
+            AssertError("You are importing a file ending in .less that cannot be found.", input, parser);
         }
 
         [Test]
@@ -234,7 +234,7 @@ namespace dotless.Test.Specs
 
             var parser = GetParser();
 
-            AssertError("You are importing a file ending in .less that cannot be found", input, parser);
+            AssertError("You are importing a file ending in .less that cannot be found.", input, parser);
         }
 
         [Test]
@@ -244,7 +244,19 @@ namespace dotless.Test.Specs
 
             var parser = GetParser();
 
-            AssertError("You are importing a file ending in .less that cannot be found", input, parser);
+            AssertError("You are importing a file ending in .less that cannot be found.", input, parser);
+        }
+
+        [Test]
+        public void ImportForMissingLessFileThrowsExceptionThatIncludesFileName()
+        {
+            var input = @"@import ""http://www.someone.com/external1.less"";";
+
+            var parser = GetParser();
+
+            Assert.That(() => Evaluate(input, parser),
+                Throws.InstanceOf<System.IO.FileNotFoundException>()
+                    .With.Property("FileName").EqualTo("http://www.someone.com/external1.less"));
         }
     }
 }
