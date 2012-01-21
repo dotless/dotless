@@ -24,6 +24,7 @@
 
             response.Cache.SetExpires(DateTime.UtcNow.AddMinutes(CacheAgeMinutes));
             response.Cache.SetETagFromFileDependencies();
+            response.Cache.SetLastModifiedFromFileDependencies();
 
             response.ContentType = "text/css";
             response.Write(css);

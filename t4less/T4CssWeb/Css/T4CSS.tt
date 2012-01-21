@@ -54,6 +54,7 @@ Converting:
 var manager = Manager.Create(Host, GenerationEnvironment);
 var configuration = new DotlessConfiguration();
 configuration.MinifyOutput = _minimize;
+System.IO.Directory.SetCurrentDirectory(currentDirectory);
 foreach(var cssFile in cssFiles) 
 {
     manager.StartNewFile(GetCssFileName(cssFile));
