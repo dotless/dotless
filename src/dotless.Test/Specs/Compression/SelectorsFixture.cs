@@ -92,5 +92,16 @@ ul, li, div, q, blockquote, textarea {
 
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void EmptySelectorRemoved()
+        {
+            var input = @"
+.class {
+}
+";
+
+            AssertLess(input, "");
+        }
     }
 }

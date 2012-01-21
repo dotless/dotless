@@ -174,6 +174,11 @@
             int trimLLength = 0;
             int length = Builder.Length;
 
+            if (length == 0)
+            {
+                return this;
+            }
+
             while (trimLLength < length && 
                     c.HasValue ? Builder[trimLLength] == c.Value : 
                                 char.IsWhiteSpace(Builder[trimLLength]))
@@ -196,6 +201,11 @@
         {
             int trimRLength = 0;
             int length = Builder.Length;
+
+            if (length == 0)
+            {
+                return this;
+            }
 
             while (trimRLength < length && 
                    c.HasValue ? Builder[length - (trimRLength + 1)] == c.Value :

@@ -44,6 +44,9 @@
 
         protected override void AppendCSS(Env env, Context context)
         {
+            if (env.Compress && Rules != null && !Rules.Any())
+                return;
+
             env.Output.Append(Name);
 
             if (!string.IsNullOrEmpty(Identifier))
