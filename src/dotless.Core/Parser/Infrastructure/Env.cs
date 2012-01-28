@@ -13,32 +13,23 @@
     public class Env
     {
         private readonly Dictionary<string, Type> _functionTypes;
-        private readonly Dictionary<int, IExtension> _extensions;
+        private readonly List<IPlugin> _plugins;
 
-        public List<IPlugin> Plugins { get; set; }
         public Stack<Ruleset> Frames { get; protected set; }
         public bool Compress { get; set; }
         public Node Rule { get; set; }
         public Output Output { get; private set; }
 
-        public Env()
+        public Env() : this(null, null)
         {
-            Frames = new Stack<Ruleset>();
-            Output = new Output(this);
-
-            Plugins = new List<IPlugin>();
-            _extensions = new Dictionary<int, IExtension>();
-            _functionTypes = new Dictionary<string, Type>();
-
-            AddCoreFunctions();
         }
 
-        protected Env(Stack<Ruleset> frames, Dictionary<string, Type> functions, Dictionary<int, IExtension> extensions)
+        protected Env(Stack<Ruleset> frames, Dictionary<string, Type> functions)
         {
-            Frames = frames;
+            Frames = frames ?? new Stack<Ruleset>();
             Output = new Output(this);
 
-            _extensions = extensions ?? new Dictionary<int, IExtension>();
+            _plugins = new List<IPlugin>();
             _functionTypes = functions ?? new Dictionary<string, Type>();
 
             if (_functionTypes.Count == 0)
@@ -50,34 +41,42 @@
         /// </summary>
         public virtual Env CreateChildEnv(Stack<Ruleset> frames)
         {
-            return new Env(frames, _functionTypes, _extensions);
+            return new Env(frames, _functionTypes);
         }
 
         /// <summary>
-        ///  Adds an extension to this Env to be used whenever this Env is used
+        ///  Adds a plugin to this Env
         /// </summary>
-        public void AddExension(IExtension extension)
+        public void AddPlugin(IPlugin plugin)
         {
-            if (extension == null) throw new ArgumentNullException("extension");
+            if (plugin == null) throw new ArgumentNullException("plugin");
 
-            var hashCode = extension.GetType().GetHashCode();
+            _plugins.Add(plugin);
 
-            if (_extensions.ContainsKey(hashCode))
+            IFunctionPlugin functionPlugin = plugin as IFunctionPlugin;
+            if (functionPlugin != null)
             {
-                string message = String.Format("Extension type is already loaded: {0}", extension.GetType().FullName);
-                throw new InvalidOperationException(message);
-            }
+                functionPlugin.GetFunctions()
+                    .All((keyValuePair) => {
+                        if (_functionTypes.ContainsKey(keyValuePair.Key))
+                        {
+                            string message = string.Format("Function '{0}' already exists in environment but is added by plugin {1}",
+                                keyValuePair.Key, plugin.Name);
+                            throw new InvalidOperationException(message);
+                        }
 
-            _extensions.Add(hashCode, extension);
-            extension.Setup(this);
+                        _functionTypes.Add(keyValuePair.Key, keyValuePair.Value);
+                        return true;
+                    });
+            }
         }
 
-        /// <summary>
-        ///  Returns an extension of this type (if loaded). Otherwise will return null.
-        /// </summary>
-        public T1 GetExtension<T1>() where T1 : IExtension
+        public IEnumerable<IVisitorPlugin> VisitorPlugins
         {
-            return (T1)_extensions[typeof(T1).GetHashCode()];
+            get
+            {
+                return _plugins.OfType<IVisitorPlugin>();
+            }
         }
 
         /// <summary>

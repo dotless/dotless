@@ -52,23 +52,17 @@ namespace dotless.Core.Parser.Tree
 
                 var clone = new Root(new NodeList(Rules), Error, OriginalRuleset);
 
-                if(env.Plugins != null)
-                {
-                    clone = env.Plugins
-                        .Where(p => p.AppliesTo == PluginType.BeforeEvaluation)
+                clone = env.VisitorPlugins
+                        .Where(p => p.AppliesTo == VisitorPluginType.BeforeEvaluation)
                         .Aggregate(clone, (current, plugin) => (Root)plugin.Apply(current));
-                }
 
                 clone.ReducedFrom<Root>(this);
                 clone.EvaluateRules(env);
                 clone.Evaluated = true;
 
-                if(env.Plugins != null)
-                {
-                    clone = env.Plugins
-                        .Where(p => p.AppliesTo == PluginType.AfterEvaluation)
+                clone = env.VisitorPlugins
+                        .Where(p => p.AppliesTo == VisitorPluginType.AfterEvaluation)
                         .Aggregate(clone, (current, plugin) => (Root)plugin.Apply(current));
-                }
 
                 return clone;
             }

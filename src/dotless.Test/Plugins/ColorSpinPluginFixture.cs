@@ -1,9 +1,7 @@
 namespace dotless.Test.Plugins
 {
     using System.Collections.Generic;
-    using System.Linq;
     using Core.Parser.Infrastructure;
-    using Core.Parser.Infrastructure.Nodes;
     using Core.Parser.Tree;
     using Core.Plugins;
     using NUnit.Framework;
@@ -17,7 +15,11 @@ namespace dotless.Test.Plugins
         [SetUp]
         public void Setup()
         {
-            DefaultEnv = () => new Env {Plugins = new List<IPlugin> {new ColorSpinPlugin(60)}};
+            DefaultEnv = () => {
+                Env env = new Env();
+                env.AddPlugin(new ColorSpinPlugin(60));
+                return env;
+            };
         }
 
         [Test]

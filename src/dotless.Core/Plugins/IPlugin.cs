@@ -1,17 +1,10 @@
-namespace dotless.Core.Plugins
+﻿namespace dotless.Core.Plugins
 {
-    using Parser.Tree;
-
     public interface IPlugin
     {
-        Ruleset Apply(Ruleset tree);
-
-        PluginType AppliesTo { get; }
-    }
-
-    public enum PluginType
-    {
-        BeforeEvaluation,
-        AfterEvaluation
+        string Name
+        {
+            get;
+        }
     }
 }

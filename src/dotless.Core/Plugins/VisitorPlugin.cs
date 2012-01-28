@@ -4,7 +4,7 @@
     using Parser.Infrastructure.Nodes;
     using Parser.Tree;
 
-    public abstract class VisitorPlugin : IPlugin, IVisitor
+    public abstract class VisitorPlugin : IVisitorPlugin, IVisitor
     {
         public Ruleset Apply(Ruleset tree)
         {
@@ -13,7 +13,8 @@
             return tree;
         }
 
-        public abstract PluginType AppliesTo { get; }
+        public abstract string Name { get; }
+        public abstract VisitorPluginType AppliesTo { get; }
 
         public void Visit(Node node)
         {

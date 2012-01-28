@@ -7,6 +7,7 @@
 
     public class ColorSpinPlugin : VisitorPlugin
     {
+        public override string Name { get { return "Color Spin Plugin"; } }
         public double Spin { get; set; }
 
         public ColorSpinPlugin(double spin)
@@ -14,9 +15,9 @@
             Spin = spin;
         }
 
-        public override PluginType AppliesTo
+        public override VisitorPluginType AppliesTo
         {
-            get { return PluginType.AfterEvaluation; }
+            get { return VisitorPluginType.AfterEvaluation; }
         }
 
         public override bool Execute(Node node)
