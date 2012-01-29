@@ -25,8 +25,8 @@
 
         public override void Accept(IVisitor visitor)
         {
-            visitor.Visit(First);
-            visitor.Visit(Second);
+            First = VisitAndReplace(First, visitor);
+            Second = VisitAndReplace(Second, visitor);
         }
     }
 }

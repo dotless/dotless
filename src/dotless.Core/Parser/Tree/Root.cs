@@ -40,6 +40,28 @@ namespace dotless.Core.Parser.Tree
             }
         }
 
+        private Root DoVisiting(Root node, Env env, VisitorPluginType pluginType)
+        {
+            return env.VisitorPlugins
+                .Where(p => p.AppliesTo == pluginType)
+                .Aggregate(node, (current, plugin) => 
+                {
+                    try
+                    {
+                        plugin.OnPreVisiting(env);
+                        Root r = plugin.Apply(current);
+                        plugin.OnPostVisiting(env);
+                        return r;
+                    }
+                    catch (Exception ex)
+                    {
+                        string message = string.Format("Plugin '{0}' failed during visiting with error '{1}'", plugin.Name, ex.Message);
+                        throw new ParserException(message, ex);
+                    }
+                });
+
+        }
+
         public override Node Evaluate(Env env)
         {
             if(Evaluated) return this;
@@ -52,17 +74,13 @@ namespace dotless.Core.Parser.Tree
 
                 var clone = new Root(new NodeList(Rules), Error, OriginalRuleset);
 
-                clone = env.VisitorPlugins
-                        .Where(p => p.AppliesTo == VisitorPluginType.BeforeEvaluation)
-                        .Aggregate(clone, (current, plugin) => (Root)plugin.Apply(current));
+                clone = DoVisiting(clone, env, VisitorPluginType.BeforeEvaluation);
 
                 clone.ReducedFrom<Root>(this);
                 clone.EvaluateRules(env);
                 clone.Evaluated = true;
 
-                clone = env.VisitorPlugins
-                        .Where(p => p.AppliesTo == VisitorPluginType.AfterEvaluation)
-                        .Aggregate(clone, (current, plugin) => (Root)plugin.Apply(current));
+                clone = DoVisiting(clone, env, VisitorPluginType.AfterEvaluation);
 
                 return clone;
             }

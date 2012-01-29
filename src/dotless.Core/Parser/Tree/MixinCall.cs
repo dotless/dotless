@@ -84,11 +84,11 @@ namespace dotless.Core.Parser.Tree
 
         public override void Accept(IVisitor visitor)
         {
-            visitor.Visit(Selector);
+            Selector = VisitAndReplace(Selector, visitor);
 
             foreach (var a in Arguments)
             {
-                visitor.Visit(a.Value);
+                a.Value = VisitAndReplace(a.Value, visitor);
             }
         }
     }

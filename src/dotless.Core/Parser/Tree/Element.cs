@@ -24,7 +24,7 @@
 
         public override void Accept(IVisitor visitor)
         {
-            visitor.Visit(Combinator);
+            Combinator = VisitAndReplace(Combinator, visitor);
         }
     }
 }

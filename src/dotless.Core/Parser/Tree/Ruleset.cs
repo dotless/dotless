@@ -135,11 +135,11 @@ namespace dotless.Core.Parser.Tree
 
         public override void Accept(IVisitor visitor)
         {
-            visitor.Visit(Selectors);
+            Selectors = VisitAndReplace(Selectors, visitor);
 
-            foreach (var rule in Rules)
+            for (int i = 0; i < Rules.Count; i++)
             {
-                rule.Accept(visitor);
+                Rules[i] = VisitAndReplace(Rules[i], visitor);
             }
         }
 

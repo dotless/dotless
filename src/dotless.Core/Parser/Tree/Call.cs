@@ -51,7 +51,7 @@ namespace dotless.Core.Parser.Tree
 
         public override void Accept(IVisitor visitor)
         {
-            visitor.Visit(Arguments);
+            Arguments = VisitAndReplace(Arguments, visitor);
         }
     }
 }

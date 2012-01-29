@@ -58,7 +58,7 @@
 
         public override void Accept(IVisitor visitor)
         {
-            visitor.Visit(Values);
+            Values = VisitAndReplace(Values, visitor);
         }
     }
 }

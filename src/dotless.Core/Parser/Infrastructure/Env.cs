@@ -56,18 +56,19 @@
             IFunctionPlugin functionPlugin = plugin as IFunctionPlugin;
             if (functionPlugin != null)
             {
-                functionPlugin.GetFunctions()
-                    .All((keyValuePair) => {
-                        if (_functionTypes.ContainsKey(keyValuePair.Key))
-                        {
-                            string message = string.Format("Function '{0}' already exists in environment but is added by plugin {1}",
-                                keyValuePair.Key, plugin.Name);
-                            throw new InvalidOperationException(message);
-                        }
+                foreach(KeyValuePair<string, Type> function in functionPlugin.GetFunctions())
+                {
+                    string functionName = function.Key.ToLowerInvariant();
 
-                        _functionTypes.Add(keyValuePair.Key, keyValuePair.Value);
-                        return true;
-                    });
+                    if (_functionTypes.ContainsKey(functionName))
+                    {
+                        string message = string.Format("Function '{0}' already exists in environment but is added by plugin {1}",
+                            functionName, plugin.Name);
+                        throw new InvalidOperationException(message);
+                    }
+
+                    AddFunction(functionName, function.Value);
+                 }
             }
         }
 

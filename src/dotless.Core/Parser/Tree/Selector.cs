@@ -47,7 +47,7 @@
 
         public override void Accept(IVisitor visitor)
         {
-            visitor.Visit(Elements);
+            Elements = VisitAndReplace(Elements, visitor);
         }
 
         public override string ToString()

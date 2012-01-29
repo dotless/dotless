@@ -4,6 +4,6 @@
 
     public interface IVisitor
     {
-        void Visit(Node node);
+        Node Visit(Node node);
     }
 }

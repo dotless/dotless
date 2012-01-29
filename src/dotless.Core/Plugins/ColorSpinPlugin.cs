@@ -20,7 +20,7 @@
             get { return VisitorPluginType.AfterEvaluation; }
         }
 
-        public override bool Execute(Node node)
+        public override bool Execute(ref Node node)
         {
             if(node is Color)
             {
@@ -30,6 +30,7 @@
                 hslColor.Hue += Spin/360.0d;
                 var newColor = hslColor.ToRgbColor();
 
+                //node = new Color(newColor.R, newColor.G, newColor.B);
                 color.R = newColor.R;
                 color.G = newColor.G;
                 color.B = newColor.B;
