@@ -52,10 +52,21 @@
 
         public override void Accept(Plugins.IVisitor visitor)
         {
-            for (int i = 0; i < Inner.Count; i++)
+            List<TNode> newInner = new List<TNode>(Inner.Count);
+
+            foreach (TNode inner in Inner)
             {
-                Inner[i] = VisitAndReplace(Inner[i], visitor);
+                TNode node = VisitAndReplace<TNode>(inner, visitor, true);
+
+                if (node == null)
+                {
+                    continue;
+                }
+
+                newInner.Add(node);
             }
+
+            Inner = newInner;
         }
 
         public void AddRange(IEnumerable<TNode> nodes)

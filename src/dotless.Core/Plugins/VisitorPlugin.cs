@@ -3,7 +3,7 @@
     using System;
     using Parser.Infrastructure.Nodes;
     using Parser.Tree;
-using dotless.Core.Parser.Infrastructure;
+    using dotless.Core.Parser.Infrastructure;
 
     public abstract class VisitorPlugin : IVisitorPlugin, IVisitor
     {
@@ -19,13 +19,15 @@ using dotless.Core.Parser.Infrastructure;
 
         public Node Visit(Node node)
         {
-            if (Execute(ref node))
+            bool visitDeeper;
+            node = Execute(node, out visitDeeper);
+            if (visitDeeper)
                 node.Accept(this);
 
             return node;
         }
 
-        public abstract bool Execute(ref Node node);
+        public abstract Node Execute(Node node, out bool visitDeeper);
 
         public virtual void OnPreVisiting(Env env)
         {

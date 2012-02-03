@@ -137,10 +137,7 @@ namespace dotless.Core.Parser.Tree
         {
             Selectors = VisitAndReplace(Selectors, visitor);
 
-            for (int i = 0; i < Rules.Count; i++)
-            {
-                Rules[i] = VisitAndReplace(Rules[i], visitor);
-            }
+            Rules = VisitAndReplace(Rules, visitor);
         }
 
         /// <summary>

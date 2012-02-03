@@ -122,18 +122,23 @@ namespace dotless.Core.Parser.Infrastructure.Nodes
         public virtual void Accept(IVisitor visitor) {}
 
         /// <summary>
-        ///  Casts a 
+        /// Visits the node and throw an exception if the replacement mode isn't the right type, or the replacement is null
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="visitor"></param>
-        /// <param name="replacement"></param>
-        /// <returns></returns>
         public T VisitAndReplace<T>(T nodeToVisit, IVisitor visitor) where T : Node
+        {
+            return VisitAndReplace(nodeToVisit, visitor, false);
+        }
+
+        /// <summary>
+        /// Visits the node and throw an exception if the replacement mode isn't the right type
+        /// The allowNull parameter determines if a null is allowed to be returned
+        /// </summary>
+        public T VisitAndReplace<T>(T nodeToVisit, IVisitor visitor, bool allowNull) where T : Node
         {
             Node replacement = visitor.Visit(nodeToVisit);
 
             T typedReplacement = replacement as T;
-            if (typedReplacement != null)
+            if (typedReplacement != null || (allowNull && replacement == null))
             {
                 return typedReplacement;
             }

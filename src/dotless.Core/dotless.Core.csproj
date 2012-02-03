@@ -103,6 +103,7 @@
     <Compile Include="Plugins\IPlugin.cs" />
     <Compile Include="Plugins\IVisitor.cs" />
     <Compile Include="Plugins\IVisitorPlugin.cs" />
+    <Compile Include="Plugins\RtlPlugin.cs" />
     <Compile Include="Plugins\VisitorPlugin.cs" />
     <Compile Include="Response\CachedCssResponse.cs">
       <SubType>Code</SubType>

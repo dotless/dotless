@@ -20,8 +20,10 @@
             get { return VisitorPluginType.AfterEvaluation; }
         }
 
-        public override bool Execute(ref Node node)
+        public override Node Execute(Node node, out bool visitDeeper)
         {
+            visitDeeper = true;
+
             if(node is Color)
             {
                 var color = node as Color;
@@ -36,7 +38,7 @@
                 color.B = newColor.B;
             }
 
-            return true;
+            return node;
         }
     }
 }

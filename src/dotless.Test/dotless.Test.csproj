@@ -83,6 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Plugins\ColorSpinPluginFixture.cs" />
+    <Compile Include="Plugins\RtlPluginFixture.cs" />
     <Compile Include="Specs\Compression\ColorsFixture.cs" />
     <Compile Include="Specs\Compression\CommentsFixture.cs" />
     <Compile Include="CompressedSpecFixtureBase.cs" />
