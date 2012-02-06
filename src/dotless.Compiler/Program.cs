@@ -45,7 +45,13 @@ namespace dotless.Compiler
             }
             
             if (string.IsNullOrEmpty(outputDirectoryPath))
+            {
                 outputDirectoryPath = inputDirectoryPath;
+            }
+            else
+            {
+                Directory.CreateDirectory(outputDirectoryPath);
+            }
 
             if (HasWildcards(inputFilePattern)) 
                 outputFilename = string.Empty;
