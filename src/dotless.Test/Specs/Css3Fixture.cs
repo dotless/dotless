@@ -35,6 +35,41 @@ namespace dotless.Test.Specs
         }
 
         [Test]
+        public void FontFaceDirectiveInClass()
+        {
+            var input = @"
+#font {
+  .test(){
+    @font-face {
+      font-family: 'MyFont';
+      src: url('/css/fonts/myfont.eot');
+      src: url('/css/fonts/myfont.eot?#iefix') format('embedded-opentype'),
+           url('/css/fonts/myfont.woff') format('woff'),
+           url('/css/fonts/myfont.ttf') format('truetype'),
+           url('/css/fonts/myfont.svg#reg') format('svg');
+    }
+    .cl {
+      background: red;
+    }
+  }
+}
+
+#font > .test();";
+
+            var expected = @"
+@font-face {
+  font-family: 'MyFont';
+  src: url('/css/fonts/myfont.eot');
+  src: url('/css/fonts/myfont.eot?#iefix') format('embedded-opentype'), url('/css/fonts/myfont.woff') format('woff'), url('/css/fonts/myfont.ttf') format('truetype'), url('/css/fonts/myfont.svg#reg') format('svg');
+}
+.cl {
+  background: red;
+}
+";
+            AssertLess(input, expected);
+        }
+
+        [Test]
         public void MediaDirective()
         {
             var input = @"

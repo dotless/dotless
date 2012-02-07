@@ -103,6 +103,10 @@ namespace dotless.Core.Parser.Tree
                     var parameters = Enumerable.Concat(mixin.Params, frame.Rules.Cast<Rule>());
                     newRules.Add(new MixinDefinition(mixin.Name, new NodeList<Rule>(parameters), mixin.Rules));
                 }
+                else if (rule is Directive)
+                {
+                    newRules.Add(rule);
+                }
                 else if (rule is Ruleset)
                 {
                     var ruleset = (rule as Ruleset);
@@ -118,7 +122,7 @@ namespace dotless.Core.Parser.Tree
                 }
                 else if (rule is MixinCall)
                 {
-                    newRules.AddRange((NodeList) rule.Evaluate(context));
+                    newRules.AddRange((NodeList)rule.Evaluate(context));
                 }
                 else
                 {
