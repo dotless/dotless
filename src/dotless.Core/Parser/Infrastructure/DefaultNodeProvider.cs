@@ -67,9 +67,9 @@ namespace dotless.Core.Parser.Infrastructure
             return new Variable(name) { Index = index };
         }
 
-        public Url Url(Node value, IEnumerable<string> paths, int index)
+        public Url Url(Node value, IImporter importer, int index)
         {
-            return new Url(value, paths) { Index = index };
+            return new Url(value, importer) { Index = index };
         }
 
         public Script Script(string script, int index)
@@ -87,12 +87,12 @@ namespace dotless.Core.Parser.Infrastructure
             return new MixinDefinition(name, parameters, rules) { Index = index };
         }
 
-        public Import Import(Url path, Importer importer, int index)
+        public Import Import(Url path, IImporter importer, int index)
         {
             return new Import(path, importer) { Index = index };
         }
 
-        public Import Import(Quoted path, Importer importer, int index)
+        public Import Import(Quoted path, IImporter importer, int index)
         {
             return new Import(path, importer) { Index = index };
         }

@@ -21,7 +21,7 @@ namespace dotless.Core.Parser.Infrastructure
         Number Number(string value, string unit, int index);
         Shorthand Shorthand(Node first, Node second, int index);
         Variable Variable(string name, int index);
-        Url Url(Node value, IEnumerable<string> paths, int index);
+        Url Url(Node value, IImporter importer, int index);
         Script Script(string script, int index);
 
         //mixins
@@ -29,8 +29,8 @@ namespace dotless.Core.Parser.Infrastructure
         MixinDefinition MixinDefinition(string name, NodeList<Rule> parameters, NodeList rules, int index);
 
         //directives
-        Import Import(Url path, Importer importer, int index);
-        Import Import(Quoted path, Importer importer, int index);
+        Import Import(Url path, IImporter importer, int index);
+        Import Import(Quoted path, IImporter importer, int index);
         Directive Directive(string name, string identifier, NodeList rules, int index);
         Directive Directive(string name, Node value, int index);
         KeyFrame KeyFrame(string identifier, NodeList rules, int index);

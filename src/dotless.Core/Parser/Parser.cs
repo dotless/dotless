@@ -55,8 +55,8 @@ namespace dotless.Core.Parser
             set { _nodeProvider = value; }
         }
 
-        private Importer _importer;
-        public Importer Importer
+        private IImporter _importer;
+        public IImporter Importer
         {
             get { return _importer; }
             set
@@ -78,12 +78,12 @@ namespace dotless.Core.Parser
         {
         }
 
-        public Parser(IStylizer stylizer, Importer importer)
+        public Parser(IStylizer stylizer, IImporter importer)
             : this(defaultOptimization, stylizer, importer)
         {
         }
 
-        public Parser(int optimization, IStylizer stylizer, Importer importer)
+        public Parser(int optimization, IStylizer stylizer, IImporter importer)
         {
             Stylizer = stylizer;
             Importer = importer;

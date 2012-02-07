@@ -7,19 +7,20 @@
     using Infrastructure.Nodes;
     using Utils;
     using Exceptions;
+    using dotless.Core.Importers;
 
     public class Url : Node
     {
         public Node Value { get; set; }
 
-        public Url(Node value, IEnumerable<string> paths)
+        public Url(Node value, IImporter importer)
         {
             if (value is TextNode)
             {
                 var textValue = value as TextNode;
-                if (!Regex.IsMatch(textValue.Value, @"^(([a-zA-Z]+:)|(\/))") && paths.Any())
+                if (!Regex.IsMatch(textValue.Value, @"^(([a-zA-Z]+:)|(\/))") && importer.Paths.Any())
                 {
-                    textValue.Value = paths.Concat(new[] { textValue.Value }).AggregatePaths();
+                    textValue.Value = importer.Paths.Concat(new[] { textValue.Value }).AggregatePaths(importer.CurrentDirectory);
                 }
             }
 

@@ -9,12 +9,26 @@ namespace dotless.Core.Importers
     using Parser.Tree;
     using Utils;
 
-    public class Importer
+    public class Importer : IImporter
     {
         public IFileReader FileReader { get; set; }
         public List<string> Imports { get; set; }
         public Func<Parser> Parser { get; set; }
-        public readonly List<string> Paths = new List<string>();
+        private readonly List<string> _paths = new List<string>();
+        public List<string> Paths
+        {
+            get
+            {
+                return _paths;
+            }
+        }
+        public string CurrentDirectory
+        {
+            get
+            {
+                return System.Environment.CurrentDirectory;
+            }
+        }
 
         public Importer() : this(new FileReader())
         {
@@ -36,7 +50,7 @@ namespace dotless.Core.Importers
             if (Parser == null)
                 throw new InvalidOperationException("Parser cannot be null.");
 
-            var file = Paths.Concat(new[] { import.Path }).AggregatePaths();
+            var file = Paths.Concat(new[] { import.Path }).AggregatePaths(CurrentDirectory);
 
             if (!FileReader.DoesFileExist(file) && !file.EndsWith(".less"))
             {

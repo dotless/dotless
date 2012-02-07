@@ -8,25 +8,25 @@ namespace dotless.Core.Parser.Tree
 
     public class Import : Directive
     {
-        public Importer Importer { get; set; }
+        public IImporter Importer { get; set; }
         public string Path { get; set; }
         protected Node OriginalPath { get; set; }
         protected bool Css { get; set; }
         public Ruleset InnerRoot { get; set; }
 
-        public Import(Quoted path, Importer importer)
+        public Import(Quoted path, IImporter importer)
             : this(path.Value, importer)
         {
             OriginalPath = path;
         }
 
-        public Import(Url path, Importer importer)
+        public Import(Url path, IImporter importer)
             : this(path.GetUrl(), importer)
         {
             OriginalPath = path;
         }
 
-        private Import(string path, Importer importer)
+        private Import(string path, IImporter importer)
         {
             Importer = importer;
             Path = path;

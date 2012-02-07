@@ -81,6 +81,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Importers\IImporter.cs" />
     <Compile Include="Loggers\AspNetTraceLogger.cs" />
     <Compile Include="Loggers\DiagnosticsLogger.cs" />
     <Compile Include="Loggers\NullLogger.cs" />

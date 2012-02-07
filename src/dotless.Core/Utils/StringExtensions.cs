@@ -14,21 +14,21 @@
             return string.Join(separator, source.ToArray());
         }
 
-        public static string AggregatePaths(this IEnumerable<string> source)
+        public static string AggregatePaths(this IEnumerable<string> source, string currentDirectory)
         {
             if (!source.Any())
                 return "";
   
             var path = source.Aggregate("", Path.Combine);
 
-            return CanonicalizePath(path);
+            return CanonicalizePath(path, currentDirectory);
         }
 
         /// <summary>
         /// Splits the given path into segments and resolves any parent path references
         /// it can (eg. "foo/../bar" becomes "bar" whereas "../foo" is left as-is).
         /// </summary>
-        private static string CanonicalizePath(string path)
+        private static string CanonicalizePath(string path, string currentDirectory)
         {
             var pathStack = new Stack<string>();
 
@@ -62,7 +62,7 @@
                 // get the total number of parent segments (../) in the path list
                 var numberOfParents = pathList.TakeWhile(segment => segment.Equals("..")).Count();
                 // get the relevant part of the current directory that the ../ goes down too
-                var currentPathList = System.Environment.CurrentDirectory
+                var currentPathList = currentDirectory
                     .Split('\\', '/')
                     .Reverse()
                     .Take(numberOfParents)
