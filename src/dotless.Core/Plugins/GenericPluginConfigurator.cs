@@ -33,25 +33,40 @@
             }
         }
 
-        public IPlugin CreatePlugin(IEnumerable<IPluginParameter> pluginParameters)
+        private Func<IPlugin> _pluginCreator = null;
+        public void SetParameterValues(IEnumerable<IPluginParameter> pluginParameters)
         {
             ConstructorInfo defaultConstructor;
             ConstructorInfo parameterConstructor;
             GetConstructorInfos(out parameterConstructor, out defaultConstructor);
 
-            if (pluginParameters.Count() == 0 || pluginParameters.Any(parameter => parameter.Value == null))
+            if (pluginParameters == null || pluginParameters.Count() == 0 || pluginParameters.Any(parameter => parameter.Value == null))
             {
                 if (defaultConstructor == null)
                 {
-                    throw new Exception();
+                    throw new Exception("No parameters provided but no default constructor");
                 }
-                return (T)defaultConstructor.Invoke(new object[] { });
+                _pluginCreator = () => (T)defaultConstructor.Invoke(new object[] { });
+            }
+            else
+            {
+                var constructorArguments = parameterConstructor.GetParameters()
+                    .OrderBy(parameter => parameter.Position)
+                    .Select(parameter => pluginParameters.First(pluginParameter => pluginParameter.Name == parameter.Name).Value)
+                    .ToArray();
+
+                _pluginCreator = () => (T)parameterConstructor.Invoke(constructorArguments);
+            }
+        }
+
+        public IPlugin CreatePlugin()
+        {
+            if (_pluginCreator == null)
+            {
+                SetParameterValues(null);
             }
 
-            return (T)parameterConstructor.Invoke(parameterConstructor.GetParameters()
-                .OrderBy(parameter => parameter.Position)
-                .Select(parameter => pluginParameters.First(pluginParameter => pluginParameter.Name == parameter.Name).Value)
-                .ToArray());
+            return _pluginCreator();
         }
 
         private class ConstructorParameterSet
@@ -67,7 +82,7 @@
 
             if (constructors.Count > 2  || constructors.Count == 0) 
             {
-                throw new Exception();
+                throw new Exception("Generic plugin configurator doesn't support less than 1 or more than 2 constructors. Add your own IPluginConfigurator to the assembly.");
             } else if (constructors.Count == 2) 
             {
                 if (constructors[0].GetParameters().Length == 0) 
@@ -80,7 +95,7 @@
                     parameterConstructor = constructors[0];
                 } else 
                 {
-                    throw new Exception();
+                    throw new Exception("Generic plugin configurator only supports 1 parameterless constructor and 1 with parameters. Add your own IPluginConfigurator to the assembly.");
                 }
             } else {
                 if (constructors[0].GetParameters().Length == 0)
@@ -107,7 +122,7 @@
             }
 
             return parameterConstructor.GetParameters().Select(parameter => (IPluginParameter)new PluginParameter(
-                parameter.Name, parameter.ParameterType, defaultConstructor == null)); 
+                parameter.Name, parameter.ParameterType, defaultConstructor == null)).ToList(); 
         }
     }
 }

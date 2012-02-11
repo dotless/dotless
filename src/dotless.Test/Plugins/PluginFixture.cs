@@ -29,8 +29,19 @@
         {
         }
 
+        public string One { get; set; }
+        public int Two { get; set; }
+        public decimal Three { get; set; }
+        public bool Four { get; set; }
+        public double Five { get; set; }
+
         public TestPlugin2(string one, int two, decimal three, bool four, double five)
         {
+            One = one;
+            Two = two;
+            Three = three;
+            Four = four;
+            Five = five;
         }
 
         public Dictionary<string, Type> GetFunctions()
@@ -69,7 +80,8 @@
         {
             IPluginConfigurator plugin1 = new GenericPluginConfigurator<TestPlugin1>();
             Assert.AreEqual(0, plugin1.GetParameters().Count());
-            Assert.IsInstanceOf<TestPlugin1>(plugin1.CreatePlugin(plugin1.GetParameters()));
+            plugin1.SetParameterValues(plugin1.GetParameters());
+            Assert.IsInstanceOf<TestPlugin1>(plugin1.CreatePlugin());
         }
 
         [Test]
@@ -84,7 +96,8 @@
             TestParam(parameters.ElementAt(2), "three", "Decimal", false);
             TestParam(parameters.ElementAt(3), "four", "Boolean", false);
             TestParam(parameters.ElementAt(4), "five", "Double", false);
-            Assert.IsInstanceOf<TestPlugin2>(plugin2.CreatePlugin(new List<IPluginParameter>()));
+            plugin2.SetParameterValues(null);
+            Assert.IsInstanceOf<TestPlugin2>(plugin2.CreatePlugin());
         }
 
         private void TestParam(IPluginParameter param, string name, string typeDescription, bool isMandatory)
@@ -105,7 +118,15 @@
             parameters.ElementAt(2).SetValue("3.45");
             parameters.ElementAt(3).SetValue("true");
             parameters.ElementAt(4).SetValue("4.567");
-            Assert.IsInstanceOf<TestPlugin2>(plugin2.CreatePlugin(parameters));
+            plugin2.SetParameterValues(parameters);
+            Assert.IsInstanceOf<TestPlugin2>(plugin2.CreatePlugin());
+
+            TestPlugin2 plugin = plugin2.CreatePlugin() as TestPlugin2;
+            Assert.AreEqual("string", plugin.One);
+            Assert.AreEqual(2, plugin.Two);
+            Assert.AreEqual(3.45m, plugin.Three);
+            Assert.AreEqual(true, plugin.Four);
+            Assert.AreEqual(4.567d, plugin.Five);
         }
     }
 }

@@ -11,6 +11,8 @@ namespace dotless.Core
     using Parameters;
     using Response;
     using Stylizers;
+    using dotless.Core.Plugins;
+    using System.Collections.Generic;
 
     public class ContainerFactory
     {
@@ -82,6 +84,9 @@ namespace dotless.Core
 
             pandora.Service<ILessEngine>().Implementor<LessEngine>().Parameters("compress").Set("minify-output").Lifestyle.Transient();
             pandora.Service<bool>("minify-output").Instance(configuration.MinifyOutput);
+
+            pandora.Service<ILessEngine>().Implementor<LessEngine>().Parameters("plugins").Set("default-plugins").Lifestyle.Transient();
+            pandora.Service<IEnumerable<IPluginConfigurator>>("default-plugins").Instance(configuration.Plugins);
 
             pandora.Service<IFileReader>().Implementor(configuration.LessSource);
         }

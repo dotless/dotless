@@ -7,6 +7,8 @@ namespace dotless.Core.Parser
     using Infrastructure;
     using Stylizers;
     using Tree;
+    using dotless.Core.Plugins;
+    using System.Collections.Generic;
 
     //
     // less.js - parser

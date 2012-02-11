@@ -6,7 +6,7 @@
     using Utils;
     using System.ComponentModel;
 
-    [Description("Automatically spins all colors in a less file"), DisplayName("Color Spin Plugin")]
+    [Description("Automatically spins all colors in a less file"), DisplayName("ColorSpin")]
     public class ColorSpinPlugin : VisitorPlugin
     {
         public double Spin { get; set; }

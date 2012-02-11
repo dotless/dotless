@@ -23,6 +23,7 @@ using System.Collections.Generic;
             Logger = null;
             LogLevel = LogLevel.Error;
             Optimization = 1;
+            Plugins = new List<IPluginConfigurator>();
         }
 
         public DotlessConfiguration(DotlessConfiguration config)
@@ -34,6 +35,8 @@ using System.Collections.Generic;
             Logger = null;
             LogLevel = config.LogLevel;
             Optimization = config.Optimization;
+            Plugins = new List<IPluginConfigurator>();
+            Plugins.AddRange(config.Plugins);
         }
 
         public bool MinifyOutput { get; set; }
@@ -43,6 +46,6 @@ using System.Collections.Generic;
         public Type Logger { get; set; }
         public LogLevel LogLevel { get; set; }
         public int Optimization { get; set; }
-        public List<IPlugin> Plugins { get; set; }
+        public List<IPluginConfigurator> Plugins { get; private set; }
     }
 }

@@ -7,10 +7,18 @@
     using dotless.Core.Parser.Infrastructure.Nodes;
     using dotless.Core.Parser.Tree;
     using System.Globalization;
-using System.Text.RegularExpressions;
+    using System.Text.RegularExpressions;
+    using System.ComponentModel;
 
+    [DisplayName("Rtl"), Description("Reverses some css when in rtl mode")]
     public class RtlPlugin : VisitorPlugin
     {
+        public RtlPlugin(bool onlyReversePrefixedRules, bool forceRtlTransform) : this()
+        {
+            OnlyReversePrefixedRules = onlyReversePrefixedRules;
+            ForceRtlTransform = forceRtlTransform;
+        }
+
         public RtlPlugin()
         {
             PropertiesToReverse = new List<string>()
@@ -32,6 +40,12 @@ using System.Text.RegularExpressions;
             set;
         }
 
+        public bool ForceRtlTransform
+        {
+            get;
+            set;
+        }
+
         public IEnumerable<string> PropertiesToReverse
         {
             get;
@@ -47,7 +61,7 @@ using System.Text.RegularExpressions;
         {
             base.OnPreVisiting(env);
 
-            bool isRtl = CultureInfo.CurrentCulture.TextInfo.IsRightToLeft;
+            bool isRtl = ForceRtlTransform || CultureInfo.CurrentCulture.TextInfo.IsRightToLeft;
 
             PrefixesToProcess = new List<Prefix>();
 

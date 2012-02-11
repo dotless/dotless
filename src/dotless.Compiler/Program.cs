@@ -4,6 +4,7 @@ namespace dotless.Compiler
     using System.Collections.Generic;
     using System.IO;
     using System.Reflection;
+    using System.Linq;
     using Core;
     using Core.configuration;
     using Core.Parameters;
@@ -170,28 +171,36 @@ namespace dotless.Compiler
             return "v.Unknown";
         }
 
+        private static IEnumerable<IPluginConfigurator> _pluginConfigurators = null;
         private static IEnumerable<IPluginConfigurator> GetPluginConfigurators()
         {
-            return PluginFinder.GetConfigurators(true, false);
+            if (_pluginConfigurators == null)
+            {
+                _pluginConfigurators = PluginFinder.GetConfigurators(true, false);
+            }
+            return _pluginConfigurators;
         }
 
         private static void WritePluginList()
         {
-            Console.WriteLine("List of plugins:");
+            Console.WriteLine("List of plugins");
+            Console.WriteLine();
             foreach (IPluginConfigurator pluginConfigurator in GetPluginConfigurators())
             {
-                Console.WriteLine("Name: {0}", pluginConfigurator.Name);
-                Console.WriteLine("Description: {0}", pluginConfigurator.Description);
-                Console.Write("Params: ");
+                Console.WriteLine("{0}", pluginConfigurator.Name);
+                Console.WriteLine("\t{0}", pluginConfigurator.Description);
+                Console.WriteLine("\tParams: ");
                 foreach (IPluginParameter pluginParam in pluginConfigurator.GetParameters())
                 {
+                    Console.Write("\t\t");
+
                     if (!pluginParam.IsMandatory)
                         Console.Write("[");
 
-                    Console.Write("{0}:{1}", pluginParam.Name, pluginParam.TypeDescription);
+                    Console.Write("{0}={1}", pluginParam.Name, pluginParam.TypeDescription);
 
                     if (!pluginParam.IsMandatory)
-                        Console.Write("]");
+                        Console.WriteLine("]");
                 }
                 Console.WriteLine();
             }
@@ -207,11 +216,16 @@ namespace dotless.Compiler
             Console.WriteLine("\t\t-m --minify - Output CSS will be compressed");
             Console.WriteLine("\t\t-w --watch - Watches .less file for changes");
             Console.WriteLine("\t\t-h --help - Displays this dialog");
+            Console.WriteLine("\t\t-DKey=Value - prefixes variable to the less");
             Console.WriteLine("\t\t-l --listplugins - Lists the plugins available and options");
-            Console.WriteLine("\t\t-p --plugin \"plugin name\" \"option:value[,option:value...]\"- adds the named plugin to dotless with the supplied options");
+            Console.WriteLine("\t\t-p: --plugin:pluginName[:option=value[,option=value...]] - adds the named plugin to dotless with the supplied options");
             Console.WriteLine("\tinputfile: .less file dotless should compile to CSS");
             Console.WriteLine("\toutputfile: (optional) desired filename for .css output");
             Console.WriteLine("\t\t Defaults to inputfile.css");
+            Console.WriteLine("");
+            Console.WriteLine("Example:");
+            Console.WriteLine("\tdotless.Compiler.exe -m -w \"-p:Rtl:forceRtlTransform=true,onlyReversePrefixedRules=true\"");
+            Console.WriteLine("\t\tMinify, Watch and add the Rtl plugin");
         }
 
         private static CompilerConfiguration GetConfigurationFromArguments(List<string> arguments)
@@ -248,6 +262,61 @@ namespace dotless.Compiler
                         var key = split[0];
                         var value = split[1];
                         ConsoleArgumentParameterSource.ConsoleArguments.Add(key, value);
+                    }
+                    else if (arg.StartsWith("-p:") || arg.StartsWith("-plugin:"))
+                    {
+                        var pluginName = arg.Substring(arg.IndexOf(':') + 1);
+                        List<string> pluginArgs = null;
+                        if (pluginName.IndexOf(':') > 0)
+                        {
+                            pluginArgs = pluginName.Substring(pluginName.IndexOf(':') + 1).Split(',').ToList();
+                            pluginName = pluginName.Substring(0, pluginName.IndexOf(':'));
+                        }
+
+                        var pluginConfig = GetPluginConfigurators()
+                            .Where(plugin => String.Compare(plugin.Name, pluginName, true) == 0)
+                            .FirstOrDefault();
+
+                        if (pluginConfig == null)
+                        {
+                            Console.WriteLine("Cannot find plugin {0}.", pluginName);
+                            continue;
+                        }
+
+                        var pluginParams = pluginConfig.GetParameters();
+
+                        foreach (var pluginParam in pluginParams)
+                        {
+                            var pluginArg = pluginArgs
+                                .Where(argString => argString.StartsWith(pluginParam.Name + "="))
+                                .FirstOrDefault();
+
+                            if (pluginArg == null)
+                            {
+                                if (pluginParam.IsMandatory)
+                                {
+                                    Console.WriteLine("Missing mandatory argument {0} in plugin {1}.", pluginParam.Name, pluginName);
+                                }
+                                continue;
+                            }
+                            else
+                            {
+                                pluginArgs.Remove(pluginArg);
+                            }
+
+                            pluginParam.SetValue(pluginArg.Substring(pluginParam.Name.Length + 1));
+                        }
+
+                        if (pluginArgs.Count > 0)
+                        {
+                            for (int i = 0; i < pluginArgs.Count; i++)
+                            {
+                                Console.WriteLine("Did not recognise argument '{0}'", pluginArgs[i]);
+                            }
+                        }
+
+                        pluginConfig.SetParameterValues(pluginParams);
+                        configuration.Plugins.Add(pluginConfig);
                     }
                     else
                     {

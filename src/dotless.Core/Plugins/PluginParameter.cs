@@ -42,7 +42,23 @@
 
         public void SetValue(string stringValue)
         {
-            Value = Convert.ChangeType(stringValue, Type);
+            if (Type.Equals(typeof(Boolean)))
+            {
+                if (stringValue.Equals("true", StringComparison.InvariantCultureIgnoreCase) ||
+                    stringValue.Equals("t", StringComparison.InvariantCultureIgnoreCase) ||
+                    stringValue.Equals("1", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    Value = true;
+                }
+                else
+                {
+                    Value = false;
+                }
+            }
+            else
+            {
+                Value = Convert.ChangeType(stringValue, Type);
+            }
         }
     }
 }

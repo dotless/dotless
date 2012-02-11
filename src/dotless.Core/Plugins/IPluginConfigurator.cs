@@ -5,9 +5,11 @@
 
     public interface IPluginConfigurator
     {
-        IPlugin CreatePlugin(IEnumerable<IPluginParameter> parameters);
+        IPlugin CreatePlugin();
 
         IEnumerable<IPluginParameter> GetParameters();
+
+        void SetParameterValues(IEnumerable<IPluginParameter> parameters);
 
         string Name { get; }
 
