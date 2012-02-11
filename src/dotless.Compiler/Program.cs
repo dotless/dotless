@@ -7,6 +7,7 @@ namespace dotless.Compiler
     using Core;
     using Core.configuration;
     using Core.Parameters;
+    using dotless.Core.Plugins;
 
     public class Program
     {
@@ -169,6 +170,33 @@ namespace dotless.Compiler
             return "v.Unknown";
         }
 
+        private static IEnumerable<IPluginConfigurator> GetPluginConfigurators()
+        {
+            return PluginFinder.GetConfigurators(true, false);
+        }
+
+        private static void WritePluginList()
+        {
+            Console.WriteLine("List of plugins:");
+            foreach (IPluginConfigurator pluginConfigurator in GetPluginConfigurators())
+            {
+                Console.WriteLine("Name: {0}", pluginConfigurator.Name);
+                Console.WriteLine("Description: {0}", pluginConfigurator.Description);
+                Console.Write("Params: ");
+                foreach (IPluginParameter pluginParam in pluginConfigurator.GetParameters())
+                {
+                    if (!pluginParam.IsMandatory)
+                        Console.Write("[");
+
+                    Console.Write("{0}:{1}", pluginParam.Name, pluginParam.TypeDescription);
+
+                    if (!pluginParam.IsMandatory)
+                        Console.Write("]");
+                }
+                Console.WriteLine();
+            }
+        }
+
         private static void WriteHelp()
         {
             Console.WriteLine("dotless Compiler {0}", GetAssemblyVersion());
@@ -179,6 +207,8 @@ namespace dotless.Compiler
             Console.WriteLine("\t\t-m --minify - Output CSS will be compressed");
             Console.WriteLine("\t\t-w --watch - Watches .less file for changes");
             Console.WriteLine("\t\t-h --help - Displays this dialog");
+            Console.WriteLine("\t\t-l --listplugins - Lists the plugins available and options");
+            Console.WriteLine("\t\t-p --plugin \"plugin name\" \"option:value[,option:value...]\"- adds the named plugin to dotless with the supplied options");
             Console.WriteLine("\tinputfile: .less file dotless should compile to CSS");
             Console.WriteLine("\toutputfile: (optional) desired filename for .css output");
             Console.WriteLine("\t\t Defaults to inputfile.css");
@@ -199,6 +229,12 @@ namespace dotless.Compiler
                     else if (arg == "-h" || arg == "--help")
                     {
                         WriteHelp();
+                        configuration.Help = true;
+                        return configuration;
+                    }
+                    else if (arg == "-l" || arg == "--listplugins")
+                    {
+                        WritePluginList();
                         configuration.Help = true;
                         return configuration;
                     }

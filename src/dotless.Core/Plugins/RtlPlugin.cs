@@ -38,11 +38,6 @@ using System.Text.RegularExpressions;
             set;
         }
 
-        public override string Name
-        {
-            get { return "Rtl Plugin"; }
-        }
-
         public override VisitorPluginType AppliesTo
         {
             get { return VisitorPluginType.AfterEvaluation; }

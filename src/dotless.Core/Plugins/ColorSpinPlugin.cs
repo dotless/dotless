@@ -4,10 +4,11 @@
     using Parser.Infrastructure.Nodes;
     using Parser.Tree;
     using Utils;
+    using System.ComponentModel;
 
+    [Description("Automatically spins all colors in a less file"), DisplayName("Color Spin Plugin")]
     public class ColorSpinPlugin : VisitorPlugin
     {
-        public override string Name { get { return "Color Spin Plugin"; } }
         public double Spin { get; set; }
 
         public ColorSpinPlugin(double spin)

@@ -14,7 +14,6 @@
             return tree;
         }
 
-        public abstract string Name { get; }
         public abstract VisitorPluginType AppliesTo { get; }
 
         public Node Visit(Node node)

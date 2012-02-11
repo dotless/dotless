@@ -55,7 +55,7 @@ namespace dotless.Core.Parser.Tree
                     }
                     catch (Exception ex)
                     {
-                        string message = string.Format("Plugin '{0}' failed during visiting with error '{1}'", plugin.Name, ex.Message);
+                        string message = string.Format("Plugin '{0}' failed during visiting with error '{1}'", plugin.GetName(), ex.Message);
                         throw new ParserException(message, ex);
                     }
                 });

@@ -3,6 +3,8 @@ namespace dotless.Core.configuration
     using System;
     using Input;
     using Loggers;
+using dotless.Core.Plugins;
+using System.Collections.Generic;
 
     public class DotlessConfiguration
     {
@@ -41,5 +43,6 @@ namespace dotless.Core.configuration
         public Type Logger { get; set; }
         public LogLevel LogLevel { get; set; }
         public int Optimization { get; set; }
+        public List<IPlugin> Plugins { get; set; }
     }
 }

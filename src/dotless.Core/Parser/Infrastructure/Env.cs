@@ -63,7 +63,7 @@
                     if (_functionTypes.ContainsKey(functionName))
                     {
                         string message = string.Format("Function '{0}' already exists in environment but is added by plugin {1}",
-                            functionName, plugin.Name);
+                            functionName, plugin.GetName());
                         throw new InvalidOperationException(message);
                     }
 

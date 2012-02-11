@@ -99,10 +99,15 @@
     <Compile Include="Parser\Tree\Script.cs" />
     <Compile Include="Parser\Tree\Root.cs" />
     <Compile Include="Plugins\ColorSpinPlugin.cs" />
+    <Compile Include="Plugins\GenericPluginConfigurator.cs" />
     <Compile Include="Plugins\IFunctionPlugin.cs" />
     <Compile Include="Plugins\IPlugin.cs" />
+    <Compile Include="Plugins\IPluginConfigurator.cs" />
+    <Compile Include="Plugins\IPluginParameter.cs" />
     <Compile Include="Plugins\IVisitor.cs" />
     <Compile Include="Plugins\IVisitorPlugin.cs" />
+    <Compile Include="Plugins\PluginFinder.cs" />
+    <Compile Include="Plugins\PluginParameter.cs" />
     <Compile Include="Plugins\RtlPlugin.cs" />
     <Compile Include="Plugins\VisitorPlugin.cs" />
     <Compile Include="Response\CachedCssResponse.cs">
