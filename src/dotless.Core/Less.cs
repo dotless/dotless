@@ -6,7 +6,7 @@
     {
         public static string Parse(string less)
         {
-            return Parse(less, DotlessConfiguration.Default);
+            return Parse(less, DotlessConfiguration.GetDefault());
         }
 
         public static string Parse(string less, DotlessConfiguration config)

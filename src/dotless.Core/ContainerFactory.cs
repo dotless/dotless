@@ -13,6 +13,7 @@ namespace dotless.Core
     using Stylizers;
     using dotless.Core.Plugins;
     using System.Collections.Generic;
+    using dotless.Core.Importers;
 
     public class ContainerFactory
     {
@@ -73,6 +74,8 @@ namespace dotless.Core
         {
             pandora.Service<LogLevel>("error-level").Instance(configuration.LogLevel);
             pandora.Service<IStylizer>().Implementor<PlainStylizer>();
+
+            pandora.Service<IImporter>().Implementor<Importer>();
 
             pandora.Service<Parser.Parser>().Implementor<Parser.Parser>().Parameters("optimization").Set("default-optimization").Lifestyle.Transient();
             pandora.Service<int>("default-optimization").Instance(configuration.Optimization);

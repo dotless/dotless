@@ -9,7 +9,7 @@ namespace dotless.Core.configuration
             var webconfig = (DotlessConfiguration)ConfigurationManager.GetSection("dotless");
             
             if (webconfig == null)
-                return DotlessConfiguration.DefaultWeb;
+                return DotlessConfiguration.GetDefaultWeb();
 
             webconfig.Web = true;
 

@@ -3,16 +3,23 @@ namespace dotless.Core.configuration
     using System;
     using Input;
     using Loggers;
-using dotless.Core.Plugins;
-using System.Collections.Generic;
+    using dotless.Core.Plugins;
+    using System.Collections.Generic;
 
     public class DotlessConfiguration
     {
-        public static readonly DotlessConfiguration Default = new DotlessConfiguration();
-        public static readonly DotlessConfiguration DefaultWeb = new DotlessConfiguration
+        public static DotlessConfiguration GetDefault()
+        {
+            return new DotlessConfiguration();
+        }
+
+        public static DotlessConfiguration GetDefaultWeb()
+        {
+            return new DotlessConfiguration
             {
                 Web = true
             };
+        }
 
         public DotlessConfiguration()
         {

@@ -40,7 +40,7 @@
             ConstructorInfo parameterConstructor;
             GetConstructorInfos(out parameterConstructor, out defaultConstructor);
 
-            if (pluginParameters == null || pluginParameters.Count() == 0 || pluginParameters.Any(parameter => parameter.Value == null))
+            if (pluginParameters == null || pluginParameters.Count() == 0 || pluginParameters.All(parameter => parameter.Value == null))
             {
                 if (defaultConstructor == null)
                 {
@@ -52,7 +52,19 @@
             {
                 var constructorArguments = parameterConstructor.GetParameters()
                     .OrderBy(parameter => parameter.Position)
-                    .Select(parameter => pluginParameters.First(pluginParameter => pluginParameter.Name == parameter.Name).Value)
+                    .Select(parameter => 
+                    {
+                        var p = pluginParameters.FirstOrDefault(pluginParameter => pluginParameter.Name == parameter.Name);
+                        if (p == null)
+                        {
+                            if (parameter.ParameterType.IsValueType) 
+                            {
+                                return Activator.CreateInstance(parameter.ParameterType);
+                            }
+                            return null;
+                        }
+                        return p.Value;
+                    })
                     .ToArray();
 
                 _pluginCreator = () => (T)parameterConstructor.Invoke(constructorArguments);

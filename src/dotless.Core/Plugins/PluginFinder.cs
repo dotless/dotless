@@ -61,17 +61,10 @@
         ///  a plugins folder underneath the executing assembly
         /// </summary>
         /// <param name="scanPluginsFolder">Look for a plugins folder and if exists, load plugins from it</param>
-        /// <param name="scanLoadedDlls">Whether to look at referenced dll's and scan them for plugins</param>
         /// <returns></returns>
-        public static IEnumerable<IPluginConfigurator> GetConfigurators(bool scanPluginsFolder, bool scanLoadedDlls)
+        public static IEnumerable<IPluginConfigurator> GetConfigurators(bool scanPluginsFolder)
         {
             List<IEnumerable<IPluginConfigurator>> pluginConfigurators = new List<IEnumerable<IPluginConfigurator>>();
-
-            if (scanLoadedDlls) 
-            {
-                pluginConfigurators.AddRange(Assembly.GetEntryAssembly().GetReferencedAssemblies()
-                    .Select(assembly => GetConfigurators(Assembly.Load(assembly))));
-            }
 
             pluginConfigurators.Add(GetConfigurators(Assembly.GetAssembly(typeof(PluginFinder))));
 
@@ -108,12 +101,12 @@
 
             IEnumerable<Type> pluginsConfigurated = pluginConfigurators.Select(pluginConfigurator => pluginConfigurator.Configurates);
 
-            Type genericPluginConfiguratorType = typeof(GenericPluginConfigurator<IPlugin>).GetGenericTypeDefinition();
+            Type genericPluginConfiguratorType = typeof(GenericPluginConfigurator<>);
 
             IEnumerable<IPluginConfigurator> plugins = types
                 .Where(type => typeof(IPlugin).IsAssignableFrom(type))
                 .Where(type => !pluginsConfigurated.Contains(type))
-                .Select(type => (IPluginConfigurator)genericPluginConfiguratorType.MakeGenericType(type).GetConstructor(new Type[]{}).Invoke(new object[]{}));
+                .Select(type => (IPluginConfigurator)Activator.CreateInstance(genericPluginConfiguratorType.MakeGenericType(type)));
 
             return plugins.Union(pluginConfigurators);
         }

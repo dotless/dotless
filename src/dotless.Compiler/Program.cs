@@ -176,7 +176,7 @@ namespace dotless.Compiler
         {
             if (_pluginConfigurators == null)
             {
-                _pluginConfigurators = PluginFinder.GetConfigurators(true, false);
+                _pluginConfigurators = PluginFinder.GetConfigurators(true);
             }
             return _pluginConfigurators;
         }
@@ -230,7 +230,7 @@ namespace dotless.Compiler
 
         private static CompilerConfiguration GetConfigurationFromArguments(List<string> arguments)
         {
-            var configuration = new CompilerConfiguration(DotlessConfiguration.Default);
+            var configuration = new CompilerConfiguration(DotlessConfiguration.GetDefault());
 
             foreach (var arg in arguments)
             {

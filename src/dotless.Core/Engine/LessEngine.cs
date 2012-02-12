@@ -8,6 +8,7 @@ namespace dotless.Core
     using Loggers;
     using Parser.Infrastructure;
     using Parser.Tree;
+    using System.IO;
 
     public class LessEngine : ILessEngine
     {
