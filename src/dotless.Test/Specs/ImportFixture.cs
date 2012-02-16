@@ -66,6 +66,10 @@ namespace dotless.Test.Specs
             imports["/import/absolute.less"] = @"body { background-color: black; }";
             imports["../import/relative-with-parent-dir.less"] = @"body { background-color: foo; }";
 
+            imports["foo.less"] = @"@import ""foo/bar.less"";";
+            imports["foo/bar.less"] = @"@import ""../lib/color.less"";";
+            imports["lib/color.less"] = "body { background-color: foo; }";
+
             return new Parser {Importer = new Importer(new DictionaryReader(imports))};
         }
 
@@ -257,6 +261,20 @@ namespace dotless.Test.Specs
             Assert.That(() => Evaluate(input, parser),
                 Throws.InstanceOf<System.IO.FileNotFoundException>()
                     .With.Property("FileName").EqualTo("http://www.someone.com/external1.less"));
+        }
+
+        [Test]
+        public void ImportCanNavigateIntoAndOutOfSubDirectory()
+        {
+            // Testing https://github.com/cloudhead/less.js/pull/514
+
+            var input = @"@import ""foo.less"";";
+            var expected = @"body {
+  background-color: foo;
+}";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
         }
     }
 }
