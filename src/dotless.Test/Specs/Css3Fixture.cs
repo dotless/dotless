@@ -346,7 +346,7 @@ namespace dotless.Test.Specs
   0% {
     font-size: 10px;
   }
-  30% {
+  30.5% {
     font-size: 15px;
   }
   100% {
@@ -595,5 +595,12 @@ a ~ p {
             }
         }
 
+        [Test, Ignore("Bug #123")]
+        public void GridRepeatingPatternSupported()
+        {
+            //see http://www.w3.org/TR/css3-grid/#example0
+
+            AssertExpressionUnchanged("* * (0.5in * *)[2]");
+        }
     }
 }

@@ -1426,5 +1426,39 @@ important-rule {
             AssertLess(input, expected);
         }
 
+        [Test]
+        public void MixinMatchingAllowsMultiples()
+        {
+            var input = @"
+.bo, .bar {
+  width: 100%;
+}
+.bo {
+  border: 1px;
+}
+.extended {
+  .bo;
+}
+.foo .bar {
+  .bar;
+}
+";
+            var expected = @"
+.bo, .bar {
+  width: 100%;
+}
+.bo {
+  border: 1px;
+}
+.extended {
+  width: 100%;
+  border: 1px;
+}
+.foo .bar {
+  width: 100%;
+}
+";
+            AssertLess(input, expected);
+        }
     }
 }

@@ -86,5 +86,30 @@ namespace dotless.Test.Specs.Functions
             AssertExpressionError("Expected color in function 'darken', found \"foo\"", 7, "darken(\"foo\", 10%)");
             AssertExpressionError("Expected number in function 'darken', found \"foo\"", 13, "darken(#fff, \"foo\")");
         }
+
+        [Test]
+        public void TestDarknessInsideGradient()
+        {
+            AssertExpression("-webkit-linear-gradient(top, white 0%, #ededed 100%)", "-webkit-linear-gradient(top, #fff 0%, darken(#fff, 7%) 100%)");
+        }
+
+        [Test]
+        public void TestDarknessInsideGradientMixin()
+        {
+            var input = @"
+.gradientVertical(@from, @to) {
+  background: -webkit-linear-gradient(top, @from 0%,darken(@to, 7%) 100%);
+}
+.test {
+  .gradientVertical(#fff, #fff);
+}
+";
+            var expected = @"
+.test {
+  background: -webkit-linear-gradient(top, white 0%, #ededed 100%);
+}
+";
+            AssertLess(input, expected);
+        }
     }
 }

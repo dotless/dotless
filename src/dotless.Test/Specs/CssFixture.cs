@@ -335,6 +335,16 @@ form[data-disabled] {
         }
 
         [Test]
+        public void CheckUrlWithDataContainingQuoted()
+        {
+
+            var input = @".help-icon {
+  background: url('data:image/svg+xml, <svg version=""1.1""><g></g></svg>');
+}";
+            AssertLessUnchanged(input);
+        }
+
+        [Test]
         public void CheckUrlWithDataNotQuoted()
         {
 

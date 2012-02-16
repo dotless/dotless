@@ -1049,7 +1049,7 @@ namespace dotless.Core.Parser
                 return null;
 
             NodeList keyFrames = new NodeList();
-            const string identifierRegEx = "from|to|([0-9]+%)";
+            const string identifierRegEx = "from|to|([0-9\\.]+%)";
 
             while (true)
             {
