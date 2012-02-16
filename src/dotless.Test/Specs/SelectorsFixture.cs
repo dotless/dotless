@@ -222,5 +222,24 @@ td input {
 
             AssertLess(input, expected);
         }
+
+        [Test, Ignore("See Bug #126")]
+        public void DynamicSelectors()
+        {
+
+            var input = @"
+@a: 2;
+a:nth-child(@a) {
+  border: 1px;
+}";
+
+            var expected = @"
+a:nth-child(2) {
+  border: 1px;
+}";
+
+            AssertLess(input, expected);
+        }
+
     }
 }
