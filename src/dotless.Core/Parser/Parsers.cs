@@ -552,6 +552,8 @@ namespace dotless.Core.Parser
 
             var index = parser.Tokenizer.Location.Index;
 
+            var memo = Remember(parser);
+
             var match = parser.Tokenizer.Match(@"([#.](?:[\w-]|\\(?:[a-fA-F0-9]{1,6} ?|[^a-fA-F0-9]))+)\s*\(");
             if (!match)
                 return null;
@@ -609,6 +611,8 @@ namespace dotless.Core.Parser
 
             if (rules != null)
                 return NodeProvider.MixinDefinition(name, parameters, rules, index);
+
+            Recall(parser, memo);
 
             return null;
         }

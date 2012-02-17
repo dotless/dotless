@@ -434,5 +434,25 @@ body {
 }";
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void MixinArgsExceptCurlyBracketString()
+        {
+            var input =
+                @"
+.mixin-arguments (@width: 0px) {
+    border: @arguments;
+}
+.arguments2 {
+    .mixin-arguments(""{"");
+}";
+
+            var expected = @"
+.arguments2 {
+  border: ""{"";
+}";
+            AssertLess(input, expected);
+        }
+
     }
 }

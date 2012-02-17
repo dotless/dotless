@@ -84,6 +84,20 @@ namespace dotless.Test.Specs
         }
 
         [Test]
+        public void MediaDirective2()
+        {
+            var input = @"
+@media handheld and (min-width: 20em), screen and (min-width: 20em) {
+  body {
+    max-width: 480px;
+  }
+}
+";
+
+            AssertLessUnchanged(input);
+        }
+
+        [Test]
         public void MediaDirectiveEmpty()
         {
             var input = @"
