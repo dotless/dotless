@@ -1,4 +1,6 @@
-﻿namespace dotless.Core.Parser.Infrastructure.Nodes
+﻿using dotless.Core.Plugins;
+
+namespace dotless.Core.Parser.Infrastructure.Nodes
 {
     using System;
 
@@ -46,12 +48,12 @@
         /// <summary>
         ///  Copies common properties when evaluating multiple nodes into one
         /// </summary>
-        /// <typeparam name="TN1">Type to return - for convenience</typeparam>
+        /// <typeparam name="T">Type to return - for convenience</typeparam>
         /// <param name="nodes">The nodes this new node is derived from</param>
         /// <returns>The new node</returns>
-		public TN1 ReducedFrom<TN1>(params Node[] nodes) where TN1 : Node
-		{
-            foreach (Node node in nodes)
+        public T ReducedFrom<T>(params Node[] nodes) where T : Node
+        {
+            foreach (var node in nodes)
             {
                 if (node == this)
                 {
@@ -84,9 +86,9 @@
                     }
                 }
             }
-			
-			return (TN1)this;
-		}
+            
+            return (T)this;
+        }
 
         public virtual void AppendCSS(Env env)
         {
@@ -98,9 +100,11 @@
 
         public virtual string ToCSS(Env env)
         {
-            env.Output.Push()
-				.Append(this);
-            return env.Output.Pop().ToString();
+            return env.Output
+                .Push()
+                .Append(this)
+                .Pop()
+                .ToString();
         }
 
         public virtual Node Evaluate(Env env)
@@ -113,6 +117,33 @@
             return
                 this is RegexMatchResult ||
                 this is CharMatchResult;
+        }
+
+        public virtual void Accept(IVisitor visitor) {}
+
+        /// <summary>
+        /// Visits the node and throw an exception if the replacement mode isn't the right type, or the replacement is null
+        /// </summary>
+        public T VisitAndReplace<T>(T nodeToVisit, IVisitor visitor) where T : Node
+        {
+            return VisitAndReplace(nodeToVisit, visitor, false);
+        }
+
+        /// <summary>
+        /// Visits the node and throw an exception if the replacement mode isn't the right type
+        /// The allowNull parameter determines if a null is allowed to be returned
+        /// </summary>
+        public T VisitAndReplace<T>(T nodeToVisit, IVisitor visitor, bool allowNull) where T : Node
+        {
+            Node replacement = visitor.Visit(nodeToVisit);
+
+            T typedReplacement = replacement as T;
+            if (typedReplacement != null || (allowNull && replacement == null))
+            {
+                return typedReplacement;
+            }
+
+            throw new Exception();
         }
     }
 }

@@ -41,7 +41,7 @@ namespace dotless.Core.Parser.Tree
         }
 
         public readonly double[] RGB;
-        public readonly double Alpha;
+        public double Alpha { get; set; }
 
         public Color(double[] rgb) : this(rgb, 1)
         {

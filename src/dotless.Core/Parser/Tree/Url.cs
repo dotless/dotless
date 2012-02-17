@@ -7,6 +7,7 @@
     using Infrastructure.Nodes;
     using Utils;
     using Exceptions;
+    using Plugins;
     using dotless.Core.Importers;
 
     public class Url : Node
@@ -51,6 +52,11 @@
                 .Append("url(")
                 .Append(Value)
                 .Append(")");
+        }
+
+        public override void Accept(IVisitor visitor)
+        {
+            Value = VisitAndReplace(Value, visitor);
         }
     }
 }

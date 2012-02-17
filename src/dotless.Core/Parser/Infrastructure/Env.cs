@@ -7,31 +7,33 @@
     using System.Text.RegularExpressions;
     using Functions;
     using Nodes;
+    using Plugins;
     using Tree;
 
     public class Env
     {
-        private Dictionary<string, Type> _functionTypes;
-        private Dictionary<int, IExtension> _extensions;
+        private readonly Dictionary<string, Type> _functionTypes;
+        private readonly List<IPlugin> _plugins;
 
         public Stack<Ruleset> Frames { get; protected set; }
         public bool Compress { get; set; }
         public Node Rule { get; set; }
         public Output Output { get; private set; }
 
-        public Env()
+        public Env() : this(null, null)
         {
-            AddCoreFunctions();
-            Frames = new Stack<Ruleset>();
-            Output = new Output(this);
         }
 
-        protected Env(Stack<Ruleset> frames, Dictionary<string, Type> functions, Dictionary<int, IExtension> extensions)
+        protected Env(Stack<Ruleset> frames, Dictionary<string, Type> functions)
         {
+            Frames = frames ?? new Stack<Ruleset>();
             Output = new Output(this);
-            _functionTypes = functions;
-            _extensions = extensions;
-            Frames = frames;
+
+            _plugins = new List<IPlugin>();
+            _functionTypes = functions ?? new Dictionary<string, Type>();
+
+            if (_functionTypes.Count == 0)
+                AddCoreFunctions();
         }
 
         /// <summary>
@@ -39,37 +41,43 @@
         /// </summary>
         public virtual Env CreateChildEnv(Stack<Ruleset> frames)
         {
-            return new Env(frames, _functionTypes, _extensions);
+            return new Env(frames, _functionTypes);
         }
 
         /// <summary>
-        ///  Adds an extension to this Env to be used whenever this Env is used
+        ///  Adds a plugin to this Env
         /// </summary>
-        public void AddExension(IExtension extension)
+        public void AddPlugin(IPlugin plugin)
         {
-            if (_extensions == null)
+            if (plugin == null) throw new ArgumentNullException("plugin");
+
+            _plugins.Add(plugin);
+
+            IFunctionPlugin functionPlugin = plugin as IFunctionPlugin;
+            if (functionPlugin != null)
             {
-                _extensions = new Dictionary<int, IExtension>();
+                foreach(KeyValuePair<string, Type> function in functionPlugin.GetFunctions())
+                {
+                    string functionName = function.Key.ToLowerInvariant();
+
+                    if (_functionTypes.ContainsKey(functionName))
+                    {
+                        string message = string.Format("Function '{0}' already exists in environment but is added by plugin {1}",
+                            functionName, plugin.GetName());
+                        throw new InvalidOperationException(message);
+                    }
+
+                    AddFunction(functionName, function.Value);
+                 }
             }
-
-            int hashCode = extension.GetType().GetHashCode();
-
-            if (_extensions.ContainsKey(hashCode))
-            {
-                string message = String.Format("Extension type is already loaded: {0}", extension.GetType().FullName);
-                throw new InvalidOperationException(message);
-            }
-
-            _extensions.Add(hashCode, extension);
-            extension.Setup(this);
         }
 
-        /// <summary>
-        ///  Returns an extension of this type (if loaded). Otherwise will return null.
-        /// </summary>
-        public T1 GetExtension<T1>() where T1 : IExtension
+        public IEnumerable<IVisitorPlugin> VisitorPlugins
         {
-            return (T1)_extensions[typeof(T1).GetHashCode()];
+            get
+            {
+                return _plugins.OfType<IVisitorPlugin>();
+            }
         }
 
         /// <summary>
@@ -108,15 +116,22 @@
         }
 
         /// <summary>
-        ///  Given an assembly, loads all the dotless Functions in that assembly into this Env.
+        ///  Adds a Function to this Env object
+        /// </summary>
+        public void AddFunction(string name, Type type)
+        {
+            if (name == null) throw new ArgumentNullException("name");
+            if (type == null) throw new ArgumentNullException("type");
+
+            _functionTypes[name] = type;
+        }
+
+        /// <summary>
+        ///  Given an assembly, adds all the dotless Functions in that assembly into this Env.
         /// </summary>
         public void AddFunctionsFromAssembly(Assembly assembly)
         {
-            if (_functionTypes == null)
-            {
-                _functionTypes = new Dictionary<string, Type>();
-
-            }
+            if (assembly == null) throw new ArgumentNullException("assembly");
 
             var functionType = typeof (Function);
 
@@ -126,14 +141,14 @@
                 .Where(t => !t.IsAbstract)
                 .SelectMany<Type, KeyValuePair<string, Type>>(GetFunctionNames))
             {
-                _functionTypes.Add(func.Key, func.Value);
+                AddFunction(func.Key, func.Value);
             }
         }
 
         private void AddCoreFunctions()
         {
             AddFunctionsFromAssembly(Assembly.GetExecutingAssembly());
-            _functionTypes["%"] = typeof (CFormatString);
+            AddFunction("%", typeof (CFormatString));
         }
 
         /// <summary>

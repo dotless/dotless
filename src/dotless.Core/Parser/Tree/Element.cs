@@ -2,6 +2,7 @@
 {
     using Infrastructure;
     using Infrastructure.Nodes;
+    using Plugins;
 
     public class Element : Node
     {
@@ -19,6 +20,11 @@
             env.Output
                 .Append(Combinator)
                 .Append(Value);
+        }
+
+        public override void Accept(IVisitor visitor)
+        {
+            Combinator = VisitAndReplace(Combinator, visitor);
         }
     }
 }

@@ -75,7 +75,7 @@ namespace dotless.Test.Specs
             var input = @"
 @media all and (min-width: 640px) {
   #header {
-    background-color: #0f0;
+    background-color: #123456;
   }
 }
 ";

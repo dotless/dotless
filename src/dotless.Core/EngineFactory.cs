@@ -10,7 +10,7 @@ namespace dotless.Core
         {
             Configuration = configuration;
         }
-        public EngineFactory() : this(DotlessConfiguration.Default)
+        public EngineFactory() : this(DotlessConfiguration.GetDefault())
         {
         }
 

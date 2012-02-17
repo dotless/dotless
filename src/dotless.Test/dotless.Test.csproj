@@ -82,6 +82,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Plugins\ColorSpinPluginFixture.cs" />
+    <Compile Include="Plugins\PluginFixture.cs" />
+    <Compile Include="Plugins\RtlPluginFixture.cs" />
     <Compile Include="Specs\Compression\ColorsFixture.cs" />
     <Compile Include="Specs\Compression\CommentsFixture.cs" />
     <Compile Include="CompressedSpecFixtureBase.cs" />
@@ -169,6 +172,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

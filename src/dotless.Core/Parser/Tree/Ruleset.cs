@@ -2,15 +2,17 @@ namespace dotless.Core.Parser.Tree
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text;
     using Infrastructure;
     using Infrastructure.Nodes;
     using Utils;
-    using System.Text;
+    using Plugins;
 
     public class Ruleset : Node
     {
         public NodeList<Selector> Selectors { get; set; }
         public NodeList Rules { get; set; }
+        public bool Evaluated { get; protected set; }
 
         /// <summary>
         ///  The original Ruleset this was cloned from during evaluation
@@ -120,11 +122,22 @@ namespace dotless.Core.Parser.Tree
 
         public override Node Evaluate(Env env)
         {
+            if(Evaluated) return this;
+
             // create a clone so it is non destructive
-            Ruleset clone = new Ruleset(Selectors, new NodeList(Rules), this.OriginalRuleset)
-                .ReducedFrom<Ruleset>(this);
+            var clone = new Ruleset(Selectors, new NodeList(Rules), OriginalRuleset).ReducedFrom<Ruleset>(this);
+
             clone.EvaluateRules(env);
+            clone.Evaluated = true;
+
             return clone;
+        }
+
+        public override void Accept(IVisitor visitor)
+        {
+            Selectors = VisitAndReplace(Selectors, visitor);
+
+            Rules = VisitAndReplace(Rules, visitor);
         }
 
         /// <summary>
@@ -135,7 +148,7 @@ namespace dotless.Core.Parser.Tree
         {
             env.Frames.Push(this);
 
-            NodeHelper.ExpandNodes<MixinCall>(env, this.Rules);
+            NodeHelper.ExpandNodes<MixinCall>(env, Rules);
 
             for (var i = 0; i < Rules.Count; i++)
             {
@@ -150,8 +163,7 @@ namespace dotless.Core.Parser.Tree
             if (!Rules.Any())
                 return;
 
-            ((Ruleset)Evaluate(env))
-                .AppendCSS(env, new Context());
+            ((Ruleset) Evaluate(env)).AppendCSS(env, new Context());
         }
 
         /// <summary>

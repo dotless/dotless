@@ -7,6 +7,8 @@
     using System.Collections.Generic;
     using System.Linq;
     using Core.Parser.Infrastructure;
+    using Core.Parser.Tree;
+    using Core.Plugins;
     using Core.Stylizers;
     using NUnit.Framework;
 
@@ -138,6 +140,7 @@
         public string Evaluate(string input, Parser parser)
         {
             var tree = parser.Parse(input.Trim(), null);
+
             return tree.ToCSS(DefaultEnv());
         }
     }

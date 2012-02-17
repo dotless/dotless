@@ -3,6 +3,7 @@ namespace dotless.Core.Parser.Tree
     using System.Linq;
     using Infrastructure;
     using Infrastructure.Nodes;
+    using Plugins;
 
     public class Call : Node
     {
@@ -46,6 +47,11 @@ namespace dotless.Core.Parser.Tree
             var css = env.Output.Pop();
 
             return new TextNode(css.ToString()).ReducedFrom<Node>(this);
+        }
+
+        public override void Accept(IVisitor visitor)
+        {
+            Arguments = VisitAndReplace(Arguments, visitor);
         }
     }
 }

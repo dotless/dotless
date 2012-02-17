@@ -3,14 +3,23 @@ namespace dotless.Core.configuration
     using System;
     using Input;
     using Loggers;
+    using dotless.Core.Plugins;
+    using System.Collections.Generic;
 
     public class DotlessConfiguration
     {
-        public static readonly DotlessConfiguration Default = new DotlessConfiguration();
-        public static readonly DotlessConfiguration DefaultWeb = new DotlessConfiguration
+        public static DotlessConfiguration GetDefault()
+        {
+            return new DotlessConfiguration();
+        }
+
+        public static DotlessConfiguration GetDefaultWeb()
+        {
+            return new DotlessConfiguration
             {
                 Web = true
             };
+        }
 
         public DotlessConfiguration()
         {
@@ -21,6 +30,7 @@ namespace dotless.Core.configuration
             Logger = null;
             LogLevel = LogLevel.Error;
             Optimization = 1;
+            Plugins = new List<IPluginConfigurator>();
         }
 
         public DotlessConfiguration(DotlessConfiguration config)
@@ -32,6 +42,8 @@ namespace dotless.Core.configuration
             Logger = null;
             LogLevel = config.LogLevel;
             Optimization = config.Optimization;
+            Plugins = new List<IPluginConfigurator>();
+            Plugins.AddRange(config.Plugins);
         }
 
         public bool MinifyOutput { get; set; }
@@ -41,5 +53,6 @@ namespace dotless.Core.configuration
         public Type Logger { get; set; }
         public LogLevel LogLevel { get; set; }
         public int Optimization { get; set; }
+        public List<IPluginConfigurator> Plugins { get; private set; }
     }
 }

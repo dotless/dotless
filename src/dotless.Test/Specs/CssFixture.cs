@@ -119,7 +119,7 @@ div#id {
             var input = @"
 a:hover,
 a:link {
-  color: #999;
+  color: black;
 }
 ";
 
@@ -194,7 +194,7 @@ p {
             var input =
                 @"
 #shorthands {
-  border: 1px solid #000;
+  border: 1px solid black;
   font: 12px/16px Arial;
   margin: 1px 0;
   padding: 0 auto;
@@ -303,7 +303,7 @@ h2[title] {
   color: transparent;
 }
 form[data-disabled] {
-  color: #444;
+  color: #123456;
 }
 ";
 

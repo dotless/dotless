@@ -7,6 +7,8 @@ namespace dotless.Core.Parser
     using Infrastructure;
     using Stylizers;
     using Tree;
+    using dotless.Core.Plugins;
+    using System.Collections.Generic;
 
     //
     // less.js - parser
@@ -51,7 +53,7 @@ namespace dotless.Core.Parser
         private INodeProvider _nodeProvider;
         public INodeProvider NodeProvider
         {
-            get { return _nodeProvider??(new DefaultNodeProvider()); }
+            get { return _nodeProvider ?? (new DefaultNodeProvider()); }
             set { _nodeProvider = value; }
         }
 

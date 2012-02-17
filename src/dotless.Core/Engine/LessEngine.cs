@@ -1,3 +1,5 @@
+using dotless.Core.Plugins;
+
 namespace dotless.Core
 {
     using System.Collections.Generic;
@@ -5,6 +7,8 @@ namespace dotless.Core
     using Exceptions;
     using Loggers;
     using Parser.Infrastructure;
+    using Parser.Tree;
+    using System.IO;
 
     public class LessEngine : ILessEngine
     {
@@ -12,16 +16,23 @@ namespace dotless.Core
         public ILogger Logger { get; set; }
         public bool Compress { get; set; }
         public Env Env { get; set; }
+        public IEnumerable<IPluginConfigurator> Plugins { get; set; }
 
-        public LessEngine(Parser.Parser parser, ILogger logger, bool compress)
+        public LessEngine(Parser.Parser parser, ILogger logger, bool compress, IEnumerable<IPluginConfigurator> plugins)
         {
             Parser = parser;
             Logger = logger;
             Compress = compress;
+            Plugins = plugins;
+        }
+
+        public LessEngine(Parser.Parser parser, ILogger logger, bool compress)
+            : this(parser, logger, compress, null)
+        {
         }
 
         public LessEngine(Parser.Parser parser)
-            : this(parser, new ConsoleLogger(LogLevel.Error), false)
+            : this(parser, new ConsoleLogger(LogLevel.Error), false, null)
         {
         }
 
@@ -37,6 +48,14 @@ namespace dotless.Core
                 var tree = Parser.Parse(source, fileName);
 
                 var env = Env ?? new Env { Compress = Compress };
+
+                if (Plugins != null)
+                {
+                    foreach (IPluginConfigurator configurator in Plugins)
+                    {
+                        env.AddPlugin(configurator.CreatePlugin());
+                    }
+                }
 
                 var css = tree.ToCSS(env);
 

@@ -93,12 +93,23 @@
     <Compile Include="Parser\Functions\HexFunction.cs" />
     <Compile Include="Parser\Functions\ContrastFunction.cs" />
     <Compile Include="Parser\Infrastructure\Closure.cs" />
-    <Compile Include="Parser\Infrastructure\IExtension.cs" />
     <Compile Include="Parser\Infrastructure\NamedArgument.cs" />
     <Compile Include="Parser\Infrastructure\Output.cs" />
     <Compile Include="Parser\Tree\KeyFrame.cs" />
     <Compile Include="Parser\Tree\Script.cs" />
     <Compile Include="Parser\Tree\Root.cs" />
+    <Compile Include="Plugins\ColorSpinPlugin.cs" />
+    <Compile Include="Plugins\GenericPluginConfigurator.cs" />
+    <Compile Include="Plugins\IFunctionPlugin.cs" />
+    <Compile Include="Plugins\IPlugin.cs" />
+    <Compile Include="Plugins\IPluginConfigurator.cs" />
+    <Compile Include="Plugins\IPluginParameter.cs" />
+    <Compile Include="Plugins\IVisitor.cs" />
+    <Compile Include="Plugins\IVisitorPlugin.cs" />
+    <Compile Include="Plugins\PluginFinder.cs" />
+    <Compile Include="Plugins\PluginParameter.cs" />
+    <Compile Include="Plugins\RtlPlugin.cs" />
+    <Compile Include="Plugins\VisitorPlugin.cs" />
     <Compile Include="Response\CachedCssResponse.cs">
       <SubType>Code</SubType>
     </Compile>

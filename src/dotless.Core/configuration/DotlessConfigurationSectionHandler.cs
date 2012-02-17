@@ -8,7 +8,7 @@ namespace dotless.Core.configuration
     {
         public object Create(object parent, object configContext, XmlNode section)
         {
-            var configuration = DotlessConfiguration.Default;
+            var configuration = DotlessConfiguration.GetDefault();
 
             try
             {

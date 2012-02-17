@@ -50,6 +50,25 @@
             env.Output.AppendMany(Inner);
         }
 
+        public override void Accept(Plugins.IVisitor visitor)
+        {
+            List<TNode> newInner = new List<TNode>(Inner.Count);
+
+            foreach (TNode inner in Inner)
+            {
+                TNode node = VisitAndReplace<TNode>(inner, visitor, true);
+
+                if (node == null)
+                {
+                    continue;
+                }
+
+                newInner.Add(node);
+            }
+
+            Inner = newInner;
+        }
+
         public void AddRange(IEnumerable<TNode> nodes)
         {
             Inner.AddRange(nodes);

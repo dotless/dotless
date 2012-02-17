@@ -5,13 +5,8 @@ namespace dotless.Compiler
 
     internal class CompilerConfiguration : DotlessConfiguration
     {
-        public CompilerConfiguration(DotlessConfiguration config)
+        public CompilerConfiguration(DotlessConfiguration config) : base(config)
         {
-            LessSource = config.LessSource;
-            LogLevel = config.LogLevel;
-            MinifyOutput = config.MinifyOutput;
-            Optimization = config.Optimization;
-
             CacheEnabled = false;
             Web = false;
             Watch = false;

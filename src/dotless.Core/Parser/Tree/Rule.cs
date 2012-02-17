@@ -3,6 +3,7 @@ namespace dotless.Core.Parser.Tree
     using Exceptions;
     using Infrastructure;
     using Infrastructure.Nodes;
+    using Plugins;
 
     public class Rule : Node
     {
@@ -46,6 +47,11 @@ namespace dotless.Core.Parser.Tree
                 .Append(env.Compress ? ":" : ": ")
                 .Append(Value)
                 .Append(";");
+        }
+
+        public override void Accept(IVisitor visitor)
+        {
+            Value = VisitAndReplace(Value, visitor);
         }
     }
 }
