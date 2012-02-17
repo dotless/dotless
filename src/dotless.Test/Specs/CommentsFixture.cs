@@ -429,7 +429,8 @@ border: solid black;
             var input = @"/* COMMENT */body/* COMMENT */,/* COMMENT */ .clb /* COMMENT */ {background-image: url(pickture.asp);}";
 
             var expected = @"/* COMMENT */
-body/* COMMENT */, /* COMMENT */ .clb/* COMMENT */ {
+body/* COMMENT */,
+/* COMMENT */ .clb/* COMMENT */ {
   background-image: url(pickture.asp);
 }";
 
@@ -443,7 +444,9 @@ body/* COMMENT */, /* COMMENT */ .clb/* COMMENT */ {
             var input = @"/* COMMENT */body/* COMMENT */, /* COMMENT */.cls/* COMMENT */ .cla,/* COMMENT */ .clb /* COMMENT */ {background-image: url(pickture.asp);}";
 
             var expected = @"/* COMMENT */
-body/* COMMENT */, /* COMMENT */ .cls/* COMMENT */ .cla, /* COMMENT */ .clb/* COMMENT */ {
+body/* COMMENT */,
+/* COMMENT */ .cls/* COMMENT */ .cla,
+/* COMMENT */ .clb/* COMMENT */ {
   background-image: url(pickture.asp);
 }";
 

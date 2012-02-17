@@ -81,7 +81,9 @@ div {
         public void ChildSelector()
         {
             var input = @"
-h1, h2 > a > p, h3 {
+h1,
+h2 > a > p,
+h3 {
   color: none;
 }
 ";
@@ -115,7 +117,8 @@ div#id {
         public void PseudoClass()
         {
             var input = @"
-a:hover, a:link {
+a:hover,
+a:link {
   color: #999;
 }
 ";
@@ -127,7 +130,8 @@ a:hover, a:link {
         public void FirstChildPseudoClass()
         {
             var input = @"
-p, p:first-child {
+p,
+p:first-child {
   text-transform: none;
 }
 ";

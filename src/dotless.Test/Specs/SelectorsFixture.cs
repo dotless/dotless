@@ -93,10 +93,12 @@ p a span {
 
             var expected =
                 @"
-.foo .bar .qux, .foo .baz .qux {
+.foo .bar .qux,
+.foo .baz .qux {
   display: block;
 }
-.qux .foo .bar, .qux .foo .baz {
+.qux .foo .bar,
+.qux .foo .baz {
   display: inline;
 }
 ";
@@ -153,18 +155,13 @@ td {
         public void TwoTags()
         {
             var input = @"
-td, input {
+td,
+input {
   line-height: 1em;
 }
 ";
 
-            var expected = @"
-td, input {
-  line-height: 1em;
-}
-";
-
-            AssertLess(input, expected);
+            AssertLessUnchanged(input);
         }
 
         [Test]

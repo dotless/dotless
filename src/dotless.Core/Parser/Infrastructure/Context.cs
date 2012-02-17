@@ -57,7 +57,7 @@
             env.Output.AppendMany(
                 Paths,
                 path => path.Select(p => p.ToCSS(env)).JoinStrings("").Trim(),
-                env.Compress ? "," : (Paths.Count > 3 ? ",\n" : ", "));
+                env.Compress ? "," : ",\n");
         }
 
         public int Count

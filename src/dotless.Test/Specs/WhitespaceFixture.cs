@@ -49,8 +49,7 @@ white;
         {
             var input = @"
 .white,
-.space,
-.mania
+.space, .mania
 { 
  color
       :
@@ -58,7 +57,9 @@ white;
 }";
 
             var expected = @"
-.white, .space, .mania {
+.white,
+.space,
+.mania {
   color: white;
 }";
 

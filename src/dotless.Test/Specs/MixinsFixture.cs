@@ -1199,10 +1199,12 @@ important-rule {
 .mixin {
   color: red;
 }
-.mixin:after, .dummy {
+.mixin:after,
+.dummy {
   color: green;
 }
-.mixin .inner, .dummy {
+.mixin .inner,
+.dummy {
   color: blue;
 }
 ";
@@ -1380,11 +1382,15 @@ important-rule {
 
             var expected =
                 @"
-.button.lefticon.icon-tick.fancy:hover, button.lefticon.icon-tick.fancy:hover, input[type=""submit""].lefticon.icon-tick.fancy:hover {
+.button.lefticon.icon-tick.fancy:hover,
+button.lefticon.icon-tick.fancy:hover,
+input[type=""submit""].lefticon.icon-tick.fancy:hover {
   background-image: url(https://github.com/images/icons/fugue/tick.png), -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ff4079), to(#d10e47));
   background-image: url(https://github.com/images/icons/fugue/tick.png), -moz-linear-gradient(0% 100% 90deg,#d10e47, #ff4079);
 }
-.button.lefticon.icon24-tick.extralarge.fancy:hover, button.lefticon.icon24-tick.extralarge.fancy:hover, input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
+.button.lefticon.icon24-tick.extralarge.fancy:hover,
+button.lefticon.icon24-tick.extralarge.fancy:hover,
+input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
   background-image: url(https://github.com/images/icons/fugue/icons-24/tick.png), -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ff4079), to(#d10e47));
   background-image: url(https://github.com/images/icons/fugue/icons-24/tick.png), -moz-linear-gradient(0% 100% 90deg,#d10e47, #ff4079);
 }";
@@ -1430,7 +1436,8 @@ important-rule {
         public void MixinMatchingAllowsMultiples()
         {
             var input = @"
-.bo, .bar {
+.bo,
+.bar {
   width: 100%;
 }
 .bo {
@@ -1444,7 +1451,8 @@ important-rule {
 }
 ";
             var expected = @"
-.bo, .bar {
+.bo,
+.bar {
   width: 100%;
 }
 .bo {

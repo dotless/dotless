@@ -539,7 +539,9 @@ ol.comma > li:nth-last-child(2)::after {
         public void NthChildExpressions()
         {
             var input = @"
-li:nth-child(4n+1), li:nth-child(-5n), li:nth-child(-n+2) {
+li:nth-child(4n+1),
+li:nth-child(-5n),
+li:nth-child(-n+2) {
   color: white;
 }
 ";
