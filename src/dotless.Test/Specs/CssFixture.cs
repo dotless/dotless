@@ -407,5 +407,28 @@ image: url(http://); }";
 }";
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void SupportIEFilters()
+        {
+            var input = @"
+@fat: 0;
+@cloudhead: ""#000000"";
+
+.nav {
+  filter: progid:DXImageTransform.Microsoft.Alpha(opacity = 20);
+  filter: progid:DXImageTransform.Microsoft.Alpha(opacity=@fat);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=""#333333"", endColorstr=@cloudhead, GradientType=@fat);
+}";
+
+            var expected = @"
+.nav {
+  filter: progid:DXImageTransform.Microsoft.Alpha(opacity=20);
+  filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=""#333333"", endColorstr=""#000000"", GradientType=0);
+}
+";
+            AssertLess(input, expected);
+        }
     }
 }

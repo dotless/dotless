@@ -8,9 +8,9 @@ namespace dotless.Core.Parser.Tree
     public class Call : Node
     {
         public string Name { get; set; }
-        public NodeList<Expression> Arguments { get; set; }
+        public NodeList<Node> Arguments { get; set; }
 
-        public Call(string name, NodeList<Expression> arguments)
+        public Call(string name, NodeList<Node> arguments)
         {
             Name = name;
             Arguments = arguments;

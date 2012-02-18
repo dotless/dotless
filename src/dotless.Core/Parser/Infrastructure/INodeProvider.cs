@@ -15,7 +15,7 @@ namespace dotless.Core.Parser.Infrastructure
 
         //entities
         Alpha Alpha(Node value, int index);
-        Call Call(string name, NodeList<Expression> arguments, int index);
+        Call Call(string name, NodeList<Node> arguments, int index);
         Color Color(string rgb, int index);
         Keyword Keyword(string value, int index);
         Number Number(string value, string unit, int index);
@@ -39,6 +39,7 @@ namespace dotless.Core.Parser.Infrastructure
         Expression Expression(NodeList expression, int index);
         Value Value(IEnumerable<Node> values, string important, int index);
         Operation Operation(string operation, Node left, Node right, int index);
+        Assignment Assignment(string key, Node value);
 
         //text
         Comment Comment(string value, int index);

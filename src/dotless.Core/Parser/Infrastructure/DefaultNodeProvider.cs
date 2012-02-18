@@ -37,7 +37,7 @@ namespace dotless.Core.Parser.Infrastructure
             return new Alpha(value) { Index = index };
         }
 
-        public Call Call(string name, NodeList<Expression> arguments, int index)
+        public Call Call(string name, NodeList<Node> arguments, int index)
         {
             return new Call(name, arguments) { Index = index };
         }
@@ -125,6 +125,11 @@ namespace dotless.Core.Parser.Infrastructure
         public Operation Operation(string operation, Node left, Node right, int index)
         {
             return new Operation(operation, left, right) { Index = index };
+        }
+
+        public Assignment Assignment(string key, Node value)
+        {
+            return new Assignment(key, value);
         }
 
         public Comment Comment(string value, int index)

@@ -234,7 +234,7 @@ namespace dotless.Core.Parser
             var memo = Remember(parser);
             var index = parser.Tokenizer.Location.Index;
 
-            var name = parser.Tokenizer.Match(@"(%|[a-zA-Z0-9_-]+)\(");
+            var name = parser.Tokenizer.Match(@"(%|[a-zA-Z0-9_-]+|progid:[\w\.]+)\(");
 
             if (!name)
                 return null;
@@ -257,18 +257,41 @@ namespace dotless.Core.Parser
             return NodeProvider.Call(name[1], args, index);
         }
 
-        public NodeList<Expression> Arguments(Parser parser)
+        public NodeList<Node> Arguments(Parser parser)
         {
-            var args = new NodeList<Expression>();
-            Expression arg;
+            var args = new NodeList<Node>();
+            Node arg;
 
-            while (arg = Expression(parser))
+            while ((arg = Assignment(parser)) || (arg = Expression(parser)))
             {
                 args.Add(arg);
                 if (!parser.Tokenizer.Match(','))
                     break;
             }
             return args;
+        }
+
+        // Assignments are argument entities for calls.
+        // They are present in ie filter properties as shown below.
+ 	    //
+        //     filter: progid:DXImageTransform.Microsoft.Alpha( *opacity=50* )	
+        //
+        public Assignment Assignment(Parser parser)
+        {
+            var key = parser.Tokenizer.Match(@"\w+(?=\s?=)");
+
+            if (!key || !parser.Tokenizer.Match('='))
+            {
+                return null;
+            }
+
+            var value = Entity(parser);
+
+            if (value) {
+                return NodeProvider.Assignment(key.Value, value);
+            }
+
+            return null;
         }
 
         public Node Literal(Parser parser)
