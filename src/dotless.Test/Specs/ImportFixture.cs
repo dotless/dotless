@@ -7,7 +7,7 @@ namespace dotless.Test.Specs
 
     public class ImportFixture : SpecFixtureBase
     {
-        private static Parser GetParser()
+        private static Parser GetParser(bool isUrlRewritingDisabled = false)
         {
             var imports = new Dictionary<string, string>();
 
@@ -70,7 +70,7 @@ namespace dotless.Test.Specs
             imports["foo/bar.less"] = @"@import ""../lib/color.less"";";
             imports["lib/color.less"] = "body { background-color: foo; }";
 
-            return new Parser {Importer = new Importer(new DictionaryReader(imports))};
+            return new Parser { Importer = new Importer(new DictionaryReader(imports)) { IsUrlRewritingDisabled = isUrlRewritingDisabled } };
         }
 
         [Test]
@@ -153,6 +153,33 @@ namespace dotless.Test.Specs
 ";
 
             var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void RelativeUrlsWithRewritingOff()
+        {
+            var input =
+                @"
+@import url(""import/first.less"");
+";
+
+            var expected =
+                @"
+#second {
+  background: url(../image.gif);
+  background: url(image.gif);
+  background: url(sub2/image.gif);
+  background: url(/sub2/image.gif);
+}
+#first {
+  background: url('../image.gif');
+  background: url(../image.gif);
+}
+";
+
+            var parser = GetParser(true);
 
             AssertLess(input, expected, parser);
         }

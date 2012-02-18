@@ -46,6 +46,7 @@ namespace dotless.Core.configuration
             Plugins.AddRange(config.Plugins);
         }
 
+        public bool DisableUrlRewriting { get; set; }
         public bool MinifyOutput { get; set; }
         public bool CacheEnabled { get; set; }
         public Type LessSource { get; set; }

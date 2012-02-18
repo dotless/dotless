@@ -14,15 +14,9 @@ namespace dotless.Core.Importers
         public IFileReader FileReader { get; set; }
         public List<string> Imports { get; set; }
         public Func<Parser> Parser { get; set; }
-        private readonly List<string> _paths = new List<string>();
-        public List<string> Paths
-        {
-            get
-            {
-                return _paths;
-            }
-        }
-        public string CurrentDirectory
+        protected readonly List<string> _paths = new List<string>();
+
+        protected string CurrentDirectory
         {
             get
             {
@@ -30,13 +24,23 @@ namespace dotless.Core.Importers
             }
         }
 
+        /// <summary>
+        ///  Whether or not the importer should alter urls
+        /// </summary>
+        public bool IsUrlRewritingDisabled { get; set; }
+
         public Importer() : this(new FileReader())
         {
         }
 
-        public Importer(IFileReader fileReader)
+        public Importer(IFileReader fileReader) : this(fileReader, false)
+        {
+        }
+
+        public Importer(IFileReader fileReader, bool disableUrlReWriting)
         {
             FileReader = fileReader;
+            IsUrlRewritingDisabled = disableUrlReWriting;
             Imports = new List<string>();
         }
 
@@ -50,7 +54,7 @@ namespace dotless.Core.Importers
             if (Parser == null)
                 throw new InvalidOperationException("Parser cannot be null.");
 
-            var file = Paths.Concat(new[] { import.Path }).AggregatePaths(CurrentDirectory);
+            var file = _paths.Concat(new[] { import.Path }).AggregatePaths(CurrentDirectory);
 
             if (!FileReader.DoesFileExist(file) && !file.EndsWith(".less"))
             {
@@ -64,7 +68,7 @@ namespace dotless.Core.Importers
 
             var contents = FileReader.GetFileContents(file);
 
-            Paths.Add(Path.GetDirectoryName(import.Path));
+            _paths.Add(Path.GetDirectoryName(import.Path));
 
             try
             {
@@ -78,10 +82,24 @@ namespace dotless.Core.Importers
             }
             finally
             {
-                Paths.RemoveAt(Paths.Count - 1);
+                _paths.RemoveAt(_paths.Count - 1);
             }
 
             return true;
+        }
+
+        /// <summary>
+        ///  Called for every Url and allows the importer to adjust relative url's to be relative to the
+        ///  primary url
+        /// </summary>
+        public string AlterUrl(string url)
+        {
+            if (_paths.Any() && !IsUrlRewritingDisabled)
+            {
+                return _paths.Concat(new[] { url }).AggregatePaths(CurrentDirectory);
+            }
+
+            return url;
         }
     }
 }

@@ -19,9 +19,9 @@
             if (value is TextNode)
             {
                 var textValue = value as TextNode;
-                if (!Regex.IsMatch(textValue.Value, @"^(([a-zA-Z]+:)|(\/))") && importer.Paths.Any())
+                if (!Regex.IsMatch(textValue.Value, @"^(([a-zA-Z]+:)|(\/))"))
                 {
-                    textValue.Value = importer.Paths.Concat(new[] { textValue.Value }).AggregatePaths(importer.CurrentDirectory);
+                    textValue.Value = importer.AlterUrl(textValue.Value);
                 }
             }
 

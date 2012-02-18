@@ -75,7 +75,8 @@ namespace dotless.Core
             pandora.Service<LogLevel>("error-level").Instance(configuration.LogLevel);
             pandora.Service<IStylizer>().Implementor<PlainStylizer>();
 
-            pandora.Service<IImporter>().Implementor<Importer>();
+            pandora.Service<IImporter>().Implementor<Importer>().Parameters("disableUrlRewriting").Set("default-disable-url-rewriting").Lifestyle.Transient();
+            pandora.Service<bool>("default-disable-url-rewriting").Instance(configuration.DisableUrlRewriting);
 
             pandora.Service<Parser.Parser>().Implementor<Parser.Parser>().Parameters("optimization").Set("default-optimization").Lifestyle.Transient();
             pandora.Service<int>("default-optimization").Instance(configuration.Optimization);

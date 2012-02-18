@@ -216,6 +216,7 @@ namespace dotless.Compiler
             Console.WriteLine("\t\t-m --minify - Output CSS will be compressed");
             Console.WriteLine("\t\t-w --watch - Watches .less file for changes");
             Console.WriteLine("\t\t-h --help - Displays this dialog");
+            Console.WriteLine("\t\t-r --disable-url-rewriting - Disables changing urls in imported files");
             Console.WriteLine("\t\t-DKey=Value - prefixes variable to the less");
             Console.WriteLine("\t\t-l --listplugins - Lists the plugins available and options");
             Console.WriteLine("\t\t-p: --plugin:pluginName[:option=value[,option=value...]] - adds the named plugin to dotless with the supplied options");
@@ -263,7 +264,11 @@ namespace dotless.Compiler
                         var value = split[1];
                         ConsoleArgumentParameterSource.ConsoleArguments.Add(key, value);
                     }
-                    else if (arg.StartsWith("-p:") || arg.StartsWith("-plugin:"))
+                    else if (arg.StartsWith("-r") || arg.StartsWith("--disable-url-rewriting"))
+                    {
+                        configuration.DisableUrlRewriting = true;
+                    }
+                    else if (arg.StartsWith("-p:") || arg.StartsWith("--plugin:"))
                     {
                         var pluginName = arg.Substring(arg.IndexOf(':') + 1);
                         List<string> pluginArgs = null;
