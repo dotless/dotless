@@ -9,7 +9,7 @@ namespace dotless.Test.Specs.Functions
         {
             AssertExpression("#123456", "rgb(18, 52, 86)");
             AssertExpression("#beaded", "rgb(190, 173, 237)");
-            AssertExpression("#00ff7f", "rgb(0, 255, 127)");
+            AssertExpression("springgreen", "rgb(0, 255, 127)");
         }
 
         [Test]
