@@ -91,9 +91,9 @@ namespace dotless.Core.Parser.Tree
 
             var rulesList = new NodeList(InnerRoot.Rules).ReducedFrom<NodeList>(this);
 
-            if (Features)
+            if (features)
             {
-                return new Directive("@media", Features, rulesList);
+                return new Directive("@media", features, rulesList);
             }
 
             return rulesList;

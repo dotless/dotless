@@ -329,5 +329,56 @@ namespace dotless.Test.Specs
 
             AssertLess(input, expected, parser);
         }
+
+        [Test]
+        public void LessImportWithMediaSpecificationsConvertedMultipleRequirements()
+        {
+            var input = @"
+@import url(foo.less) screen and (color) and (max-width: 600px), handheld and (min-width: 20em);";
+
+            var expected = @"
+@media screen and (color) and (max-width: 600px), handheld and (min-width: 20em) {
+  body {
+    background-color: foo;
+  }
+}";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ImportWithMediaSpecificationsSupportedWithVariable()
+        {
+            var input = @"
+@maxWidth: 600px;
+@requirement1: color;
+@import url(something.css) screen and (@requirement1) and (max-width: @maxWidth);";
+
+            var expected = @"
+@import url(something.css) screen and (color) and (max-width: 600px);";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void LessImportWithMediaSpecificationsConvertedWithVariable()
+        {
+            var input = @"
+@maxWidth: 600px;
+@requirement1: color;
+@import url(foo.less) screen and (@requirement1) and (max-width: @maxWidth);";
+
+            var expected = @"
+@media screen and (color) and (max-width: 600px) {
+  body {
+    background-color: foo;
+  }
+}";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
     }
 }

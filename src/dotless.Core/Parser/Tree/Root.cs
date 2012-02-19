@@ -70,7 +70,9 @@ namespace dotless.Core.Parser.Tree
             {
                 env = env ?? new Env();
 
+                env.Frames.Push(this);
                 NodeHelper.ExpandNodes<Import>(env, Rules);
+                env.Frames.Pop();
 
                 var clone = new Root(new NodeList(Rules), Error, OriginalRuleset);
 
@@ -81,7 +83,6 @@ namespace dotless.Core.Parser.Tree
                 clone.Evaluated = true;
 
                 clone = DoVisiting(clone, env, VisitorPluginType.AfterEvaluation);
-
                 return clone;
             }
             catch (ParsingException e)

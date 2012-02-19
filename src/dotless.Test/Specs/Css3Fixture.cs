@@ -162,6 +162,30 @@ namespace dotless.Test.Specs
         }
 
         [Test]
+        public void VariablesInMediaDirective()
+        {
+            var input = @"
+@handheldMinWidth: 15em;
+@screenWidth: 20px;
+@media handheld and (min-width: @handheldMinWidth), screen and (min-width: @screenWidth) {
+  body {
+    max-width: 480px;
+  }
+}
+";
+            var expected = @"
+@media handheld and (min-width: 15em), screen and (min-width: 20px) {
+  body {
+    max-width: 480px;
+  }
+}
+
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
         public void SupportMozDocument()
         {
             // see https://github.com/dotless/dotless/issues/73
