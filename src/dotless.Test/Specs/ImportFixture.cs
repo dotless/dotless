@@ -7,7 +7,12 @@ namespace dotless.Test.Specs
 
     public class ImportFixture : SpecFixtureBase
     {
-        private static Parser GetParser(bool isUrlRewritingDisabled = false)
+        private static Parser GetParser()
+        {
+            return GetParser(false);
+        }
+
+        private static Parser GetParser(bool isUrlRewritingDisabled)
         {
             var imports = new Dictionary<string, string>();
 
