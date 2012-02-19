@@ -304,13 +304,30 @@ namespace dotless.Test.Specs
             AssertLess(input, expected, parser);
         }
 
-        [Test, Ignore("Bug #128")]
+        [Test]
         public void ImportWithMediaSpecificationsSupported()
         {
             var input = @"
 @import url(something.css) screen and (color) and (max-width: 600px);";
 
             AssertLessUnchanged(input);
+        }
+
+        [Test]
+        public void LessImportWithMediaSpecificationsConverted()
+        {
+            var input = @"
+@import url(foo.less) screen and (color) and (max-width: 600px);";
+
+            var expected = @"
+@media screen and (color) and (max-width: 600px) {
+  body {
+    background-color: foo;
+  }
+}";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
         }
     }
 }

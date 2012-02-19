@@ -33,7 +33,8 @@ namespace dotless.Core.Parser.Tree
             var rules = new NodeList();
 
             if (PreComments)
-                rules.Add(PreComments);
+                rules.AddRange(PreComments);
+
             foreach (var closure in closures)
             {
                 var ruleset = closure.Ruleset;
@@ -67,7 +68,7 @@ namespace dotless.Core.Parser.Tree
                 }
             }
             if (PostComments)
-                rules.Add(PostComments);
+                rules.AddRange(PostComments);
 
             env.Rule = null;
 

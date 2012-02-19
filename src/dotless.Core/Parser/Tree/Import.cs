@@ -14,22 +14,35 @@ namespace dotless.Core.Parser.Tree
         protected bool Css { get; set; }
         public Ruleset InnerRoot { get; set; }
 
-        public Import(Quoted path, IImporter importer)
-            : this(path.Value, importer)
+        public Import(Quoted path, IImporter importer, Value features)
+            : this(path.Value, importer, features)
         {
             OriginalPath = path;
         }
 
-        public Import(Url path, IImporter importer)
-            : this(path.GetUrl(), importer)
+        public Import(Url path, IImporter importer, Value features)
+            : this(path.GetUrl(), importer, features)
         {
             OriginalPath = path;
         }
 
-        private Import(string path, IImporter importer)
+        /// <summary>
+        ///  Create a evaluated node that will render a @import
+        /// </summary>
+        /// <param name="originalPath"></param>
+        /// <param name="features"></param>
+        private Import(Node originalPath, Node features)
+        {
+            OriginalPath = originalPath;
+            Features = features;
+            Css = true;
+        }
+
+        private Import(string path, IImporter importer, Value features)
         {
             Importer = importer;
             Path = path;
+            Features = features;
 
             if (path.EndsWith(".css"))
             {
@@ -47,17 +60,43 @@ namespace dotless.Core.Parser.Tree
 
         protected override void AppendCSS(Env env, Context context)
         {
-             base.AppendCSS(env); // should throw InvalidOperationException
+            env.Output.Append("@import ")
+                .Append(OriginalPath.ToCSS(env));
+
+            if (Features)
+            {
+                env.Output
+                    .Append(" ")
+                    .Append(Features);
+            }
+            env.Output.Append(";");
+
+            if (!env.Compress)
+            {
+                env.Output.Append("\n");
+            }
         }
 
         public override Node Evaluate(Env env)
         {
+            Node features = null;
+
+            if (Features)
+                features = Features.Evaluate(env);
+
             if (Css)
-                return new NodeList(new TextNode("@import " + OriginalPath.ToCSS(env) + ";\n"));
+                return new Import(OriginalPath, features);
 
             NodeHelper.ExpandNodes<Import>(env, InnerRoot.Rules);
 
-            return new NodeList(InnerRoot.Rules).ReducedFrom<NodeList>(this);
+            var rulesList = new NodeList(InnerRoot.Rules).ReducedFrom<NodeList>(this);
+
+            if (Features)
+            {
+                return new Directive("@media", Features, rulesList);
+            }
+
+            return rulesList;
         }
     }
 }

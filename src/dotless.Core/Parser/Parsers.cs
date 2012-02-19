@@ -943,14 +943,18 @@ namespace dotless.Core.Parser
 
             if (parser.Tokenizer.Match(@"@import\s+") && (path = Quoted(parser) || Url(parser)))
             {
+                var features = MediaFeatures(parser);
+
                 if (!parser.Tokenizer.Match(';'))
-                    throw new ParsingException("Expected ';'", parser.Tokenizer.Location.Index);
+                    throw new ParsingException("Expected ';' (possibly unrecognised media sequence)", parser.Tokenizer.Location.Index);
 
                 if (path is Quoted)
-                    return NodeProvider.Import(path as Quoted, parser.Importer, index);
+                    return NodeProvider.Import(path as Quoted, parser.Importer, features, index);
 
                 if (path is Url)
-                    return NodeProvider.Import(path as Url, parser.Importer, index);
+                    return NodeProvider.Import(path as Url, parser.Importer, features, index);
+
+                throw new ParsingException("unrecognised @import format", index);
             }
 
             return null;
@@ -969,6 +973,10 @@ namespace dotless.Core.Parser
             var import = Import(parser);
             if (import)
                 return import;
+
+            var media = Media(parser);
+            if (media)
+                return media;
 
             GatherComments(parser);
 
@@ -992,7 +1000,6 @@ namespace dotless.Core.Parser
                     break;
                 case "@page":
                 case "@document":
-                case "@media":
                 case "@supports":
                     hasBlock = true;
                     hasIdentifier = true;
@@ -1067,7 +1074,123 @@ namespace dotless.Core.Parser
                 }
             }
 
-            return null;
+            throw new ParsingException("directive block with unrecognised format", index);
+        }
+
+        public Expression MediaFeature(Parser parser)
+        {
+            NodeList features = new NodeList();
+            var outerIndex = parser.Tokenizer.Location.Index;
+
+            while (true)
+            {
+                GatherComments(parser);
+
+                var keyword = Keyword(parser);
+                if (keyword)
+                {
+                    keyword.PreComments = PullComments();
+                    keyword.PostComments = GatherAndPullComments(parser);
+                    features.Add(keyword);
+                }
+                else if (parser.Tokenizer.Match('('))
+                {
+                    GatherComments(parser);
+
+                    var memo = Remember(parser);
+                    var index = parser.Tokenizer.Location.Index;
+                    var property = Property(parser);
+
+                    var preComments = GatherAndPullComments(parser);
+
+                    // in order to support (color) and have rule/*comment*/: we need to keep :
+                    // out of property
+                    if (!string.IsNullOrEmpty(property) && !parser.Tokenizer.Match(':'))
+                    {
+                        Recall(parser, memo);
+                        property = null;
+                    }
+
+                    GatherComments(parser);
+
+                    var entity = Entity(parser);
+
+                    if (parser.Tokenizer.Match(')'))
+                    {
+                        if (!entity)
+                        {
+                            return null;
+                        }
+
+                        entity.PreComments = PullComments();
+                        entity.PostComments = GatherAndPullComments(parser);
+
+                        if (!string.IsNullOrEmpty(property))
+                        {
+                            var rule = NodeProvider.Rule(property, entity, index);
+                            rule.IsSemiColonRequired = false;
+                            features.Add(NodeProvider.Paren(rule, index));
+                        }
+                        else
+                        {
+                            features.Add(NodeProvider.Paren(entity, index));
+                        }
+                    }
+                    else
+                        return null;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (features.Count == 0)
+                return null;
+
+            return NodeProvider.Expression(features, outerIndex);
+        }
+
+        public Value MediaFeatures(Parser parser)
+        {
+            List<Node> features = new List<Node>();
+            int index = parser.Tokenizer.Location.Index;
+
+            while (true)
+            {
+                var feature = MediaFeature(parser);
+                if (!feature)
+                    return null;
+
+                features.Add(feature);
+
+                if (!parser.Tokenizer.Match(","))
+                    break;
+            }
+
+            return NodeProvider.Value(features, null, index);
+        }
+
+        public Directive Media(Parser parser)
+        {
+            if (!parser.Tokenizer.Match("@media"))
+                return null;
+
+            var index = parser.Tokenizer.Location.Index;
+
+            var features = MediaFeatures(parser);
+
+            var preRulesComments = GatherAndPullComments(parser);
+
+            var rules = Block(parser);
+
+            if (rules != null)
+            {
+                rules.PreComments = preRulesComments;
+                return NodeProvider.Directive("@media", rules, features, index);
+            }
+
+            throw new ParsingException("@media block with unrecognised format", index);
         }
 
         public Directive KeyFrameBlock(Parser parser, string name, string identifier, int index)

@@ -28,7 +28,7 @@
 ";
 
             AssertLess(input, @"
-@media only screen and (min-width: 768px) and (max-width: 959px){}");
+@media only screen and (min-width:768px) and (max-width:959px){}");
         }
     }
 }

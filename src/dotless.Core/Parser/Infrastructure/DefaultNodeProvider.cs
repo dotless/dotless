@@ -87,19 +87,24 @@ namespace dotless.Core.Parser.Infrastructure
             return new MixinDefinition(name, parameters, rules) { Index = index };
         }
 
-        public Import Import(Url path, IImporter importer, int index)
+        public Import Import(Url path, IImporter importer, Value features, int index)
         {
-            return new Import(path, importer) { Index = index };
+            return new Import(path, importer, features) { Index = index };
         }
 
-        public Import Import(Quoted path, IImporter importer, int index)
+        public Import Import(Quoted path, IImporter importer, Value features, int index)
         {
-            return new Import(path, importer) { Index = index };
+            return new Import(path, importer, features) { Index = index };
         }
 
         public Directive Directive(string name, string identifier, NodeList rules, int index)
         {
             return new Directive(name, identifier, rules) { Index = index };
+        }
+
+        public Directive Directive(string name, NodeList rules, Value features, int index)
+        {
+            return new Directive(name, features, rules) { Index = index };
         }
 
         public KeyFrame KeyFrame(string identifier, NodeList rules, int index)
@@ -150,6 +155,11 @@ namespace dotless.Core.Parser.Infrastructure
         public Quoted Quoted(string value, string contents, bool escaped, int index)
         {
             return new Quoted(value, contents, escaped) { Index = index };
+        }
+
+        public Paren Paren(Node value, int index)
+        {
+            return new Paren(value) { Index = index };
         }
     }
 }

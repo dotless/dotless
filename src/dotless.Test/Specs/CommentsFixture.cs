@@ -563,10 +563,7 @@ body/* COMMENT */,
   font-size: 3em;
 }/*COM 6*/
 ";
-            // com1 and com2 the wrong way round because CommentsInDirective3 test fails..
-            // we don't support directives very well, so com2 gets parsed as the identifier
-            // and the comment before gets stuck on afterwards..
-            var expected = @"@media print /*COM2*//*COM1*/ {
+            var expected = @"@media /*COM1*/print/*COM2*/ {
   /*COM3*/
   font-size: 3em;
 }
@@ -581,7 +578,6 @@ body/* COMMENT */,
         }
 
         [Test]
-        [Ignore("Preserving of comments between @media and type not supported")]
         public void CommentsInDirective3()
         {
             var input = @"@media/*COM1*/ print {
@@ -589,7 +585,7 @@ body/* COMMENT */,
 }
 ";
 
-            var expected = @"@media/*COM1*/ print {
+            var expected = @"@media /*COM1*/print {
   font-size: 3em;
 }";
 

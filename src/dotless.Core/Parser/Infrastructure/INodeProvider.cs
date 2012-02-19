@@ -23,14 +23,16 @@ namespace dotless.Core.Parser.Infrastructure
         Variable Variable(string name, int index);
         Url Url(Node value, IImporter importer, int index);
         Script Script(string script, int index);
+        Paren Paren(Node node, int index);
 
         //mixins
         MixinCall MixinCall(NodeList<Element> elements, List<NamedArgument> arguments, int index);
         MixinDefinition MixinDefinition(string name, NodeList<Rule> parameters, NodeList rules, int index);
 
         //directives
-        Import Import(Url path, IImporter importer, int index);
-        Import Import(Quoted path, IImporter importer, int index);
+        Import Import(Url path, IImporter importer, Value features, int index);
+        Import Import(Quoted path, IImporter importer, Value features, int index);
+        Directive Directive(string name, NodeList rules, Value features, int index);
         Directive Directive(string name, string identifier, NodeList rules, int index);
         Directive Directive(string name, Node value, int index);
         KeyFrame KeyFrame(string identifier, NodeList rules, int index);

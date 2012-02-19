@@ -11,12 +11,14 @@ namespace dotless.Core.Parser.Tree
         public Node Value { get; set; }
         public bool Variable { get; set; }
         public NodeList PostNameComments { get; set; }
+        public bool IsSemiColonRequired { get; set; }
 
         public Rule(string name, Node value)
         {
             Name = name;
             Value = value;
             Variable = name != null ? name[0] == '@' : false;
+            IsSemiColonRequired = true;
         }
 
         public override Node Evaluate(Env env)
@@ -29,6 +31,7 @@ namespace dotless.Core.Parser.Tree
             }
 
             var rule = new Rule(Name, Value.Evaluate(env)).ReducedFrom<Rule>(this);
+            rule.IsSemiColonRequired = this.IsSemiColonRequired;
             rule.PostNameComments = this.PostNameComments;
 
             env.Rule = null;
@@ -45,8 +48,12 @@ namespace dotless.Core.Parser.Tree
                 .Append(Name)
                 .Append(PostNameComments)
                 .Append(env.Compress ? ":" : ": ")
-                .Append(Value)
-                .Append(";");
+                .Append(Value);
+
+            if (IsSemiColonRequired)
+            {
+                env.Output.Append(";");
+            }
         }
 
         public override void Accept(IVisitor visitor)
