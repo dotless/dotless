@@ -1113,31 +1113,43 @@ namespace dotless.Core.Parser
 
                     GatherComments(parser);
 
+                    memo = Remember(parser);
+
                     var entity = Entity(parser);
 
-                    if (parser.Tokenizer.Match(')'))
+                    if (!entity || !parser.Tokenizer.Match(')'))
                     {
-                        if (!entity)
+                        Recall(parser, memo);
+
+                        // match "3/2" for instance
+                        var unrecognised = parser.Tokenizer.Match(@"[^\){]+");
+                        if (unrecognised)
                         {
-                            return null;
+                            entity = NodeProvider.TextNode(unrecognised.Value, parser.Tokenizer.Location.Index);
                         }
 
-                        entity.PreComments = PullComments();
-                        entity.PostComments = GatherAndPullComments(parser);
+                        if (!unrecognised || !parser.Tokenizer.Match(')'))
+                            throw new ParsingException("missing closing bracket for media feature", index);
+                    }
 
-                        if (!string.IsNullOrEmpty(property))
-                        {
-                            var rule = NodeProvider.Rule(property, entity, index);
-                            rule.IsSemiColonRequired = false;
-                            features.Add(NodeProvider.Paren(rule, index));
-                        }
-                        else
-                        {
-                            features.Add(NodeProvider.Paren(entity, index));
-                        }
+                    if (!entity)
+                    {
+                        return null;
+                    }
+
+                    entity.PreComments = PullComments();
+                    entity.PostComments = GatherAndPullComments(parser);
+
+                    if (!string.IsNullOrEmpty(property))
+                    {
+                        var rule = NodeProvider.Rule(property, entity, index);
+                        rule.IsSemiColonRequired = false;
+                        features.Add(NodeProvider.Paren(rule, index));
                     }
                     else
-                        return null;
+                    {
+                        features.Add(NodeProvider.Paren(entity, index));
+                    }
                 }
                 else
                 {

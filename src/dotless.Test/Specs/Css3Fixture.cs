@@ -186,6 +186,34 @@ namespace dotless.Test.Specs
         }
 
         [Test]
+        public void MediaDirectiveWithDecimal()
+        {
+            var input = @"
+@media only screen and (min--moz-device-pixel-ratio: 1.5) {
+  body {
+    max-width: 480px;
+  }
+}
+";
+
+            AssertLessUnchanged(input);
+        }
+
+        [Test]
+        public void MediaDirectiveWithSlash()
+        {
+            var input = @"
+@media only screen and (-o-min-device-pixel-ratio: 3/2) {
+  body {
+    max-width: 480px;
+  }
+}
+";
+
+            AssertLessUnchanged(input);
+        }
+
+        [Test]
         public void SupportMozDocument()
         {
             // see https://github.com/dotless/dotless/issues/73
