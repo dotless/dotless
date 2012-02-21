@@ -220,7 +220,7 @@ td input {
             AssertLess(input, expected);
         }
 
-        [Test, Ignore("See Bug #126")]
+        [Test]
         public void DynamicSelectors()
         {
 

@@ -28,6 +28,17 @@
                 Elements[0].Value == other.Elements[0].Value;
         }
 
+        public override Node Evaluate(Env env)
+        {
+            NodeList<Element> evaldElements = new NodeList<Element>();
+            foreach (Element element in Elements)
+            {
+                evaldElements.Add(element.Evaluate(env) as Element);
+            }
+
+            return new Selector(evaldElements).ReducedFrom<Selector>(this);
+        }
+
         public override void AppendCSS(Env env)
         {
             if (_css != null)

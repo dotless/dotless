@@ -7,7 +7,7 @@ namespace dotless.Core.Parser.Infrastructure
 
     public class DefaultNodeProvider : INodeProvider
     {
-        public Element Element(Combinator combinator, string value, int index)
+        public Element Element(Combinator combinator, Node value, int index)
         {
             return new Element(combinator, value) { Index = index };
         }

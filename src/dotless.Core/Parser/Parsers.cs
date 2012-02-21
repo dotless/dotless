@@ -494,7 +494,7 @@ namespace dotless.Core.Parser
 
             for (var i = parser.Tokenizer.Location.Index; e = parser.Tokenizer.Match(@"[#.][a-zA-Z0-9_-]+"); i = parser.Tokenizer.Location.Index)
             {
-                elements.Add(NodeProvider.Element(c, e.Value, i));
+                elements.Add(NodeProvider.Element(c, e, i));
 
                 i = parser.Tokenizer.Location.Index;
                 var match = parser.Tokenizer.Match('>');
@@ -707,17 +707,29 @@ namespace dotless.Core.Parser
 
             PushComments();
             GatherComments(parser); // to collect, combinator must have picked up something which would require memory anyway
-            var e = parser.Tokenizer.Match(@"[.#:]?[a-zA-Z0-9_-]+") || parser.Tokenizer.Match('*') || Attribute(parser) ||
+            Node e = parser.Tokenizer.Match(@"[.#:]?[a-zA-Z0-9_-]+") || parser.Tokenizer.Match('*') || Attribute(parser) ||
                     parser.Tokenizer.MatchAny(@"\([^)@]+\)");
 
             bool isCombinatorAnd = !e && c.Value.StartsWith("&");
+
+            if (!e && !isCombinatorAnd)
+            {
+                if (parser.Tokenizer.Match('(')) {
+                    var variable = Variable(parser);
+                    if (variable)
+                    {
+                        parser.Tokenizer.Match(')');
+                        e = NodeProvider.Paren(variable, index);
+                    }
+                }
+            }
 
             if (e || isCombinatorAnd)
             {
                 c.PostComments = PullComments();
                 PopComments();
                 c.PreComments = PullComments();
-                return NodeProvider.Element(c, isCombinatorAnd ? null : e.Value, index);
+                return NodeProvider.Element(c, isCombinatorAnd ? null : e, index);
             }
 
             PopComments();
@@ -858,7 +870,7 @@ namespace dotless.Core.Parser
                 var match = parser.Tokenizer.Match(@"[a-z.#: _-]+");
                 selectors =
                     new NodeList<Selector>(
-                        NodeProvider.Selector(new NodeList<Element>(NodeProvider.Element(null, match.Value, index)), index));
+                        NodeProvider.Selector(new NodeList<Element>(NodeProvider.Element(null, match, index)), index));
             }
             else
             {

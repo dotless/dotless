@@ -125,7 +125,7 @@ namespace dotless.Core.Parser.Tree
             if(Evaluated) return this;
 
             // create a clone so it is non destructive
-            var clone = new Ruleset(Selectors, new NodeList(Rules), OriginalRuleset).ReducedFrom<Ruleset>(this);
+            var clone = new Ruleset(new NodeList<Selector>(Selectors), new NodeList(Rules), OriginalRuleset).ReducedFrom<Ruleset>(this);
 
             clone.EvaluateRules(env);
             clone.Evaluated = true;
@@ -147,6 +147,11 @@ namespace dotless.Core.Parser.Tree
         protected void EvaluateRules(Env env)
         {
             env.Frames.Push(this);
+
+            for (var i = 0; i < Selectors.Count; i++)
+            {
+                Selectors[i] = Selectors[i].Evaluate(env) as Selector;
+            }
 
             NodeHelper.ExpandNodes<MixinCall>(env, Rules);
 
