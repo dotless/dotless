@@ -97,6 +97,22 @@
 
             PrefixesToProcess.Add(new Prefix()
             {
+                PrefixString = "-rtl-ltr-",
+                RemovePrefix = true,
+                KeepRule = true,
+                Reverse = false
+            });
+
+            PrefixesToProcess.Add(new Prefix()
+            {
+                PrefixString = "-ltr-rtl-",
+                RemovePrefix = true,
+                KeepRule = true,
+                Reverse = false
+            });
+
+            PrefixesToProcess.Add(new Prefix()
+            {
                 PrefixString = "-rtl-",
                 RemovePrefix = true,
                 KeepRule = isRtl
@@ -155,6 +171,10 @@
 
                             ValuesReverserVisitor reverser = new ValuesReverserVisitor();
                             return reverser.ReverseRule(rule);
+                        }
+                        else
+                        {
+                            return rule;
                         }
                     }
                 }

@@ -86,6 +86,51 @@
         }
 
         [Test]
+        public void PropertyNonRemovalRtl1()
+        {
+            OnlyReversePrefixedRules = true;
+            SetCultureTextDirection(true);
+
+            var input =
+                @"
+.cl {
+  -rtl-ltr-background: black;
+  -ltr-rtl-border-color: red;
+}
+";
+            var expected = @"
+.cl {
+  background: black;
+  border-color: red;
+}
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void PropertyNonRemovalRtl2()
+        {
+            SetCultureTextDirection(true);
+
+            var input =
+                @"
+.cl {
+  -rtl-ltr-background: black;
+  -ltr-rtl-border-color: red;
+}
+";
+            var expected = @"
+.cl {
+  background: black;
+  border-color: red;
+}
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
         public void PropertyRemovalRemoveClass()
         {
             OnlyReversePrefixedRules = true;
