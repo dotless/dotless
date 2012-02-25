@@ -513,10 +513,8 @@ namespace dotless.Core.Parser
                     {
                         if (parser.Tokenizer.Match(':'))
                         {
-                            if (value = Expression(parser))
-                                name = (arg.Value[0] as Variable).Name;
-                            else
-                                throw new ParsingException("Expected value", parser.Tokenizer.Location.Index);
+                            value = Expect(Expression(parser), "expected value", parser);
+                            name = (arg.Value[0] as Variable).Name;
                         }
                     }
 
@@ -601,11 +599,9 @@ namespace dotless.Core.Parser
                     if (parser.Tokenizer.Match(':'))
                     {
                         GatherComments(parser);
-                        var value = Expression(parser);
-                        if (value)
-                            parameters.Add(NodeProvider.Rule(param.Value, value, i));
-                        else
-                            throw new ParsingException("Expected value", i);
+                        var value = Expect(Expression(parser), "Expected value", parser);
+
+                        parameters.Add(NodeProvider.Rule(param.Value, value, i));
                     }
                     else
                         parameters.Add(NodeProvider.Rule(param.Value, null, i));
@@ -627,18 +623,11 @@ namespace dotless.Core.Parser
 
             GatherAndPullComments(parser);
 
-            var memo2 = Remember(parser);
-
             if (parser.Tokenizer.Match("when"))
             {
                 GatherAndPullComments(parser);
 
-                condition = Conditions(parser);
-
-                if (!condition)
-                {
-                    Recall(parser, memo2);
-                }
+                condition = Expect(Conditions(parser), "Expected conditions after when (mixin guards)", parser);
             }
 
             var rules = Block(parser);
@@ -653,16 +642,16 @@ namespace dotless.Core.Parser
             return null;
         }
 
+        /// <summary>
+        ///  a list of , seperated conditions (, == OR)
+        /// </summary>
         public Condition Conditions(Parser parser)
         {
             Condition condition, nextCondition;
 
             if (condition = Condition(parser)) {
                 while(parser.Tokenizer.Match(',')) {
-                    nextCondition = Condition(parser);
-
-                    if (!nextCondition)
-                        throw new ParsingException(", without recognised condition", parser.Tokenizer.Location.Index);
+                    nextCondition = Expect(Condition(parser), ", without recognised condition", parser);
 
                     condition = NodeProvider.Condition(condition, "or", nextCondition, false, parser.Tokenizer.Location.Index);
                 }
@@ -690,21 +679,13 @@ namespace dotless.Core.Parser
 
             Expect(parser, '(');
 
-            Node left = Addition(parser) || Keyword(parser) || Quoted(parser);
-
-            if (!left)
-                throw new ParsingException("unrecognised condition", index);
+            Node left = Expect(Addition(parser) || Keyword(parser) || Quoted(parser), "unrecognised condition", parser);
 
             var op = parser.Tokenizer.Match("(>=|=<|[<=>])"); // ?? 
 
             if (op)
             {
-                Node right = Addition(parser) || Keyword(parser) || Quoted(parser);
-
-                if (!right)
-                {
-                    throw new ParsingException("expected expression", index);
-                }
+                Node right = Expect(Addition(parser) || Keyword(parser) || Quoted(parser), "unrecognised right hand side condition expression", parser);
 
                 condition = NodeProvider.Condition(left, op.Value, right, negate, index);
             }
@@ -928,12 +909,11 @@ namespace dotless.Core.Parser
             if (!parser.Tokenizer.Match('{'))
                 return null;
 
-            var content = Primary(parser);
+            var content = Expect(Primary(parser), "Expected content inside block", parser);
 
-            if (content != null && parser.Tokenizer.Match('}'))
-                return content;
+            Expect(parser, '}');
 
-            throw new ParsingException("Expected '}'", parser.Tokenizer.Location.Index);
+            return content;
         }
 
         //
@@ -1284,15 +1264,10 @@ namespace dotless.Core.Parser
 
             var preRulesComments = GatherAndPullComments(parser);
 
-            var rules = Block(parser);
+            var rules = Expect(Block(parser), "@media block with unrecognised format", parser);
 
-            if (rules != null)
-            {
-                rules.PreComments = preRulesComments;
-                return NodeProvider.Directive("@media", rules, features, index);
-            }
-
-            throw new ParsingException("@media block with unrecognised format", index);
+            rules.PreComments = preRulesComments;
+            return NodeProvider.Directive("@media", rules, features, index);
         }
 
         public Directive KeyFrameBlock(Parser parser, string name, string identifier, int index)
@@ -1317,20 +1292,14 @@ namespace dotless.Core.Parser
 
                 if (parser.Tokenizer.Match(","))
                 {
-                    var keyFrameIdentifier2 = parser.Tokenizer.Match(identifierRegEx);
-
-                    if (!keyFrameIdentifier2)
-                        throw new ParsingException("Comma in @keyframe followed by unknown identifier", parser.Tokenizer.Location.Index);
+                    var keyFrameIdentifier2 = Expect(parser.Tokenizer.Match(identifierRegEx), "Comma in @keyframe followed by unknown identifier", parser);
 
                     keyFrameIdentifier += "," + keyFrameIdentifier2;
                 }
 
                 var preComments = GatherAndPullComments(parser);
 
-                var block = Block(parser);
-
-                if (block == null)
-                    throw new ParsingException("Expected css block after key frame identifier", parser.Tokenizer.Location.Index);
+                var block = Expect(Block(parser), "Expected css block after key frame identifier", parser);
 
                 block.PreComments = preComments;
                 block.PostComments = GatherAndPullComments(parser);
@@ -1564,6 +1533,15 @@ namespace dotless.Core.Parser
 
             throw new ParsingException(string.Format(message, expectedString, parser.Tokenizer.NextChar), parser.Tokenizer.Location.Index);
         }
+
+        public T Expect<T>(T node, string message, Parser parser) where T:Node
+        {
+            if (node)
+                return node;
+
+            throw new ParsingException(message, parser.Tokenizer.Location.Index);
+        }
+
 
         public class ParserLocation
         {

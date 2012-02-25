@@ -69,7 +69,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void GlobalsInsideGuards()
+        public void GlobalsInsideGuardsPositive()
         {
             var input =
                 @"
@@ -78,13 +78,32 @@ namespace dotless.Test.Specs
 .glob (@a) when (@a = @g) {
   margin: @a @g;
 }
-.glob1 { .glob(auto) }";
+.glob1 { .glob(auto) }
+";
 
             var expected =
                 @"
 .glob1 {
   margin: auto auto;
 }";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void GlobalsInsideGuardsNegative()
+        {
+            var input =
+                @"
+@g: auto;
+
+.glob (@a) when (@a = @g) {
+  margin: @a @g;
+}
+
+.glob2 { .glob(default) }";
+
+            var expected = @"";
 
             AssertLess(input, expected);
         }
@@ -126,7 +145,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void ScopeAndDefaultValues()
+        public void ScopeAndDefaultValuesPositive()
         {
             var input =
                 @"
@@ -144,6 +163,24 @@ namespace dotless.Test.Specs
   content: default;
 }
 ";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void ScopeAndDefaultValuesNegative()
+        {
+            var input =
+                @"
+@a: auto;
+
+.default (@a: inherit) when (@a = inherit) {
+  content: default;
+}
+.default2 { .default(@a) }
+";
+
+            var expected = @"";
 
             AssertLess(input, expected);
         }
