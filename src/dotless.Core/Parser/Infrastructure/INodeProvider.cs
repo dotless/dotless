@@ -27,7 +27,8 @@ namespace dotless.Core.Parser.Infrastructure
 
         //mixins
         MixinCall MixinCall(NodeList<Element> elements, List<NamedArgument> arguments, int index);
-        MixinDefinition MixinDefinition(string name, NodeList<Rule> parameters, NodeList rules, int index);
+        MixinDefinition MixinDefinition(string name, NodeList<Rule> parameters, NodeList rules, Condition condition, int index);
+        Condition Condition(Node left, string operation, Node right, bool negate, int index);
 
         //directives
         Import Import(Url path, IImporter importer, Value features, int index);

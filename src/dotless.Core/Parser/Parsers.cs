@@ -341,8 +341,7 @@ namespace dotless.Core.Parser
                 value = parser.Tokenizer.MatchAny(@"[^\)""']*") || new TextNode("");
             }
 
-            if (!parser.Tokenizer.Match(')'))
-                throw new ParsingException("missing closing ) for url()", parser.Tokenizer.Location.Index);
+            Expect(parser, ')');
 
             return NodeProvider.Url(value, parser.Importer, index);
         }
@@ -526,8 +525,7 @@ namespace dotless.Core.Parser
                     if (!parser.Tokenizer.Match(','))
                         break;
                 }
-                if (!parser.Tokenizer.Match(')'))
-                    throw new ParsingException("Expected ')'", parser.Tokenizer.Location.Index);
+                Expect(parser, ')');
             }
 
             if (elements.Count > 0)
@@ -591,6 +589,7 @@ namespace dotless.Core.Parser
             var parameters = new NodeList<Rule>();
             RegexMatchResult param = null;
             Node param2 = null;
+            Condition condition = null;
             Func<bool> matchParam = () => (param = parser.Tokenizer.Match(@"@[\w-]+")) ||
                                           (param2 = Literal(parser) ||
                                                     Keyword(parser));
@@ -623,21 +622,105 @@ namespace dotless.Core.Parser
 
                 GatherAndPullComments(parser);
             }
-            if (!parser.Tokenizer.Match(')'))
-                throw new ParsingException("Expected ')'", parser.Tokenizer.Location.Index);
+
+            Expect(parser, ')');
 
             GatherAndPullComments(parser);
+
+            var memo2 = Remember(parser);
+
+            if (parser.Tokenizer.Match("when"))
+            {
+                GatherAndPullComments(parser);
+
+                condition = Conditions(parser);
+
+                if (!condition)
+                {
+                    Recall(parser, memo2);
+                }
+            }
 
             var rules = Block(parser);
 
             PopComments();
 
             if (rules != null)
-                return NodeProvider.MixinDefinition(name, parameters, rules, index);
+                return NodeProvider.MixinDefinition(name, parameters, rules, condition, index);
 
             Recall(parser, memo);
 
             return null;
+        }
+
+        public Condition Conditions(Parser parser)
+        {
+            Condition condition, nextCondition;
+
+            if (condition = Condition(parser)) {
+                while(parser.Tokenizer.Match(',')) {
+                    nextCondition = Condition(parser);
+
+                    if (!nextCondition)
+                        throw new ParsingException(", without recognised condition", parser.Tokenizer.Location.Index);
+
+                    condition = NodeProvider.Condition(condition, "or", nextCondition, false, parser.Tokenizer.Location.Index);
+                }
+                return condition;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        ///  A condition is used for mixin definitions and is made up
+        ///  of left operation right
+        /// </summary>
+        public Condition Condition(Parser parser)
+        {
+            int index = parser.Tokenizer.Location.Index;
+            bool negate = false;
+            Condition condition;
+            //var a, b, c, op, index = i, negate = false;
+
+            if (parser.Tokenizer.Match("not"))
+            {
+                negate = true;
+            }
+
+            Expect(parser, '(');
+
+            Node left = Addition(parser) || Keyword(parser) || Quoted(parser);
+
+            if (!left)
+                throw new ParsingException("unrecognised condition", index);
+
+            var op = parser.Tokenizer.Match("(>=|=<|[<=>])"); // ?? 
+
+            if (op)
+            {
+                Node right = Addition(parser) || Keyword(parser) || Quoted(parser);
+
+                if (!right)
+                {
+                    throw new ParsingException("expected expression", index);
+                }
+
+                condition = NodeProvider.Condition(left, op.Value, right, negate, index);
+            }
+            else
+            {
+                condition = NodeProvider.Condition(left, "=", NodeProvider.Keyword("true", index), negate, index);
+            }
+
+            Expect(parser, ')');
+
+            if (parser.Tokenizer.Match("and"))
+            {
+                return NodeProvider.Condition(condition, "and", Condition(parser), negate, index);
+            }
+
+            return condition;
         }
 
         //
@@ -676,8 +759,7 @@ namespace dotless.Core.Parser
 
             if (value = parser.Tokenizer.Match(@"[0-9]+") || Variable(parser))
             {
-                if (!parser.Tokenizer.Match(')'))
-                    throw new ParsingException("missing closing ) for alpha()", parser.Tokenizer.Location.Index);
+                Expect(parser, ')');
 
                 return NodeProvider.Alpha(value, index);
             }
@@ -829,8 +911,7 @@ namespace dotless.Core.Parser
                     attr = key.ToString();
             }
 
-            if (!parser.Tokenizer.Match(']'))
-                throw new ParsingException("Excpected ']'", parser.Tokenizer.Location.Index);
+            Expect(parser, ']');
 
             if (!string.IsNullOrEmpty(attr))
                 return NodeProvider.TextNode("[" + attr + "]", index);
@@ -957,8 +1038,7 @@ namespace dotless.Core.Parser
             {
                 var features = MediaFeatures(parser);
 
-                if (!parser.Tokenizer.Match(';'))
-                    throw new ParsingException("Expected ';' (possibly unrecognised media sequence)", parser.Tokenizer.Location.Index);
+                Expect(parser, ';', "Expected ';' (possibly unrecognised media sequence)");
 
                 if (path is Quoted)
                     return NodeProvider.Import(path as Quoted, parser.Importer, features, index);
@@ -1138,10 +1218,8 @@ namespace dotless.Core.Parser
                         if (unrecognised)
                         {
                             entity = NodeProvider.TextNode(unrecognised.Value, parser.Tokenizer.Location.Index);
+                            Expect(parser, ')');
                         }
-
-                        if (!unrecognised || !parser.Tokenizer.Match(')'))
-                            throw new ParsingException("missing closing bracket for media feature", index);
                     }
 
                     if (!entity)
@@ -1260,8 +1338,7 @@ namespace dotless.Core.Parser
                 keyFrames.Add(NodeProvider.KeyFrame(keyFrameIdentifier, block, parser.Tokenizer.Location.Index));
             }
 
-            if (!parser.Tokenizer.Match('}'))
-                throw new ParsingException("Expected start, finish, % or '}'", parser.Tokenizer.Location.Index);
+            Expect(parser, '}', "Expected start, finish, % or '}}' but got {1}");
 
             return NodeProvider.Directive(name, identifier, keyFrames, index);
         }
@@ -1471,6 +1548,21 @@ namespace dotless.Core.Parser
                 return name.Value;
 
             return null;
+        }
+
+        public void Expect(Parser parser, char expectedString)
+        {
+            Expect(parser, expectedString, null);
+        }
+
+        public void Expect(Parser parser, char expectedString, string message)
+        {
+            if (parser.Tokenizer.Match(expectedString))
+                return;
+
+            message = message ?? "Expected '{0}' but found '{1}'";
+
+            throw new ParsingException(string.Format(message, expectedString, parser.Tokenizer.NextChar), parser.Tokenizer.Location.Index);
         }
 
         public class ParserLocation

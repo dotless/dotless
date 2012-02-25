@@ -14,12 +14,14 @@ namespace dotless.Core.Parser.Tree
         private int _arity;
         public string Name { get; set; }
         public NodeList<Rule> Params { get; set; }
+        public Condition Condition { get; set; }
 
-        public MixinDefinition(string name, NodeList<Rule> parameters, NodeList rules)
+        public MixinDefinition(string name, NodeList<Rule> parameters, NodeList rules, Condition condition)
         {
             Name = name;
             Params = parameters;
             Rules = rules;
+            Condition = condition;
             Selectors = new NodeList<Selector> {new Selector(new NodeList<Element>(new Element(null, name)))};
 
             _arity = Params.Count;
@@ -101,7 +103,7 @@ namespace dotless.Core.Parser.Tree
                 {
                     var mixin = rule as MixinDefinition;
                     var parameters = Enumerable.Concat(mixin.Params, frame.Rules.Cast<Rule>());
-                    newRules.Add(new MixinDefinition(mixin.Name, new NodeList<Rule>(parameters), mixin.Rules));
+                    newRules.Add(new MixinDefinition(mixin.Name, new NodeList<Rule>(parameters), mixin.Rules, mixin.Condition));
                 }
                 else if (rule is Directive)
                 {

@@ -96,6 +96,7 @@
     <Compile Include="Parser\Infrastructure\NamedArgument.cs" />
     <Compile Include="Parser\Infrastructure\Output.cs" />
     <Compile Include="Parser\Tree\Assignment.cs" />
+    <Compile Include="Parser\Tree\Condition.cs" />
     <Compile Include="Parser\Tree\Paren.cs" />
     <Compile Include="Parser\Tree\KeyFrame.cs" />
     <Compile Include="Parser\Tree\Script.cs" />

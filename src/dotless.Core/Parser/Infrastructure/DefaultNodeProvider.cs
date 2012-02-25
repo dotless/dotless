@@ -82,9 +82,9 @@ namespace dotless.Core.Parser.Infrastructure
             return new MixinCall(elements, arguments) { Index = index };
         }
 
-        public MixinDefinition MixinDefinition(string name, NodeList<Rule> parameters, NodeList rules, int index)
+        public MixinDefinition MixinDefinition(string name, NodeList<Rule> parameters, NodeList rules, Condition condition, int index)
         {
-            return new MixinDefinition(name, parameters, rules) { Index = index };
+            return new MixinDefinition(name, parameters, rules, condition) { Index = index };
         }
 
         public Import Import(Url path, IImporter importer, Value features, int index)
@@ -160,6 +160,11 @@ namespace dotless.Core.Parser.Infrastructure
         public Paren Paren(Node value, int index)
         {
             return new Paren(value) { Index = index };
+        }
+
+        public Condition Condition(Node left, string operation, Node right, bool negate, int index)
+        {
+            return new Condition(left, operation, right, negate) { Index = index };
         }
     }
 }
