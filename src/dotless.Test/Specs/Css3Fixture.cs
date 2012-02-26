@@ -663,12 +663,33 @@ a ~ p {
             }
         }
 
-        [Test, Ignore("Bug #123")]
+        [Test]
         public void GridRepeatingPatternSupported()
         {
             //see http://www.w3.org/TR/css3-grid/#example0
 
-            AssertExpressionUnchanged("* * (0.5in * *)[2]");
+            AssertExpressionUnchanged("0 1em (0.5in 5rem 0)[2]");
+            AssertExpressionUnchanged("(500px)[2]");
+        }
+
+        [Test]
+        public void GridRepeatingPatternSupportedWithVars()
+        {
+            var input = @"
+@a : 1em;
+@b : 2px;
+@c : red;
+@d : 10;
+.test {
+  background: 0 @a (@b 0 @c)[@d];
+}
+";
+            var expected = @"
+.test {
+  background: 0 1em (2px 0 red)[10];
+}
+";
+            AssertLess(input, expected);
         }
     }
 }

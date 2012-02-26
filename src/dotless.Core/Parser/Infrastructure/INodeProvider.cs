@@ -40,6 +40,7 @@ namespace dotless.Core.Parser.Infrastructure
 
         //expressions
         Expression Expression(NodeList expression, int index);
+        RepeatEntity RepeatEntity(Node value, Node repeatCount, int index);
         Value Value(IEnumerable<Node> values, string important, int index);
         Operation Operation(string operation, Node left, Node right, int index);
         Assignment Assignment(string key, Node value);

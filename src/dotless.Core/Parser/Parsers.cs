@@ -1391,11 +1391,15 @@ namespace dotless.Core.Parser
             if (!parser.Tokenizer.Match('('))
                 return null;
 
+            var memo = Remember(parser);
+
             var e = Expression(parser);
             if (e != null && parser.Tokenizer.Match(')'))
                 return e;
 
-            return null; // might be an attribute selector or something else
+            Recall(parser, memo);
+
+            return null;
         }
 
         public Node Multiplication(Parser parser)
@@ -1497,7 +1501,7 @@ namespace dotless.Core.Parser
 
             var index = parser.Tokenizer.Location.Index;
 
-            while (e = Addition(parser) || Entity(parser))
+            while (e = RepeatPattern(parser) || Addition(parser) || Entity(parser))
             {
                 e.PostComments = PullComments();
                 entities.Add(e);
@@ -1505,6 +1509,27 @@ namespace dotless.Core.Parser
 
             if (entities.Count > 0)
                 return NodeProvider.Expression(entities, index);
+
+            return null;
+        }
+
+        /// <summary>
+        ///  A repeat entity.. such as "(0.5in * *)[2]"
+        /// </summary>
+        public Node RepeatPattern(Parser parser)
+        {
+            if (parser.Tokenizer.Peek(@"\([^;{}\)]+\)\[")) {
+                var index = parser.Tokenizer.Location.Index;
+
+                parser.Tokenizer.Match('(');
+                var value = Expression(parser);
+                Expect(parser, ')');
+                Expect(parser, '[');
+                var repeat = Expect(Entity(parser), "Expected repeat entity", parser);
+                Expect(parser, ']');
+
+                return NodeProvider.RepeatEntity(NodeProvider.Paren(value, index), repeat, index);
+            }
 
             return null;
         }

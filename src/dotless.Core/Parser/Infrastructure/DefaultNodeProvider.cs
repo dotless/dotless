@@ -166,5 +166,10 @@ namespace dotless.Core.Parser.Infrastructure
         {
             return new Condition(left, operation, right, negate) { Index = index };
         }
+
+        public RepeatEntity RepeatEntity(Node value, Node repeatCount, int index)
+        {
+            return new RepeatEntity(value, repeatCount) { Index = index };
+        }
     }
 }
