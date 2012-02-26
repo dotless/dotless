@@ -92,6 +92,7 @@
     <Compile Include="Specs\Compression\ImportFixture.cs" />
     <Compile Include="Specs\Compression\SelectorsFixture.cs" />
     <Compile Include="Specs\Compression\WhitespaceFixture.cs" />
+    <Compile Include="Specs\Functions\ColorFixture.cs" />
     <Compile Include="Specs\MixinGuards.cs" />
     <Compile Include="Specs\Functions\HexFixture.cs" />
     <Compile Include="Specs\Functions\ContrastFixture.cs" />
