@@ -6,7 +6,7 @@
     using Utils;
     using System;
 
-    public class Number : Node, IOperable
+    public class Number : Node, IOperable, IComparable
     {
         public double Value { get; set; }
         public string Unit { get; set; }
@@ -109,6 +109,34 @@
         public static Number operator -(Number n)
         {
             return new Number(-n.Value, n.Unit);
+        }
+
+        public int CompareTo(object obj)
+        {
+            Number n = obj as Number;
+
+            if (n)
+            {
+                if (n.Unit != Unit && Value != 0)
+                {
+                    return -1;
+                }
+
+                if (n.Value > Value)
+                {
+                    return -1;
+                }
+                else if (n.Value < Value)
+                {
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+
+            return -1;
         }
     }
 }

@@ -681,7 +681,7 @@ namespace dotless.Core.Parser
 
             Node left = Expect(Addition(parser) || Keyword(parser) || Quoted(parser), "unrecognised condition", parser);
 
-            var op = parser.Tokenizer.Match("(>=|=<|[<=>])"); // ?? 
+            var op = parser.Tokenizer.Match("(>=|=<|[<=>])");
 
             if (op)
             {
@@ -698,7 +698,7 @@ namespace dotless.Core.Parser
 
             if (parser.Tokenizer.Match("and"))
             {
-                return NodeProvider.Condition(condition, "and", Condition(parser), negate, index);
+                return NodeProvider.Condition(condition, "and", Condition(parser), false, index);
             }
 
             return condition;

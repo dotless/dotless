@@ -223,25 +223,25 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void BooleanExpressions()
+        public void BooleanExpression1()
         {
             var input =
                 @"
 .bool () when (true) and (false)                             { content: true and false } // FALSE
+.bool1 { .bool }";
+
+            var expected =
+                @"";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void BooleanExpression2()
+        {
+            var input =
+                @"
 .bool () when (true) and (true)                              { content: true and true } // TRUE
-.bool () when (true)                                         { content: true } // TRUE
-.bool () when (false) and (false)                            { content: true } // FALSE
-.bool () when (false), (true)                                { content: false, true } // TRUE
-.bool () when (false) and (true) and (true),  (true)         { content: false and true and true, true } // TRUE
-.bool () when (true)  and (true) and (false), (false)        { content: true and true and false, false } // FALSE
-.bool () when (false), (true) and (true)                     { content: false, true and true } // TRUE
-.bool () when (false), (false), (true)                       { content: false, false, true } // TRUE
-.bool () when (false), (false) and (true), (false)           { content: false, false and true, false } // FALSE
-.bool () when (false), (true) and (true) and (true), (false) { content: false, true and true and true, false } // TRUE
-.bool () when not (false)                                    { content: not false }
-.bool () when not (true) and not (false)                     { content: not true and not false }
-.bool () when not (true) and not (true)                      { content: not true and not true }
-.bool () when not (false) and (false), not (false)           { content: not false and false, not false }
 
 .bool1 { .bool }";
 
@@ -249,17 +249,230 @@ namespace dotless.Test.Specs
                 @"
 .bool1 {
   content: true and true;
+}";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void BooleanExpression3()
+        {
+            var input =
+                @"
+.bool () when (true)                                         { content: true } // TRUE
+
+.bool1 { .bool }";
+
+            var expected =
+                @"
+.bool1 {
   content: true;
+}";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void BooleanExpression4()
+        {
+            var input =
+                @"
+.bool () when (false) and (false)                            { content: true } // FALSE
+
+.bool1 { .bool }";
+
+            var expected =
+                @"";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void BooleanExpression5()
+        {
+            var input =
+                @"
+.bool () when (false), (true)                                { content: false, true } // TRUE
+
+.bool1 { .bool }";
+
+            var expected =
+                @"
+.bool1 {
   content: false, true;
+}";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void BooleanExpression6()
+        {
+            var input =
+                @"
+.bool () when (false) and (true) and (true),  (true)         { content: false and true and true, true } // TRUE
+
+.bool1 { .bool }";
+
+            var expected =
+                @"
+.bool1 {
   content: false and true and true, true;
+}";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void BooleanExpression7()
+        {
+            var input =
+                @"
+.bool () when (true)  and (true) and (false), (false)        { content: true and true and false, false } // FALSE
+
+.bool1 { .bool }";
+
+            var expected =
+                @"";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void BooleanExpression8()
+        {
+            var input =
+                @"
+.bool () when (false), (true) and (true)                     { content: false, true and true } // TRUE
+
+.bool1 { .bool }";
+
+            var expected =
+                @"
+.bool1 {
   content: false, true and true;
+}";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void BooleanExpression9()
+        {
+            var input =
+                @"
+.bool () when (false), (false), (true)                       { content: false, false, true } // TRUE
+
+.bool1 { .bool }";
+
+            var expected =
+                @"
+.bool1 {
   content: false, false, true;
+}";
+
+            AssertLess(input, expected);
+        }
+
+
+        [Test]
+        public void BooleanExpression10()
+        {
+            var input =
+                @"
+.bool () when (false), (false) and (true), (false)           { content: false, false and true, false } // FALSE
+
+.bool1 { .bool }";
+
+            var expected =
+                @"";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void BooleanExpression11()
+        {
+            var input =
+                @"
+.bool () when (false), (true) and (true) and (true), (false) { content: false, true and true and true, false } // TRUE
+
+.bool1 { .bool }";
+
+            var expected =
+                @"
+.bool1 {
   content: false, true and true and true, false;
+}";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void BooleanExpression12()
+        {
+            var input =
+                @"
+.bool () when not (false)                                    { content: not false }
+
+.bool1 { .bool }";
+
+            var expected =
+                @"
+.bool1 {
   content: not false;
+}";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void BooleanExpression13()
+        {
+            var input =
+                @"
+.bool () when not (true) and not (false)                     { content: not true and not false }
+
+.bool1 { .bool }";
+
+            var expected =
+                @"";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void BooleanExpression14()
+        {
+            var input =
+                @"
+.bool () when not (true) and not (true)                      { content: not true and not true }
+
+.bool1 { .bool }";
+
+            var expected =
+                @"";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void BooleanExpression15()
+        {
+            var input =
+                @"
+.bool () when not (false) and (false), not (false)           { content: not false and false, not false }
+
+.bool1 { .bool }";
+
+            var expected =
+                @"
+.bool1 {
   content: not false and false, not false;
 }";
 
             AssertLess(input, expected);
         }
+
     }
 }

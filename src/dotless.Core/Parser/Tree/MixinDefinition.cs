@@ -33,11 +33,8 @@ namespace dotless.Core.Parser.Tree
             return this;
         }
 
-        public Ruleset Evaluate(List<NamedArgument> args, Env env, List<Ruleset> closureContext)
+        public Ruleset EvaluateParams(Env env, List<NamedArgument> args)
         {
-//            if (args != null && args.Any())
-//                Guard.ExpectMaxArguments(Params.Count, args.Count, String.Format("'{0}'", Name), Index);
-
             var arguments = new Dictionary<string, Node>();
             args = args ?? new List<NamedArgument>();
 
@@ -76,21 +73,28 @@ namespace dotless.Core.Parser.Tree
                                       args != null ? args.Count : 0, _arity), Index);
             }
 
-            var _arguments = new List<Node>();
+            var argumentNodes = new List<Node>();
 
             for(var i = 0; i < Math.Max(Params.Count, args.Count); i++)
             {
-              _arguments.Add(i < args.Count ? args[i].Value : Params[i].Value);
+              argumentNodes.Add(i < args.Count ? args[i].Value : Params[i].Value);
             }
 
             var frame = new Ruleset(null, new NodeList());
 
-            frame.Rules.Insert(0, new Rule("@arguments", new Expression(_arguments.Where(a => a != null)).Evaluate(env)));
+            frame.Rules.Insert(0, new Rule("@arguments", new Expression(argumentNodes.Where(a => a != null)).Evaluate(env)));
 
             foreach (var arg in arguments)
             {
                 frame.Rules.Add(arg.Value);
             }
+
+            return frame;
+        }
+
+        public Ruleset Evaluate(List<NamedArgument> args, Env env, List<Ruleset> closureContext)
+        {
+            var frame = EvaluateParams(env, args);
 
             var frames = new[] { this, frame }.Concat(env.Frames).Concat(closureContext).Reverse();
             var context = env.CreateChildEnv(new Stack<Ruleset>(frames));
@@ -135,27 +139,37 @@ namespace dotless.Core.Parser.Tree
             return new Ruleset(null, newRules);
         }
 
-        public override bool MatchArguments(List<NamedArgument> arguements, Env env)
+        public override MixinMatch MatchArguments(List<NamedArgument> arguments, Env env)
         {
-            var argsLength = arguements != null ? arguements.Count : 0;
+            var argsLength = arguments != null ? arguments.Count : 0;
 
             if (argsLength < _required)
-              return false;
+              return MixinMatch.ArgumentMismatch;
             if (_required > 0 && argsLength > _arity)
-              return false;
+              return MixinMatch.ArgumentMismatch;
+
+            if (Condition)
+            {
+                env.Frames.Push(EvaluateParams(env, arguments));
+
+                if (!Condition.Passes(env))
+                    return MixinMatch.GuardFail;
+
+                env.Frames.Pop();
+            }
 
             for (var i = 0; i < Math.Min(argsLength, _arity); i++)
             {
                 if (String.IsNullOrEmpty(Params[i].Name))
                 {
-                    if (arguements[i].Value.Evaluate(env).ToCSS(env) != Params[i].Value.Evaluate(env).ToCSS(env))
+                    if (arguments[i].Value.Evaluate(env).ToCSS(env) != Params[i].Value.Evaluate(env).ToCSS(env))
                     {
-                        return false;
+                        return MixinMatch.ArgumentMismatch;
                     }
                 }
             }
 
-            return true;
+            return MixinMatch.Pass;
         }
 
         protected override void AppendCSS(Env env, Context context)

@@ -39,10 +39,15 @@ namespace dotless.Core.Parser.Tree
             {
                 var ruleset = closure.Ruleset;
 
-                if (!ruleset.MatchArguments(Arguments, env))
+                var matchType = ruleset.MatchArguments(Arguments, env);
+
+                if (matchType == MixinMatch.ArgumentMismatch)
                     continue;
 
                 found = true;
+
+                if (matchType == MixinMatch.GuardFail)
+                    continue;
 
                 if (ruleset is MixinDefinition)
                 {

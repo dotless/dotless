@@ -115,9 +115,9 @@ namespace dotless.Core.Parser.Tree
             return _lookups[key] = rules;
         }
 
-        public virtual bool MatchArguments(List<NamedArgument> arguements, Env env)
+        public virtual MixinMatch MatchArguments(List<NamedArgument> arguments, Env env)
         {
-            return arguements == null || arguements.Count == 0;
+            return (arguments == null || arguments.Count == 0) ? MixinMatch.Pass : MixinMatch.ArgumentMismatch;
         }
 
         public override Node Evaluate(Env env)
