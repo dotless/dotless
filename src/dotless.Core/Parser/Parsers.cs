@@ -485,6 +485,7 @@ namespace dotless.Core.Parser
         {
             var elements = new NodeList<Element>();
             var index = parser.Tokenizer.Location.Index;
+            bool important = false;
 
             RegexMatchResult e;
             Combinator c = null;
@@ -498,6 +499,12 @@ namespace dotless.Core.Parser
                 i = parser.Tokenizer.Location.Index;
                 var match = parser.Tokenizer.Match('>');
                 c = match != null ? NodeProvider.Combinator(match.Value, i) : null;
+            }
+
+            if (elements.Count == 0)
+            {
+                PopComments();
+                return null;
             }
 
             var args = new List<NamedArgument>();
@@ -526,18 +533,22 @@ namespace dotless.Core.Parser
                 Expect(parser, ')');
             }
 
-            if (elements.Count > 0)
-            {
-                // if elements then we've picked up chars so don't need to worry about remembering
-                var postComments = GatherAndPullComments(parser);
+            GatherComments(parser);
 
-                if (End(parser))
-                {
-                    var mixinCall = NodeProvider.MixinCall(elements, args, index);
-                    mixinCall.PostComments = postComments;
-                    PopComments();
-                    return mixinCall;
-                }
+            if (!string.IsNullOrEmpty(Important(parser)))
+            {
+                important = true;
+            }
+
+            // if elements then we've picked up chars so don't need to worry about remembering
+            var postComments = GatherAndPullComments(parser);
+
+            if (End(parser))
+            {
+                var mixinCall = NodeProvider.MixinCall(elements, args, important, index);
+                mixinCall.PostComments = postComments;
+                PopComments();
+                return mixinCall;
             }
 
             PopComments();

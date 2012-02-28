@@ -1468,5 +1468,47 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
 ";
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void MixinImportant()
+        {
+            var input = @"
+.mixin (9) {
+  border: 9 !important;  
+}
+.mixin (@a: 0) {
+  border: @a;
+  boxer: 1, @a;
+}
+
+.class {
+  .mixin(1);
+  .mixin(2) !important;
+  .mixin(3);
+  .mixin(4) !important;
+  .mixin(5);
+  .mixin !important;
+  .mixin(9);
+}";
+            var expected = @"
+.class {
+  border: 1;
+  boxer: 1, 1;
+  border: 2 !important;
+  boxer: 1, 2 !important;
+  border: 3;
+  boxer: 1, 3;
+  border: 4 !important;
+  boxer: 1, 4 !important;
+  border: 5;
+  boxer: 1, 5;
+  border: 0 !important;
+  boxer: 1, 0 !important;
+  border: 9 !important;
+  border: 9;
+  boxer: 1, 9;
+}";
+            AssertLess(input, expected);
+        }
     }
 }

@@ -26,7 +26,7 @@ namespace dotless.Core.Parser.Infrastructure
         Paren Paren(Node node, int index);
 
         //mixins
-        MixinCall MixinCall(NodeList<Element> elements, List<NamedArgument> arguments, int index);
+        MixinCall MixinCall(NodeList<Element> elements, List<NamedArgument> arguments, bool important, int index);
         MixinDefinition MixinDefinition(string name, NodeList<Rule> parameters, NodeList rules, Condition condition, int index);
         Condition Condition(Node left, string operation, Node right, bool negate, int index);
 

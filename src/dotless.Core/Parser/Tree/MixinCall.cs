@@ -12,10 +12,12 @@ namespace dotless.Core.Parser.Tree
     public class MixinCall : Node
     {
         public List<NamedArgument> Arguments { get; set; }
-        protected Selector Selector { get; set; }
+        public Selector Selector { get; set; }
+        public bool Important { get; set; }
 
-        public MixinCall(NodeList<Element> elements, List<NamedArgument> arguments)
+        public MixinCall(NodeList<Element> elements, List<NamedArgument> arguments, bool important)
         {
+            Important = important;
             Selector = new Selector(elements);
             Arguments = arguments;
         }
@@ -85,7 +87,40 @@ namespace dotless.Core.Parser.Tree
                 throw new ParsingException(message, Index);
             }
 
-            return rules;
+            if (Important)
+            {
+                var importantRules = new NodeList();
+
+                foreach (Node node in rules)
+                {
+                    Rule r = node as Rule;
+                    if (r != null)
+                    {
+                        var valueNode = r.Value;
+                        var value = valueNode as Value;
+                        if (value != null)
+                        {
+                            value = new Value(value.Values, "!important").ReducedFrom<Value>(value);
+                        }
+                        else
+                        {
+                            value = new Value(new NodeList() { valueNode }, "!important");
+                        }
+
+                        importantRules.Add((new Rule(r.Name, value)).ReducedFrom<Rule>(r));
+                    }
+                    else
+                    {
+                        importantRules.Add(node);
+                    }
+                }
+
+                return importantRules;
+            }
+            else
+            {
+                return rules;
+            }
         }
 
         public override void Accept(IVisitor visitor)
