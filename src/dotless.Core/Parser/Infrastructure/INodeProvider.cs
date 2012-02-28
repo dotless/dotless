@@ -40,7 +40,9 @@ namespace dotless.Core.Parser.Infrastructure
 
         //expressions
         Expression Expression(NodeList expression, int index);
+ #if CSS3EXPERIMENTAL
         RepeatEntity RepeatEntity(Node value, Node repeatCount, int index);
+#endif
         Value Value(IEnumerable<Node> values, string important, int index);
         Operation Operation(string operation, Node left, Node right, int index);
         Assignment Assignment(string key, Node value);

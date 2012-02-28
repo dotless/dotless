@@ -166,10 +166,11 @@ namespace dotless.Core.Parser.Infrastructure
         {
             return new Condition(left, operation, right, negate) { Index = index };
         }
-
+#if CSS3EXPERIMENTAL
         public RepeatEntity RepeatEntity(Node value, Node repeatCount, int index)
         {
             return new RepeatEntity(value, repeatCount) { Index = index };
         }
+#endif
     }
 }

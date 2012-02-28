@@ -663,6 +663,7 @@ a ~ p {
             }
         }
 
+#if CSS3EXPERIMENTAL
         [Test]
         public void GridRepeatingPatternSupported()
         {
@@ -691,5 +692,6 @@ a ~ p {
 ";
             AssertLess(input, expected);
         }
+#endif
     }
 }

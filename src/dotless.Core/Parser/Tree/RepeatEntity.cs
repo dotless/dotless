@@ -1,4 +1,5 @@
-﻿namespace dotless.Core.Parser.Tree
+﻿#if CSS3EXPERIMENTAL
+namespace dotless.Core.Parser.Tree
 {
     using Infrastructure;
     using Infrastructure.Nodes;
@@ -38,3 +39,4 @@
         }
     }
 }
+#endif

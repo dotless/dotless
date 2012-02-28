@@ -1501,7 +1501,11 @@ namespace dotless.Core.Parser
 
             var index = parser.Tokenizer.Location.Index;
 
+#if CSS3EXPERIMENTAL
             while (e = RepeatPattern(parser) || Addition(parser) || Entity(parser))
+#else 
+            while (e = Addition(parser) || Entity(parser))
+#endif
             {
                 e.PostComments = PullComments();
                 entities.Add(e);
@@ -1513,6 +1517,7 @@ namespace dotless.Core.Parser
             return null;
         }
 
+#if CSS3EXPERIMENTAL
         /// <summary>
         ///  A repeat entity.. such as "(0.5in * *)[2]"
         /// </summary>
@@ -1533,6 +1538,7 @@ namespace dotless.Core.Parser
 
             return null;
         }
+#endif
 
         public string Property(Parser parser)
         {
