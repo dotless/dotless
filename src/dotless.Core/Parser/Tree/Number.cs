@@ -117,11 +117,6 @@
 
             if (n)
             {
-                if (n.Unit != Unit && Value != 0)
-                {
-                    return -1;
-                }
-
                 if (n.Value > Value)
                 {
                     return -1;

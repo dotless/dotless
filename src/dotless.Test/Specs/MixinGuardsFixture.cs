@@ -474,5 +474,34 @@ namespace dotless.Test.Specs
             AssertLess(input, expected);
         }
 
+        [Test]
+        public void ComparisonAgainstEqualIgnoresUnits()
+        {
+            var input =
+                @"
+.light (@a) when (@a > 0) {
+  color: big @a;
+}
+.light (@a) when (@a < 0) {
+  color: small @a;
+}
+
+.light1 { 
+  .light(1px);
+  .light(0px); 
+  .light(-1px); 
+}
+";
+
+            var expected =
+                @"
+.light1 {
+  color: big 1px;
+  color: small -1px;
+}
+";
+
+            AssertLess(input, expected);
+        }
     }
 }
