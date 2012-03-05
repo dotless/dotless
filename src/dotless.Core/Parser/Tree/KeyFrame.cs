@@ -27,6 +27,11 @@
             return this;
         }
 
+        public override void Accept(Plugins.IVisitor visitor)
+        {
+            Rules = VisitAndReplace(Rules, visitor);
+        }
+
         protected override void AppendCSS(Env env, Context context)
         {
             env.Output.Append(Identifier);

@@ -11,6 +11,7 @@
     using Core.Plugins;
     using Core.Stylizers;
     using NUnit.Framework;
+    using dotless.Test.Plugins;
 
     public class SpecFixtureBase
     {
@@ -18,6 +19,8 @@
         protected Func<Parser> DefaultParser;
         protected Func<Env> DefaultEnv;
         protected int Optimisation { get; set; }
+        public PassThroughBeforePlugin PassThroughBeforePlugin { get; private set; }
+        public PassThroughAfterPlugin PassThroughAfterPlugin { get; private set; }
 
         [SetUp]
         public void SetupParser()
@@ -25,7 +28,14 @@
             Optimisation = 1;
             DefaultStylizer = () => new PlainStylizer();
             DefaultParser = () => new Parser(Optimisation, DefaultStylizer(), new Importer());
-            DefaultEnv = () => new Env();
+            DefaultEnv = () =>
+            {
+                var env = new Env();
+                env.AddPlugin(PassThroughAfterPlugin = new PassThroughAfterPlugin());
+                env.AddPlugin(PassThroughBeforePlugin = new PassThroughBeforePlugin());
+                return env;
+            };
+
         }
 
         protected void AssertLess(string input, string expected)

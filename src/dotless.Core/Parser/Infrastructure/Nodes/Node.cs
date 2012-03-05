@@ -135,6 +135,11 @@ namespace dotless.Core.Parser.Infrastructure.Nodes
         /// </summary>
         public T VisitAndReplace<T>(T nodeToVisit, IVisitor visitor, bool allowNull) where T : Node
         {
+            if (nodeToVisit == null)
+            {
+                return null;
+            }
+
             Node replacement = visitor.Visit(nodeToVisit);
 
             T typedReplacement = replacement as T;
@@ -143,7 +148,7 @@ namespace dotless.Core.Parser.Infrastructure.Nodes
                 return typedReplacement;
             }
 
-            throw new Exception();
+            throw new Exception("Not allowed null for node of type "+typeof(T).ToString());
         }
     }
 }

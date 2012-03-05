@@ -26,5 +26,10 @@
                 .Append(Value)
                 .Append(")");
         }
+
+        public override void Accept(Plugins.IVisitor visitor)
+        {
+            Value = VisitAndReplace<Node>(Value, visitor);
+        }
     }
 }

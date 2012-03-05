@@ -77,6 +77,16 @@ namespace dotless.Core.Parser.Tree
             }
         }
 
+        public override void Accept(Plugins.IVisitor visitor)
+        {
+            Features = VisitAndReplace(Features, visitor, true);
+
+            if (!Css)
+            {
+                InnerRoot = VisitAndReplace(InnerRoot, visitor);
+            }
+        }
+
         public override Node Evaluate(Env env)
         {
             Node features = null;

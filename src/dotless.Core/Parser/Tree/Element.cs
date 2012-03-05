@@ -68,11 +68,7 @@
         {
             Combinator = VisitAndReplace(Combinator, visitor);
 
-
-            if (NodeValue != null)
-            {
-                NodeValue = VisitAndReplace(NodeValue, visitor);
-            }
+            NodeValue = VisitAndReplace(NodeValue, visitor, true);
         }
     }
 }

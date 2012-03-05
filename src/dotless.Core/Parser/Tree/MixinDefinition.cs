@@ -172,9 +172,17 @@ namespace dotless.Core.Parser.Tree
             return MixinMatch.Pass;
         }
 
+        public override void Accept(Plugins.IVisitor visitor)
+        {
+            base.Accept(visitor);
+
+            Params = VisitAndReplace(Params, visitor);
+            Condition = VisitAndReplace(Condition, visitor, true);
+        }
+
         protected override void AppendCSS(Env env, Context context)
         {
-
+            
         }
     }
 }

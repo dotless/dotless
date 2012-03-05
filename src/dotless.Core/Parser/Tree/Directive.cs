@@ -36,6 +36,14 @@
         {
         }
 
+        public override void Accept(Plugins.IVisitor visitor)
+        {
+            Features = VisitAndReplace(Features, visitor, true);
+
+            Rules = VisitAndReplace(Rules, visitor);
+            Value = VisitAndReplace(Value, visitor);
+        }
+
         public override Node Evaluate(Env env)
         {
             env.Frames.Push(this);

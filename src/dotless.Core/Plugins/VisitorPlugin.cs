@@ -20,7 +20,7 @@
         {
             bool visitDeeper;
             node = Execute(node, out visitDeeper);
-            if (visitDeeper)
+            if (visitDeeper && node != null)
                 node.Accept(this);
 
             return node;
