@@ -238,5 +238,34 @@ a:nth-child(2) {
             AssertLess(input, expected);
         }
 
+        [Test]
+        public void PseudoSelectors()
+        {
+            // from less.js bug 663
+
+            var input = @"
+.other ::fnord { color: red }
+.other::fnord { color: red }
+.other {
+  ::bnord {color: red }
+  &::bnord {color: red }
+}";
+
+            var expected = @"
+.other ::fnord {
+  color: red;
+}
+.other::fnord {
+  color: red;
+}
+.other ::bnord {
+  color: red;
+}
+.other::bnord {
+  color: red;
+}";
+
+            AssertLess(input, expected);
+        }
     }
 }
