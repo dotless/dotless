@@ -1510,5 +1510,48 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
 }";
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void MixinCallingSameName()
+        {
+            // attempt to reproduce bug #136
+            var input = @"
+.clearfix() {
+  // For IE 6/7 (trigger hasLayout)
+  zoom:1; 
+  // For modern browsers
+  &:before {
+    content:"""";
+    display:table;
+  }
+  &:after {
+    content:"""";
+    display:table;
+  }
+  &:after {
+    clear:both;
+  }
+}
+.clearfix { 
+  .clearfix();
+}";
+            var expected = @"
+.clearfix {
+  zoom: 1;
+}
+.clearfix:before {
+  content: """";
+  display: table;
+}
+.clearfix:after {
+  content: """";
+  display: table;
+}
+.clearfix:after {
+  clear: both;
+}
+";
+            AssertLess(input, expected);
+        }
     }
 }
