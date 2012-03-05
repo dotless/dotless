@@ -94,10 +94,10 @@
     <Compile Include="Specs\Compression\WhitespaceFixture.cs" />
     <Compile Include="Specs\Functions\ColorFixture.cs" />
     <Compile Include="Specs\Functions\IsFunctionsFixture.cs" />
-    <Compile Include="Specs\MixinGuards.cs" />
     <Compile Include="Specs\Functions\HexFixture.cs" />
     <Compile Include="Specs\Functions\ContrastFixture.cs" />
     <Compile Include="Specs\Functions\StringFunctionsFixture.cs" />
+    <Compile Include="Specs\MixinGuardsFixture.cs" />
     <Compile Include="Specs\ScriptFixture.cs" />
     <Compile Include="TestStylizer.cs" />
     <Compile Include="Unit\Engine\CacheDecoratorFixture.cs" />
