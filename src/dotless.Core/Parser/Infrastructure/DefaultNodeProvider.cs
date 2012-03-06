@@ -27,6 +27,11 @@ namespace dotless.Core.Parser.Infrastructure
             return new Rule(name, value) { Index = index };
         }
 
+        public Rule Rule(string name, Node value, bool variadic, int index)
+        {
+            return new Rule(name, value, variadic) { Index = index };
+        }
+
         public Ruleset Ruleset(NodeList<Selector> selectors, NodeList rules, int index)
         {
             return new Ruleset(selectors, rules) { Index = index };
@@ -82,9 +87,9 @@ namespace dotless.Core.Parser.Infrastructure
             return new MixinCall(elements, arguments, important) { Index = index };
         }
 
-        public MixinDefinition MixinDefinition(string name, NodeList<Rule> parameters, NodeList rules, Condition condition, int index)
+        public MixinDefinition MixinDefinition(string name, NodeList<Rule> parameters, NodeList rules, Condition condition, bool variadic, int index)
         {
-            return new MixinDefinition(name, parameters, rules, condition) { Index = index };
+            return new MixinDefinition(name, parameters, rules, condition, variadic) { Index = index };
         }
 
         public Import Import(Url path, IImporter importer, Value features, int index)

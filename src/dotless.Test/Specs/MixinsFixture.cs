@@ -889,60 +889,6 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void IncludesAllMatchedMixins1()
-        {
-            var input =
-                @"
-.mixin ()                          { zero: 0; }
-.mixin (@a: 1px)                   { one: 1; }
-.mixin (@a)                        { one-req: 1; }
-.mixin (@a: 1px, @b: 2px)          { two: 2; }
-.mixin (@a, @b, @c)                { three-req: 3; }
-.mixin (@a: 1px, @b: 2px, @c: 3px) { three: 3; }
-
-.zero { .mixin(); }
-
-.one { .mixin(1); }
-
-.two { .mixin(1, 2); }
-
-.three { .mixin(1, 2, 3); }
-";
-
-            var expected =
-                @"
-.zero {
-  zero: 0;
-  one: 1;
-  two: 2;
-  three: 3;
-}
-.one {
-  zero: 0;
-  one: 1;
-  one-req: 1;
-  two: 2;
-  three: 3;
-}
-.two {
-  zero: 0;
-  one: 1;
-  two: 2;
-  three: 3;
-}
-.three {
-  zero: 0;
-  one: 1;
-  two: 2;
-  three-req: 3;
-  three: 3;
-}
-";
-
-            AssertLess(input, expected);
-        }
-
-        [Test]
         public void IncludesAllMatchedMixins2()
         {
             var input =

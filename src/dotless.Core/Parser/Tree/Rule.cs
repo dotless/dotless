@@ -12,13 +12,19 @@ namespace dotless.Core.Parser.Tree
         public bool Variable { get; set; }
         public NodeList PostNameComments { get; set; }
         public bool IsSemiColonRequired { get; set; }
+        public bool Variadic { get; set; }
 
-        public Rule(string name, Node value)
+        public Rule(string name, Node value) : this(name, value, false)
+        { 
+        }
+
+        public Rule(string name, Node value, bool variadic)
         {
             Name = name;
             Value = value;
             Variable = name != null ? name[0] == '@' : false;
             IsSemiColonRequired = true;
+            Variadic = variadic;
         }
 
         public override Node Evaluate(Env env)
