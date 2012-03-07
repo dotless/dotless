@@ -59,7 +59,11 @@ namespace dotless.Core
 
             pandora.Service<ICache>().Implementor<HttpCache>().Lifestyle.Transient();
             pandora.Service<ILogger>().Implementor<AspResponseLogger>().Parameters("level").Set("error-level").Lifestyle.Transient();
-            pandora.Service<IPathResolver>().Implementor<AspServerPathResolver>().Lifestyle.Transient();
+
+            if (configuration.MapPathsToWeb)
+                pandora.Service<IPathResolver>().Implementor<AspServerPathResolver>().Lifestyle.Transient();
+            else
+                pandora.Service<IPathResolver>().Implementor<AspRelativePathResolver>().Lifestyle.Transient();
         }
 
         private void RegisterLocalServices(FluentRegistration pandora)

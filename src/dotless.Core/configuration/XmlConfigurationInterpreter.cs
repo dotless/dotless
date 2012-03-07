@@ -18,6 +18,7 @@ namespace dotless.Core.configuration
             dotlessConfiguration.CacheEnabled = GetBoolValue(section, "cache") ?? dotlessConfiguration.CacheEnabled;
             dotlessConfiguration.Optimization = GetIntValue(section, "optimization") ?? dotlessConfiguration.Optimization;
             dotlessConfiguration.DisableUrlRewriting = GetBoolValue(section, "disableUrlRewriting") ?? dotlessConfiguration.DisableUrlRewriting;
+            dotlessConfiguration.MapPathsToWeb = GetBoolValue(section, "mapPathsToWeb") ?? dotlessConfiguration.MapPathsToWeb;
 
             var logLevel = GetStringValue(section, "log") ?? "default";
             switch (logLevel.ToLowerInvariant())

@@ -1,6 +1,6 @@
 namespace dotless.Core.Input
 {
-    class RelativePathResolver : IPathResolver
+    public class RelativePathResolver : IPathResolver
     {
         public string GetFullPath(string path)
         {

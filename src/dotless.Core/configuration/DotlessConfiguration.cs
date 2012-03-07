@@ -31,6 +31,7 @@ namespace dotless.Core.configuration
             LogLevel = LogLevel.Error;
             Optimization = 1;
             Plugins = new List<IPluginConfigurator>();
+            MapPathsToWeb = true;
         }
 
         public DotlessConfiguration(DotlessConfiguration config)
@@ -44,9 +45,15 @@ namespace dotless.Core.configuration
             Optimization = config.Optimization;
             Plugins = new List<IPluginConfigurator>();
             Plugins.AddRange(config.Plugins);
+            MapPathsToWeb = config.MapPathsToWeb;
         }
 
         public bool DisableUrlRewriting { get; set; }
+        /// <summary>
+        /// When this is a web configuration, whether to map the paths to the website or just
+        /// be relative to the current directory
+        /// </summary>
+        public bool MapPathsToWeb { get; set; }
         public bool MinifyOutput { get; set; }
         public bool CacheEnabled { get; set; }
         public Type LessSource { get; set; }
