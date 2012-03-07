@@ -19,6 +19,7 @@ body
 
             var expected =
                 @"/* Block comment ********************/
+
 body {
   background-color: yellow;
   /* Another block comment */

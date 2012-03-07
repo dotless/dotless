@@ -107,9 +107,9 @@ namespace dotless.Core.Parser.Infrastructure
             return new Directive(name, identifier, rules) { Index = index };
         }
 
-        public Directive Directive(string name, NodeList rules, Value features, int index)
+        public Media Media(NodeList rules, Value features, int index)
         {
-            return new Directive(name, features, rules) { Index = index };
+            return new Media(features, rules) { Index = index };
         }
 
         public KeyFrame KeyFrame(string identifier, NodeList rules, int index)

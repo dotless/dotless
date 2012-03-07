@@ -1061,7 +1061,7 @@ namespace dotless.Core.Parser
         //
         //     @charset "utf-8";
         //
-        public Directive Directive(Parser parser)
+        public Node Directive(Parser parser)
         {
             if (parser.Tokenizer.CurrentChar != '@')
                 return null;
@@ -1279,7 +1279,7 @@ namespace dotless.Core.Parser
             return NodeProvider.Value(features, null, index);
         }
 
-        public Directive Media(Parser parser)
+        public Media Media(Parser parser)
         {
             if (!parser.Tokenizer.Match("@media"))
                 return null;
@@ -1293,7 +1293,7 @@ namespace dotless.Core.Parser
             var rules = Expect(Block(parser), "@media block with unrecognised format", parser);
 
             rules.PreComments = preRulesComments;
-            return NodeProvider.Directive("@media", rules, features, index);
+            return NodeProvider.Media(rules, features, index);
         }
 
         public Directive KeyFrameBlock(Parser parser, string name, string identifier, int index)

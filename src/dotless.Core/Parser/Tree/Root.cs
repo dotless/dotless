@@ -23,6 +23,7 @@ namespace dotless.Core.Parser.Tree
             : base(new NodeList<Selector>(), rules, master)
         {
             Error = error;
+            IsRoot = true;
         }
 
         public override void AppendCSS(Env env)

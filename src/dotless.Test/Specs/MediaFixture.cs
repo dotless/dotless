@@ -197,15 +197,12 @@ namespace dotless.Test.Specs
   @page :left {
     margin: 0.5cm;
   }
-  
   @page :right {
     margin: 0.5cm;
   }
-  
   @page Test:first {
     margin: 1cm;
   }
-  
   @page :first {
     size: 8.5in 11in;
     @top-left {
@@ -295,6 +292,25 @@ namespace dotless.Test.Specs
     margin: 0.5cm;
   }
 }";
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void MediaBubbling()
+        {
+            var input = @"
+body {
+  @media print {
+    padding: 20px;
+  }
+}";
+            var expected = @"
+@media print {
+  body {
+    padding: 20px;
+  }
+}
+";
             AssertLess(input, expected);
         }
     }

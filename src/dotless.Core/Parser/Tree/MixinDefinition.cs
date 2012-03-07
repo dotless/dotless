@@ -202,7 +202,7 @@ namespace dotless.Core.Parser.Tree
             Condition = VisitAndReplace(Condition, visitor, true);
         }
 
-        protected override void AppendCSS(Env env, Context context)
+        public override void AppendCSS(Env env, Context context)
         {
             
         }

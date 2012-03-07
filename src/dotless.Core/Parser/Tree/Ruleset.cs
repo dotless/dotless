@@ -13,6 +13,7 @@ namespace dotless.Core.Parser.Tree
         public NodeList<Selector> Selectors { get; set; }
         public NodeList Rules { get; set; }
         public bool Evaluated { get; protected set; }
+        public bool IsRoot { get; set; }
 
         /// <summary>
         ///  The original Ruleset this was cloned from during evaluation
@@ -198,15 +199,14 @@ namespace dotless.Core.Parser.Tree
             env.Output.Append(env.Compress ? "}" : "\n}");
         }
 
-        protected virtual void AppendCSS(Env env, Context context)
+        public virtual void AppendCSS(Env env, Context context)
         {
             var css = new List<string>(); // The CSS output
             var rules = new List<StringBuilder>(); // node.Ruleset instances
             int nonCommentRules = 0;
             var paths = new Context(); // Current selectors
-            bool isRoot = this is Root;
 
-            if (!isRoot)
+            if (!IsRoot)
             {
                 paths.AppendSelectors(context, Selectors);
             }
@@ -230,18 +230,29 @@ namespace dotless.Core.Parser.Tree
                 else
                 {
                     var rule = node as Rule;
-                    if ((rule != null && !rule.Variable) || (rule == null && !isRoot))
+
+                    if (rule && rule.Variable)
+                        continue;
+
+                    if (!IsRoot)
                     {
-                        if (comment == null)
+                        if (!comment)
                             nonCommentRules++;
 
                         env.Output.Push()
                             .Append(node);
                         rules.Add(env.Output.Pop());
                     }
-                    else if (rule == null)
+                    else
                     {
-                        env.Output.Append(node);
+                        env.Output
+                            .Append(node);
+
+                        if (!env.Compress)
+                        {
+                            env.Output
+                                .Append("\n");
+                        }
                     }
                 }
             }
@@ -251,7 +262,7 @@ namespace dotless.Core.Parser.Tree
             // If this is the root node, we don't render
             // a selector, or {}.
             // Otherwise, only output if this ruleset has rules.
-            if (isRoot)
+            if (IsRoot)
             {
                 env.Output.AppendMany(rules, env.Compress ? "" : "\n");
             }
@@ -271,7 +282,6 @@ namespace dotless.Core.Parser.Tree
                     }
 
                     env.Output.Append(env.Compress ? "}" : "\n}\n");
-
                 }
             }
 

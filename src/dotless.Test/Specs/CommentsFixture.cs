@@ -429,6 +429,7 @@ border: solid black;
             var input = @"/* COMMENT */body/* COMMENT */,/* COMMENT */ .clb /* COMMENT */ {background-image: url(pickture.asp);}";
 
             var expected = @"/* COMMENT */
+
 body/* COMMENT */,
 /* COMMENT */ .clb/* COMMENT */ {
   background-image: url(pickture.asp);
@@ -444,6 +445,7 @@ body/* COMMENT */,
             var input = @"/* COMMENT */body/* COMMENT */, /* COMMENT */.cls/* COMMENT */ .cla,/* COMMENT */ .clb /* COMMENT */ {background-image: url(pickture.asp);}";
 
             var expected = @"/* COMMENT */
+
 body/* COMMENT */,
 /* COMMENT */ .cls/* COMMENT */ .cla,
 /* COMMENT */ .clb/* COMMENT */ {
@@ -458,7 +460,8 @@ body/* COMMENT */,
         {
             var input = @"/*\*/.cls {background-image: url(picture.asp);} /**/";
 
-            var expected = @"/*\*/.cls {
+            var expected = @"/*\*/
+.cls {
   background-image: url(picture.asp);
 }
 /**/";
@@ -469,7 +472,9 @@ body/* COMMENT */,
         [Test]
         public void CommentCSSHackException2Accepted()
         {
-            var input = @"/*\*//*/ .cls {background-image: url(picture.asp);} /**/";
+            var input = @"/*\*/
+/*/
+.cls {background-image: url(picture.asp);} /**/";
 
             AssertLessUnchanged(input);
         }
@@ -480,7 +485,8 @@ body/* COMMENT */,
             var input = @"/* COMMENT */.clb(@a) { font-size: @a; }
 .cla { .clb(10); }";
 
-            var expected = @"/* COMMENT */.cla {
+            var expected = @"/* COMMENT */
+.cla {
   font-size: 10;
 }";
 
@@ -493,7 +499,8 @@ body/* COMMENT */,
             var input = @"/* COMMENT */.clb(/* COMMENT */@a/* COMMENT */,/* COMMENT */@b)/* COMMENT */ { font-size: @a; }
 .cla { .clb(10, 10); }";
 
-            var expected = @"/* COMMENT */.cla {
+            var expected = @"/* COMMENT */
+.cla {
   font-size: 10;
 }";
 
@@ -506,7 +513,8 @@ body/* COMMENT */,
             var input = @"/* COMMENT */.clb(/* COMMENT */@a/* COMMENT */:/* COMMENT */10/* COMMENT */,/* COMMENT */@b/* COMMENT */:/* COMMENT */7px/* COMMENT */)/* COMMENT */ { font-size: @a; }
 .cla { .clb(10, 10); }";
 
-            var expected = @"/* COMMENT */.cla {
+            var expected = @"/* COMMENT */
+.cla {
   font-size: 10;
 }";
 
@@ -520,7 +528,9 @@ body/* COMMENT */,
             var input = @"/* COMMENT */@a : 10px;/* COMMENT */
 .cla { font-size: @a; }";
 
-            var expected = @"/* COMMENT *//* COMMENT */
+            var expected = @"/* COMMENT */
+/* COMMENT */
+
 .cla {
   font-size: 10px;
 }";
@@ -534,7 +544,9 @@ body/* COMMENT */,
             var input = @"/* COM1 */@a /* COM2 */: /* COM3 */10px/* COM4 */;/* COM5 */
 .cla { font-size: @a; }";
 
-            var expected = @"/* COM1 *//* COM5 */
+            var expected = @"/* COM1 */
+/* COM5 */
+
 .cla {
   font-size: /* COM3 */10px/* COM4 */;
 }";
@@ -548,6 +560,7 @@ body/* COMMENT */,
             var input = @"/* COMMENT */@charset /* COMMENT */""utf-8""/* COMMENT */;";
 
             var expected = @"/* COMMENT */
+
 @charset /* COMMENT */""utf-8""/* COMMENT */;";
 
             AssertLess(input, expected);
@@ -568,6 +581,7 @@ body/* COMMENT */,
   font-size: 3em;
 }
 /*COM 6*/
+
 @font-face/*COM4*/ {
   /*COM5*/
   font-size: 3em;

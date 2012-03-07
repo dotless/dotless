@@ -34,9 +34,9 @@ namespace dotless.Core.Parser.Infrastructure
         //directives
         Import Import(Url path, IImporter importer, Value features, int index);
         Import Import(Quoted path, IImporter importer, Value features, int index);
-        Directive Directive(string name, NodeList rules, Value features, int index);
         Directive Directive(string name, string identifier, NodeList rules, int index);
         Directive Directive(string name, Node value, int index);
+        Media Media(NodeList rules, Value features, int index);
         KeyFrame KeyFrame(string identifier, NodeList rules, int index);
 
         //expressions

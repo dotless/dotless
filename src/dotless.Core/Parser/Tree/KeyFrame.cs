@@ -32,7 +32,7 @@
             Rules = VisitAndReplace(Rules, visitor);
         }
 
-        protected override void AppendCSS(Env env, Context context)
+        public override void AppendCSS(Env env, Context context)
         {
             env.Output.Append(Identifier);
 

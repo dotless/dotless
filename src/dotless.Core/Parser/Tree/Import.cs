@@ -13,6 +13,7 @@ namespace dotless.Core.Parser.Tree
         protected Node OriginalPath { get; set; }
         protected bool Css { get; set; }
         public Ruleset InnerRoot { get; set; }
+        public Node Features { get; set; }
 
         public Import(Quoted path, IImporter importer, Value features)
             : this(path.Value, importer, features)
@@ -58,7 +59,7 @@ namespace dotless.Core.Parser.Tree
             }
         }
 
-        protected override void AppendCSS(Env env, Context context)
+        public override void AppendCSS(Env env, Context context)
         {
             env.Output.Append("@import ")
                 .Append(OriginalPath.ToCSS(env));
@@ -103,7 +104,7 @@ namespace dotless.Core.Parser.Tree
 
             if (features)
             {
-                return new Directive("@media", features, rulesList);
+                return new Media(features, rulesList);
             }
 
             return rulesList;
