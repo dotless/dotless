@@ -1264,9 +1264,11 @@ namespace dotless.Core.Parser
 
             while (true)
             {
-                var feature = MediaFeature(parser);
+                Node feature = MediaFeature(parser) || Variable(parser);
                 if (!feature)
+                {
                     return null;
+                }
 
                 features.Add(feature);
 

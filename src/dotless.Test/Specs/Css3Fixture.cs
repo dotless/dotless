@@ -186,6 +186,29 @@ namespace dotless.Test.Specs
         }
 
         [Test]
+        public void VariablesInMediaDirective2()
+        {
+            var input = @"
+@smartphone: ~""only screen and (max-width: 200px)"";
+@media @smartphone {
+  body {
+    max-width: 480px;
+  }
+}
+";
+            var expected = @"
+@media only screen and (max-width: 200px) {
+  body {
+    max-width: 480px;
+  }
+}
+
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
         public void MediaDirectiveWithDecimal()
         {
             var input = @"
