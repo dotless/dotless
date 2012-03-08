@@ -13,7 +13,7 @@
         public Media(Node features, NodeList rules)
         {
             Features = features;
-            NodeList<Selector> selectors = new NodeList<Selector>() { new Selector(new NodeList<Element>() { new Element(null, "") }) };
+            NodeList<Selector> selectors = new NodeList<Selector>() { new Selector(new NodeList<Element>() { new Element(new Combinator("&"), "") }) };
             Ruleset = new Ruleset(selectors, rules);
         }
 

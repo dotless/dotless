@@ -296,7 +296,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void MediaBubbling()
+        public void MediaBubbling1()
         {
             var input = @"
 body {
@@ -307,6 +307,27 @@ body {
             var expected = @"
 @media print {
   body {
+    padding: 20px;
+  }
+}
+";
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void MediaBubbling2()
+        {
+            var input = @"
+body {
+  @media print {
+    input {
+      padding: 20px;
+    }
+  }
+}";
+            var expected = @"
+@media print {
+  body input {
     padding: 20px;
   }
 }
