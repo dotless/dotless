@@ -128,9 +128,9 @@ namespace dotless.Core.Parser.Tree
                     var parameters = Enumerable.Concat(mixin.Params, frame.Rules.Cast<Rule>());
                     newRules.Add(new MixinDefinition(mixin.Name, new NodeList<Rule>(parameters), mixin.Rules, mixin.Condition, mixin.Variadic));
                 }
-                else if (rule is Directive)
+                else if (rule is Directive || rule is Media)
                 {
-                    newRules.Add(rule);
+                    newRules.Add(rule.Evaluate(context));
                 }
                 else if (rule is Ruleset)
                 {

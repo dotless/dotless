@@ -313,5 +313,81 @@ body {
 ";
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void MediaMixin1()
+        {
+            var input = @"
+.mediaMixin(@fallback: 200px) {
+    background: black;
+    @media handheld {
+        background: white;
+
+        @media (max-width: @fallback) {
+            background: red;
+        }
+    }
+}
+.a {
+  .mediaMixin(100px);
+}
+";
+            var expected = @"
+
+.a {
+  background: black;
+}
+@media handheld {
+  .a {
+    background: white;
+  }
+}
+@media handheld and (max-width: 100px) {
+  .a {
+    background: red;
+  }
+}
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void MediaMixin2()
+        {
+            var input = @"
+.mediaMixin(@fallback: 200px) {
+    background: black;
+    @media handheld {
+        background: white;
+
+        @media (max-width: @fallback) {
+            background: red;
+        }
+    }
+}
+.b {
+  .mediaMixin();
+}
+";
+            var expected = @"
+
+.b {
+  background: black;
+}
+@media handheld {
+  .b {
+    background: white;
+  }
+}
+@media handheld and (max-width: 200px) {
+  .b {
+    background: red;
+  }
+}
+";
+
+            AssertLess(input, expected);
+        }
     }
 }
