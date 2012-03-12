@@ -16,7 +16,7 @@
         }
 
         [Test]
-        public void MediaDirectiveEmpty2NotOptimalButTestOkOutput()
+        public void MediaDirectiveEmpty2()
         {
             // optimally this would compress to "" but this isn't implemented
             // so just test the output is at least valid.
@@ -27,8 +27,7 @@
 }
 ";
 
-            AssertLess(input, @"
-@media only screen and (min-width:768px) and (max-width:959px){}");
+            AssertLess(input, "");
         }
     }
 }

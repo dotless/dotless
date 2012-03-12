@@ -336,6 +336,95 @@ body {
         }
 
         [Test]
+        public void MediaBubbling3()
+        {
+            var input = @"
+    @media print {
+        @media (orientation:landscape) {
+            body {
+                margin-left: 20px;
+            }
+        }
+    }
+";
+            var expected = @"
+@media print {
+  
+}
+@media print and (orientation: landscape) {
+  body {
+    margin-left: 20px;
+  }
+}
+";
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void MediaBubbling4()
+        {
+            var input = @"
+body {
+    @media print {
+        padding: 20px;
+
+        header {
+            background-color: red;
+        }
+
+        @media (orientation:landscape) {
+            margin-left: 20px;
+        }
+    }
+}
+";
+            var expected = @"
+@media print {
+  body {
+    padding: 20px;
+  }
+  body header {
+    background-color: red;
+  }
+}
+@media print and (orientation: landscape) {
+  body {
+    margin-left: 20px;
+  }
+}
+";
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void MediaBubbling5()
+        {
+            var input = @"
+body {
+    @media a, b and c {
+        width: 95%;
+
+        @media x, y {
+            width: 100%;
+        }
+    }
+}";
+            var expected = @"
+@media a, b and c {
+  body {
+    width: 95%;
+  }
+}
+@media a and x, b and c and x, a and y, b and c and y {
+  body {
+    width: 100%;
+  }
+}
+";
+            AssertLess(input, expected);
+        }
+
+        [Test]
         public void MediaMixin1()
         {
             var input = @"

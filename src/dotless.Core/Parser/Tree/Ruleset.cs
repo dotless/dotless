@@ -14,6 +14,7 @@ namespace dotless.Core.Parser.Tree
         public NodeList Rules { get; set; }
         public bool Evaluated { get; protected set; }
         public bool IsRoot { get; set; }
+        public bool MultiMedia { get; set; }
 
         /// <summary>
         ///  The original Ruleset this was cloned from during evaluation

@@ -19,6 +19,8 @@
         public bool Compress { get; set; }
         public Node Rule { get; set; }
         public Output Output { get; private set; }
+        public Stack<Media> MediaPath { get; private set; }
+        public List<Media> MediaBlocks { get; private set; }
 
         public Env() : this(null, null)
         {
@@ -28,6 +30,8 @@
         {
             Frames = frames ?? new Stack<Ruleset>();
             Output = new Output(this);
+            MediaPath = new Stack<Media>();
+            MediaBlocks = new List<Media>();
 
             _plugins = new List<IPlugin>();
             _functionTypes = functions ?? new Dictionary<string, Type>();
