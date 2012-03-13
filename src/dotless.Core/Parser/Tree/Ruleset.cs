@@ -94,7 +94,20 @@ namespace dotless.Core.Parser.Tree
             if (_lookups.ContainsKey(key))
                 return _lookups[key];
 
-            foreach (var rule in Rulesets().Where(rule => rule != self))
+            foreach (var rule in Rulesets().Where(rule => 
+                {
+                    if (rule != self)
+                        return true;
+
+                    MixinDefinition mixinRule = rule as MixinDefinition;
+
+                    if (mixinRule != null)
+                    {
+                        return mixinRule.Condition != null;
+                    }
+
+                    return false;
+                }))
             {
                 if (rule.Selectors && rule.Selectors.Any(selector.Match))
                 {

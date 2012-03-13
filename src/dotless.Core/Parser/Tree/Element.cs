@@ -18,7 +18,7 @@
         public Element(Combinator combinator, Node value) : this(combinator)
         {
             TextNode textValue = value as TextNode;
-            if (textValue != null)
+            if (textValue != null && !(value is Quoted))
             {
                 Value = textValue.Value.Trim();
             }
@@ -37,7 +37,9 @@
         {
             if (NodeValue != null)
             {
-                return new Element(Combinator, NodeValue.Evaluate(env))
+                var newNodeValue = NodeValue.Evaluate(env);
+
+                return new Element(Combinator, newNodeValue)
                     .ReducedFrom<Element>(this);
             }
             else

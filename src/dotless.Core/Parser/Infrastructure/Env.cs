@@ -115,7 +115,18 @@
         {
             return Frames.Select(frame => frame.Find(this, selector, null))
                 .Select(matchedClosuresList => matchedClosuresList.Where(
-                            matchedClosure => !Frames.Any(frame => frame.IsEqualOrClonedFrom(matchedClosure.Ruleset))))
+                            matchedClosure => {
+                                if (!Frames.Any(frame => frame.IsEqualOrClonedFrom(matchedClosure.Ruleset)))
+                                    return true;
+
+                                var mixinDef = matchedClosure.Ruleset as MixinDefinition;
+                                if (mixinDef != null)
+                                {
+                                    return mixinDef.Condition != null;
+                                }
+
+                                return false;
+                            }))
                 .FirstOrDefault(matchedClosuresList => matchedClosuresList.Count() != 0);
         }
 

@@ -862,6 +862,13 @@ namespace dotless.Core.Parser
             GatherComments(parser);
             PushComments();
 
+            if (parser.Tokenizer.Match('('))
+            {
+                var sel = Entity(parser);
+                Expect(parser, ')');
+                return NodeProvider.Selector(new NodeList<Element>() { NodeProvider.Element(null, sel, index) }, index);
+            }
+
             while (true)
             {
                 e = Element(parser);

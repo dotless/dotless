@@ -267,5 +267,46 @@ a:nth-child(2) {
 
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void VariableSelector()
+        {
+            var input = @"
+@index: 4;
+(~"".span@{index}"") { 
+    border: 1px;
+}
+";
+            var expected = @"
+.span4 {
+  border: 1px;
+}
+";
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void VariableSelectorInRecursiveMixin()
+        {
+            var input = @"
+.span (@index) {
+  margin: @index;
+}
+.spanX (@index) when (@index > 0) {
+    (~"".span@{index}"") { .span(@index); }
+    .spanX(@index - 1);
+}
+.spanX(2);
+";
+            var expected = @"
+.span2 {
+  margin: 2;
+}
+.span1 {
+  margin: 1;
+}
+";
+            AssertLess(input, expected);
+        }
     }
 }
