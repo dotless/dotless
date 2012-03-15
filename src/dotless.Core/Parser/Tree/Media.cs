@@ -197,7 +197,6 @@
 
             Ruleset.IsRoot = ctx.Count == 0;
 
-            env.Output.Push();
             Ruleset.AppendCSS(env, ctx);
 
             if (!env.Compress)
