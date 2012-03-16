@@ -15,10 +15,8 @@ namespace dotless.Core.Response
         public void WriteCss(string css)
         {
             var response = Http.Context.Response;
-            response.Cache.SetCacheability(HttpCacheability.Public);
             response.ContentType = "text/css";
             response.Write(css);
-            response.End();
         }
     }
 }

@@ -19,7 +19,7 @@
         public void ProcessRequest(HttpContext context)
         {
             try {
-                string acceptEncoding = (context.Request.Headers["Accept-Encoding"] ?? "").ToUpperInvariant();
+                var acceptEncoding = (context.Request.Headers["Accept-Encoding"] ?? "").ToUpperInvariant();
 
                 if (acceptEncoding.Contains("GZIP"))
                 {
