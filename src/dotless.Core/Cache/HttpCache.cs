@@ -21,6 +21,8 @@ namespace dotless.Core.Cache
         {
             var fullPaths = fileDependancies.Select(f => PathResolver.GetFullPath(f)).ToArray();
 
+            _http.Context.Response.AddFileDependencies(fullPaths);
+
             var cache = GetCache();
 
             cache.Insert(cacheKey, css, new CacheDependency(fullPaths));
