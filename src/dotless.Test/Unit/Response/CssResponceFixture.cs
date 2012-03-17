@@ -32,21 +32,5 @@ namespace dotless.Test.Unit.Response
 
             HttpResponse.Verify(r => r.Write(str), Times.Once());
         }
-
-        [Test]
-        public void SetsCachabilityPublic()
-        {
-            CssResponse.WriteCss(null);
-
-            HttpCache.Verify(c => c.SetCacheability(HttpCacheability.Public), Times.Once());
-        }
-
-        [Test]
-        public void ResponseEndIsCalled()
-        {
-            CssResponse.WriteCss(null);
-
-            HttpResponse.Verify(r => r.End(), Times.Once());
-        }
     }
 }
