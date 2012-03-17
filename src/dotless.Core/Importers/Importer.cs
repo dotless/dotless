@@ -45,6 +45,15 @@ namespace dotless.Core.Importers
         }
 
         /// <summary>
+        ///  Get a list of the current paths, used to pass back in to alter url's after evaluation
+        /// </summary>
+        /// <returns></returns>
+        public List<string> GetCurrentPathsClone()
+        {
+            return new List<string>(_paths);
+        }
+
+        /// <summary>
         ///  Imports the file inside the import as a dot-less file.
         /// </summary>
         /// <param name="import"></param>
@@ -92,11 +101,11 @@ namespace dotless.Core.Importers
         ///  Called for every Url and allows the importer to adjust relative url's to be relative to the
         ///  primary url
         /// </summary>
-        public string AlterUrl(string url)
+        public string AlterUrl(string url, List<string> pathList)
         {
-            if (_paths.Any() && !IsUrlRewritingDisabled)
+            if (pathList.Any() && !IsUrlRewritingDisabled)
             {
-                return _paths.Concat(new[] { url }).AggregatePaths(CurrentDirectory);
+                return pathList.Concat(new[] { url }).AggregatePaths(CurrentDirectory);
             }
 
             return url;

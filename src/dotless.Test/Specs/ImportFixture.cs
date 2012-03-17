@@ -53,18 +53,22 @@ namespace dotless.Test.Specs
                 @"
 @import ""sub1/second.less"";
 
+@path: ""../image.gif"";
 #first {
   background: url('../image.gif');
   background: url(../image.gif);
+  background: url(@path);
 }
 ";          
             imports["import/sub1/second.less"] =
                 @"
+@pathsep: '/';
 #second {
   background: url(../image.gif);
   background: url(image.gif);
   background: url(sub2/image.gif);
   background: url(/sub2/image.gif);
+  background: url(~""@{pathsep}sub2/image2.gif"");
 }
 ";
 
@@ -150,10 +154,12 @@ namespace dotless.Test.Specs
   background: url(import/sub1/image.gif);
   background: url(import/sub1/sub2/image.gif);
   background: url(/sub2/image.gif);
+  background: url(/sub2/image2.gif);
 }
 #first {
   background: url('image.gif');
   background: url(image.gif);
+  background: url(""image.gif"");
 }
 ";
 
@@ -177,10 +183,12 @@ namespace dotless.Test.Specs
   background: url(image.gif);
   background: url(sub2/image.gif);
   background: url(/sub2/image.gif);
+  background: url(/sub2/image2.gif);
 }
 #first {
   background: url('../image.gif');
   background: url(../image.gif);
+  background: url(""../image.gif"");
 }
 ";
 

@@ -13,17 +13,13 @@
     public class Url : Node
     {
         public Node Value { get; set; }
+        public List<string> ImportPaths { get; set; }
+        public IImporter Importer { get; set; }
 
         public Url(Node value, IImporter importer)
         {
-            if (value is TextNode)
-            {
-                var textValue = value as TextNode;
-                if (!Regex.IsMatch(textValue.Value, @"^(([a-zA-Z]+:)|(\/))"))
-                {
-                    textValue.Value = importer.AlterUrl(textValue.Value);
-                }
-            }
+            Importer = importer;
+            ImportPaths = importer.GetCurrentPathsClone();
 
             Value = value;
         }
@@ -35,15 +31,35 @@
 
         public string GetUrl()
         {
-            if (Value is TextNode)
-                return (Value as TextNode).Value;
+            var textValue = Value as TextNode;
+            if (textValue != null)
+            {
+                return AdjustUrlPath(textValue).Value;
+            }
 
             throw new ParserException("Imports do not allow expressions");
         }
 
+        private Node AdjustUrlPath(Node value)
+        {
+            var textValue = value as TextNode;
+            if (textValue != null)
+                return AdjustUrlPath(textValue);
+            return value;
+        }
+
+        private TextNode AdjustUrlPath(TextNode textValue)
+        {
+            if (Importer != null && !Regex.IsMatch(textValue.Value, @"^(([a-zA-Z]+:)|(\/))"))
+            {
+                textValue.Value = Importer.AlterUrl(textValue.Value, ImportPaths);
+            }
+            return textValue;
+        }
+
         public override Node Evaluate(Env env)
         {
-            return new Url(Value.Evaluate(env));
+            return new Url(AdjustUrlPath(Value.Evaluate(env)));
         }
 
         public override void AppendCSS(Env env)
