@@ -57,14 +57,44 @@ namespace dotless.Core.Importers
         ///  Imports the file inside the import as a dot-less file.
         /// </summary>
         /// <param name="import"></param>
-        /// <returns> Whether the file was found - so false if it cannot be found</returns>
-        public virtual bool Import(Import import)
+        /// <returns> The action for the import node to process</returns>
+        public virtual ImportAction Import(Import import)
         {
+            if (import.Path.EndsWith(".css"))
+            {
+                return ImportAction.LeaveImport;
+            }
+
             if (Parser == null)
                 throw new InvalidOperationException("Parser cannot be null.");
 
-            var file = _paths.Concat(new[] { import.Path }).AggregatePaths(CurrentDirectory);
+            var file = GetAdjustedFilePath(import.Path, _paths);
 
+            if (!ImportLessFile(file, import))
+            {
+                if (import.Path.EndsWith(".less", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    throw new FileNotFoundException("You are importing a file ending in .less that cannot be found.", import.Path);
+                }
+                return ImportAction.LeaveImport;
+            }
+
+            return ImportAction.ImportLess;
+        }
+
+        /// <summary>
+        ///  Uses the paths to adjust the file path
+        /// </summary>
+        protected string GetAdjustedFilePath(string path, List<string> pathList)
+        {
+            return pathList.Concat(new[] { path }).AggregatePaths(CurrentDirectory);
+        }
+
+        /// <summary>
+        ///  Imports a less file and puts the root into the import node
+        /// </summary>
+        protected bool ImportLessFile(string file, Import import)
+        {
             if (!FileReader.DoesFileExist(file) && !file.EndsWith(".less"))
             {
                 file = file + ".less";
@@ -98,6 +128,21 @@ namespace dotless.Core.Importers
         }
 
         /// <summary>
+        ///  Imports a css file and puts the contents into the import node
+        /// </summary>
+        protected bool ImportCssFileContents(string file, Import import)
+        {
+            if (!FileReader.DoesFileExist(file))
+            {
+                return false;
+            }
+
+            import.InnerContent = FileReader.GetFileContents(file);
+
+            return true;
+        }
+
+        /// <summary>
         ///  Called for every Url and allows the importer to adjust relative url's to be relative to the
         ///  primary url
         /// </summary>
@@ -105,7 +150,7 @@ namespace dotless.Core.Importers
         {
             if (pathList.Any() && !IsUrlRewritingDisabled)
             {
-                return pathList.Concat(new[] { url }).AggregatePaths(CurrentDirectory);
+                return GetAdjustedFilePath(url, pathList);
             }
 
             return url;

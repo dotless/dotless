@@ -18,7 +18,7 @@
         /// <summary>
         ///  Imports an import and return true if successful
         /// </summary>
-        bool Import(Import import);
+        ImportAction Import(Import import);
 
         /// <summary>
         ///  A list of imports
@@ -35,5 +35,24 @@
         ///  primary url
         /// </summary>
         string AlterUrl(string url, List<string> pathList);
+    }
+
+    /// <summary>
+    ///  The action to do with the @import statement
+    /// </summary>
+    public enum ImportAction
+    {
+        /// <summary>
+        ///  Import as less (process the file and include)
+        /// </summary>
+        ImportLess,
+        /// <summary>
+        ///  Import verbatim as CSS
+        /// </summary>
+        ImportCss,
+        /// <summary>
+        ///  Leave a @import statement
+        /// </summary>
+        LeaveImport
     }
 }

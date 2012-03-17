@@ -8,12 +8,40 @@ namespace dotless.Core.Parser.Tree
 
     public class Import : Directive
     {
+        /// <summary>
+        ///  The importer to use to import the 
+        /// </summary>
         public IImporter Importer { get; set; }
+
+        /// <summary>
+        ///  The path to this import
+        /// </summary>
         public string Path { get; set; }
+
+        /// <summary>
+        ///  The original path node
+        /// </summary>
         protected Node OriginalPath { get; set; }
-        protected bool Css { get; set; }
+
+        /// <summary>
+        ///  The inner root - if the action is ImportLess
+        /// </summary>
         public Ruleset InnerRoot { get; set; }
+
+        /// <summary>
+        ///  The inner content - if the action is ImportCss
+        /// </summary>
+        public string InnerContent { get; set; }
+
+        /// <summary>
+        ///  The media features (if present)
+        /// </summary>
         public Node Features { get; set; }
+
+        /// <summary>
+        /// The action to perform with this node
+        /// </summary>
+        protected ImportAction ImportAction { get; set; }
 
         public Import(Quoted path, IImporter importer, Value features)
             : this(path.Value, importer, features)
@@ -36,7 +64,7 @@ namespace dotless.Core.Parser.Tree
         {
             OriginalPath = originalPath;
             Features = features;
-            Css = true;
+            ImportAction = ImportAction.LeaveImport;
         }
 
         private Import(string path, IImporter importer, Value features)
@@ -45,22 +73,17 @@ namespace dotless.Core.Parser.Tree
             Path = path;
             Features = features;
 
-            if (path.EndsWith(".css"))
-            {
-                Css = true;
-            } else
-            {
-                Css = !Importer.Import(this); // it is assumed to be css if it cannot be found as less
-
-                if (Css && path.EndsWith(".less"))
-                {
-                    throw new FileNotFoundException("You are importing a file ending in .less that cannot be found.", path);
-                }
-            }
+            ImportAction = Importer.Import(this); // it is assumed to be css if it cannot be found as less
         }
 
         public override void AppendCSS(Env env, Context context)
         {
+            if (ImportAction == ImportAction.ImportCss)
+            {
+                env.Output.Append(InnerContent);
+                return;
+            }
+
             env.Output.Append("@import ")
                 .Append(OriginalPath.ToCSS(env));
 
@@ -82,7 +105,7 @@ namespace dotless.Core.Parser.Tree
         {
             Features = VisitAndReplace(Features, visitor, true);
 
-            if (!Css)
+            if (ImportAction == ImportAction.ImportLess)
             {
                 InnerRoot = VisitAndReplace(InnerRoot, visitor);
             }
@@ -95,8 +118,13 @@ namespace dotless.Core.Parser.Tree
             if (Features)
                 features = Features.Evaluate(env);
 
-            if (Css)
+            if (ImportAction == ImportAction.LeaveImport)
                 return new Import(OriginalPath, features);
+
+            if (ImportAction == ImportAction.ImportCss)
+            {
+                return new Import(OriginalPath, features) { ImportAction = ImportAction.ImportCss, InnerContent = InnerContent };
+            }
 
             NodeHelper.ExpandNodes<Import>(env, InnerRoot.Rules);
 

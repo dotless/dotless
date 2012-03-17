@@ -79,6 +79,10 @@ namespace dotless.Test.Specs
             imports["foo/bar.less"] = @"@import ""../lib/color.less"";";
             imports["lib/color.less"] = "body { background-color: foo; }";
 
+            imports["foourl.less"] = @"@import url(""foo/barurl.less"");";
+            imports["foo/barurl.less"] = @"@import url(""../lib/colorurl.less"");";
+            imports["lib/colorurl.less"] = "body { background-color: foo; }";
+
             return new Parser { Importer = new Importer(new DictionaryReader(imports)) { IsUrlRewritingDisabled = isUrlRewritingDisabled } };
         }
 
@@ -309,6 +313,18 @@ namespace dotless.Test.Specs
             // Testing https://github.com/cloudhead/less.js/pull/514
 
             var input = @"@import ""foo.less"";";
+            var expected = @"body {
+  background-color: foo;
+}";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ImportCanNavigateIntoAndOutOfSubDirectoryWithImport()
+        {
+            var input = @"@import url(""foo.less"");";
             var expected = @"body {
   background-color: foo;
 }";
