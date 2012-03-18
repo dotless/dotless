@@ -18,7 +18,7 @@
 
         protected virtual ContainerFactory GetContainerFactory()
         {
-            return new ContainerFactory();
+            return new AspNetContainerFactory();
         }
 
         public void ProcessRequest(HttpContext context)

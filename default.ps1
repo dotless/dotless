@@ -46,21 +46,39 @@ task Init -depends Clean {
         -product "dotless" `
         -version $version `
         -copyright "Copyright © dotless project 2010"
-        
+    Generate-Assembly-Info `
+        -file "$source_dir\dotless.AspNet\Properties\AssemblyInfo.cs" `
+        -title "dotless Compiler $version" `
+        -description "Dynamic CSS for .net" `
+        -company "dotless project" `
+        -product "dotless" `
+        -version $version `
+        -copyright "Copyright © dotless project 2010"
+
     new-item $build_dir -itemType directory
     new-item $release_dir -itemType directory
     
 }
 
 task Build -depends Init {
-    msbuild $source_dir\dotless.Compiler\dotless.Compiler.csproj /p:OutDir=$build_dir /p:Configuration=$config
+	$buildSettings = (
+		($source_dir + '\dotless.Compiler\dotless.Compiler.csproj'),
+		('/p:Configuration=' + $config),
+		('/p:OutDir=' + $build_dir + '\')
+	)
+    msbuild $buildSettings
     if ($lastExitCode -ne 0) {
         throw "Error: compile failed"
     }
 }
 
 task Test -depends Build {
-    msbuild $source_dir\dotless.Test\dotless.Test.csproj /p:OutDir=$build_dir /p:Configuration=$config
+	$buildSettings = (
+		($source_dir + '\dotless.Test\dotless.Test.csproj'),
+		('/p:Configuration=' + $config),
+		('/p:OutDir=' + $build_dir + '\')
+	)
+    msbuild $buildSettings
     if ($lastExitCode -ne 0) {
         throw "Error: Test compile failed"
     }

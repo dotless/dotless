@@ -1,6 +1,5 @@
 namespace dotless.Core
 {
-    using Abstractions;
     using Cache;
     using configuration;
     using Input;
@@ -9,7 +8,6 @@ namespace dotless.Core
     using Pandora;
     using Pandora.Fluent;
     using Parameters;
-    using Response;
     using Stylizers;
     using dotless.Core.Plugins;
     using System.Collections.Generic;
@@ -32,9 +30,7 @@ namespace dotless.Core
         {
             OverrideServices(pandora, configuration);
 
-            if (configuration.Web)
-                RegisterWebServices(pandora, configuration);
-            else
+            if (!configuration.Web)
                 RegisterLocalServices(pandora);
 
             RegisterCoreServices(pandora, configuration);
@@ -44,26 +40,6 @@ namespace dotless.Core
         {
             if (configuration.Logger != null)
                 pandora.Service<ILogger>().Implementor(configuration.Logger);
-        }
-
-        protected virtual void RegisterWebServices(FluentRegistration pandora, DotlessConfiguration configuration)
-        {
-            pandora.Service<IHttp>().Implementor<Http>().Lifestyle.Transient();
-            pandora.Service<HandlerImpl>().Implementor<HandlerImpl>().Lifestyle.Transient();
-            pandora.Service<IParameterSource>().Implementor<QueryStringParameterSource>().Lifestyle.Transient();
-
-            if (configuration.CacheEnabled)
-                pandora.Service<IResponse>().Implementor<CachedCssResponse>().Lifestyle.Transient();
-            else
-                pandora.Service<IResponse>().Implementor<CssResponse>().Lifestyle.Transient();
-
-            pandora.Service<ICache>().Implementor<HttpCache>().Lifestyle.Transient();
-            pandora.Service<ILogger>().Implementor<AspResponseLogger>().Parameters("level").Set("error-level").Lifestyle.Transient();
-
-            if (configuration.MapPathsToWeb)
-                pandora.Service<IPathResolver>().Implementor<AspServerPathResolver>().Lifestyle.Transient();
-            else
-                pandora.Service<IPathResolver>().Implementor<AspRelativePathResolver>().Lifestyle.Transient();
         }
 
         protected virtual void RegisterLocalServices(FluentRegistration pandora)
