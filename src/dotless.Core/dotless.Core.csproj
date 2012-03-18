@@ -33,6 +33,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -59,10 +60,6 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.Abstractions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -82,14 +79,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Importers\IImporter.cs" />
-    <Compile Include="Input\AspRelativePathResolver.cs" />
-    <Compile Include="Loggers\AspNetTraceLogger.cs" />
     <Compile Include="Loggers\DiagnosticsLogger.cs" />
     <Compile Include="Loggers\NullLogger.cs" />
     <Compile Include="Engine\ParameterDecorator.cs" />
     <Compile Include="Parameters\ConsoleArgumentParameterSource.cs" />
     <Compile Include="Parameters\IParameterSource.cs" />
-    <Compile Include="Parameters\QueryStringParameterSource.cs" />
     <Compile Include="Parser\Functions\ColorFunction.cs" />
     <Compile Include="Parser\Functions\IsFunctions.cs" />
     <Compile Include="Parser\Functions\StringFunctions.cs" />
@@ -120,24 +114,10 @@
     <Compile Include="Plugins\PluginParameter.cs" />
     <Compile Include="Plugins\RtlPlugin.cs" />
     <Compile Include="Plugins\VisitorPlugin.cs" />
-    <Compile Include="Response\CachedCssResponse.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Abstractions\Http.cs" />
-    <Compile Include="Cache\HttpCache.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Response\CssResponse.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Cache\ICache.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Abstractions\IHttp.cs" />
     <Compile Include="Cache\InMemoryCache.cs" />
-    <Compile Include="Response\IResponse.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Engine\CacheDecorator.cs" />
     <Compile Include="Exceptions\ParserException.cs" />
     <Compile Include="configuration\WebConfigConfigurationLoader.cs" />
@@ -147,11 +127,9 @@
     <Compile Include="ContainerFactory.cs" />
     <Compile Include="EngineFactory.cs" />
     <Compile Include="Exceptions\ParsingException.cs" />
-    <Compile Include="Input\AspServerPathResolver.cs" />
     <Compile Include="Input\IPathResolver.cs" />
     <Compile Include="Input\RelativePathResolver.cs" />
     <Compile Include="Less.cs" />
-    <Compile Include="Loggers\AspResponseLogger.cs" />
     <Compile Include="Loggers\Logger.cs" />
     <Compile Include="Parser\Functions\AbsFunction.cs" />
     <Compile Include="Parser\Functions\AddFunction.cs" />
@@ -218,11 +196,9 @@
     <Compile Include="Parser\Tree\Variable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Input\FileReader.cs" />
-    <Compile Include="HandlerImpl.cs" />
     <Compile Include="Engine\ILessEngine.cs" />
     <Compile Include="Input\IFileReader.cs" />
     <Compile Include="Loggers\ILogger.cs" />
-    <Compile Include="LessCssHttpHandler.cs" />
     <Compile Include="Loggers\ConsoleLogger.cs" />
     <Compile Include="Stylizers\ConsoleStylizer.cs" />
     <Compile Include="Stylizers\HtmlStylizer.cs" />
@@ -233,7 +209,6 @@
     <Compile Include="Utils\NodeHelper.cs" />
     <Compile Include="Utils\NumberExtensions.cs" />
     <Compile Include="Utils\StringExtensions.cs" />
-    <Compile Include="Input\VirtualFileReader.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\dotless-open-source.snk">

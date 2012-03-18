@@ -47,7 +47,7 @@ namespace dotless.Core.Parser.Functions
                                                                 args[i++].ToCSS(env);
 
                                                  return char.IsUpper(m.Value[1]) ?
-                                                     HttpUtility.UrlEncode(value) :
+                                                     Uri.EscapeDataString(value) :
                                                      value;
                                              };
 
