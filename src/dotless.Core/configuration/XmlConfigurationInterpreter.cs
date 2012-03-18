@@ -18,6 +18,8 @@ namespace dotless.Core.configuration
             dotlessConfiguration.CacheEnabled = GetBoolValue(section, "cache") ?? dotlessConfiguration.CacheEnabled;
             dotlessConfiguration.Optimization = GetIntValue(section, "optimization") ?? dotlessConfiguration.Optimization;
             dotlessConfiguration.DisableUrlRewriting = GetBoolValue(section, "disableUrlRewriting") ?? dotlessConfiguration.DisableUrlRewriting;
+            dotlessConfiguration.InlineCssFiles = GetBoolValue(section, "inlineCssFiles") ?? dotlessConfiguration.InlineCssFiles;
+            dotlessConfiguration.ImportAllFilesAsLess = GetBoolValue(section, "importAllFilesAsLess") ?? dotlessConfiguration.ImportAllFilesAsLess;
             dotlessConfiguration.MapPathsToWeb = GetBoolValue(section, "mapPathsToWeb") ?? dotlessConfiguration.MapPathsToWeb;
 
             var logLevel = GetStringValue(section, "log") ?? "default";

@@ -29,15 +29,20 @@
             Value = value;
         }
 
-        public string GetUrl()
+        /// <summary>
+        ///  Gets the url value, unadjusted, as in the less
+        ///  If the url does not contain a text node this will return null
+        /// </summary>
+        /// <returns></returns>
+        public string GetUnadjustedUrl()
         {
             var textValue = Value as TextNode;
             if (textValue != null)
             {
-                return AdjustUrlPath(textValue).Value;
+                return textValue.Value;
             }
 
-            throw new ParserException("Imports do not allow expressions");
+            return null;
         }
 
         private Node AdjustUrlPath(Node value)

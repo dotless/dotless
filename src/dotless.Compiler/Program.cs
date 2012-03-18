@@ -217,6 +217,8 @@ namespace dotless.Compiler
             Console.WriteLine("\t\t-w --watch - Watches .less file for changes");
             Console.WriteLine("\t\t-h --help - Displays this dialog");
             Console.WriteLine("\t\t-r --disable-url-rewriting - Disables changing urls in imported files");
+            Console.WriteLine("\t\t-a --import-all-less - treats every import as less even if ending in .css");
+            Console.WriteLine("\t\t-c --inline-css - Inlines CSS file imports into the output");
             Console.WriteLine("\t\t-DKey=Value - prefixes variable to the less");
             Console.WriteLine("\t\t-l --listplugins - Lists the plugins available and options");
             Console.WriteLine("\t\t-p: --plugin:pluginName[:option=value[,option=value...]] - adds the named plugin to dotless with the supplied options");
@@ -241,7 +243,7 @@ namespace dotless.Compiler
                     {
                         configuration.MinifyOutput = true;
                     }
-                    else if (arg == "-h" || arg == "--help")
+                    else if (arg == "-h" || arg == "--help" || arg == @"/?")
                     {
                         WriteHelp();
                         configuration.Help = true;
@@ -252,6 +254,14 @@ namespace dotless.Compiler
                         WritePluginList();
                         configuration.Help = true;
                         return configuration;
+                    }
+                    else if (arg == "-a" || arg == "--import-all-less")
+                    {
+                        configuration.ImportAllFilesAsLess = true;
+                    }
+                    else if (arg == "-c" || arg == "--inline-css")
+                    {
+                        configuration.InlineCssFiles = true;
                     }
                     else if (arg == "-w" || arg == "--watch")
                     {

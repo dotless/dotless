@@ -29,18 +29,31 @@ namespace dotless.Core.Importers
         /// </summary>
         public bool IsUrlRewritingDisabled { get; set; }
 
+        /// <summary>
+        ///  Import all files as if they are less regardless of file extension
+        /// </summary>
+        public bool ImportAllFilesAsLess { get; set; }
+
+        /// <summary>
+        ///  Import the css and include inline
+        /// </summary>
+        public bool InlineCssFiles { get; set; }
+
+
         public Importer() : this(new FileReader())
         {
         }
 
-        public Importer(IFileReader fileReader) : this(fileReader, false)
+        public Importer(IFileReader fileReader) : this(fileReader, false, false, false)
         {
         }
 
-        public Importer(IFileReader fileReader, bool disableUrlReWriting)
+        public Importer(IFileReader fileReader, bool disableUrlReWriting, bool inlineCssFiles, bool importAllFilesAsLess)
         {
             FileReader = fileReader;
             IsUrlRewritingDisabled = disableUrlReWriting;
+            InlineCssFiles = inlineCssFiles;
+            ImportAllFilesAsLess = importAllFilesAsLess;
             Imports = new List<string>();
         }
 
@@ -60,15 +73,18 @@ namespace dotless.Core.Importers
         /// <returns> The action for the import node to process</returns>
         public virtual ImportAction Import(Import import)
         {
-            if (import.Path.EndsWith(".css"))
+            var file = GetAdjustedFilePath(import.Path, _paths);
+
+            if (!ImportAllFilesAsLess && import.Path.EndsWith(".css"))
             {
+                if (InlineCssFiles && ImportCssFileContents(file, import))
+                    return ImportAction.ImportCss;
+
                 return ImportAction.LeaveImport;
             }
 
             if (Parser == null)
                 throw new InvalidOperationException("Parser cannot be null.");
-
-            var file = GetAdjustedFilePath(import.Path, _paths);
 
             if (!ImportLessFile(file, import))
             {

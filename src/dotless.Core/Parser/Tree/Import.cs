@@ -5,6 +5,7 @@ namespace dotless.Core.Parser.Tree
     using Infrastructure;
     using Infrastructure.Nodes;
     using Utils;
+    using dotless.Core.Exceptions;
 
     public class Import : Directive
     {
@@ -50,7 +51,7 @@ namespace dotless.Core.Parser.Tree
         }
 
         public Import(Url path, IImporter importer, Value features)
-            : this(path.GetUrl(), importer, features)
+            : this(path.GetUnadjustedUrl(), importer, features)
         {
             OriginalPath = path;
         }
@@ -69,6 +70,9 @@ namespace dotless.Core.Parser.Tree
 
         private Import(string path, IImporter importer, Value features)
         {
+            if (path == null)
+                throw new ParserException("Imports do not allow expressions");
+
             Importer = importer;
             Path = path;
             Features = features;
@@ -123,7 +127,10 @@ namespace dotless.Core.Parser.Tree
 
             if (ImportAction == ImportAction.ImportCss)
             {
-                return new Import(OriginalPath, features) { ImportAction = ImportAction.ImportCss, InnerContent = InnerContent };
+                var importCss = new Import(OriginalPath, null) { ImportAction = ImportAction.ImportCss, InnerContent = InnerContent };
+                if (features)
+                    return new Media(features, new NodeList() { importCss });
+                return importCss;
             }
 
             NodeHelper.ExpandNodes<Import>(env, InnerRoot.Rules);

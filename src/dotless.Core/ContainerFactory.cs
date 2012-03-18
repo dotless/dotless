@@ -17,7 +17,7 @@ namespace dotless.Core
 
     public class ContainerFactory
     {
-        private PandoraContainer Container { get; set; }
+        protected PandoraContainer Container { get; set; }
 
         public IServiceLocator GetContainer(DotlessConfiguration configuration)
         {
@@ -28,7 +28,7 @@ namespace dotless.Core
             return new CommonServiceLocatorAdapter(Container);
         }
 
-        private void RegisterServices(FluentRegistration pandora, DotlessConfiguration configuration)
+        protected virtual void RegisterServices(FluentRegistration pandora, DotlessConfiguration configuration)
         {
             OverrideServices(pandora, configuration);
 
@@ -40,13 +40,13 @@ namespace dotless.Core
             RegisterCoreServices(pandora, configuration);
         }
 
-        private void OverrideServices(FluentRegistration pandora, DotlessConfiguration configuration)
+        protected virtual void OverrideServices(FluentRegistration pandora, DotlessConfiguration configuration)
         {
             if (configuration.Logger != null)
                 pandora.Service<ILogger>().Implementor(configuration.Logger);
         }
 
-        private void RegisterWebServices(FluentRegistration pandora, DotlessConfiguration configuration)
+        protected virtual void RegisterWebServices(FluentRegistration pandora, DotlessConfiguration configuration)
         {
             pandora.Service<IHttp>().Implementor<Http>().Lifestyle.Transient();
             pandora.Service<HandlerImpl>().Implementor<HandlerImpl>().Lifestyle.Transient();
@@ -66,7 +66,7 @@ namespace dotless.Core
                 pandora.Service<IPathResolver>().Implementor<AspRelativePathResolver>().Lifestyle.Transient();
         }
 
-        private void RegisterLocalServices(FluentRegistration pandora)
+        protected virtual void RegisterLocalServices(FluentRegistration pandora)
         {
             pandora.Service<ICache>().Implementor<InMemoryCache>();
             pandora.Service<IParameterSource>().Implementor<ConsoleArgumentParameterSource>();
@@ -74,13 +74,20 @@ namespace dotless.Core
             pandora.Service<IPathResolver>().Implementor<RelativePathResolver>();
         }
 
-        private void RegisterCoreServices(FluentRegistration pandora, DotlessConfiguration configuration)
+        protected virtual void RegisterCoreServices(FluentRegistration pandora, DotlessConfiguration configuration)
         {
             pandora.Service<LogLevel>("error-level").Instance(configuration.LogLevel);
             pandora.Service<IStylizer>().Implementor<PlainStylizer>();
 
-            pandora.Service<IImporter>().Implementor<Importer>().Parameters("disableUrlRewriting").Set("default-disable-url-rewriting").Lifestyle.Transient();
+            var importer = pandora.Service<IImporter>().Implementor<Importer>();
+
+            importer.Parameters("inlineCssFiles").Set("default-inline-css-files").Lifestyle.Transient();
+            importer.Parameters("disableUrlRewriting").Set("default-disable-url-rewriting").Lifestyle.Transient();
+            importer.Parameters("importAllFilesAsLess").Set("default-import-all-files-as-less").Lifestyle.Transient();
+
             pandora.Service<bool>("default-disable-url-rewriting").Instance(configuration.DisableUrlRewriting);
+            pandora.Service<bool>("default-inline-css-files").Instance(configuration.InlineCssFiles);
+            pandora.Service<bool>("default-import-all-files-as-less").Instance(configuration.ImportAllFilesAsLess);
 
             pandora.Service<Parser.Parser>().Implementor<Parser.Parser>().Parameters("optimization").Set("default-optimization").Lifestyle.Transient();
             pandora.Service<int>("default-optimization").Instance(configuration.Optimization);
