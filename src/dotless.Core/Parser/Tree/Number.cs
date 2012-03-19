@@ -46,6 +46,7 @@
             //      e.g. does it make sense for anything other than em to have more precision? Radians?
             switch (Unit)
             {
+                case "%":
                 case "em":
                     return 4;
                 default:

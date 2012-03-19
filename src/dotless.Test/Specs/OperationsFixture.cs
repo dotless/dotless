@@ -23,6 +23,8 @@ namespace dotless.Test.Specs
             AssertExpression("3.33px", "10 / 3px"); // TODO - check px allowed precision
             AssertExpression("1.875em", "15 / 8em");
             AssertExpression("1.875em", "15em / 8");
+            AssertExpression("0.3333%", "1 / 3%");
+            AssertExpression("0.3333%", "1% / 3");
         }
 
         [Test]
