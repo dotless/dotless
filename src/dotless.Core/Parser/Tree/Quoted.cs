@@ -40,7 +40,7 @@
         {
             if (Escaped)
             {
-                env.Output.Append(Value);
+                env.Output.Append(UnescapeContents());
                 return;
             }
 
@@ -62,7 +62,7 @@
           return new Quoted(value, Quote, Escaped).ReducedFrom<Quoted>(this);
         }
 
-        private readonly Regex _unescape = new Regex(@"(^|[^\\])\\(.)");
+        private readonly Regex _unescape = new Regex(@"(^|[^\\])\\(['""])");
 
         public string UnescapeContents()
         {

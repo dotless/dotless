@@ -20,6 +20,15 @@ namespace dotless.Test.Specs.Functions
         }
 
         [Test]
+        public void EscapeCopesWithIE8Hack()
+        {
+            var input = @"e(""\9"")";
+            var expected = @"\9";
+
+            AssertExpression(expected, input);
+        }
+
+        [Test]
         public void SubsequentArgumentssIgnored()
         {
             AssertExpression("'abc'", "%('abc', 'd', 'e')");
