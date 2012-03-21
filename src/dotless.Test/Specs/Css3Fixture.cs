@@ -223,6 +223,27 @@ namespace dotless.Test.Specs
         }
 
         [Test]
+        public void KeyFrameDirective3()
+        {
+            var input = @"
+@-webkit-keyframes rotate-this {
+  0% {
+    -webkit-transform: scale(0.6) rotate(0deg);
+  }
+  50.01% {
+    -webkit-transform: scale(0.6) rotate(180deg);
+  }
+  100% {
+    -webkit-transform: scale(0.6) rotate(315deg);
+  }
+}
+#box {
+  animation: rotate-this 2s infinite;
+}";
+            AssertLessUnchanged(input);
+        }
+
+        [Test]
         public void MozTransform()
         {
             var input = @"
