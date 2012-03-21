@@ -70,7 +70,8 @@
 
             if (scanPluginsFolder)
             {
-                string pluginsFolder = Path.Combine(Assembly.GetEntryAssembly().Location, "plugins");
+                string assemblyLocation = Assembly.GetEntryAssembly().Location;
+                string pluginsFolder = Path.Combine(Path.GetDirectoryName(assemblyLocation), "plugins");
 
                 if (Directory.Exists(pluginsFolder))
                 {
