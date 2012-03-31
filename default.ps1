@@ -28,7 +28,7 @@ task Init -depends Clean {
         -company "dotless project" `
         -product "dotless" `
         -version $version `
-        -copyright "Copyright © dotless project 2010" `
+        -copyright "Copyright © dotless project 2010-2012" `
         -partial $True
     Generate-Assembly-Info `
         -file "$source_dir\dotless.Test\Properties\AssemblyInfo.cs" `
@@ -37,7 +37,7 @@ task Init -depends Clean {
         -company "dotless project" `
         -product "dotless" `
         -version $version `
-        -copyright "Copyright © dotless project 2010"
+        -copyright "Copyright © dotless project 2010-2012"
     Generate-Assembly-Info `
         -file "$source_dir\dotless.Compiler\Properties\AssemblyInfo.cs" `
         -title "dotless Compiler $version" `
@@ -45,7 +45,7 @@ task Init -depends Clean {
         -company "dotless project" `
         -product "dotless" `
         -version $version `
-        -copyright "Copyright © dotless project 2010"
+        -copyright "Copyright © dotless project 2010-2012"
     Generate-Assembly-Info `
         -file "$source_dir\dotless.AspNet\Properties\AssemblyInfo.cs" `
         -title "dotless Compiler $version" `
@@ -53,7 +53,7 @@ task Init -depends Clean {
         -company "dotless project" `
         -product "dotless" `
         -version $version `
-        -copyright "Copyright © dotless project 2010"
+        -copyright "Copyright © dotless project 2010-2012"
 
     new-item $build_dir -itemType directory
     new-item $release_dir -itemType directory
@@ -122,7 +122,21 @@ task Merge -depends Build {
     & $lib_dir\ilmerge\ILMerge.exe $filename-partial.dll `
         Pandora.dll `
         Microsoft.Practices.ServiceLocation.dll `
+        dotless.AspNet.dll `
         /out:$filename `
+        /internalize `
+        /keyfile:../src/dotless-open-source.snk `
+        /t:library
+    if ($lastExitCode -ne 0) {
+        throw "Error: Failed to merge assemblies"
+    }
+    
+    $compilerfilename = "dotless.Compiler.dll"
+    write-host "Executing ILMerge"
+    & $lib_dir\ilmerge\ILMerge.exe $filename-partial.dll `
+        Pandora.dll `
+        Microsoft.Practices.ServiceLocation.dll `
+        /out:$compilerfilename `
         /internalize `
         /keyfile:../src/dotless-open-source.snk `
         /t:library
@@ -140,6 +154,7 @@ task Release-NoTest -depends Merge {
     $build_dir\$filename.dll `
     $build_dir\$filename.pdb `
     $build_dir\dotless.compiler.exe `
+    $build_dir\dotless.compiler.dll `
     acknowledgements.txt `
     license.txt `
     #$build_dir\Testresult.xml `

@@ -29,7 +29,7 @@
   <property name="description" value="Dynamic CSS for .net" />
   <property name="company" value="dotless project" />
   <property name="product" value="dotless" />
-  <property name="copyright" value="Copyright &#169; dotless project 2009" />
+  <property name="copyright" value="Copyright &#169; dotless project 2009-2012" />
 
   <call target="Generate-Assembly-Info" />
 
@@ -40,6 +40,11 @@
 
   <property name="file" value="${source_dir}\dotless.Compiler\Properties\AssemblyInfo.cs" />
   <property name="title" value="dotless Compiler ${version}" />
+
+  <call target="Generate-Assembly-Info" />
+
+  <property name="file" value="${source_dir}\dotless.AspNet\Properties\AssemblyInfo.cs" />
+  <property name="title" value="dotless AspNet ${version}" />
 
   <call target="Generate-Assembly-Info" />
 
@@ -129,6 +134,7 @@
     <try>
       <exec program="ILMerge.exe" basedir="${lib_dir}\ilmerge" workingdir="${build_dir}">
         <arg file="${build_dir}\${filename}-partial.dll" />
+        <arg file="${build_dir}\dotless.AspNet.dll" />
         <arg file="${build_dir}\Pandora.dll" />
         <arg file="${build_dir}\Microsoft.Practices.ServiceLocation.dll" />
         <arg value="/out:${filename}" />
