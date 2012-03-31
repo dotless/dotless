@@ -119,10 +119,7 @@ namespace dotless.Compiler
                 var source = new dotless.Core.Input.FileReader().GetFileContents(inputFilePath);
                 Directory.SetCurrentDirectory(directoryPath);
                 var css = engine.TransformToCss(source, inputFilePath);
-                if (string.IsNullOrEmpty(css) && !string.IsNullOrEmpty(source))
-                {
-                    returnCode++;
-                }
+
                 File.WriteAllText(outputFilePath, css);
                 Console.WriteLine("[Done]");
 
