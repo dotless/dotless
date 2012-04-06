@@ -17,7 +17,9 @@ hr {
 a {
   text-decoration: none;
 }
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   padding: 0;
   margin: 0;
   color: #999999;
@@ -53,9 +55,6 @@ h3 {
 #header1 #logo {
   margin: 20px 0 0 0;
 }
-#header1 #beta {
-  position: absolute;
-}
 #header1 ul {
   list-style: none;
   margin: 0;
@@ -84,39 +83,60 @@ h3 {
   height: 127px;
   background: black;
   border-bottom: solid 5px #333333;
+  color: #999999;
+  font-family: arial;
+  font-weight: bold;
 }
 #header2 .content {
   width: 950px;
   margin: auto;
 }
-#header2 .left {
-  width: 600px;
-  padding: 5px 0 0 0;
-  float: left;
-  display: inline;
-  color: #999999;
-  font-family: Impact, arial;
-}
-#header2 .left p {
+#header2 p {
   font-size: 15px;
   margin: 0;
   padding: 5px 0 0 0;
   line-height: 22px;
 }
-#header2 .left a {
+#header2 p a {
   color: #106698;
   text-decoration: none;
 }
-#header2 .left a:hover {
+#header2 p a:hover {
   border-bottom: dashed 2px #106698;
 }
-#header2 .right {
-  width: 325px;
-  float: left;
-  display: inline;
-}
-#header2 .right img {
+#header2 #download {
+  width: 300px;
+  height: 60px;
+  line-height: 60px;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+  float: right;
+  border: 2px solid #f3f711;
   margin-top: 10px;
+  background: #f3f711;
+  background: -moz-linear-gradient(top, #f3f711 17%, #f4b700 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(17%, #f3f711), color-stop(100%, #f4b700));
+  background: -webkit-linear-gradient(top, #f3f711 17%, #f4b700 100%);
+  background: -o-linear-gradient(top, #f3f711 17%, #f4b700 100%);
+  background: -ms-linear-gradient(top, #f3f711 17%, #f4b700 100%);
+  background: linear-gradient(top, #f3f711 17%, #f4b700 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f3f711', endColorstr='#f4b700',GradientType=0 );
+  color: brown;
+  vertical-align: middle;
+  text-align: center;
+  font-size: 1.2em;
+  background: #f3f711;
+  background: -moz-linear-gradient(top, #f3f711 17%, #f4b700 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(17%, #f3f711), color-stop(100%, #f4b700));
+  background: -webkit-linear-gradient(top, #f3f711 17%, #f4b700 100%);
+  background: -o-linear-gradient(top, #f3f711 17%, #f4b700 100%);
+  background: -ms-linear-gradient(top, #f3f711 17%, #f4b700 100%);
+  background: linear-gradient(top, #f3f711 17%, #f4b700 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f3f711', endColorstr='#f4b700', GradientType=0);
+}
+#header2 #download:hover {
+  color: black;
 }
 #body1 {
   border-top: solid 5px #b3b3b3;
@@ -146,11 +166,13 @@ h3 {
 #body1 .sections .section pre code {
   font-weight: bold;
 }
+#body1 .sections .section.col3 {
+  width: 320px;
+}
 #body1 .sections #getting-started {
   -moz-border-radius: 8px;
   -webkit-border-radius: 8px;
   border-radius: 8px;
-  text-align: right;
   border: solid 2px #e6e6e6;
   background: #ecffff;
   margin: 5px 0 0 0;
@@ -160,7 +182,8 @@ h3 {
   color: #106698;
   font-size: 18px;
 }
-#body1 pre, #body1 .block {
+#body1 pre,
+#body1 .block {
   background-color: #e6e6e6;
   border: solid 1px #b3b3b3;
   color: #106698;
@@ -168,14 +191,18 @@ h3 {
   margin: 0;
   padding: 5px;
 }
-#body1 pre code, #body1 .block code {
+#body1 pre code,
+#body1 .block code {
   font-style: normal;
   font-weight: normal;
 }
-#body1 pre code span, #body1 .block code span {
+#body1 pre code span,
+#body1 .block code span {
   color: black;
 }
-#documentation h1, #documentation h2, #documentation h3 {
+#documentation h1,
+#documentation h2,
+#documentation h3 {
   font-family: arial;
 }
 #documentation h1 {
@@ -187,29 +214,35 @@ h3 {
   margin: 10px 0 5px 0;
 }
 #documentation pre {
-  color: #000000;
+  color: black;
 }
-#documentation #reference, #documentation #toc {
+#documentation #reference,
+#documentation #toc {
   width: 100px;
   float: left;
   text-align: right;
 }
-#documentation #reference a, #documentation #toc a {
-  color: #149;
+#documentation #reference a,
+#documentation #toc a {
+  color: #114499;
 }
-#documentation #reference h3, #documentation #toc h3 {
+#documentation #reference h3,
+#documentation #toc h3 {
   margin: 4px 0 4px 0;
-  color: #668;
+  color: #666688;
   font-size: 14pt;
 }
-#documentation #reference h4, #documentation #toc h4 {
+#documentation #reference h4,
+#documentation #toc h4 {
   margin: 7px 0 4px 0;
 }
-#documentation #reference div, #documentation #toc div {
+#documentation #reference div,
+#documentation #toc div {
   margin-top: 2px;
 }
-#documentation #reference div span, #documentation #toc div span {
-  color: #335;
+#documentation #reference div span,
+#documentation #toc div span {
+  color: #333355;
   font-size: 11px;
 }
 #documentation #reference p,
@@ -230,7 +263,7 @@ h3 {
   margin-bottom: 5px;
 }
 #documentation #article #example #input textarea {
-  border: 1px solid #999;
+  border: 1px solid #999999;
   padding: 3px;
   width: 100%;
 }
@@ -259,13 +292,15 @@ h3 {
 #tryit h4 {
   margin-bottom: 5px;
 }
-#tryit #input, #tryit #html {
+#tryit #input,
+#tryit #html {
   float: left;
   width: 100%;
   margin: 0;
 }
-#tryit #input textarea, #tryit #html textarea {
-  border: 1px solid #999;
+#tryit #input textarea,
+#tryit #html textarea {
+  border: 1px solid #999999;
   padding: 3px;
   width: 100%;
 }
@@ -275,7 +310,8 @@ h3 {
 #tryit #html textarea {
   height: 100px;
 }
-#tryit #output, #tryit #demo {
+#tryit #output,
+#tryit #demo {
   float: left;
   width: 100%;
   margin: 0;
