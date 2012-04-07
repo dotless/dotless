@@ -8,6 +8,7 @@ namespace dotless.Core.Importers
     using Parser;
     using Parser.Tree;
     using Utils;
+    using System.Text.RegularExpressions;
 
     public class Importer : IImporter
     {
@@ -58,6 +59,22 @@ namespace dotless.Core.Importers
         }
 
         /// <summary>
+        ///  Whether a url has a protocol on it
+        /// </summary>
+        private static bool IsProtocolUrl(string url)
+        {
+            return Regex.IsMatch(url, @"^([a-zA-Z]+:)");
+        }
+
+        /// <summary>
+        ///  Whether a url has a protocol on it
+        /// </summary>
+        private static bool IsNonRelativeUrl(string url)
+        {
+            return url.StartsWith(@"/");
+        }
+
+        /// <summary>
         ///  Get a list of the current paths, used to pass back in to alter url's after evaluation
         /// </summary>
         /// <returns></returns>
@@ -73,6 +90,16 @@ namespace dotless.Core.Importers
         /// <returns> The action for the import node to process</returns>
         public virtual ImportAction Import(Import import)
         {
+            // if the import is protocol'd (e.g. http://www.opencss.com/css?blah) then leave the import alone
+            if (IsProtocolUrl(import.Path))
+            {
+                if (import.Path.EndsWith(".less"))
+                {
+                    throw new FileNotFoundException(".less cannot import non local less files.", import.Path);
+                }
+                return ImportAction.LeaveImport;
+            }
+
             var file = GetAdjustedFilePath(import.Path, _paths);
 
             if (!ImportAllFilesAsLess && import.Path.EndsWith(".css"))
@@ -164,7 +191,7 @@ namespace dotless.Core.Importers
         /// </summary>
         public string AlterUrl(string url, List<string> pathList)
         {
-            if (pathList.Any() && !IsUrlRewritingDisabled)
+            if (pathList.Any() && !IsUrlRewritingDisabled && !IsProtocolUrl(url) && !IsNonRelativeUrl(url))
             {
                 return GetAdjustedFilePath(url, pathList);
             }

@@ -55,7 +55,7 @@
 
         private TextNode AdjustUrlPath(TextNode textValue)
         {
-            if (Importer != null && !Regex.IsMatch(textValue.Value, @"^(([a-zA-Z]+:)|(\/))"))
+            if (Importer != null)
             {
                 textValue.Value = Importer.AlterUrl(textValue.Value, ImportPaths);
             }

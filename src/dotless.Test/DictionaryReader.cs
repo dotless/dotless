@@ -9,6 +9,8 @@ namespace dotless.Test
     public class DictionaryReader : IFileReader
     {
         public Dictionary<string, string> Contents;
+        public List<string> DoesFileExistCalls = new List<string>();
+        public List<string> GetFileContentsCalls = new List<string>();
 
         public DictionaryReader()
         {
@@ -22,6 +24,8 @@ namespace dotless.Test
 
         public string GetFileContents(string fileName)
         {
+            GetFileContentsCalls.Add(fileName);
+
             if (Contents.ContainsKey(fileName))
                 return Contents[fileName];
 
@@ -30,6 +34,8 @@ namespace dotless.Test
 
         public bool DoesFileExist(string fileName)
         {
+            DoesFileExistCalls.Add(fileName);
+
             return Contents.ContainsKey(fileName);
         }
     }

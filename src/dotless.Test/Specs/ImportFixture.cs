@@ -135,7 +135,7 @@ body { margin-right: @a; }";
         }
 
         [Test]
-        public void OtherProtocolImportTest()
+        public void OtherProtocolImportTest1()
         {
             var input = @"
 @import 'import/other-protocol-test.less';
@@ -149,8 +149,35 @@ body { margin-right: @a; }";
 }
 ";
             var parser = GetParser();
-
+            
+            DictionaryReader dictionaryReader = (DictionaryReader)((Importer)parser.Importer).FileReader;
+            
             AssertLess(input, expected, parser);
+
+            // Calling the file reader with url's with a protocolis asking for trouble
+            Assert.AreEqual(2, dictionaryReader.DoesFileExistCalls.Count, "We should not ask the file reader if a protocol file exists");
+            Assert.AreEqual(1, dictionaryReader.GetFileContentsCalls.Count, "We should not ask the file reader if a protocol file exists");
+
+            Assert.AreEqual(@"import/other-protocol-test.less", dictionaryReader.DoesFileExistCalls[0], "We should not ask the file reader if a protocol file exists");
+            Assert.AreEqual(@"import/other-protocol-test.less", dictionaryReader.DoesFileExistCalls[1], "We should not ask the file reader if a protocol file exists");
+            Assert.AreEqual(@"import/other-protocol-test.less", dictionaryReader.GetFileContentsCalls[0], "We should not ask the file reader if a protocol file exists");
+        }
+
+        [Test]
+        public void OtherProtocolImportTest2()
+        {
+            var input = @"
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:regular,bold);";
+
+            var parser = GetParser();
+            
+            DictionaryReader dictionaryReader = (DictionaryReader)((Importer)parser.Importer).FileReader;
+            
+            AssertLessUnchanged(input, parser);
+
+            // Calling the file reader with url's with a protocolis asking for trouble
+            Assert.AreEqual(0, dictionaryReader.DoesFileExistCalls.Count, "We should not ask the file reader if a protocol file exists");
+            Assert.AreEqual(0, dictionaryReader.GetFileContentsCalls.Count, "We should not ask the file reader if a protocol file exists");
         }
 
         [Test]
@@ -282,7 +309,7 @@ body { margin-right: @a; }";
 
             var parser = GetParser();
 
-            AssertError("You are importing a file ending in .less that cannot be found.", input, parser);
+            AssertError(".less cannot import non local less files.", input, parser);
         }
 
         [Test]
@@ -302,19 +329,19 @@ body { margin-right: @a; }";
 
             var parser = GetParser();
 
-            AssertError("You are importing a file ending in .less that cannot be found.", input, parser);
+            AssertError(".less cannot import non local less files.", input, parser);
         }
 
         [Test]
         public void ImportForMissingLessFileThrowsExceptionThatIncludesFileName()
         {
-            var input = @"@import ""http://www.someone.com/external1.less"";";
+            var input = @"@import ""external1.less"";";
 
             var parser = GetParser();
 
             Assert.That(() => Evaluate(input, parser),
                 Throws.InstanceOf<System.IO.FileNotFoundException>()
-                    .With.Property("FileName").EqualTo("http://www.someone.com/external1.less"));
+                    .With.Property("FileName").EqualTo("external1.less"));
         }
 
         [Test]
