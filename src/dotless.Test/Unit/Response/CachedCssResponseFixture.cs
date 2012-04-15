@@ -12,7 +12,7 @@ namespace dotless.Test.Unit.Response
         [SetUp]
         public void Setup()
         {
-            CachedCssResponse = new CachedCssResponse(Http.Object);
+            CachedCssResponse = new CachedCssResponse(Http.Object, false);
         }
 
         [Test]

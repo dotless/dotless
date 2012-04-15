@@ -151,8 +151,8 @@
     <Compile Include="Specs\WhitespaceFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Config\ConfigurationFixture.cs" />
-    <Compile Include="Unit\Response\CssResponceFixture.cs" />
     <Compile Include="HttpFixtureBase.cs" />
+    <Compile Include="Unit\Response\CssResponseFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\dotless.AspNet\dotless.AspNet.csproj">

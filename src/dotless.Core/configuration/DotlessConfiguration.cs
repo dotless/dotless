@@ -32,6 +32,7 @@ namespace dotless.Core.configuration
             Optimization = 1;
             Plugins = new List<IPluginConfigurator>();
             MapPathsToWeb = true;
+            HandleWebCompression = true;
         }
 
         public DotlessConfiguration(DotlessConfiguration config)
@@ -49,6 +50,7 @@ namespace dotless.Core.configuration
             DisableUrlRewriting = config.DisableUrlRewriting;
             InlineCssFiles = config.InlineCssFiles;
             ImportAllFilesAsLess = config.ImportAllFilesAsLess;
+            HandleWebCompression = config.HandleWebCompression;
         }
 
         /// <summary>
@@ -110,6 +112,11 @@ namespace dotless.Core.configuration
         ///  Recommended value - 1
         /// </summary>
         public int Optimization { get; set; }
+
+        /// <summary>
+        ///  Whether to handle the compression (e.g. look at Accept-Encoding) - true or leave it to IIS - false
+        /// </summary>
+        public bool HandleWebCompression { get; set; }
 
         /// <summary>
         /// Plugins to use

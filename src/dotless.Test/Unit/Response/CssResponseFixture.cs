@@ -5,14 +5,14 @@ namespace dotless.Test.Unit.Response
     using Moq;
     using NUnit.Framework;
 
-    public class CssResponceFixture : HttpFixtureBase
+    public class CssResponseFixture : HttpFixtureBase
     {
         CssResponse CssResponse { get; set; }
 
         [SetUp]
         public void Setup()
         {
-            CssResponse = new CssResponse(Http.Object);
+            CssResponse = new CssResponse(Http.Object, false);
         }
 
         [Test]

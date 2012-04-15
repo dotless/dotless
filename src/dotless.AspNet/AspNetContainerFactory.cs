@@ -23,10 +23,12 @@
             pandora.Service<HandlerImpl>().Implementor<HandlerImpl>().Lifestyle.Transient();
             pandora.Service<IParameterSource>().Implementor<QueryStringParameterSource>().Lifestyle.Transient();
 
-            if (configuration.CacheEnabled)
-                pandora.Service<IResponse>().Implementor<CachedCssResponse>().Lifestyle.Transient();
-            else
-                pandora.Service<IResponse>().Implementor<CssResponse>().Lifestyle.Transient();
+            var responseService = configuration.CacheEnabled ?
+                pandora.Service<IResponse>().Implementor<CachedCssResponse>() :
+                pandora.Service<IResponse>().Implementor<CssResponse>();
+
+            responseService.Parameters("isCompressionHandledByResponse").Set("default-is-compression-handled-by-response").Lifestyle.Transient();
+            pandora.Service<bool>("default-is-compression-handled-by-response").Instance(configuration.HandleWebCompression);
 
             pandora.Service<ICache>().Implementor<HttpCache>().Lifestyle.Transient();
             pandora.Service<ILogger>().Implementor<AspResponseLogger>().Parameters("level").Set("error-level").Lifestyle.Transient();

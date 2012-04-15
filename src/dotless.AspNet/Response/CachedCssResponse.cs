@@ -4,17 +4,15 @@
     using System.Web;
     using Abstractions;
 
-    public class CachedCssResponse : IResponse
+    public class CachedCssResponse : CssResponse
     {
-        public readonly IHttp Http;
         private const int CacheAgeMinutes = 10080; //7 days
 
-        public CachedCssResponse(IHttp http)
+        public CachedCssResponse(IHttp http, bool isCompressionHandledByResponse) : base(http, isCompressionHandledByResponse)
         {
-            Http = http;
         }
 
-        public void WriteCss(string css)
+        public override void WriteCss(string css)
         {
             var response = Http.Context.Response;
 
@@ -27,9 +25,7 @@
             //response.Cache.SetOmitVaryStar(true);
             response.Cache.SetVaryByCustom("Accept-Encoding");
 
-            response.ContentType = "text/css";
-            response.Write(css);
-
+            base.WriteCss(css);
         }
     }
 }
