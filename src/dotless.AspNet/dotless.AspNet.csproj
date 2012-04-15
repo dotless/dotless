@@ -61,6 +61,8 @@
     <Compile Include="Response\CachedCssResponse.cs" />
     <Compile Include="Response\CssResponse.cs" />
     <Compile Include="Response\IResponse.cs" />
+    <Compile Include="Response\QValue.cs" />
+    <Compile Include="Response\QValueList.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\dotless.Core\dotless.Core.csproj">
