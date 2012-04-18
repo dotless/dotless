@@ -55,8 +55,16 @@ namespace dotless.Compiler
                 Directory.CreateDirectory(outputDirectoryPath);
             }
 
-            if (HasWildcards(inputFilePattern)) 
+            if (HasWildcards(inputFilePattern))
+            {
+                if (!string.IsNullOrEmpty(outputFilename))
+                {
+                    Console.WriteLine("Output filename patterns/filenames are not supported when using input wildcards. You may only specify an output directory (end the output in a directory seperator)");
+                    return -1;
+                }
                 outputFilename = string.Empty;
+
+            }
 
             var filenames = Directory.GetFiles(inputDirectoryPath, inputFilePattern);
             var engine = new EngineFactory(configuration).GetEngine();
