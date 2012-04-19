@@ -38,14 +38,20 @@
         {
             env.Frames.Push(this);
 
+            Directive evaldDirective;
+
             if (Rules != null)
-                Rules = new NodeList(Rules.Select(r => r.Evaluate(env))).ReducedFrom<NodeList>(Rules);
+            {
+                evaldDirective = new Directive(Name, Identifier, new NodeList(Rules.Select(r => r.Evaluate(env))).ReducedFrom<NodeList>(Rules));
+            }
             else
-                Value = Value.Evaluate(env);
+            {
+                evaldDirective = new Directive(Name, Value.Evaluate(env));
+            }
 
             env.Frames.Pop();
 
-            return this;
+            return evaldDirective;
         }
 
         public override void AppendCSS(Env env, Context context)

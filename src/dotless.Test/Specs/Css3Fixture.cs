@@ -414,6 +414,30 @@ a ~ p {
             }
         }
 
+        [Test]
+        public void FontFaceMixin()
+        {
+            var input = @"
+.def-font(@name) {
+    @font-face {
+        font-family: @name
+    }
+}
+
+.def-font(font-a);
+.def-font(font-b);";
+
+            var expected = @"
+@font-face {
+  font-family: font-a;
+}
+@font-face {
+  font-family: font-b;
+}
+";
+            AssertLess(input, expected);
+        }
+
 #if CSS3EXPERIMENTAL
         [Test]
         public void GridRepeatingPatternSupported()
