@@ -2,7 +2,7 @@
 <package>
   <metadata>
 	<id>dotless</id>
-	<version>1.3.0.0</version>
+	<version>1.3.0.1</version>
 	<authors>Daniel Hölbling, James Foster and Luke Page</authors>
 	<description>
 This is a project to port the hugely useful Less libary to the .NET world. It give variables, nested rules and operators to CSS.
