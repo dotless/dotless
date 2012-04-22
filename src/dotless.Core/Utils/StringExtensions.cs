@@ -76,6 +76,11 @@
                     {
                         numberOfMatchingParents++;
                     }
+                    else
+                    {
+                        // once a higher up element of the path doesn't match it is invalid to look any deeper
+                        break;
+                    }
                 }
 
                 // skip out the ../ that match directories we are already in
