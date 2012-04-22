@@ -66,3 +66,33 @@ using System.Security;
 	Write-Host "Generating assembly info file: $file"
     out-file -filePath $file -encoding UTF8 -inputObject $asmInfo
 }
+
+function Generate-NuGet
+{
+param(
+	[string]$id, 
+	[string]$version, 
+	[string]$authors, 
+	[string]$description,
+	[string]$file = $(throw "file is a required parameter.")
+)
+  $nugetSpec = "<?xml version=`"1.0`" encoding=`"utf-8`"?>
+<package>
+  <metadata>
+	<id>$id</id>
+	<version>$version</version>
+	<authors>$authors</authors>
+	<description>$description</description>
+	<language>en-US</language>
+  </metadata>
+</package>"
+
+	$dir = [System.IO.Path]::GetDirectoryName($file)
+	if ([System.IO.Directory]::Exists($dir) -eq $false)
+	{
+		Write-Host "Creating directory $dir"
+		[System.IO.Directory]::CreateDirectory($dir)
+	}
+	Write-Host "Generating NuGet Spec file: $file"
+    out-file -filePath $file -encoding UTF8 -inputObject $nugetSpec
+}

@@ -20,44 +20,72 @@ task Clean {
 }
 
 task Init -depends Clean {
+    $product = "dotless"
+    $title = "$product $version"
+    $description = "Dynamic CSS for .net"
+    $company = "$product project"
+    $copyright = "Copyright © $product 2010-2012"
+    $authors = "Daniel Hölbling, James Foster, Luke Page"
+    $nugetDescription = "This is a project to port the hugely useful Less libary to the .NET world. It give variables, nested rules and operators to CSS.
+
+For more information about the original Less project see http://lesscss.org/ or http://github.com/dotless/dotless. For more information about how to get started with the .NET version see http://www.dotlesscss.org/.";
+    $nugetDotless = $nugetDescription + "
+
+For the client only dll on its own, see the DotlessClientOnly package.";
+    $nugetDotlessClientOnly = "This package only contains the dot net client only dll. You should only use this package if you do not want any ASP.net functionality.
+    
+    " + $nugetDescription;
+
     Write-Host $version
+    new-item $build_dir -itemType directory
+
+    Generate-NuGet `
+        -file "$build_dir\Dotless.nuspec" `
+        -id "dotless" `
+        -version $version `
+        -authors $authors `
+        -description $nugetDotless
+    Generate-NuGet `
+        -file "$build_dir\DotlessClientOnly.nuspec" `
+        -id "DotlessClientOnly" `
+        -version $version `
+        -authors $authors `
+        -description $nugetDotlessClientOnly
     Generate-Assembly-Info `
         -file "$source_dir\dotless.Core\Properties\AssemblyInfo.cs" `
-        -title "dotless $version" `
-        -description "Dynamic CSS for .net" `
-        -company "dotless project" `
-        -product "dotless" `
+        -title $title `
+        -description $description `
+        -company $company `
+        -product $product `
         -version $version `
-        -copyright "Copyright © dotless project 2010-2012" `
+        -copyright $copyright `
         -partial $True
     Generate-Assembly-Info `
         -file "$source_dir\dotless.Test\Properties\AssemblyInfo.cs" `
-        -title "dotless Tests $version" `
-        -description "Dynamic CSS for .net" `
-        -company "dotless project" `
-        -product "dotless" `
+        -title $title `
+        -description $description `
+        -company $company `
+        -product $product `
         -version $version `
-        -copyright "Copyright © dotless project 2010-2012"
+        -copyright $copyright
     Generate-Assembly-Info `
         -file "$source_dir\dotless.Compiler\Properties\AssemblyInfo.cs" `
-        -title "dotless Compiler $version" `
-        -description "Dynamic CSS for .net" `
-        -company "dotless project" `
-        -product "dotless" `
+        -title $title `
+        -description $description `
+        -company $company `
+        -product $product `
         -version $version `
-        -copyright "Copyright © dotless project 2010-2012"
+        -copyright $copyright
     Generate-Assembly-Info `
         -file "$source_dir\dotless.AspNet\Properties\AssemblyInfo.cs" `
-        -title "dotless Compiler $version" `
-        -description "Dynamic CSS for .net" `
-        -company "dotless project" `
-        -product "dotless" `
+        -title $title `
+        -description $description `
+        -company $company `
+        -product $product `
         -version $version `
-        -copyright "Copyright © dotless project 2010-2012"
+        -copyright $copyright
 
-    new-item $build_dir -itemType directory
-    new-item $release_dir -itemType directory
-    
+    new-item $release_dir -itemType directory    
 }
 
 task Build -depends Init {
@@ -154,8 +182,6 @@ task Release-NoTest -depends Merge {
     $build_dir\$filename.dll `
     $build_dir\$filename.pdb `
     $build_dir\dotless.compiler.exe `
-    $build_dir\dotless.ClientOnly.dll `
-    $build_dir\dotless.ClientOnly.pdb `
     acknowledgements.txt `
     license.txt `
     #$build_dir\Testresult.xml `
@@ -208,7 +234,7 @@ exit 1 unless result"
     gem build dotless.gemspec
 }
 
-task Release -depends Test, Merge, NuGetPackage, t4css {
+task Release -depends Test, Merge, NuGetPackage, NuGetClientOnlyPackage, t4css {
     $commit = Get-Git-Commit
     $filename = "dotless.core"
     & $lib_dir\7zip\7za.exe a $release_dir\dotless-$commit.zip `
@@ -216,8 +242,6 @@ task Release -depends Test, Merge, NuGetPackage, t4css {
     $build_dir\$filename.pdb `
     $build_dir\Testresult.xml `
     $build_dir\dotless.compiler.exe `
-    $build_dir\dotless.ClientOnly.dll `
-    $build_dir\dotless.ClientOnly.pdb `
     acknowledgements.txt `
     license.txt `
     
@@ -239,13 +263,26 @@ task NuGetPackage -depends Merge {
     New-Item $target\tool -ItemType directory
     New-Item $target\content -ItemType directory
     
-    Copy-Item $source_dir\Dotless.nuspec $target
+    Copy-Item $build_dir\Dotless.nuspec $target
     Copy-Item $source_dir\web.config.transform $target\content\
     Copy-Item $build_dir\dotless.Core.dll $target\lib\
-    Copy-Item $build_dir\dotless.ClientOnly.dll $target\lib\
     Copy-Item $build_dir\dotless.compiler.exe $target\tool\
     Copy-Item acknowledgements.txt $target
     Copy-Item license.txt $target
         
     .\lib\NuGet.exe pack $target\Dotless.nuspec -o $build_dir
+}
+
+task NuGetClientOnlyPackage -depends Merge {
+    $target = "$build_dir\NuGetClientOnly\"
+    remove-item -force -recurse $target -ErrorAction SilentlyContinue     
+    New-Item $target -ItemType directory
+    New-Item $target\lib -ItemType directory
+    
+    Copy-Item $build_dir\DotlessClientOnly.nuspec $target
+    Copy-Item $build_dir\dotless.ClientOnly.dll $target\lib\
+    Copy-Item acknowledgements.txt $target
+    Copy-Item license.txt $target
+        
+    .\lib\NuGet.exe pack $target\DotlessClientOnly.nuspec -o $build_dir
 }
