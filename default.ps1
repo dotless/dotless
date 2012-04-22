@@ -131,7 +131,7 @@ task Merge -depends Build {
         throw "Error: Failed to merge assemblies"
     }
     
-    $compilerfilename = "dotless.Compiler.dll"
+    $compilerfilename = "dotless.ClientOnly.dll"
     write-host "Executing ILMerge"
     & $lib_dir\ilmerge\ILMerge.exe $filename-partial.dll `
         Pandora.dll `
@@ -154,7 +154,8 @@ task Release-NoTest -depends Merge {
     $build_dir\$filename.dll `
     $build_dir\$filename.pdb `
     $build_dir\dotless.compiler.exe `
-    $build_dir\dotless.compiler.dll `
+    $build_dir\dotless.ClientOnly.dll `
+    $build_dir\dotless.ClientOnly.pdb `
     acknowledgements.txt `
     license.txt `
     #$build_dir\Testresult.xml `
@@ -215,6 +216,8 @@ task Release -depends Test, Merge, NuGetPackage, t4css {
     $build_dir\$filename.pdb `
     $build_dir\Testresult.xml `
     $build_dir\dotless.compiler.exe `
+    $build_dir\dotless.ClientOnly.dll `
+    $build_dir\dotless.ClientOnly.pdb `
     acknowledgements.txt `
     license.txt `
     
@@ -239,6 +242,7 @@ task NuGetPackage -depends Merge {
     Copy-Item $source_dir\Dotless.nuspec $target
     Copy-Item $source_dir\web.config.transform $target\content\
     Copy-Item $build_dir\dotless.Core.dll $target\lib\
+    Copy-Item $build_dir\dotless.ClientOnly.dll $target\lib\
     Copy-Item $build_dir\dotless.compiler.exe $target\tool\
     Copy-Item acknowledgements.txt $target
     Copy-Item license.txt $target

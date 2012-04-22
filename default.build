@@ -158,6 +158,8 @@
     <arg line="a ${release_dir}\dotless-${commit}.zip" />
     <arg file="${build_dir}\dotless.core.dll" />
     <arg file="${build_dir}\dotless.core.pdb" />
+    <arg file="${build_dir}\dotless.compiler.dll" />
+    <arg file="${build_dir}\dotless.compiler.pdb" />
     <arg file="${build_dir}\dotless.compiler.exe" />
     <arg file="acknowledgements.txt" />
     <arg file="license.txt" />
@@ -200,6 +202,8 @@
     <arg line="a ${release_dir}\dotless-${commit}.zip" />
     <arg file="${build_dir}\dotless.core.dll" />
     <arg file="${build_dir}\dotless.core.pdb" />
+    <arg file="${build_dir}\dotless.compiler.dll" />
+    <arg file="${build_dir}\dotless.compiler.pdb" />
     <arg file="${build_dir}\TestResult.xml" />
     <arg file="${build_dir}\dotless.compiler.exe" />
     <arg file="acknowledgements.txt" />
