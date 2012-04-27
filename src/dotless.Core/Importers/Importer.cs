@@ -63,7 +63,7 @@ namespace dotless.Core.Importers
         /// </summary>
         private static bool IsProtocolUrl(string url)
         {
-            return Regex.IsMatch(url, @"^([a-zA-Z]+:)");
+            return Regex.IsMatch(url, @"^([a-zA-Z]{2,}:)");
         }
 
         /// <summary>

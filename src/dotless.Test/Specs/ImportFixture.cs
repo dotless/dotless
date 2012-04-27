@@ -20,6 +20,11 @@ namespace dotless.Test.Specs
 @import ""import-test-b.less"";
 @a: 20%;
 ";
+            imports[@"c:/absolute/file.less"] = @"
+.windowz .dos {
+  border: none;
+}
+";
             imports["import/other-protocol-test.less"] = @"
 .first {
     background-image: url('http://some.com/file.gif');
@@ -178,6 +183,21 @@ body { margin-right: @a; }";
             // Calling the file reader with url's with a protocolis asking for trouble
             Assert.AreEqual(0, dictionaryReader.DoesFileExistCalls.Count, "We should not ask the file reader if a protocol file exists");
             Assert.AreEqual(0, dictionaryReader.GetFileContentsCalls.Count, "We should not ask the file reader if a protocol file exists");
+        }
+
+        [Test]
+        public void OtherProtocolImportTest3()
+        {
+            var input = @"
+@import url('c:/absolute/file.less');";
+            var expected = @"
+.windowz .dos {
+  border: none;
+}
+";
+            var parser = GetParser();
+    
+            AssertLess(input, expected, parser);
         }
 
         [Test]
