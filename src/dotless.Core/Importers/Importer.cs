@@ -71,7 +71,7 @@ namespace dotless.Core.Importers
         /// </summary>
         private static bool IsNonRelativeUrl(string url)
         {
-            return url.StartsWith(@"/");
+            return url.StartsWith(@"/") || url.StartsWith(@"~/") || Regex.IsMatch(url, @"^[a-zA-Z]:");
         }
 
         /// <summary>
@@ -100,7 +100,12 @@ namespace dotless.Core.Importers
                 return ImportAction.LeaveImport;
             }
 
-            var file = GetAdjustedFilePath(import.Path, _paths);
+            var file = import.Path;
+            
+            if (!IsNonRelativeUrl(file)) 
+            {
+                file = GetAdjustedFilePath(import.Path, _paths);
+            }
 
             if (!ImportAllFilesAsLess && import.Path.EndsWith(".css"))
             {
