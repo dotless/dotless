@@ -22,6 +22,7 @@ namespace dotless.Core.configuration
             dotlessConfiguration.ImportAllFilesAsLess = GetBoolValue(section, "importAllFilesAsLess") ?? dotlessConfiguration.ImportAllFilesAsLess;
             dotlessConfiguration.MapPathsToWeb = GetBoolValue(section, "mapPathsToWeb") ?? dotlessConfiguration.MapPathsToWeb;
             dotlessConfiguration.HandleWebCompression = GetBoolValue(section, "handleWebCompression") ?? dotlessConfiguration.HandleWebCompression;
+            dotlessConfiguration.DisableParameters = GetBoolValue(section, "disableParameters") ?? dotlessConfiguration.DisableParameters;
 
             var logLevel = GetStringValue(section, "log") ?? "default";
             switch (logLevel.ToLowerInvariant())

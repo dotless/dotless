@@ -68,7 +68,8 @@ namespace dotless.Core
             pandora.Service<Parser.Parser>().Implementor<Parser.Parser>().Parameters("optimization").Set("default-optimization").Lifestyle.Transient();
             pandora.Service<int>("default-optimization").Instance(configuration.Optimization);
 
-            pandora.Service<ILessEngine>().Implementor<ParameterDecorator>().Lifestyle.Transient();
+            if (!configuration.DisableParameters)
+                pandora.Service<ILessEngine>().Implementor<ParameterDecorator>().Lifestyle.Transient();
 
             if (configuration.CacheEnabled)
                 pandora.Service<ILessEngine>().Implementor<CacheDecorator>().Lifestyle.Transient();

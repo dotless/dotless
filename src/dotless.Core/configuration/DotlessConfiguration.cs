@@ -51,7 +51,13 @@ namespace dotless.Core.configuration
             InlineCssFiles = config.InlineCssFiles;
             ImportAllFilesAsLess = config.ImportAllFilesAsLess;
             HandleWebCompression = config.HandleWebCompression;
+            DisableParameters = config.DisableParameters;
         }
+
+        /// <summary>
+        ///  Disable using parameters
+        /// </summary>
+        public bool DisableParameters { get; set; }
 
         /// <summary>
         ///  Stops URL's being adjusted depending on the imported file location
