@@ -17,7 +17,12 @@
             if (number.Unit == "%")
                 alpha = alpha/100d;
 
-            return new Color(color.R, color.G, color.B, color.Alpha + alpha);
+            return new Color(color.R, color.G, color.B, ProcessAlpha( color.Alpha, alpha));
+        }
+
+        protected virtual double ProcessAlpha(double originalAlpha, double newAlpha)
+        {
+            return originalAlpha + newAlpha;
         }
     }
 
@@ -28,6 +33,14 @@
         protected override Node EditColor(Color color, Number number)
         {
             return base.EditColor(color, -number);
+        }
+    }
+
+    public class FadeFunction : AlphaFunction
+    {
+        protected override double  ProcessAlpha(double originalAlpha, double newAlpha)
+        {
+ 	        return newAlpha;
         }
     }
 }

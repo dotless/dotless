@@ -54,6 +54,15 @@ namespace dotless.Test.Specs.Functions
         }
 
         [Test]
+        public void TestEditAlphaFade()
+        {
+            AssertExpression("rgba(0, 0, 0, 0.25)", "fade(rgba(0, 0, 0, 0.5), .25)");
+            AssertExpression("black", "fade(rgba(0, 0, 0, 0.5), 1)");
+            AssertExpression("rgba(255, 255, 255, 0.1)", "fade(white, .1)");
+            AssertExpression("white", "fade(white, 1.2)");
+        }
+
+        [Test]
         public void TestEditAlpha2()
         {
             // Opacify / Fade In
