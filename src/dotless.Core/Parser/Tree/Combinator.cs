@@ -14,8 +14,6 @@
                 Value = "";
             else if (value == " ")
                 Value = " ";
-            else if (value == "& ")
-                Value = "& ";
             else
                 Value = value.Trim();
         }
@@ -26,8 +24,6 @@
                 new Dictionary<string, string> { 
                   { "", "" }, 
                   { " ", " " },
-                  { "&", "" },
-                  { "& ", " " },
                   { ":", " :" },
                   { "::", "::" },
                   { "+", env.Compress ? "+" : " + " },
