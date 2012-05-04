@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace dotless.Core.Stylizers
 {
     using System.Collections.Generic;
@@ -36,12 +38,13 @@ namespace dotless.Core.Stylizers
             var errorBefore = extract.Line.Substring(0, errorPosition);
             var errorAfter = extract.Line.Substring(errorPosition + 1);
 
-            return Stylize(extract.Before, "grey") +
-                   Stylize(errorBefore, "green") +
-                   Stylize(
-                       Stylize(extract.Line[errorPosition].ToString(), "inverse") + errorAfter, "yellow") +
-                   Stylize(extract.After, "grey") +
-                   Stylize("", "reset");
+            var styledString = new StringBuilder();
+            styledString.Append(Stylize(extract.Before, "grey"));
+            styledString.Append(Stylize(errorBefore, "green"));
+            styledString.Append(Stylize(Stylize(extract.Line[errorPosition].ToString(), "inverse") + errorAfter, "yellow"));
+            styledString.Append(Stylize(extract.After, "grey"));
+            styledString.Append(Stylize("", "reset"));
+            return styledString.ToString();
         }
     }
 }
