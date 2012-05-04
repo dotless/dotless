@@ -960,9 +960,8 @@ namespace dotless.Core.Parser
             if (parser.Tokenizer.Peek(@"([a-z.#: _-]+)[\s\n]*\{")) //simple case with no comments
             {
                 var match = parser.Tokenizer.Match(@"[a-z.#: _-]+");
-                selectors =
-                    new NodeList<Selector>(
-                        NodeProvider.Selector(new NodeList<Element>(NodeProvider.Element(null, match, index)), index));
+                var s = NodeProvider.Selector(new NodeList<Element>(NodeProvider.Element(null, match, index)), index);
+                selectors = new NodeList<Selector>(s);
             }
             else
             {
