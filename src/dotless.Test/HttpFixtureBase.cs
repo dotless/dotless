@@ -5,6 +5,7 @@ namespace dotless.Test
     using Core.Abstractions;
     using Moq;
     using NUnit.Framework;
+    using System.IO;
 
     public class HttpFixtureBase
     {
@@ -17,6 +18,7 @@ namespace dotless.Test
         protected Mock<IHttp> Http { get; set; }
         protected NameValueCollection QueryString { get; set; }
         protected NameValueCollection Form { get; set; }
+        protected NameValueCollection Headers { get; set; }
 
         [SetUp]
         public void BaseSetup()
@@ -31,6 +33,7 @@ namespace dotless.Test
 
             QueryString = new NameValueCollection();
             Form = new NameValueCollection();
+            Headers = new NameValueCollection();
 
             Http.SetupGet(h => h.Context).Returns(HttpContext.Object);
 
@@ -39,8 +42,10 @@ namespace dotless.Test
             HttpContext.SetupGet(c => c.Server).Returns(HttpServer.Object);
             HttpContext.SetupGet(c => c.Session).Returns(HttpSession.Object);
             HttpResponse.SetupGet(r => r.Cache).Returns(HttpCache.Object);
+            HttpResponse.SetupGet(r => r.Filter).Returns(new MemoryStream(new byte[1000], true));
             HttpRequest.SetupGet(r => r.QueryString).Returns(QueryString);
             HttpRequest.SetupGet(r => r.Form).Returns(Form);
+            HttpRequest.SetupGet(r => r.Headers).Returns(Headers);
         }
     }
 }

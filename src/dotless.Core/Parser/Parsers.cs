@@ -794,12 +794,10 @@ namespace dotless.Core.Parser
 
             PushComments();
             GatherComments(parser); // to collect, combinator must have picked up something which would require memory anyway
-            Node e = parser.Tokenizer.Match(@"[.#:]?[a-zA-Z0-9_-]+") || parser.Tokenizer.Match('*') || Attribute(parser) ||
-                    parser.Tokenizer.MatchAny(@"\([^)@]+\)");
+            Node e = parser.Tokenizer.Match(@"[.#:]?[a-zA-Z0-9_-]+") || parser.Tokenizer.Match('*') || parser.Tokenizer.Match('&') || 
+                Attribute(parser) || parser.Tokenizer.MatchAny(@"\([^)@]+\)");
 
-            bool isCombinatorAnd = !e && c.Value.StartsWith("&");
-
-            if (!e && !isCombinatorAnd)
+            if (!e)
             {
                 if (parser.Tokenizer.Match('(')) {
                     var variable = Variable(parser);
@@ -811,12 +809,13 @@ namespace dotless.Core.Parser
                 }
             }
 
-            if (e || isCombinatorAnd)
+            if (e)
             {
                 c.PostComments = PullComments();
                 PopComments();
                 c.PreComments = PullComments();
-                return NodeProvider.Element(c, isCombinatorAnd ? null : e, index);
+
+                return NodeProvider.Element(c, e, index);
             }
 
             PopComments();
@@ -837,7 +836,7 @@ namespace dotless.Core.Parser
             var index = parser.Tokenizer.Location.Index;
 
             Node match;
-            if (match = parser.Tokenizer.Match(@"[+>~]") || parser.Tokenizer.Match(@"&\s?") || parser.Tokenizer.Match(@"::"))
+            if (match = parser.Tokenizer.Match(@"[+>~]") || parser.Tokenizer.Match(@"::"))
                 return NodeProvider.Combinator(match.ToString(), index);
 
             return NodeProvider.Combinator(char.IsWhiteSpace(parser.Tokenizer.GetPreviousCharIgnoringComments()) ? " " : null, index);

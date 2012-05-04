@@ -130,6 +130,7 @@ task Merge -depends Build {
     $filename = "dotless.Compiler.exe"
     Remove-Item $filename-partial.exe -ErrorAction SilentlyContinue
     Rename-Item $filename $filename-partial.exe
+    write-host "Executing ILMerge - Creating Exe"
     & $lib_dir\ilmerge\ILMerge.exe $filename-partial.exe `
         Pandora.dll `
         dotless.Core.dll `
@@ -146,13 +147,13 @@ task Merge -depends Build {
     $filename = "dotless.Core.dll"
     Remove-Item $filename-partial.dll -ErrorAction SilentlyContinue
     Rename-Item $filename $filename-partial.dll
-    write-host "Executing ILMerge"
+    write-host "Executing ILMerge - Creating Core including AspNet"
     & $lib_dir\ilmerge\ILMerge.exe $filename-partial.dll `
         Pandora.dll `
         Microsoft.Practices.ServiceLocation.dll `
         dotless.AspNet.dll `
         /out:$filename `
-        /internalize `
+        /internalize:../src/internalize-exclusion-list.txt `
         /keyfile:../src/dotless-open-source.snk `
         /t:library
     if ($lastExitCode -ne 0) {
@@ -160,12 +161,12 @@ task Merge -depends Build {
     }
     
     $compilerfilename = "dotless.ClientOnly.dll"
-    write-host "Executing ILMerge"
+    write-host "Executing ILMerge - Creating Client Only Dll"
     & $lib_dir\ilmerge\ILMerge.exe $filename-partial.dll `
         Pandora.dll `
         Microsoft.Practices.ServiceLocation.dll `
         /out:$compilerfilename `
-        /internalize `
+        /internalize:../src/internalize-exclusion-list.txt `
         /keyfile:../src/dotless-open-source.snk `
         /t:library
     if ($lastExitCode -ne 0) {

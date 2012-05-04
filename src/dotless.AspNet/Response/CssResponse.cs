@@ -56,20 +56,23 @@ namespace dotless.Core.Response
                 preferred = new QValue("gzip");
             }
 
-            // handle the preferred encoding
-            switch (preferred.Name.ToLowerInvariant())
+            if (preferred.Name != null)
             {
-                case "gzip":
-                    context.Response.AppendHeader("Content-Encoding", "gzip");
-                    context.Response.Filter = new GZipStream(context.Response.Filter, CompressionMode.Compress);
-                    break;
-                case "deflate":
-                    context.Response.AppendHeader("Content-Encoding", "deflate");
-                    context.Response.Filter = new DeflateStream(context.Response.Filter, CompressionMode.Compress);
-                    break;
-                case "identity":
-                default:
-                    break;
+                // handle the preferred encoding
+                switch (preferred.Name.ToLowerInvariant())
+                {
+                    case "gzip":
+                        context.Response.AppendHeader("Content-Encoding", "gzip");
+                        context.Response.Filter = new GZipStream(context.Response.Filter, CompressionMode.Compress);
+                        break;
+                    case "deflate":
+                        context.Response.AppendHeader("Content-Encoding", "deflate");
+                        context.Response.Filter = new DeflateStream(context.Response.Filter, CompressionMode.Compress);
+                        break;
+                    case "identity":
+                    default:
+                        break;
+                }
             }
         }
     }

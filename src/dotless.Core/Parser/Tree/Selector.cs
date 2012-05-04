@@ -16,9 +16,6 @@
                 Elements = elements as NodeList<Element>;
             else
                 Elements = new NodeList<Element>(elements);
-
-            if (Elements[0].Combinator.Value == "")
-                Elements[0].Combinator.Value = " ";
         }
 
         public bool Match(Selector other)
@@ -48,6 +45,9 @@
             }
 
             env.Output.Push();
+
+            if (Elements[0].Combinator.Value == "")
+                env.Output.Append(' ');
 
             env.Output.Append(Elements);
 

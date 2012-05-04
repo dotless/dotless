@@ -24,7 +24,7 @@
 
         public static NodeList<Selector> GetEmptySelector()
         {
-            return new NodeList<Selector>() { new Selector(new NodeList<Element>() { new Element(new Combinator("&"), "") }) };
+            return new NodeList<Selector>() { new Selector(new NodeList<Element>() { new Element(new Combinator(""), "&") }) };
         }
 
         public override void Accept(Plugins.IVisitor visitor)

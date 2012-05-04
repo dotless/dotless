@@ -5,6 +5,7 @@
     using System.Linq;
     using Tree;
     using Utils;
+    using dotless.Core.Parser.Infrastructure.Nodes;
 
     public class Context : IEnumerable<IEnumerable<Selector>>
     {
@@ -17,12 +18,6 @@
 
         public void AppendSelectors(Context context, IEnumerable<Selector> selectors)
         {
-            if (context == null || context.Paths.Count == 0)
-            {
-                Paths.AddRange(selectors.Select(s => new List<Selector> {s}));
-                return;
-            }
-
             foreach (var selector in selectors)
             {
                 AppendSelector(context, selector);
@@ -31,25 +26,132 @@
 
         private void AppendSelector(Context context, Selector selector)
         {
-            if (!selector.Elements.Any(e => e.Combinator.Value.StartsWith("&")))
+            if (!selector.Elements.Any(e => e.Value == "&"))
             {
-                Paths.AddRange(context.Paths.Select(path => path.Concat(new[] {selector}).ToList()));
+                if (context != null && context.Paths.Count > 0)
+                {
+                    Paths.AddRange(context.Paths.Select(path => path.Concat(new[] { selector }).ToList()));
+                }
+                else
+                {
+                    Paths.Add(new List<Selector>() { selector });
+                }
                 return;
             }
 
-            var beforeEl = selector.Elements.TakeWhile(s => !s.Combinator.Value.StartsWith("&"));
-            var afterEl = selector.Elements.SkipWhile(s => !s.Combinator.Value.StartsWith("&"));
+            // The paths are List<List<Selector>>
+            // The first list is a list of comma seperated selectors
+            // The inner list is a list of inheritance seperated selectors
+            // e.g.
+            // .a, .b {
+            //   .c {
+            //   }
+            // }
+            // == {{.a} {.c}} {{.b} {.c}}
+            //
 
-            var before = new List<Selector>();
-            var after = new List<Selector>();
+            // the elements from the current selector so far
+            var currentElements = new NodeList<Element>();
+            // the current list of new selectors to add to the path.
+            // We will build it up. We initiate it with one empty selector as we "multiply" the new selectors
+            // by the parents
+            var newSelectors = new List<List<Selector>>() { new List<Selector>() };
 
-            if (beforeEl.Any())
-                before.Add(new Selector(beforeEl));
+            foreach (Element el in selector.Elements)
+            {
+                // non parent reference elements just get added
+                if (el.Value != "&")
+                {
+                    currentElements.Add(el);
+                } else
+                {
+                    // the new list of selectors to add
+                    var selectorsMultiplied = new List<List<Selector>>();
 
-            if (afterEl.Any())
-                after.Add(new Selector(afterEl));
+                    // merge the current list of non parent selector elements
+                    // on to the current list of selectors to add
+                    if (currentElements.Count > 0)
+                    {
+                        MergeElementsOnToSelectors(currentElements, newSelectors);
+                    }
 
-            Paths.AddRange(context.Paths.Select(path => before.Concat(path).Concat(after).ToList()));
+                    // loop through our current selectors
+                    foreach(List<Selector> sel in newSelectors)
+                    {
+                        // and the parent selectors
+                        foreach(List<Selector> parentSel in context.Paths)
+                        {
+                            // We need to put the current selectors
+                            // then join the last selector's elements on to the parents selectors
+
+                            // our new selector path
+                            List<Selector> newSelectorPath = new List<Selector>();
+                            // selectors from the parent after the join
+                            List<Selector> afterParentJoin = new List<Selector>();
+                            Selector newJoinedSelector;
+
+                            //construct the joined selector - if & is the first thing this will be empty,
+                            // if not newJoinedSelector will be the last set of elements in the selector
+                            if (sel.Count > 0)
+                            {
+                                newJoinedSelector = new Selector(new NodeList<Element>(sel[sel.Count-1].Elements));
+                                newSelectorPath.AddRange(sel.Take(sel.Count - 1));
+                            }
+                            else
+                            {
+                                newJoinedSelector = new Selector(new NodeList<Element>());
+                            }
+
+                            //put together the parent selectors after the join
+                            if (parentSel.Count > 1)
+                            {
+                                afterParentJoin.AddRange(parentSel.Skip(1));
+                            }
+
+                            // join the elements so far with the first part of the parent
+                            newJoinedSelector.Elements.Add(new Element(el.Combinator, parentSel[0].Elements[0].Value));
+                            newJoinedSelector.Elements.AddRange(parentSel[0].Elements.Skip(1));
+
+                            // now add the joined selector
+                            newSelectorPath.Add(newJoinedSelector);
+
+                            // and the rest of the parent
+                            newSelectorPath.AddRange(afterParentJoin);
+
+                            // add that to our new set of selectors
+                            selectorsMultiplied.Add(newSelectorPath);
+                        }
+                    }
+                    // our new selectors has been multiplied, so reset the state
+                    newSelectors = selectorsMultiplied;
+                    currentElements = new NodeList<Element>();
+                }
+            }
+
+            // if we have any elements left over (e.g. .a& .b == .b)
+            // add them on to all the current selectors
+            if (currentElements.Count > 0)
+            {
+                MergeElementsOnToSelectors(currentElements, newSelectors);
+            }
+
+            Paths.AddRange(newSelectors);
+        }
+
+        private void MergeElementsOnToSelectors(NodeList<Element> elements, List<List<Selector>> selectors)
+        {
+            foreach (List<Selector> sel in selectors)
+            {
+                // if the previous thing in sel is a parent this needs to join on to it?
+                if (sel.Count > 0)
+                {
+                    sel[sel.Count - 1] = new Selector(sel[sel.Count - 1].Elements.Concat(elements));
+                }
+                else
+                {
+                    sel.Add(new Selector(elements));
+                }
+            }
         }
 
         public void AppendCSS(Env env)
