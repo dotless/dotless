@@ -37,7 +37,7 @@ namespace dotless.Core.Parser.Functions
 
             var str = stringValue(Arguments[0]);
 
-            var args = Arguments.Skip(1).ToArray();
+            var args = Arguments.Skip(1).ToList();
             var i = 0;
 
             MatchEvaluator replacement = m =>
