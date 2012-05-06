@@ -1,7 +1,7 @@
 Just Want a .dll?
 =================
 
-If you don't care about the source and just want a .dll you can get a compiled release from [https://github.com/dotless/dotless/downloads](GitHub)
+If you don't care about the source and just want a .dll you can get a compiled release from [Github](https://github.com/dotless/dotless/downloads).
 
 Simply select for the latest successful build and click on the "Artifacts" section, here you'll find the latest compiler exe and any dll's required.
 
