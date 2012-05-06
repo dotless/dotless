@@ -53,7 +53,7 @@ namespace dotless.Core.Parser
         private INodeProvider _nodeProvider;
         public INodeProvider NodeProvider
         {
-            get { return _nodeProvider ?? (new DefaultNodeProvider()); }
+            get { return _nodeProvider ?? (_nodeProvider = new DefaultNodeProvider()); }
             set { _nodeProvider = value; }
         }
 
