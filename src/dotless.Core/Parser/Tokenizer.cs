@@ -228,9 +228,11 @@ namespace dotless.Core.Parser
 
             if (_input[_i] == tok)
             {
+                var index = _i;
+
                 Advance(1);
 
-                return new CharMatchResult(tok);
+                return new CharMatchResult(tok) {Index = index};
             }
 
             return null;
@@ -259,9 +261,11 @@ namespace dotless.Core.Parser
             if (!match.Success)
                 return null;
 
+            var index = _i;
+
             Advance(match.Length);
 
-            return new RegexMatchResult(match);
+            return new RegexMatchResult(match) {Index = index};
         }
 
         // Match a string, but include the possibility of matching quoted and comments
