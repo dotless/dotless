@@ -219,8 +219,9 @@ namespace dotless.Compiler
             Console.WriteLine("Usage: dotless.Compiler.exe [-switches] <inputfile> [outputfile]");
             Console.WriteLine("\tSwitches:");
             Console.WriteLine("\t\t-m --minify - Output CSS will be compressed");
-            Console.WriteLine("\t\t-w --watch - Watches .less file for changes");
-            Console.WriteLine("\t\t-h --help - Displays this dialog");
+            Console.WriteLine("\t\t-d --debug  - Print helpful debug comments in output (not compatible with -m)");
+            Console.WriteLine("\t\t-w --watch  - Watches .less file for changes");
+            Console.WriteLine("\t\t-h --help   - Displays this dialog");
             Console.WriteLine("\t\t-r --disable-url-rewriting - Disables changing urls in imported files");
             Console.WriteLine("\t\t-a --import-all-less - treats every import as less even if ending in .css");
             Console.WriteLine("\t\t-c --inline-css - Inlines CSS file imports into the output");
@@ -247,6 +248,10 @@ namespace dotless.Compiler
                     if (arg == "-m" || arg == "--minify")
                     {
                         configuration.MinifyOutput = true;
+                    }
+                    else if (arg == "-d" || arg == "--debug")
+                    {
+                        configuration.Debug = true;
                     }
                     else if (arg == "-h" || arg == "--help" || arg == @"/?")
                     {

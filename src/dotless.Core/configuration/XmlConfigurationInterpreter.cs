@@ -15,6 +15,7 @@ namespace dotless.Core.configuration
             var dotlessConfiguration = DotlessConfiguration.GetDefaultWeb();
 
             dotlessConfiguration.MinifyOutput = GetBoolValue(section, "minifyCss") ?? dotlessConfiguration.MinifyOutput;
+            dotlessConfiguration.Debug = GetBoolValue(section, "debug") ?? dotlessConfiguration.Debug;
             dotlessConfiguration.CacheEnabled = GetBoolValue(section, "cache") ?? dotlessConfiguration.CacheEnabled;
             dotlessConfiguration.Optimization = GetIntValue(section, "optimization") ?? dotlessConfiguration.Optimization;
             dotlessConfiguration.DisableUrlRewriting = GetBoolValue(section, "disableUrlRewriting") ?? dotlessConfiguration.DisableUrlRewriting;

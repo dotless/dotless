@@ -25,6 +25,7 @@ namespace dotless.Core.configuration
         {
             LessSource = typeof (FileReader);
             MinifyOutput = false;
+            Debug = false;
             CacheEnabled = true;
             Web = false;
             Logger = null;
@@ -39,6 +40,7 @@ namespace dotless.Core.configuration
         {
             LessSource = config.LessSource;
             MinifyOutput = config.MinifyOutput;
+            Debug = config.Debug;
             CacheEnabled = config.CacheEnabled;
             Web = config.Web;
             Logger = null;
@@ -84,6 +86,11 @@ namespace dotless.Core.configuration
         ///  Whether to minify the ouput
         /// </summary>
         public bool MinifyOutput { get; set; }
+
+        /// <summary>
+        ///  Prints helpful comments in the output while debugging.
+        /// </summary>
+        public bool Debug { get; set; }
 
         /// <summary>
         ///  For web handlers output in a cached mode. Reccommended on.

@@ -8,8 +8,8 @@ namespace dotless.Core.Parser.Infrastructure.Nodes
     {
         public int Index { get; set; }
 
-		public NodeList PreComments { get; set; }
-		public NodeList PostComments { get; set; }
+        public NodeList PreComments { get; set; }
+        public NodeList PostComments { get; set; }
 
         #region Boolean Operators
 

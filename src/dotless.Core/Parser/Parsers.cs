@@ -978,7 +978,14 @@ namespace dotless.Core.Parser
             NodeList rules;
 
             if (selectors.Count > 0 && (rules = Block(parser)) != null)
-                return NodeProvider.Ruleset(selectors, rules, index);
+            {
+                var ruleset = NodeProvider.Ruleset(selectors, rules, index);
+
+                if(parser.Debug)
+                    ruleset.Zone = parser.Tokenizer.GetZone(index, parser.FileName);
+
+                return ruleset;
+            }
 
             Recall(parser, memo);
 

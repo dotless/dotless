@@ -15,6 +15,7 @@ namespace dotless.Core.Parser.Tree
         public bool Evaluated { get; protected set; }
         public bool IsRoot { get; set; }
         public bool MultiMedia { get; set; }
+        public Zone Zone { get; set; }
 
         /// <summary>
         ///  The original Ruleset this was cloned from during evaluation
@@ -94,7 +95,7 @@ namespace dotless.Core.Parser.Tree
             if (_lookups.ContainsKey(key))
                 return _lookups[key];
 
-            foreach (var rule in Rulesets().Where(rule => 
+            var validRulesets = Rulesets().Where(rule =>
                 {
                     if (rule != self)
                         return true;
@@ -107,7 +108,9 @@ namespace dotless.Core.Parser.Tree
                     }
 
                     return false;
-                }))
+                });
+
+            foreach (var rule in validRulesets)
             {
                 if (rule.Selectors && rule.Selectors.Any(selector.Match))
                 {
@@ -142,6 +145,7 @@ namespace dotless.Core.Parser.Tree
             // create a clone so it is non destructive
             var clone = new Ruleset(new NodeList<Selector>(Selectors), new NodeList(Rules), OriginalRuleset).ReducedFrom<Ruleset>(this);
 
+            clone.Zone = Zone;
             clone.EvaluateRules(env);
             clone.Evaluated = true;
 
@@ -215,13 +219,14 @@ namespace dotless.Core.Parser.Tree
 
         public virtual void AppendCSS(Env env, Context context)
         {
-            var css = new List<string>(); // The CSS output
             var rules = new List<StringBuilder>(); // node.Ruleset instances
             int nonCommentRules = 0;
             var paths = new Context(); // Current selectors
 
             if (!IsRoot)
             {
+                if(!env.Compress && env.Debug && Zone != null)
+                    env.Output.Append(string.Format("/* {0}:L{1} */\n", Zone.FileName, Zone.LineNumber));
                 paths.AppendSelectors(context, Selectors);
             }
 

@@ -49,6 +49,8 @@ namespace dotless.Core.Parser
     {
         public Tokenizer Tokenizer { get; set; }
         public IStylizer Stylizer { get; set; }
+        public string FileName { get; set; }
+        public bool Debug { get; set; }
 
         private INodeProvider _nodeProvider;
         public INodeProvider NodeProvider
@@ -64,38 +66,44 @@ namespace dotless.Core.Parser
             set
             {
                 _importer = value;
-                _importer.Parser = () => new Parser(Tokenizer.Optimization, Stylizer, _importer) {NodeProvider = this.NodeProvider};
+                _importer.Parser = () => new Parser(Tokenizer.Optimization, Stylizer, _importer)
+                                             {
+                                                 NodeProvider = NodeProvider,
+                                                 Debug = Debug
+                                             };
             }
         }
 
         private const int defaultOptimization = 1;
 
-        public Parser()
-            : this(defaultOptimization)
+        public Parser(bool debug = false)
+            : this(defaultOptimization, debug)
         {
         }
 
-        public Parser(int optimization)
-            : this(optimization, new PlainStylizer(), new Importer())
+        public Parser(int optimization, bool debug = false)
+            : this(optimization, new PlainStylizer(), new Importer(), debug)
         {
         }
 
-        public Parser(IStylizer stylizer, IImporter importer)
-            : this(defaultOptimization, stylizer, importer)
+        public Parser(IStylizer stylizer, IImporter importer, bool debug = false)
+            : this(defaultOptimization, stylizer, importer, debug)
         {
         }
 
-        public Parser(int optimization, IStylizer stylizer, IImporter importer)
+        public Parser(int optimization, IStylizer stylizer, IImporter importer, bool debug = false)
         {
             Stylizer = stylizer;
             Importer = importer;
+            Debug = debug;
             Tokenizer = new Tokenizer(optimization);
         }
 
-        public Ruleset Parse(string input,  string fileName)
+        public Ruleset Parse(string input, string fileName)
         {
             ParsingException parsingException = null;
             Ruleset root = null;
+            FileName = fileName;
 
             try
             {

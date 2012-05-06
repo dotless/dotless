@@ -1,21 +1,19 @@
 ﻿namespace dotless.Test
 {
     using System;
-    using System.Text.RegularExpressions;
     using Core.Importers;
     using Core.Parser;
     using System.Collections.Generic;
     using System.Linq;
     using Core.Parser.Infrastructure;
-    using Core.Parser.Tree;
-    using Core.Plugins;
     using Core.Stylizers;
     using NUnit.Framework;
-    using dotless.Test.Plugins;
+    using Plugins;
 
     public class SpecFixtureBase
     {
         protected Func<IStylizer> DefaultStylizer;
+        protected Func<IImporter> DefaultImporter { get; set; }
         protected Func<Parser> DefaultParser;
         protected Func<Env> DefaultEnv;
         protected int Optimisation { get; set; }
@@ -27,7 +25,8 @@
         {
             Optimisation = 1;
             DefaultStylizer = () => new PlainStylizer();
-            DefaultParser = () => new Parser(Optimisation, DefaultStylizer(), new Importer());
+            DefaultImporter = () => new Importer();
+            DefaultParser = () => new Parser(Optimisation, DefaultStylizer(), DefaultImporter());
             DefaultEnv = () =>
             {
                 var env = new Env();
@@ -142,14 +141,14 @@
             return css.Substring(start + 11, end - start - 11).Trim();
         }
 
-        public string Evaluate(string input)
+        public string Evaluate(string input, string filename = "test.less")
         {
-            return Evaluate(input, DefaultParser());
+            return Evaluate(input, DefaultParser(), filename);
         }
 
-        public string Evaluate(string input, Parser parser)
+        public string Evaluate(string input, Parser parser, string filename = "test.less")
         {
-            var tree = parser.Parse(input.Trim(), null);
+            var tree = parser.Parse(input.Trim(), filename);
 
             return tree.ToCSS(DefaultEnv());
         }

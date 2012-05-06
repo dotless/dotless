@@ -431,6 +431,11 @@ namespace dotless.Core.Parser
             }
         }
 
+        public Zone GetZone(int position, string fileName)
+        {
+            return GetZone(null, position, 0, fileName);
+        }
+
         public Zone GetZone(string error, int position, int call, string fileName)
         {
             var first = _input.Substring(0, System.Math.Min(position, _input.Length));

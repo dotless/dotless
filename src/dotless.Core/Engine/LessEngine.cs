@@ -7,32 +7,32 @@ namespace dotless.Core
     using Exceptions;
     using Loggers;
     using Parser.Infrastructure;
-    using Parser.Tree;
-    using System.IO;
 
     public class LessEngine : ILessEngine
     {
         public Parser.Parser Parser { get; set; }
         public ILogger Logger { get; set; }
         public bool Compress { get; set; }
+        public bool Debug { get; set; }
         public Env Env { get; set; }
         public IEnumerable<IPluginConfigurator> Plugins { get; set; }
 
-        public LessEngine(Parser.Parser parser, ILogger logger, bool compress, IEnumerable<IPluginConfigurator> plugins)
+        public LessEngine(Parser.Parser parser, ILogger logger, bool compress, bool debug, IEnumerable<IPluginConfigurator> plugins)
         {
             Parser = parser;
             Logger = logger;
             Compress = compress;
+            Debug = debug;
             Plugins = plugins;
         }
 
-        public LessEngine(Parser.Parser parser, ILogger logger, bool compress)
-            : this(parser, logger, compress, null)
+        public LessEngine(Parser.Parser parser, ILogger logger, bool compress, bool debug)
+            : this(parser, logger, compress, debug, null)
         {
         }
 
         public LessEngine(Parser.Parser parser)
-            : this(parser, new ConsoleLogger(LogLevel.Error), false, null)
+            : this(parser, new ConsoleLogger(LogLevel.Error), false, false, null)
         {
         }
 
@@ -47,7 +47,7 @@ namespace dotless.Core
             {
                 var tree = Parser.Parse(source, fileName);
 
-                var env = Env ?? new Env { Compress = Compress };
+                var env = Env ?? new Env {Compress = Compress, Debug = Debug};
 
                 if (Plugins != null)
                 {

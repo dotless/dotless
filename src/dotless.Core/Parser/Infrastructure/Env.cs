@@ -17,6 +17,7 @@
 
         public Stack<Ruleset> Frames { get; protected set; }
         public bool Compress { get; set; }
+        public bool Debug { get; set; }
         public Node Rule { get; set; }
         public Output Output { get; private set; }
         public Stack<Media> MediaPath { get; private set; }
