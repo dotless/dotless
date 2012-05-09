@@ -6,6 +6,16 @@ namespace dotless.Test.Specs.Functions
     public class FormatStringFixture : SpecFixtureBase
     {
         [Test]
+        public void TestFormatStringInfo()
+        {
+            var info1 = "formatstring(string, args...) is not supported by less.js, so this will work but not compile with other less implementations." +
+                @" You may want to consider using ~"""" and string interpolation which does the same thing and is supported.";
+
+            AssertExpressionLogMessage(info1, "formatstring('abc')");
+            AssertExpressionLogMessage(info1, "formatstring('abc {0}', 'd')");
+        }
+
+        [Test]
         public void NoFormatting()
         {
             AssertExpression("abc", "formatstring('abc')");

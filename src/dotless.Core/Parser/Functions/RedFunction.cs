@@ -7,11 +7,15 @@
     {
         protected override Node Eval(Color color)
         {
+            WarnNotSupportedByLessJS("red(color)");
+
             return new Number(color.RGB[0]);
         }
 
         protected override Node EditColor(Color color, Number number)
         {
+            WarnNotSupportedByLessJS("red(color, number)");
+
             var value = number.Value;
 
             if (number.Unit == "%")

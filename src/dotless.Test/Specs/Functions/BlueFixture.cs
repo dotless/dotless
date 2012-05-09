@@ -27,5 +27,15 @@ namespace dotless.Test.Specs.Functions
         {
             AssertExpressionError("Expected color in function 'blue', found 12", 5, "blue(12)");
         }
+
+        [Test]
+        public void TestBlueInfo()
+        {
+            var blueInfo1 = "blue(color, number) is not supported by less.js, so this will work but not compile with other less implementations.";
+            var blueInfo2 = "blue(color) is not supported by less.js, so this will work but not compile with other less implementations.";
+
+            AssertExpressionLogMessage(blueInfo1, "blue(#123456, 10)");
+            AssertExpressionLogMessage(blueInfo2, "blue(#123456)");
+        }
     }
 }

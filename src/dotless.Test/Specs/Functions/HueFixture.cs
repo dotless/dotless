@@ -17,6 +17,15 @@ namespace dotless.Test.Specs.Functions
         }
 
         [Test]
+        public void TestEditHueInfo()
+        {
+            var info1 = "hue(color, number) is not supported by less.js, so this will work but not compile with other less implementations.";
+
+            AssertExpressionLogMessage(info1, "hue(blue, 23)");
+            AssertExpressionNoLogMessage(info1, "hue(blue)");
+        }
+
+        [Test]
         public void TestEditHue()
         {
             AssertExpression("#deeded", "hue(hsl(120, 30, 90), 60)");

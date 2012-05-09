@@ -159,7 +159,7 @@ p a span {
         [Test]
         public void ParentSelector6()
         {
-            https://github.com/cloudhead/less.js/issues/299
+            // https://github.com/cloudhead/less.js/issues/299
 
             var input =
                 @"
@@ -209,7 +209,7 @@ h3 + * {
         [Test]
         public void ParentSelector7()
         {
-            https://github.com/cloudhead/less.js/issues/749
+            // https://github.com/cloudhead/less.js/issues/749
 
             var input =
                 @"

@@ -5,6 +5,14 @@ namespace dotless.Test.Specs.Functions
     public class HexFixture : SpecFixtureBase
     {
         [Test]
+        public void TestHexInfo()
+        {
+            var info1 = "hex(number) is not supported by less.js, so this will work but not compile with other less implementations.";
+
+            AssertExpressionLogMessage(info1, "hex(0)");
+        }
+
+        [Test]
         public void TestHex()
         {
             AssertExpression("00", "hex(0)");
@@ -24,6 +32,7 @@ namespace dotless.Test.Specs.Functions
         {
             AssertExpression("FF", "hex(999)");
         }
+
         [Test]
         public void ThrowsExpressionError_WhenNumberPassedHasUnit()
         {

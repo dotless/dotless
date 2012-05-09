@@ -4,7 +4,7 @@
     using Tree;
     using Utils;
 
-    public class SaturationFunction : HslColorFunctionBase
+    public class SaturateFunction : HslColorFunctionBase
     {
         protected override Node EvalHsl(HslColor color)
         {
@@ -18,13 +18,22 @@
         }
     }
 
-    public class SaturateFunction : SaturationFunction {}
-
-    public class DesaturateFunction : SaturationFunction
+    public class DesaturateFunction : SaturateFunction
     {
         protected override Node EditHsl(HslColor color, Number number)
         {
             return base.EditHsl(color, -number);
         }
     }
+
+    public class SaturationFunction : SaturateFunction 
+    {
+        protected override Node EditHsl(HslColor color, Number number)
+        {
+            WarnNotSupportedByLessJS("saturation(color, number)", "saturate(color, number) or its opposite desaturate(color, number),");
+
+            return base.EditHsl(color, number);
+        }
+    }
+
 }

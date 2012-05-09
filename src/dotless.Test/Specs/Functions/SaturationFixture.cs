@@ -18,6 +18,16 @@ namespace dotless.Test.Specs.Functions
         }
 
         [Test]
+        public void TestEditSaturationInfo()
+        {
+            var info1 = "saturation(color, number) is not supported by less.js, so this will work but not compile with other less implementations." +
+                @" You may want to consider using saturate(color, number) or its opposite desaturate(color, number), which does the same thing and is supported.";
+
+            AssertExpressionLogMessage(info1, "saturation(blue, 23)");
+            AssertExpressionNoLogMessage(info1, "saturation(blue)");
+        }
+
+        [Test]
         public void TestEditSaturation()
         {
             //Saturate

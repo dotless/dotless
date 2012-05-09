@@ -102,6 +102,7 @@
     <Compile Include="Specs\Functions\StringFunctionsFixture.cs" />
     <Compile Include="Specs\MixinGuardsFixture.cs" />
     <Compile Include="Specs\ScriptFixture.cs" />
+    <Compile Include="TestLogger.cs" />
     <Compile Include="TestStylizer.cs" />
     <Compile Include="Unit\Tokenizer\TokenizerFixture.cs" />
     <Compile Include="Unit\Engine\CacheDecoratorFixture.cs" />

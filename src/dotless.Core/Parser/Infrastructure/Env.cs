@@ -9,6 +9,7 @@
     using Nodes;
     using Plugins;
     using Tree;
+    using dotless.Core.Loggers;
 
     public class Env
     {
@@ -19,6 +20,7 @@
         public bool Compress { get; set; }
         public bool Debug { get; set; }
         public Node Rule { get; set; }
+        public ILogger Logger { get; set; }
         public Output Output { get; private set; }
         public Stack<Media> MediaPath { get; private set; }
         public List<Media> MediaBlocks { get; private set; }
@@ -33,6 +35,7 @@
             Output = new Output(this);
             MediaPath = new Stack<Media>();
             MediaBlocks = new List<Media>();
+            Logger = new NullLogger(LogLevel.Info);
 
             _plugins = new List<IPlugin>();
             _functionTypes = functions ?? new Dictionary<string, Type>();
@@ -172,12 +175,16 @@
         /// </summary>
         public virtual Function GetFunction(string name)
         {
+            Function function = null;
             name = name.ToLowerInvariant();
 
             if (_functionTypes.ContainsKey(name))
-                return (Function) Activator.CreateInstance(_functionTypes[name]);
+            {
+                function = (Function)Activator.CreateInstance(_functionTypes[name]);
+                function.Logger = Logger;
+            }
 
-            return null;
+            return function;
         }
 
         private static IEnumerable<KeyValuePair<string, Type>> GetFunctionNames(Type t)

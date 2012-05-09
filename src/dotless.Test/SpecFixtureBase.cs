@@ -9,6 +9,8 @@
     using Core.Stylizers;
     using NUnit.Framework;
     using Plugins;
+    using dotless.Core.Loggers;
+    using System.Text;
 
     public class SpecFixtureBase
     {
@@ -93,9 +95,13 @@
 
         public void AssertError(string message, string line, int lineNumber, int position, string call, int callLine, string input)
         {
+            var oldStylizer = DefaultStylizer;
             DefaultStylizer = () => new TestStylizer();
+
             message = TestStylizer.GetErrorMessage(message, line, lineNumber, position, call, callLine);
             AssertError(message, input);
+
+            DefaultStylizer = oldStylizer;
         }
 
         protected void AssertExpressionError(string message, string expression, IDictionary<string, string> variables)
@@ -110,17 +116,60 @@
 
         public void AssertExpressionError(string message, int position, string expression, IDictionary<string, string> variables)
         {
+            var oldStylizer = DefaultStylizer;
             DefaultStylizer = () => new TestStylizer();
+
             message = TestStylizer.GetErrorMessage(message, expression, 3, position, null, 0);
             AssertExpressionError(message, expression, variables);
+
+            DefaultStylizer = oldStylizer;
+        }
+
+        protected void AssertExpressionLogMessage(string message, string expression)
+        {
+            List<string> logMessages;
+            EvaluateExpression(expression, null, out logMessages);
+
+            StringBuilder formattedLogMessages = new StringBuilder();
+            foreach (string logMessage in logMessages)
+            {
+                if (message == logMessage)
+                {
+                    return;
+                }
+                formattedLogMessages.AppendLine(logMessage);
+            }
+
+            Assert.Fail("Log messages did not contain '{0}'.\nLog Messages:\n{1}", message, formattedLogMessages.ToString().TrimEnd());
+        }
+
+        protected void AssertExpressionNoLogMessage(string message, string expression)
+        {
+            List<string> logMessages;
+            EvaluateExpression(expression, null, out logMessages);
+
+            foreach (string logMessage in logMessages)
+            {
+                if (message == logMessage)
+                {
+                    Assert.Fail("Message '{0}' found.", message);
+                }
+            }
         }
 
         protected string EvaluateExpression(string expression)
         {
-            return EvaluateExpression(expression, null);
+            List<string> logMessages;
+            return EvaluateExpression(expression, null, out logMessages);
         }
 
         protected string EvaluateExpression(string expression, IDictionary<string, string> variablesDictionary)
+        {
+            List<string> logMessages;
+            return EvaluateExpression(expression, variablesDictionary, out logMessages);
+        }
+
+        protected string EvaluateExpression(string expression, IDictionary<string, string> variablesDictionary, out List<string> logMessages)
         {
             var variables = "";
             if (variablesDictionary != null)
@@ -129,8 +178,9 @@
                                                           string.Format("{0}  @{1}: {2};", s, x.Key, x.Value));
 
             var less = string.Format("{1} .def {{\nexpression:\n{0}\n;}}", expression, variables);
-
-            var css = Evaluate(less);
+            TestLogger testLogger;
+            var css = Evaluate(less, out testLogger);
+            logMessages = testLogger.LogMessages;
 
             if (string.IsNullOrEmpty(css))
                 return "";
@@ -141,16 +191,39 @@
             return css.Substring(start + 11, end - start - 11).Trim();
         }
 
-        public string Evaluate(string input, string filename = "test.less")
+        public string Evaluate(string input)
+        {
+            return Evaluate(input, DefaultParser(), "test.less");
+        }
+
+        public string Evaluate(string input, string filename)
         {
             return Evaluate(input, DefaultParser(), filename);
         }
 
-        public string Evaluate(string input, Parser parser, string filename = "test.less")
+        public string Evaluate(string input, out TestLogger testLogger)
         {
-            var tree = parser.Parse(input.Trim(), filename);
+            return Evaluate(input, DefaultParser(), out testLogger, "test.less");
+        }
 
-            return tree.ToCSS(DefaultEnv());
+        public string Evaluate(string input, Parser parser)
+        {
+            TestLogger outParam;
+            return Evaluate(input, parser, out outParam, "test.less");
+        }
+
+        public string Evaluate(string input, Parser parser, string filename)
+        {
+            TestLogger outParam;
+            return Evaluate(input, parser, out outParam, filename);
+        }
+
+        public string Evaluate(string input, Parser parser, out TestLogger testLogger, string filename)
+        {
+            var tree = parser.Parse(input.Trim(), null);
+            var env = DefaultEnv();
+            env.Logger = testLogger = new TestLogger(LogLevel.Info);
+            return tree.ToCSS(env);
         }
     }
 }

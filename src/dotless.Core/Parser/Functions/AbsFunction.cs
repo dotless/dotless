@@ -9,6 +9,8 @@ namespace dotless.Core.Parser.Functions
     {
         protected override Node Eval(Env env, Number number, Node[] args)
         {
+            WarnNotSupportedByLessJS("abs(number)");
+
             return new Number(Math.Abs(number.Value), number.Unit);
         }
     }

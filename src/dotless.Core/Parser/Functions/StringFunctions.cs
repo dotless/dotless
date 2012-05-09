@@ -15,6 +15,8 @@ namespace dotless.Core.Parser.Functions
         {
             Guard.ExpectMaxArguments(1, Arguments.Count, this, Index);
 
+            WarnNotSupportedByLessJS("e(string)", @"~""""");
+
             if (Arguments.Count == 0)
                 return new TextNode("");
 
@@ -30,6 +32,8 @@ namespace dotless.Core.Parser.Functions
     {
         protected override Node Evaluate(Env env)
         {
+            WarnNotSupportedByLessJS("%(string, args...)", @"~"""" and string interpolation");
+
             if (Arguments.Count == 0)
                 return new Quoted("", false);
 

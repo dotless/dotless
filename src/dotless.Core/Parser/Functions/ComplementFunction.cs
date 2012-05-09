@@ -8,6 +8,8 @@ namespace dotless.Core.Parser.Functions
     {
         protected override Node EvalHsl(HslColor color)
         {
+            WarnNotSupportedByLessJS("complement(color)");
+
             color.Hue += 0.5;
             return color.ToRgbColor();
         }

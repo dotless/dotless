@@ -11,6 +11,8 @@ namespace dotless.Core.Parser.Functions
     {
         protected override Node Evaluate(Env env)
         {
+            WarnNotSupportedByLessJS("formatstring(string, args...)", null, @" You may want to consider using ~"""" and string interpolation which does the same thing and is supported.");
+
             if (Arguments.Count == 0)
                 return new Quoted("", false);
 

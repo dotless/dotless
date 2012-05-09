@@ -29,6 +29,24 @@ namespace dotless.Test.Specs.Functions
         }
 
         [Test]
+        public void TestEFunctionInfo()
+        {
+            var info1 = "e(string) is not supported by less.js, so this will work but not compile with other less implementations." +
+                @" You may want to consider using ~"""" which does the same thing and is supported.";
+
+            AssertExpressionLogMessage(info1, "e('abc {0}')");
+        }
+
+        [Test]
+        public void TestPercentageFunctionInfo()
+        {
+            var info1 = "%(string, args...) is not supported by less.js, so this will work but not compile with other less implementations." +
+                @" You may want to consider using ~"""" and string interpolation which does the same thing and is supported.";
+
+            AssertExpressionLogMessage(info1, "%('abc %s', 'd')");
+        }
+
+        [Test]
         public void SubsequentArgumentssIgnored()
         {
             AssertExpression("'abc'", "%('abc', 'd', 'e')");

@@ -34,6 +34,16 @@ namespace dotless.Test.Specs.Functions
         }
 
         [Test]
+        public void TestEditAlphaWarning()
+        {
+            var alphaWarning = "alpha(color, number) is not supported by less.js, so this will work but not compile with other less implementations." + 
+                " You may want to consider using fadein(color, number) or the opposite fadeout(color, number), which does the same thing and is supported.";
+
+            AssertExpressionLogMessage(alphaWarning, "alpha(rgba(0, 0, 0, 0.5), .25)");
+            AssertExpressionNoLogMessage(alphaWarning, "fadein(rgba(0, 0, 0, 0.5), .25)");
+        }
+
+        [Test]
         public void TestEditAlpha()
         {
             // Opacify / Fade In

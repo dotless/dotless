@@ -14,6 +14,14 @@ namespace dotless.Test.Specs.Functions
         }
 
         [Test]
+        public void AbsInfo()
+        {
+            var absInfo = "abs(number) is not supported by less.js, so this will work but not compile with other less implementations.";
+
+            AssertExpressionLogMessage(absInfo, "abs(3)");
+        }
+
+        [Test]
         public void ThrowsIfIncorrectType()
         {
             AssertExpressionError("Expected number in function 'abs', found #aaaaaa", 4, "abs(#aaa)");

@@ -3,7 +3,7 @@
     using Infrastructure.Nodes;
     using Tree;
 
-    public class AlphaFunction : ColorFunctionBase
+    public class FadeInFunction : ColorFunctionBase
     {
         protected override Node Eval(Color color)
         {
@@ -26,7 +26,15 @@
         }
     }
 
-    public class FadeInFunction : AlphaFunction {}
+    public class AlphaFunction : FadeInFunction 
+    {
+        protected override Node EditColor(Color color, Number number)
+        {
+            WarnNotSupportedByLessJS("alpha(color, number)", "fadein(color, number) or the opposite fadeout(color, number),");
+
+            return base.EditColor(color, number);
+        }
+    }
 
     public class FadeOutFunction : AlphaFunction
     {

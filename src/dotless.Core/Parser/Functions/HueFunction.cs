@@ -13,6 +13,8 @@
 
         protected override Node EditHsl(HslColor color, Number number)
         {
+            WarnNotSupportedByLessJS("hue(color, number)");
+
             color.Hue += number.Value/360d;
             return color.ToRgbColor();
         }

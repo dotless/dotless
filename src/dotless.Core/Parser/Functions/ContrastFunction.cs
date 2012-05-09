@@ -23,6 +23,8 @@ namespace dotless.Core.Parser.Functions
             if (Arguments.Count > 3)
               Guard.ExpectNode<Number>(Arguments[3], this, Index);
 
+            WarnNotSupportedByLessJS("contrast(color, color[, color[, percentage]])");
+
             var lightColor = Arguments.Count > 1 ? (Color)Arguments[1] : new Color(255d, 255d, 255d);
             var darkColor = Arguments.Count > 2 ? (Color)Arguments[2] : new Color(0d, 0d, 0d);
             var threshold = Arguments.Count > 3 ? ((Number) Arguments[3]).ToNumber() : 0.5d;

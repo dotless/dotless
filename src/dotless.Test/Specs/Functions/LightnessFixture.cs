@@ -18,6 +18,16 @@ namespace dotless.Test.Specs.Functions
         }
 
         [Test]
+        public void TestEditLightnessInfo()
+        {
+            var info1 = "lightness(color, number) is not supported by less.js, so this will work but not compile with other less implementations." +
+                @" You may want to consider using lighten(color, number) or its opposite darken(color, number), which does the same thing and is supported.";
+
+            AssertExpressionLogMessage(info1, "lightness(blue, 23)");
+            AssertExpressionNoLogMessage(info1, "lightness(blue)");
+        }
+
+        [Test]
         public void TestEditLightness()
         {
             //Lighten
