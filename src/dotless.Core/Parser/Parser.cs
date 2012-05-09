@@ -75,23 +75,44 @@ namespace dotless.Core.Parser
         }
 
         private const int defaultOptimization = 1;
+        private const bool defaultDebug = false;
 
-        public Parser(bool debug = false)
+        public Parser()
+            : this(defaultOptimization, defaultDebug)
+        {
+        }
+
+        public Parser(bool debug)
             : this(defaultOptimization, debug)
         {
         }
 
-        public Parser(int optimization, bool debug = false)
+        public Parser(int optimization)
+            : this(optimization, new PlainStylizer(), new Importer(), defaultDebug)
+        {
+        }
+
+        public Parser(int optimization, bool debug)
             : this(optimization, new PlainStylizer(), new Importer(), debug)
         {
         }
 
-        public Parser(IStylizer stylizer, IImporter importer, bool debug = false)
+        public Parser(IStylizer stylizer, IImporter importer)
+            : this(defaultOptimization, stylizer, importer, defaultDebug)
+        {
+        }
+
+        public Parser(IStylizer stylizer, IImporter importer, bool debug)
             : this(defaultOptimization, stylizer, importer, debug)
         {
         }
 
-        public Parser(int optimization, IStylizer stylizer, IImporter importer, bool debug = false)
+        public Parser(int optimization, IStylizer stylizer, IImporter importer)
+            : this(defaultOptimization, stylizer, importer, defaultDebug)
+        {
+        }
+
+        public Parser(int optimization, IStylizer stylizer, IImporter importer, bool debug)
         {
             Stylizer = stylizer;
             Importer = importer;

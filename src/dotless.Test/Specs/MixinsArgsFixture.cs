@@ -82,7 +82,7 @@ namespace dotless.Test.Specs
 ";
 
             AssertError(@"
-No matching definition was found for `.mixin(1px)` on line 9:
+No matching definition was found for `.mixin(1px)` on line 9 in file 'test.less':
   [8]: .one-arg {
   [9]:   .mixin(@c);
        --^
