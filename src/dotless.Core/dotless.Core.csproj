@@ -86,6 +86,7 @@
     <Compile Include="Parameters\IParameterSource.cs" />
     <Compile Include="Parser\Functions\ColorFunction.cs" />
     <Compile Include="Parser\Functions\IsFunctions.cs" />
+    <Compile Include="Parser\Functions\PowFunction.cs" />
     <Compile Include="Parser\Functions\StringFunctions.cs" />
     <Compile Include="Parser\Functions\HexFunction.cs" />
     <Compile Include="Parser\Functions\ContrastFunction.cs" />
