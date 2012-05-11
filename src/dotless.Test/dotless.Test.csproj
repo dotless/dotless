@@ -93,6 +93,7 @@
     <Compile Include="Specs\Compression\ImportFixture.cs" />
     <Compile Include="Specs\Compression\SelectorsFixture.cs" />
     <Compile Include="Specs\Compression\WhitespaceFixture.cs" />
+    <Compile Include="Specs\Functions\PowFixture.cs" />
     <Compile Include="Specs\LineNumbersFixture.cs" />
     <Compile Include="Specs\MediaFixture.cs" />
     <Compile Include="Specs\Functions\ColorFixture.cs" />

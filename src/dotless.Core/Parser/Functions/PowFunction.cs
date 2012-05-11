@@ -15,6 +15,8 @@
             Guard.ExpectMaxArguments(2, Arguments.Count, this, Index);
             Guard.ExpectAllNodes<Number>(Arguments, this, Index);
 
+            WarnNotSupportedByLessJS("pow(number, number)");
+
             var first = Arguments.Cast<Number>().First();
             var second = Arguments.Cast<Number>().ElementAt(1);
             var value = Math.Pow(first.Value, second.Value);
