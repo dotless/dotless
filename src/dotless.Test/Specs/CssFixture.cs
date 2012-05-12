@@ -359,14 +359,12 @@ form[data-disabled] {
         }
 
         [Test]
-        [Ignore("Bug in dotless")]
         public void HttpUrl()
         {
             AssertExpressionUnchanged(@"url(http://), ""}"", url(""http://}"")");
         }
 
         [Test]
-        [Ignore("Bug in dotless")]
         public void HttpUrlClosingBraceOnSameLine()
         {
             var input = @"

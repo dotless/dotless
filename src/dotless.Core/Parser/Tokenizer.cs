@@ -47,12 +47,13 @@ namespace dotless.Core.Parser
                 _chunks.Add(new Chunk(_input));
             else
             {
-                var skip = new Regex(@"\G[^\""'{}/\\]+");
+                var skip = new Regex(@"\G[^\""'{}/\\\(\)]+");
 
                 var comment = GetRegex(this._commentRegEx, RegexOptions.None);
                 var quotedstring = GetRegex(this._quotedRegEx, RegexOptions.None);
                 var level = 0;
                 var lastBlock = 0;
+                var inParam = false;
                 
                 int i = 0;
                 while(i < _inputLength)
@@ -70,7 +71,7 @@ namespace dotless.Core.Parser
                     if(i < _inputLength - 1 && c == '/')
                     {
                         var cc = _input[i + 1];
-                        if(cc == '/' || cc == '*')
+                        if ((!inParam && cc == '/') || cc == '*')
                         {
                             match = comment.Match(_input, i);
                             if(match.Success)
@@ -100,11 +101,12 @@ namespace dotless.Core.Parser
                     }
                     
                     // we are not in a quoted string or comment - process '{' level
-                    if(c == '{')
+                    if(!inParam && c == '{')
                     {
                         level++;
                         lastBlock = i;
-                    } else if(c == '}')
+                    }
+                    else if (!inParam && c == '}')
                     {
                         level--;
                         
@@ -114,6 +116,13 @@ namespace dotless.Core.Parser
                         Chunk.Append(c, _chunks, true);
                         i++;
                         continue;
+                    } if (c == '(')
+                    {
+                        inParam = true;
+                    }
+                    else if (c == ')')
+                    {
+                        inParam = false;
                     }
                     
                     Chunk.Append(c, _chunks);
