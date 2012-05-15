@@ -499,5 +499,17 @@ body {
 
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void MediaUsesDpiUnit()
+        {
+            var input = @"
+@media handheld and (min-resolution: 200dpi) {
+  background: red;
+}
+";
+
+            AssertLessUnchanged(input);
+        }
     }
 }
