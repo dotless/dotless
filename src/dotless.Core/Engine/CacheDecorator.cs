@@ -60,5 +60,13 @@ namespace dotless.Core
         {
             Underlying.ResetImports();
         }
+
+        public bool LastTransformationSuccessful
+        {
+            get
+            {
+                return Underlying.LastTransformationSuccessful;
+            }
+        }
     }
 }

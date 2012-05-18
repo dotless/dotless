@@ -16,6 +16,7 @@ namespace dotless.Core
         public bool Debug { get; set; }
         public Env Env { get; set; }
         public IEnumerable<IPluginConfigurator> Plugins { get; set; }
+        public bool LastTransformationSuccessful { get; private set; }
 
         public LessEngine(Parser.Parser parser, ILogger logger, bool compress, bool debug, IEnumerable<IPluginConfigurator> plugins)
         {
@@ -59,10 +60,12 @@ namespace dotless.Core
 
                 var css = tree.ToCSS(env);
 
+                LastTransformationSuccessful = true;
                 return css;
             }
             catch (ParserException e)
             {
+                LastTransformationSuccessful = false;
                 Logger.Error(e.Message);
             }
 

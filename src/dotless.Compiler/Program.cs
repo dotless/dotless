@@ -43,7 +43,9 @@ namespace dotless.Compiler
             {
                 outputDirectoryPath = Path.GetDirectoryName(arguments[1]);
                 outputFilename = Path.GetFileName(arguments[1]);
-                outputFilename = Path.ChangeExtension(outputFilename, "css");
+
+                if (!Path.HasExtension(outputFilename))
+                    outputFilename = Path.ChangeExtension(outputFilename, "css");
             }
             
             if (string.IsNullOrEmpty(outputDirectoryPath))
@@ -98,8 +100,15 @@ namespace dotless.Compiler
                         watcher.SetupWatchers(files, compilationDelegate);
                 }
 
-                if (configuration.Watch) 
+                if (configuration.Watch)
+                {
                     WriteAbortInstructions();
+                }
+                else if (filenames.Count() == 0)
+                {
+                    Console.WriteLine("No files found matching pattern '{0}'", inputFilePattern);
+                    return -1;
+                }
 
                 while (watcher.Watch && Console.ReadKey(true).Key != ConsoleKey.Enter) 
                 {
@@ -129,7 +138,17 @@ namespace dotless.Compiler
                 var css = engine.TransformToCss(source, inputFilePath);
 
                 File.WriteAllText(outputFilePath, css);
-                Console.WriteLine("[Done]");
+
+                if (!engine.LastTransformationSuccessful)
+                {
+                    returnCode = -5;
+                    Console.WriteLine();
+                    Console.WriteLine("[Done - Failed]");
+                }
+                else
+                {
+                    Console.WriteLine("[Done]");
+                }
 
                 var files = new List<string>();
                 files.Add(inputFilePath);
@@ -140,6 +159,7 @@ namespace dotless.Compiler
             }
             catch (IOException)
             {
+                returnCode = -2;
                 throw;
             }
             catch (Exception ex)
@@ -147,6 +167,7 @@ namespace dotless.Compiler
                 Console.WriteLine("[FAILED]");
                 Console.WriteLine("Compilation failed: {0}", ex.Message);
                 Console.WriteLine(ex.StackTrace);
+                returnCode = -3;
                 return null;
             }
             finally

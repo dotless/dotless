@@ -27,5 +27,13 @@
         {
             return underlying.GetImports().Select(import => import.Replace("/", "\\"));
         }
+
+        public bool LastTransformationSuccessful
+        {
+            get
+            {
+                return underlying.LastTransformationSuccessful;
+            }
+        }
     }
 }

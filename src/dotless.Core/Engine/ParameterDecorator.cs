@@ -39,6 +39,14 @@
             Underlying.ResetImports();
         }
 
+        public bool LastTransformationSuccessful
+        {
+            get
+            {
+                return Underlying.LastTransformationSuccessful;
+            }
+        }
+
         private static bool ValueIsNotNullOrEmpty(KeyValuePair<string, string> kvp)
         {
             return !string.IsNullOrEmpty(kvp.Value);
