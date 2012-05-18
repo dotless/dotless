@@ -278,6 +278,12 @@ namespace dotless.Core.Parser.Tree
                 .Select(i => i > 255 ? 255 : (i < 0 ? 0 : i))
                 .ToArray();
 
+            if (Alpha == 0 && rgb[0] == 0 && rgb[1] == 0 && rgb[2] == 0)
+            {
+                env.Output.AppendFormat(CultureInfo.InvariantCulture, "transparent");
+                return;
+            }
+
             if (Alpha < 1.0)
             {
                 env.Output.AppendFormat(CultureInfo.InvariantCulture, "rgba({0}, {1}, {2}, {3})", rgb[0], rgb[1], rgb[2], Alpha);
@@ -342,6 +348,11 @@ namespace dotless.Core.Parser.Tree
         public static Color GetColorFromKeyword(string keyword)
         {
             int color;
+
+            if (keyword == "transparent")
+            {
+                return new Color(0, 0, 0, 0);
+            }
 
             if (Html4Colors.TryGetValue(keyword, out color))
                 return new Color(color);
