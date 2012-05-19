@@ -58,8 +58,8 @@ namespace dotless.Test.Specs.Functions
             AssertExpression("rgba(0, 0, 0, 0.3)", "alpha(rgba(0, 0, 0, 0.5), -.2)");
             AssertExpression("rgba(0, 0, 0, 0.1)", "alpha(rgba(0, 0, 0, 0.2), -.1)");
             AssertExpression("rgba(0, 0, 0, 0.2)", "alpha(rgba(0, 0, 0, 0.5), -.3px)");
-            AssertExpression("rgba(0, 0, 0, 0)", "alpha(rgba(0, 0, 0, 0.2), -0.2)");
-            AssertExpression("rgba(0, 0, 0, 0)", "alpha(rgba(0, 0, 0, 0.2), -1)");
+            AssertExpression("transparent", "alpha(rgba(0, 0, 0, 0.2), -0.2)");
+            AssertExpression("transparent", "alpha(rgba(0, 0, 0, 0.2), -1)");
             AssertExpression("rgba(0, 0, 0, 0.2)", "alpha(rgba(0, 0, 0, 0.2), 0)");
         }
 
@@ -87,8 +87,8 @@ namespace dotless.Test.Specs.Functions
             AssertExpression("rgba(0, 0, 0, 0.3)", "fade-out(rgba(0, 0, 0, 0.5), .2)");
             AssertExpression("rgba(0, 0, 0, 0.1)", "fade-out(rgba(0, 0, 0, 0.2), .1)");
             AssertExpression("rgba(0, 0, 0, 0.2)", "fade-out(rgba(0, 0, 0, 0.5), .3px)");
-            AssertExpression("rgba(0, 0, 0, 0)", "fade-out(rgba(0, 0, 0, 0.2), 0.2)");
-            AssertExpression("rgba(0, 0, 0, 0)", "fade-out(rgba(0, 0, 0, 0.2), 1)");
+            AssertExpression("transparent", "fade-out(rgba(0, 0, 0, 0.2), 0.2)");
+            AssertExpression("transparent", "fade-out(rgba(0, 0, 0, 0.2), 1)");
             AssertExpression("rgba(0, 0, 0, 0.2)", "fade-out(rgba(0, 0, 0, 0.2), 0)");
         }
 
