@@ -13,6 +13,9 @@ namespace dotless.Core.Importers
 
     public class Importer : IImporter
     {
+        private static readonly Regex _embeddedResourceRegex = new Regex(@"^dll://(?<Assembly>.+?)/(?<Resource>.+)$");
+
+        public static Regex EmbeddedResourceRegex { get { return _embeddedResourceRegex; } }
         public IFileReader FileReader { get; set; }
         public List<string> Imports { get; set; }
         public Func<Parser> Parser { get; set; }
@@ -75,9 +78,12 @@ namespace dotless.Core.Importers
             return url.StartsWith(@"/") || url.StartsWith(@"~/") || Regex.IsMatch(url, @"^[a-zA-Z]:");
         }
 
+        /// <summary>
+        /// Whether a url represents an embedded resource
+        /// </summary>
         private static bool IsEmbeddedResource(string path)
         {
-            return path.StartsWith(@"dll://", StringComparison.InvariantCultureIgnoreCase);
+            return _embeddedResourceRegex.IsMatch(path);
         }
 
         /// <summary>
@@ -250,13 +256,11 @@ namespace dotless.Core.Importers
         /// <summary>
         /// Gets the text content of an embedded resource.
         /// </summary>
-        /// <param name="file">The path in the form: dll://AssemblyName&ResourceName</param>
+        /// <param name="file">The path in the form: dll://AssemblyName/ResourceName</param>
         /// <returns>The content of the resource</returns>
         public static string GetResource(string file)
         {
-            var urlParser = new Regex(@"^dll://(?<Assembly>.+?)&(?<Resource>.+)$");
-
-            var match = urlParser.Match(file);
+            var match = Importer.EmbeddedResourceRegex.Match(file);
             if (!match.Success) return null;
 
             var loader = new ResourceLoader();
@@ -273,8 +277,7 @@ namespace dotless.Core.Importers
             }
             catch (Exception) 
             {
-                //TODO: better error reporting?
-                return null;
+                throw new FileNotFoundException("Unable to load resource [" + loader._resourceName + "] in assembly [" + loader._assemblyName + "]");
             }
 
             return loader._resourceContent;

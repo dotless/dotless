@@ -353,6 +353,26 @@ body { margin-right: @a; }";
         }
 
         [Test]
+        public void ImportForMissingLessFileThrowsError4()
+        {
+            var input = @"@import ""dll://someassembly/missing.less"";";
+
+            var parser = GetParser();
+
+            AssertError("Unable to load resource [missing.less] in assembly [someassembly]", input, parser);
+        }
+
+        [Test]
+        public void ImportForMissingCssFileAsLessThrowsError()
+        {
+            var input = @"@import ""dll://someassembly/missing.css"";";
+
+            var parser = GetParser(false, true, false);
+
+            AssertError("Unable to load resource [missing.css] in assembly [someassembly]", input, parser);
+        }
+
+        [Test]
         public void ImportForMissingLessFileThrowsExceptionThatIncludesFileName()
         {
             var input = @"@import ""external1.less"";";
@@ -495,5 +515,34 @@ body {
             AssertLess(input, expected, parser);
         }
 
+        [Test]
+        public void LessImportFromEmbeddedResource()
+        {
+            var input = @"
+@import ""dll://dotless.Test.dll/dotless.Test.Embedded.less"";";
+
+            var expected = @"
+#import {
+  color: red;
+}";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void CssImportFromEmbeddedResource()
+        {
+            var input = @"
+@import ""dll://dotless.Test.dll/dotless.Test.Embedded.css"";";
+
+            var expected = @"
+.windowz .dos {
+  border: none;
+}";
+            var parser = GetParser(false, false, true);
+
+            AssertLess(input, expected, parser);
+        }
     }
 }
