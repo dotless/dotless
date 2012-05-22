@@ -9,9 +9,13 @@ namespace dotless.Core.Importers
     using Parser.Tree;
     using Utils;
     using System.Text.RegularExpressions;
+    using System.Reflection;
 
     public class Importer : IImporter
     {
+        private static readonly Regex _embeddedResourceRegex = new Regex(@"^dll://(?<Assembly>.+?)/(?<Resource>.+)$");
+
+        public static Regex EmbeddedResourceRegex { get { return _embeddedResourceRegex; } }
         public IFileReader FileReader { get; set; }
         public List<string> Imports { get; set; }
         public Func<Parser> Parser { get; set; }
@@ -75,6 +79,14 @@ namespace dotless.Core.Importers
         }
 
         /// <summary>
+        /// Whether a url represents an embedded resource
+        /// </summary>
+        private static bool IsEmbeddedResource(string path)
+        {
+            return _embeddedResourceRegex.IsMatch(path);
+        }
+
+        /// <summary>
         ///  Get a list of the current paths, used to pass back in to alter url's after evaluation
         /// </summary>
         /// <returns></returns>
@@ -91,7 +103,7 @@ namespace dotless.Core.Importers
         public virtual ImportAction Import(Import import)
         {
             // if the import is protocol'd (e.g. http://www.opencss.com/css?blah) then leave the import alone
-            if (IsProtocolUrl(import.Path))
+            if (IsProtocolUrl(import.Path) && !IsEmbeddedResource(import.Path))
             {
                 if (import.Path.EndsWith(".less"))
                 {
@@ -109,8 +121,13 @@ namespace dotless.Core.Importers
 
             if (!ImportAllFilesAsLess && import.Path.EndsWith(".css"))
             {
-                if (InlineCssFiles && ImportCssFileContents(file, import))
-                    return ImportAction.ImportCss;
+                if (InlineCssFiles)
+                {
+                    if (IsEmbeddedResource(import.Path) && ImportEmbeddedCssContents(file, import))                         
+                        return ImportAction.ImportCss;
+                    if (ImportCssFileContents(file, import))
+                        return ImportAction.ImportCss;
+                }
 
                 return ImportAction.LeaveImport;
             }
@@ -143,17 +160,26 @@ namespace dotless.Core.Importers
         /// </summary>
         protected bool ImportLessFile(string file, Import import)
         {
-            if (!FileReader.DoesFileExist(file) && !file.EndsWith(".less"))
+            string contents;
+            if (IsEmbeddedResource(file))
             {
-                file = file + ".less";
+                contents = ResourceLoader.GetResource(file);
+                if (contents == null) return false;
             }
-
-            if (!FileReader.DoesFileExist(file))
+            else
             {
-                return false;
-            }
+                if (!FileReader.DoesFileExist(file) && !file.EndsWith(".less"))
+                {
+                    file = file + ".less";
+                }
 
-            var contents = FileReader.GetFileContents(file);
+                if (!FileReader.DoesFileExist(file))
+                {
+                    return false;
+                }
+
+                contents = FileReader.GetFileContents(file);
+            }
 
             _paths.Add(Path.GetDirectoryName(import.Path));
 
@@ -172,6 +198,20 @@ namespace dotless.Core.Importers
                 _paths.RemoveAt(_paths.Count - 1);
             }
 
+            return true;
+        }
+
+        /// <summary>
+        ///  Imports a css file from an embedded resource and puts the contents into the import node
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="import"></param>
+        /// <returns></returns>
+        private bool ImportEmbeddedCssContents(string file, Import import)
+        {
+            string content = ResourceLoader.GetResource(file);
+            if (content == null) return false;
+            import.InnerContent = content;
             return true;
         }
 
@@ -202,6 +242,53 @@ namespace dotless.Core.Importers
             }
 
             return url;
+        }
+    }
+
+    /// <summary>
+    /// Utility class used to retrieve the content of an embedded resource using a separate app domain in order to unload the assembly when done.
+    /// </summary>
+    class ResourceLoader : MarshalByRefObject
+    {
+        private string _assemblyName;
+        private string _resourceName;
+        private string _resourceContent;
+
+        /// <summary>
+        /// Gets the text content of an embedded resource.
+        /// </summary>
+        /// <param name="file">The path in the form: dll://AssemblyName/ResourceName</param>
+        /// <returns>The content of the resource</returns>
+        public static string GetResource(string file)
+        {
+            var match = Importer.EmbeddedResourceRegex.Match(file);
+            if (!match.Success) return null;
+
+            var loader = new ResourceLoader();
+            loader._resourceName = match.Groups["Resource"].Value;
+            loader._assemblyName = match.Groups["Assembly"].Value;
+
+            try
+            {
+                var domainSetup = new AppDomainSetup();
+                domainSetup.ApplicationBase = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                var domain = AppDomain.CreateDomain("LoaderDomain", null, domainSetup);
+                domain.DoCallBack(loader.LoadResource);
+                AppDomain.Unload(domain);
+            }
+            catch (Exception) 
+            {
+                throw new FileNotFoundException("Unable to load resource [" + loader._resourceName + "] in assembly [" + loader._assemblyName + "]");
+            }
+
+            return loader._resourceContent;
+        }
+
+        // Runs in the separate app domain
+        private void LoadResource()
+        {
+            var assembly = Assembly.ReflectionOnlyLoadFrom(_assemblyName);
+            _resourceContent = new StreamReader(assembly.GetManifestResourceStream(_resourceName)).ReadToEnd();
         }
     }
 }
