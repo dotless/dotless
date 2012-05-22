@@ -123,9 +123,10 @@ namespace dotless.Core.Importers
             {
                 if (InlineCssFiles)
                 {
-                    if ((IsEmbeddedResource(import.Path) && ImportEmbeddedCssContents(file, import)) || (ImportCssFileContents(file, import)))
+                    if (IsEmbeddedResource(import.Path) && ImportEmbeddedCssContents(file, import))                         
                         return ImportAction.ImportCss;
-
+                    if (ImportCssFileContents(file, import))
+                        return ImportAction.ImportCss;
                 }
 
                 return ImportAction.LeaveImport;
