@@ -287,8 +287,12 @@ namespace dotless.Core.Importers
         // Runs in the separate app domain
         private void LoadResource()
         {
-            var assembly = Assembly.ReflectionOnlyLoadFrom(_assemblyName);
-            _resourceContent = new StreamReader(assembly.GetManifestResourceStream(_resourceName)).ReadToEnd();
+            var fileBytes = File.ReadAllBytes(_assemblyName);
+            var assembly = Assembly.Load(fileBytes);
+            using (var stream = assembly.GetManifestResourceStream(_resourceName))
+            {
+                _resourceContent = new StreamReader(stream).ReadToEnd();
+            }
         }
     }
 }
