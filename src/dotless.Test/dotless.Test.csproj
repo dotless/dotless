@@ -186,10 +186,13 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Embedded.css" />
+    <EmbeddedResource Include="Resource\Embedded.css" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Embedded.less" />
+    <EmbeddedResource Include="Resource\Embedded.less" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resource\Embedded2.less" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

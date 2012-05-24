@@ -519,11 +519,15 @@ body {
         public void LessImportFromEmbeddedResource()
         {
             var input = @"
-@import ""dll://dotless.Test.dll/dotless.Test.Embedded.less"";";
+@import ""dll://dotless.Test.dll/dotless.Test.Resource.Embedded.less"";
+@import ""dll://dotless.Test.dll/dotless.Test.Resource.Embedded2.less"";";
 
             var expected = @"
 #import {
   color: red;
+}
+#import {
+  color: blue;
 }";
             var parser = GetParser();
 
@@ -534,7 +538,7 @@ body {
         public void CssImportFromEmbeddedResource()
         {
             var input = @"
-@import ""dll://dotless.Test.dll/dotless.Test.Embedded.css"";";
+@import ""dll://dotless.Test.dll/dotless.Test.Resource.Embedded.css"";";
 
             var expected = @"
 .windowz .dos {
