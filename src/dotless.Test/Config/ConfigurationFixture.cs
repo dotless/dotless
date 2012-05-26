@@ -121,6 +121,11 @@ namespace dotless.Test.Config
                 throw new NotImplementedException();
             }
 
+            public byte[] GetBinaryFileContents(string fileName)
+            {
+                throw new NotImplementedException();
+            }
+
             public bool DoesFileExist(string fileName)
             {
                 throw new NotImplementedException();
