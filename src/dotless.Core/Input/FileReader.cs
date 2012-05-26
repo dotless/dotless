@@ -15,6 +15,13 @@ namespace dotless.Core.Input
             PathResolver = pathResolver;
         }
 
+        public byte[] GetBinaryFileContents(string fileName)
+        {
+            fileName = PathResolver.GetFullPath(fileName);
+
+            return File.ReadAllBytes(fileName);
+        }
+
         public string GetFileContents(string fileName)
         {
             fileName = PathResolver.GetFullPath(fileName);

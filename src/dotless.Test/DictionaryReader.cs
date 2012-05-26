@@ -4,6 +4,7 @@ namespace dotless.Test
     using System.IO;
     using Core;
     using Core.Input;
+    using System;
 
 
     public class DictionaryReader : IFileReader
@@ -30,6 +31,11 @@ namespace dotless.Test
                 return Contents[fileName];
 
             throw new FileNotFoundException(string.Format("Import {0} not found", fileName), fileName);
+        }
+
+        public byte[] GetBinaryFileContents(string fileName)
+        {
+            throw new InvalidOperationException("DictionaryReader does not support binary content.");
         }
 
         public bool DoesFileExist(string fileName)

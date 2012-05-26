@@ -4,9 +4,34 @@ namespace dotless.Test.Specs
     using Core.Importers;
     using Core.Parser;
     using NUnit.Framework;
+    using System.IO;
+    using System.Reflection;
+
+    class EmbeddedPathResolver : dotless.Core.Input.IPathResolver
+    {
+        public string GetFullPath(string path)
+        {
+            return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), path);
+        }
+    }
 
     public class ImportFixture : SpecFixtureBase
     {
+        private static Parser GetEmbeddedParser(bool isUrlRewritingDisabled, bool importAllFilesAsLess, bool importCssInline)
+        {
+            var fileReader = new dotless.Core.Input.FileReader(new EmbeddedPathResolver());
+
+            return new Parser
+            {
+                Importer = new Importer(fileReader)
+                {
+                    IsUrlRewritingDisabled = isUrlRewritingDisabled,
+                    ImportAllFilesAsLess = importAllFilesAsLess,
+                    InlineCssFiles = importCssInline
+                }
+            };
+        }
+
         private static Parser GetParser()
         {
             return GetParser(false, false, false);
@@ -529,7 +554,7 @@ body {
 #import {
   color: blue;
 }";
-            var parser = GetParser();
+            var parser = GetEmbeddedParser(false, false, false);
 
             AssertLess(input, expected, parser);
         }
@@ -544,7 +569,7 @@ body {
 .windowz .dos {
   border: none;
 }";
-            var parser = GetParser(false, false, true);
+            var parser = GetEmbeddedParser(false, false, true);
 
             AssertLess(input, expected, parser);
         }

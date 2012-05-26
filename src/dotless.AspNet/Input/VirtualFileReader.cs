@@ -5,6 +5,18 @@ namespace dotless.Core.Input
 
     public class VirtualFileReader : IFileReader
     {
+        public byte[] GetBinaryFileContents(string fileName)
+        {
+            var virtualPathProvider = HostingEnvironment.VirtualPathProvider;
+            var virtualFile = virtualPathProvider.GetFile(fileName);
+            using (var stream = virtualFile.Open())
+            {
+                var buffer = new byte[stream.Length];
+                stream.Read(buffer, 0, (int)stream.Length);
+                return buffer;
+            }
+        }
+
         public string GetFileContents(string fileName)
         {
             var virtualPathProvider = HostingEnvironment.VirtualPathProvider;
