@@ -163,7 +163,7 @@ namespace dotless.Core.Importers
             string contents;
             if (IsEmbeddedResource(file))
             {
-                contents = ResourceLoader.GetResource(file);
+                contents = ResourceLoader.GetResource(file, FileReader);
                 if (contents == null) return false;
             }
             else
@@ -209,7 +209,7 @@ namespace dotless.Core.Importers
         /// <returns></returns>
         private bool ImportEmbeddedCssContents(string file, Import import)
         {
-            string content = ResourceLoader.GetResource(file);
+            string content = ResourceLoader.GetResource(file, FileReader);
             if (content == null) return false;
             import.InnerContent = content;
             return true;
@@ -253,13 +253,14 @@ namespace dotless.Core.Importers
         private string _assemblyName;
         private string _resourceName;
         private string _resourceContent;
+        private IFileReader _fileReader;
 
         /// <summary>
         /// Gets the text content of an embedded resource.
         /// </summary>
         /// <param name="file">The path in the form: dll://AssemblyName/ResourceName</param>
         /// <returns>The content of the resource</returns>
-        public static string GetResource(string file)
+        public static string GetResource(string file, IFileReader fileReader)
         {
             var match = Importer.EmbeddedResourceRegex.Match(file);
             if (!match.Success) return null;
@@ -267,6 +268,7 @@ namespace dotless.Core.Importers
             var loader = new ResourceLoader();
             loader._resourceName = match.Groups["Resource"].Value;
             loader._assemblyName = match.Groups["Assembly"].Value;
+            loader._fileReader = fileReader;
 
             try
             {
@@ -287,7 +289,7 @@ namespace dotless.Core.Importers
         // Runs in the separate app domain
         private void LoadResource()
         {
-            var fileBytes = File.ReadAllBytes(_assemblyName);
+            var fileBytes = _fileReader.GetBinaryFileContents(_assemblyName);
             var assembly = Assembly.Load(fileBytes);
             using (var stream = assembly.GetManifestResourceStream(_resourceName))
             {
