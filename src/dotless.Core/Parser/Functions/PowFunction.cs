@@ -11,9 +11,9 @@
     {
         protected override Node Evaluate(Env env)
         {
-            Guard.ExpectMinArguments(2, Arguments.Count, this, Index);
-            Guard.ExpectMaxArguments(2, Arguments.Count, this, Index);
-            Guard.ExpectAllNodes<Number>(Arguments, this, Index);
+            Guard.ExpectMinArguments(2, Arguments.Count, this, Location);
+            Guard.ExpectMaxArguments(2, Arguments.Count, this, Location);
+            Guard.ExpectAllNodes<Number>(Arguments, this, Location);
 
             WarnNotSupportedByLessJS("pow(number, number)");
 

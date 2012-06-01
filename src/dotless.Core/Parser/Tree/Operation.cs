@@ -33,7 +33,7 @@
                     a = temp;
                 }
                 else
-                    throw new ParsingException("Can't substract or divide a color from a number", Index);
+                    throw new ParsingException("Can't substract or divide a color from a number", Location);
             }
 
             try
@@ -42,15 +42,15 @@
                 if (operable != null)
                     return operable.Operate(this, b).ReducedFrom<Node>(this);
 
-                throw new ParsingException(string.Format("Cannot apply operator {0} to the left hand side: {1}", Operator, a.ToCSS(env)), Index);
+                throw new ParsingException(string.Format("Cannot apply operator {0} to the left hand side: {1}", Operator, a.ToCSS(env)), Location);
             }
             catch (DivideByZeroException e)
             {
-                throw new ParsingException(e, Index);
+                throw new ParsingException(e, Location);
             }
             catch (InvalidOperationException e)
             {
-                throw new ParsingException(e, Index);
+                throw new ParsingException(e, Location);
             }
         }
 

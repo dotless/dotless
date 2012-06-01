@@ -9,8 +9,8 @@
     {
         protected override Node Evaluate(Env env)
         {
-            Guard.ExpectNumArguments(1, Arguments.Count, this, Index);
-            Guard.ExpectNode<TextNode>(Arguments[0], this, Index);
+            Guard.ExpectNumArguments(1, Arguments.Count, this, Location);
+            Guard.ExpectNode<TextNode>(Arguments[0], this, Location);
 
             return new Color(((TextNode)Arguments[0]).Value.TrimStart('#'));
         }

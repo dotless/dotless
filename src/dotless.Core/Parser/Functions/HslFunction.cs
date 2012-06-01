@@ -9,7 +9,7 @@ namespace dotless.Core.Parser.Functions
     {
         protected override Node Evaluate(Env env)
         {
-            Guard.ExpectNumArguments(3, Arguments.Count, this, Index);
+            Guard.ExpectNumArguments(3, Arguments.Count, this, Location);
 
             Arguments.Add(new Number(1d, ""));
 

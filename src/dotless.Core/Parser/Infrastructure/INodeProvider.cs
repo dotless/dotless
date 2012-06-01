@@ -7,51 +7,51 @@ namespace dotless.Core.Parser.Infrastructure
 
     public interface INodeProvider
     {
-        Element Element(Combinator combinator, Node Value, int index);
-        Combinator Combinator(string value, int index);
-        Selector Selector(NodeList<Element> elements, int index);
-        Rule Rule(string name, Node value, int index);
-        Rule Rule(string name, Node value, bool variadic, int index);
-        Ruleset Ruleset(NodeList<Selector> selectors, NodeList rules, int index);
+        Element Element(Combinator combinator, Node Value, NodeLocation location);
+        Combinator Combinator(string value, NodeLocation location);
+        Selector Selector(NodeList<Element> elements, NodeLocation location);
+        Rule Rule(string name, Node value, NodeLocation location);
+        Rule Rule(string name, Node value, bool variadic, NodeLocation location);
+        Ruleset Ruleset(NodeList<Selector> selectors, NodeList rules, NodeLocation location);
 
         //entities
-        Alpha Alpha(Node value, int index);
-        Call Call(string name, NodeList<Node> arguments, int index);
-        Color Color(string rgb, int index);
-        Keyword Keyword(string value, int index);
-        Number Number(string value, string unit, int index);
-        Shorthand Shorthand(Node first, Node second, int index);
-        Variable Variable(string name, int index);
-        Url Url(Node value, IImporter importer, int index);
-        Script Script(string script, int index);
-        Paren Paren(Node node, int index);
+        Alpha Alpha(Node value, NodeLocation location);
+        Call Call(string name, NodeList<Node> arguments, NodeLocation location);
+        Color Color(string rgb, NodeLocation location);
+        Keyword Keyword(string value, NodeLocation location);
+        Number Number(string value, string unit, NodeLocation location);
+        Shorthand Shorthand(Node first, Node second, NodeLocation location);
+        Variable Variable(string name, NodeLocation location);
+        Url Url(Node value, IImporter importer, NodeLocation location);
+        Script Script(string script, NodeLocation location);
+        Paren Paren(Node node, NodeLocation location);
 
         //mixins
-        MixinCall MixinCall(NodeList<Element> elements, List<NamedArgument> arguments, bool important, int index);
-        MixinDefinition MixinDefinition(string name, NodeList<Rule> parameters, NodeList rules, Condition condition, bool variadic, int index);
-        Condition Condition(Node left, string operation, Node right, bool negate, int index);
+        MixinCall MixinCall(NodeList<Element> elements, List<NamedArgument> arguments, bool important, NodeLocation location);
+        MixinDefinition MixinDefinition(string name, NodeList<Rule> parameters, NodeList rules, Condition condition, bool variadic, NodeLocation location);
+        Condition Condition(Node left, string operation, Node right, bool negate, NodeLocation location);
 
         //directives
-        Import Import(Url path, IImporter importer, Value features, int index);
-        Import Import(Quoted path, IImporter importer, Value features, int index);
-        Directive Directive(string name, string identifier, NodeList rules, int index);
-        Directive Directive(string name, Node value, int index);
-        Media Media(NodeList rules, Value features, int index);
-        KeyFrame KeyFrame(string identifier, NodeList rules, int index);
+        Import Import(Url path, IImporter importer, Value features, NodeLocation location);
+        Import Import(Quoted path, IImporter importer, Value features, NodeLocation location);
+        Directive Directive(string name, string identifier, NodeList rules, NodeLocation location);
+        Directive Directive(string name, Node value, NodeLocation location);
+        Media Media(NodeList rules, Value features, NodeLocation location);
+        KeyFrame KeyFrame(string identifier, NodeList rules, NodeLocation location);
 
         //expressions
-        Expression Expression(NodeList expression, int index);
+        Expression Expression(NodeList expression, NodeLocation location);
  #if CSS3EXPERIMENTAL
         RepeatEntity RepeatEntity(Node value, Node repeatCount, int index);
 #endif
-        Value Value(IEnumerable<Node> values, string important, int index);
-        Operation Operation(string operation, Node left, Node right, int index);
-        Assignment Assignment(string key, Node value);
+        Value Value(IEnumerable<Node> values, string important, NodeLocation location);
+        Operation Operation(string operation, Node left, Node right, NodeLocation location);
+        Assignment Assignment(string key, Node value, NodeLocation location);
 
         //text
-        Comment Comment(string value, int index);
-        Comment Comment(string value, bool silent, int index);
-        TextNode TextNode(string contents, int index);
-        Quoted Quoted(string value, string contents, bool escaped, int index);
+        Comment Comment(string value, NodeLocation location);
+        Comment Comment(string value, bool silent, NodeLocation location);
+        TextNode TextNode(string contents, NodeLocation location);
+        Quoted Quoted(string value, string contents, bool escaped, NodeLocation location);
     }
 }

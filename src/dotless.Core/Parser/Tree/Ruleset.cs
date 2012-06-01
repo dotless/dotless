@@ -15,7 +15,6 @@ namespace dotless.Core.Parser.Tree
         public bool Evaluated { get; protected set; }
         public bool IsRoot { get; set; }
         public bool MultiMedia { get; set; }
-        public Zone Zone { get; set; }
 
         /// <summary>
         ///  The original Ruleset this was cloned from during evaluation
@@ -145,7 +144,6 @@ namespace dotless.Core.Parser.Tree
             // create a clone so it is non destructive
             var clone = new Ruleset(new NodeList<Selector>(Selectors), new NodeList(Rules), OriginalRuleset).ReducedFrom<Ruleset>(this);
 
-            clone.Zone = Zone;
             clone.EvaluateRules(env);
             clone.Evaluated = true;
 
@@ -225,8 +223,10 @@ namespace dotless.Core.Parser.Tree
 
             if (!IsRoot)
             {
-                if(!env.Compress && env.Debug && Zone != null)
-                    env.Output.Append(string.Format("/* {0}:L{1} */\n", Zone.FileName, Zone.LineNumber));
+                if (!env.Compress && env.Debug && Location != null)
+                {
+                    env.Output.Append(string.Format("/* {0}:L{1} */\n", Location.FileName, Zone.GetLineNumber(Location)));
+                }
                 paths.AppendSelectors(context, Selectors);
             }
 

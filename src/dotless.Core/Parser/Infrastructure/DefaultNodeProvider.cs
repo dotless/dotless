@@ -7,174 +7,174 @@ namespace dotless.Core.Parser.Infrastructure
 
     public class DefaultNodeProvider : INodeProvider
     {
-        public Element Element(Combinator combinator, Node value, int index)
+        public Element Element(Combinator combinator, Node value, NodeLocation location)
         {
-            return new Element(combinator, value) { Index = index };
+            return new Element(combinator, value) { Location = location };
         }
 
-        public Combinator Combinator(string value, int index)
+        public Combinator Combinator(string value, NodeLocation location)
         {
-            return new Combinator(value) { Index = index };
+            return new Combinator(value) { Location = location };
         }
 
-        public Selector Selector(NodeList<Element> elements, int index)
+        public Selector Selector(NodeList<Element> elements, NodeLocation location)
         {
-            return new Selector(elements) { Index = index };
+            return new Selector(elements) { Location = location };
         }
 
-        public Rule Rule(string name, Node value, int index)
+        public Rule Rule(string name, Node value, NodeLocation location)
         {
-            return new Rule(name, value) { Index = index };
+            return new Rule(name, value) { Location = location };
         }
 
-        public Rule Rule(string name, Node value, bool variadic, int index)
+        public Rule Rule(string name, Node value, bool variadic, NodeLocation location)
         {
-            return new Rule(name, value, variadic) { Index = index };
+            return new Rule(name, value, variadic) { Location = location };
         }
 
-        public Ruleset Ruleset(NodeList<Selector> selectors, NodeList rules, int index)
+        public Ruleset Ruleset(NodeList<Selector> selectors, NodeList rules, NodeLocation location)
         {
-            return new Ruleset(selectors, rules) { Index = index };
+            return new Ruleset(selectors, rules) { Location = location };
         }
 
-        public Alpha Alpha(Node value, int index)
+        public Alpha Alpha(Node value, NodeLocation location)
         {
-            return new Alpha(value) { Index = index };
+            return new Alpha(value) { Location = location };
         }
 
-        public Call Call(string name, NodeList<Node> arguments, int index)
+        public Call Call(string name, NodeList<Node> arguments, NodeLocation location)
         {
-            return new Call(name, arguments) { Index = index };
+            return new Call(name, arguments) { Location = location };
         }
 
-        public Color Color(string rgb, int index)
+        public Color Color(string rgb, NodeLocation location)
         {
-            return new Color(rgb) { Index = index };
+            return new Color(rgb) { Location = location };
         }
 
-        public Keyword Keyword(string value, int index)
+        public Keyword Keyword(string value, NodeLocation location)
         {
-            return new Keyword(value) { Index = index };
+            return new Keyword(value) { Location = location };
         }
 
-        public Number Number(string value, string unit, int index)
+        public Number Number(string value, string unit, NodeLocation location)
         {
-            return new Number(value, unit) { Index = index };
+            return new Number(value, unit) { Location = location };
         }
 
-        public Shorthand Shorthand(Node first, Node second, int index)
+        public Shorthand Shorthand(Node first, Node second, NodeLocation location)
         {
-            return new Shorthand(first, second) { Index = index };
+            return new Shorthand(first, second) { Location = location };
         }
 
-        public Variable Variable(string name, int index)
+        public Variable Variable(string name, NodeLocation location)
         {
-            return new Variable(name) { Index = index };
+            return new Variable(name) { Location = location };
         }
 
-        public Url Url(Node value, IImporter importer, int index)
+        public Url Url(Node value, IImporter importer, NodeLocation location)
         {
-            return new Url(value, importer) { Index = index };
+            return new Url(value, importer) { Location = location };
         }
 
-        public Script Script(string script, int index)
+        public Script Script(string script, NodeLocation location)
         {
-            return new Script(script) { Index = index };
+            return new Script(script) { Location = location };
         }
 
-        public MixinCall MixinCall(NodeList<Element> elements, List<NamedArgument> arguments, bool important, int index)
+        public MixinCall MixinCall(NodeList<Element> elements, List<NamedArgument> arguments, bool important, NodeLocation location)
         {
-            return new MixinCall(elements, arguments, important) { Index = index };
+            return new MixinCall(elements, arguments, important) { Location = location };
         }
 
-        public MixinDefinition MixinDefinition(string name, NodeList<Rule> parameters, NodeList rules, Condition condition, bool variadic, int index)
+        public MixinDefinition MixinDefinition(string name, NodeList<Rule> parameters, NodeList rules, Condition condition, bool variadic, NodeLocation location)
         {
-            return new MixinDefinition(name, parameters, rules, condition, variadic) { Index = index };
+            return new MixinDefinition(name, parameters, rules, condition, variadic) { Location = location };
         }
 
-        public Import Import(Url path, IImporter importer, Value features, int index)
+        public Import Import(Url path, IImporter importer, Value features, NodeLocation location)
         {
-            return new Import(path, importer, features) { Index = index };
+            return new Import(path, importer, features) { Location = location };
         }
 
-        public Import Import(Quoted path, IImporter importer, Value features, int index)
+        public Import Import(Quoted path, IImporter importer, Value features, NodeLocation location)
         {
-            return new Import(path, importer, features) { Index = index };
+            return new Import(path, importer, features) { Location = location };
         }
 
-        public Directive Directive(string name, string identifier, NodeList rules, int index)
+        public Directive Directive(string name, string identifier, NodeList rules, NodeLocation location)
         {
-            return new Directive(name, identifier, rules) { Index = index };
+            return new Directive(name, identifier, rules) { Location = location };
         }
 
-        public Media Media(NodeList rules, Value features, int index)
+        public Media Media(NodeList rules, Value features, NodeLocation location)
         {
-            return new Media(features, rules) { Index = index };
+            return new Media(features, rules) { Location = location };
         }
 
-        public KeyFrame KeyFrame(string identifier, NodeList rules, int index)
+        public KeyFrame KeyFrame(string identifier, NodeList rules, NodeLocation location)
         {
-            return new KeyFrame(identifier, rules) { Index = index };
+            return new KeyFrame(identifier, rules) { Location = location };
         }
 
-        public Directive Directive(string name, Node value, int index)
+        public Directive Directive(string name, Node value, NodeLocation location)
         {
-            return new Directive(name, value) { Index = index };
+            return new Directive(name, value) { Location = location };
         }
 
-        public Expression Expression(NodeList expression, int index)
+        public Expression Expression(NodeList expression, NodeLocation location)
         {
-            return new Expression(expression) { Index = index };
+            return new Expression(expression) { Location = location };
         }
 
-        public Value Value(IEnumerable<Node> values, string important, int index)
+        public Value Value(IEnumerable<Node> values, string important, NodeLocation location)
         {
-            return new Value(values, important) { Index = index };
+            return new Value(values, important) { Location = location };
         }
 
-        public Operation Operation(string operation, Node left, Node right, int index)
+        public Operation Operation(string operation, Node left, Node right, NodeLocation location)
         {
-            return new Operation(operation, left, right) { Index = index };
+            return new Operation(operation, left, right) { Location = location };
         }
 
-        public Assignment Assignment(string key, Node value)
+        public Assignment Assignment(string key, Node value, NodeLocation location)
         {
             return new Assignment(key, value);
         }
 
-        public Comment Comment(string value, int index)
+        public Comment Comment(string value, NodeLocation location)
         {
-            return Comment(value, false, index);
+            return Comment(value, false, location);
         }
 
-        public Comment Comment(string value, bool silent, int index)
+        public Comment Comment(string value, bool silent, NodeLocation location)
         {
-            return new Comment(value, silent) { Index = index };
+            return new Comment(value, silent) { Location = location };
         }
 
-        public TextNode TextNode(string contents, int index)
+        public TextNode TextNode(string contents, NodeLocation location)
         {
-            return new TextNode(contents) { Index = index };
+            return new TextNode(contents) { Location = location };
         }
 
-        public Quoted Quoted(string value, string contents, bool escaped, int index)
+        public Quoted Quoted(string value, string contents, bool escaped, NodeLocation location)
         {
-            return new Quoted(value, contents, escaped) { Index = index };
+            return new Quoted(value, contents, escaped) { Location = location };
         }
 
-        public Paren Paren(Node value, int index)
+        public Paren Paren(Node value, NodeLocation location)
         {
-            return new Paren(value) { Index = index };
+            return new Paren(value) { Location = location };
         }
 
-        public Condition Condition(Node left, string operation, Node right, bool negate, int index)
+        public Condition Condition(Node left, string operation, Node right, bool negate, NodeLocation location)
         {
-            return new Condition(left, operation, right, negate) { Index = index };
+            return new Condition(left, operation, right, negate) { Location = location };
         }
 #if CSS3EXPERIMENTAL
         public RepeatEntity RepeatEntity(Node value, Node repeatCount, int index)
         {
-            return new RepeatEntity(value, repeatCount) { Index = index };
+            return new RepeatEntity(value, repeatCount) { Location = location };
         }
 #endif
     }

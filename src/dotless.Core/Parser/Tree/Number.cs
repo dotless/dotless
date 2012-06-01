@@ -65,7 +65,7 @@
         // `101cm`.
         public Node Operate(Operation op, Node other)
         {
-            Guard.ExpectNode<Number>(other, "right hand side of " + op.Operator, op.Index);
+            Guard.ExpectNode<Number>(other, "right hand side of " + op.Operator, op.Location);
 
             var dim = (Number) other;
 

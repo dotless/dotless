@@ -10,13 +10,21 @@
 
             var callStr = "";
 
-            if(zone.CallExtract != null)
+            if(zone.CallZone != null)
             {
+                var callFile = "";
+
+                if (zone.CallZone.FileName != zone.FileName && !string.IsNullOrEmpty(zone.CallZone.FileName))
+                {
+                    callFile = string.Format(@" in file '{0}'", zone.CallZone.FileName);
+                }
+
                 callStr = string.Format(@"
-from line {0}:
+from line {0}{2}:
 {0,5:[#]}: {1}",
-                                         zone.CallLine,
-                                         zone.CallExtract.Line);
+                                         zone.CallZone.LineNumber,
+                                         zone.CallZone.Extract.Line,
+                                         callFile);
             }
 
             return string.Format(@"

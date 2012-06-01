@@ -41,15 +41,28 @@ namespace dotless.Test.Specs
         {
             var imports = new Dictionary<string, string>();
 
-            imports["import/import-test-a.less"] = @"
-@import ""import-test-b.less"";
-@a: 20%;
-";
             imports[@"c:/absolute/file.less"] = @"
 .windowz .dos {
   border: none;
 }
 ";
+            imports[@"import/error.less"] = @"
+.windowz .dos {
+  border: none;
+}
+.error_mixin {
+  .throw_error();
+}
+";
+            imports[@"import/error2.less"] = @"
+.windowz .dos {
+  border: none;
+}
+.error_mixin() {
+  .throw_error();
+}
+";
+
             imports["import/other-protocol-test.less"] = @"
 .first {
     background-image: url('http://some.com/file.gif');
@@ -58,6 +71,12 @@ namespace dotless.Test.Specs
     background-image: url('data:xxyhjgjshgjs');
 }
 ";
+
+            imports["import/import-test-a.less"] = @"
+@import ""import-test-b.less"";
+@a: 20%;
+";
+
             imports["import/import-test-b.less"] =
                 @"
 @import 'import-test-c';
@@ -223,6 +242,43 @@ body { margin-right: @a; }";
             var parser = GetParser();
     
             AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ErrorInImport()
+        {
+            var input = @"
+@import ""import/error.less"";";
+
+            var parser = GetParser();
+
+            AssertError(@"
+.throw_error is undefined on line 6 in file 'import/error.less':
+  [5]: .error_mixin {
+  [6]:   .throw_error();
+       --^
+  [7]: }", input, parser);
+        }
+
+        [Test]
+        public void ErrorInImport2()
+        {
+            var input = @"
+@import ""import/error2.less"";
+.a {
+  .error_mixin();
+}";
+
+            var parser = GetParser();
+
+            AssertError(@"
+.throw_error is undefined on line 6 in file 'import/error2.less':
+  [5]: .error_mixin() {
+  [6]:   .throw_error();
+       --^
+  [7]: }
+from line 3 in file 'test.less':
+  [3]:   .error_mixin();", input, parser);
         }
 
         [Test]

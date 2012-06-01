@@ -122,42 +122,34 @@ namespace dotless.Core.Parser
 
         public Ruleset Parse(string input, string fileName)
         {
-            ParsingException parsingException = null;
             Ruleset root = null;
             FileName = fileName;
 
             try
             {
-                Tokenizer.SetupInput(input);
+                Tokenizer.SetupInput(input, fileName);
 
                 var parsers = new Parsers(NodeProvider);
-                root = new Root(parsers.Primary(this), e => GenerateParserError(e, fileName));
+                root = new Root(parsers.Primary(this), e => GenerateParserError(e));
             }
             catch (ParsingException e)
             {
-                parsingException = e;
+                throw GenerateParserError(e);
             }
 
-            if (Tokenizer.HasCompletedParsing() && parsingException == null)
-                return root;
+            if (!Tokenizer.HasCompletedParsing())
+                throw GenerateParserError(new ParsingException("Content after finishing parsing (missing opening bracket?)", Tokenizer.GetNodeLocation(Tokenizer.Location.Index)));
 
-            throw GenerateParserError(parsingException, fileName);
+            return root;
         }
 
-        private ParserException GenerateParserError(ParsingException parsingException, string fileName)
+        private ParserException GenerateParserError(ParsingException parsingException)
         {
-            var errorLocation = Tokenizer.Location.Index;
-            var error = "Parse Error";
-            var call = 0;
+            var errorLocation = parsingException.Location;
+            var error = parsingException.Message;
+            var call = parsingException.CallLocation;
 
-            if(parsingException != null)
-            {
-                errorLocation = parsingException.Index;
-                error = parsingException.Message;
-                call = parsingException.Call;
-            }
-
-            var zone = Tokenizer.GetZone(error, errorLocation, call, fileName);
+            var zone = new Zone(errorLocation, error, call != null ? new Zone(call) : null);
 
             var message = Stylizer.Stylize(zone);
 

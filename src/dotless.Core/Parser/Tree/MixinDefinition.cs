@@ -47,10 +47,10 @@ namespace dotless.Core.Parser.Tree
                 {
                     hasNamedArgs = true;
 
-                    arguments[arg.Name] = new Rule(arg.Name, arg.Value.Evaluate(env)) { Index = arg.Value.Index };
+                    arguments[arg.Name] = new Rule(arg.Name, arg.Value.Evaluate(env)) { Location = arg.Value.Location };
                 }
                 else if (hasNamedArgs)
-                    throw new ParsingException("Positional arguments must appear before all named arguments.", arg.Value.Index);
+                    throw new ParsingException("Positional arguments must appear before all named arguments.", arg.Value.Location);
             }
 
             for (var i = 0; i < Params.Count; i++)
@@ -84,12 +84,12 @@ namespace dotless.Core.Parser.Tree
                     {
                         argRuleValue = val.Evaluate(env);
                     }
-                    arguments[Params[i].Name] = new Rule(Params[i].Name, argRuleValue) { Index = val.Index };
+                    arguments[Params[i].Name] = new Rule(Params[i].Name, argRuleValue) { Location = val.Location };
                 }
                 else
                     throw new ParsingException(
                         String.Format("wrong number of arguments for {0} ({1} for {2})", Name,
-                                      args != null ? args.Count : 0, _arity), Index);
+                                      args != null ? args.Count : 0, _arity), Location);
             }
 
             var argumentNodes = new List<Node>();

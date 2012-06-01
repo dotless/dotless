@@ -13,7 +13,7 @@ namespace dotless.Test.Unit.Tokenizer
 
             var expression = "abc - def";
 
-            tok.SetupInput(expression);
+            tok.SetupInput(expression, "testfile.less");
 
             var match1 = tok.Match(@"\w*");
             var match2 = tok.Match('-');
@@ -23,9 +23,9 @@ namespace dotless.Test.Unit.Tokenizer
             Assert.That(match2, Is.Not.Null);
             Assert.That(match3, Is.Not.Null);
 
-            Assert.That(match1.Index, Is.EqualTo(0));
-            Assert.That(match2.Index, Is.EqualTo(4));
-            Assert.That(match3.Index, Is.EqualTo(6));
+            Assert.That(match1.Location.Index, Is.EqualTo(0));
+            Assert.That(match2.Location.Index, Is.EqualTo(4));
+            Assert.That(match3.Location.Index, Is.EqualTo(6));
         }
     }
 }

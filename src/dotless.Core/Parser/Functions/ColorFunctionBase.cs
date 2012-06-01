@@ -10,14 +10,14 @@ namespace dotless.Core.Parser.Functions
     {
         protected override Node Evaluate(Env env)
         {
-            Guard.ExpectMinArguments(1, Arguments.Count(), this, Index);
-            Guard.ExpectNode<Color>(Arguments[0], this, Arguments[0].Index);
+            Guard.ExpectMinArguments(1, Arguments.Count(), this, Location);
+            Guard.ExpectNode<Color>(Arguments[0], this, Arguments[0].Location);
 
             var color = Arguments[0] as Color;
 
             if (Arguments.Count == 2)
             {
-                Guard.ExpectNode<Number>(Arguments[1], this, Arguments[1].Index);
+                Guard.ExpectNode<Number>(Arguments[1], this, Arguments[1].Location);
 
                 var number = Arguments[1] as Number;
                 var edit = EditColor(color, number);

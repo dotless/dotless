@@ -315,7 +315,7 @@ namespace dotless.Core.Parser.Tree
             {
                 var operable = other as IOperable;
                 if(operable == null)
-                    throw new ParsingException(string.Format("Unable to convert right hand side of {0} to a color", op.Operator), op.Index);
+                    throw new ParsingException(string.Format("Unable to convert right hand side of {0} to a color", op.Operator), op.Location);
 
                 otherColor = operable.ToColor();
             }

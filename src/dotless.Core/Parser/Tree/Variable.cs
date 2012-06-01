@@ -27,7 +27,7 @@ namespace dotless.Core.Parser.Tree
             if (variable)
                 return variable.Value.Evaluate(env);
 
-            throw new ParsingException("variable " + name + " is undefined", Index);
+            throw new ParsingException("variable " + name + " is undefined", Location);
         }
     }
 }

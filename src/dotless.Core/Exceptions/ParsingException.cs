@@ -1,24 +1,26 @@
 namespace dotless.Core.Exceptions
 {
     using System;
+    using dotless.Core.Parser;
 
     public class ParsingException : Exception
     {
-        public int Index { get; set; }
-        public int Call { get; set; }
+        public NodeLocation Location { get; set; }
+        public NodeLocation CallLocation { get; set; }
 
-        public ParsingException(string message, int index) : this(message, null, index, 0) {}
+        public ParsingException(string message, NodeLocation location) : this(message, null, location, null) { }
 
-        public ParsingException(string message, int index, int call) : this(message, null, index, call) {}
+        public ParsingException(string message, NodeLocation location, NodeLocation callLocation) : this(message, null, location, callLocation) { }
 
-        public ParsingException(Exception innerException, int index) : this(innerException, index, 0) {}
+        public ParsingException(Exception innerException, NodeLocation location) : this(innerException, location, null) { }
 
-        public ParsingException(Exception innerException, int index, int call) : this(innerException.Message, innerException, index, call) {}
+        public ParsingException(Exception innerException, NodeLocation location, NodeLocation callLocation) : this(innerException.Message, innerException, location, callLocation) { }
 
-        public ParsingException(string message, Exception innerException, int index, int call) : base(message, innerException)
+        public ParsingException(string message, Exception innerException, NodeLocation location, NodeLocation callLocation)
+            : base(message, innerException)
         {
-          Index = index;
-          Call = call;
+            Location = location;
+            CallLocation = callLocation;
         }
     }
 }

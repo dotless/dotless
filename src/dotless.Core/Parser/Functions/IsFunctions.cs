@@ -12,7 +12,7 @@
     {
         protected override Infrastructure.Nodes.Node Evaluate(Infrastructure.Env env)
         {
-            Guard.ExpectNumArguments(1, Arguments.Count, this, Index);
+            Guard.ExpectNumArguments(1, Arguments.Count, this, Location);
 
             return new Keyword(IsEvaluator(Arguments[0]) ? "true" : "false");
         }

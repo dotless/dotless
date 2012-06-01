@@ -52,14 +52,16 @@
 
         public override Node Evaluate(Env env)
         {
-          var value = Regex.Replace(Value, @"@\{([\w-]+)\}",
-                        m =>
+            var value = Regex.Replace(Value, @"@\{([\w-]+)\}",
+                          m =>
                           {
-                            var v = new Variable('@' + m.Groups[1].Value) {Index = Index + m.Index}.Evaluate(env);
-                            return v is TextNode ? (v as TextNode).Value : v.ToCSS(env);
+                              var v = new Variable('@' + m.Groups[1].Value) 
+                                    { Location = new NodeLocation(Location.Index + m.Index, Location.Source, Location.FileName) }
+                                    .Evaluate(env);
+                              return v is TextNode ? (v as TextNode).Value : v.ToCSS(env);
                           });
 
-          return new Quoted(value, Quote, Escaped).ReducedFrom<Quoted>(this);
+            return new Quoted(value, Quote, Escaped).ReducedFrom<Quoted>(this);
         }
 
         private readonly Regex _unescape = new Regex(@"(^|[^\\])\\(['""])");

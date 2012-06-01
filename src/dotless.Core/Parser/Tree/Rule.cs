@@ -33,7 +33,7 @@ namespace dotless.Core.Parser.Tree
 
             if (Value == null)
             {
-                throw new ParsingException("No value found for rule " + Name, Index);
+                throw new ParsingException("No value found for rule " + Name, Location);
             }
 
             var rule = new Rule(Name, Value.Evaluate(env)).ReducedFrom<Rule>(this);

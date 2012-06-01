@@ -12,7 +12,7 @@ namespace dotless.Core.Parser.Functions
             WarnNotSupportedByLessJS("hex(number)");
 
             if (!string.IsNullOrEmpty(number.Unit))
-                throw new ParsingException(string.Format("Expected unitless number in function 'hex', found {0}", number.ToCSS(env)), number.Index);
+                throw new ParsingException(string.Format("Expected unitless number in function 'hex', found {0}", number.ToCSS(env)), number.Location);
 
             number.Value = Clamp(number.Value, 255, 0);
 

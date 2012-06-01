@@ -95,6 +95,7 @@
     <Compile Include="Parser\Infrastructure\NamedArgument.cs" />
     <Compile Include="Parser\Infrastructure\Nodes\BooleanNode.cs" />
     <Compile Include="Parser\Infrastructure\Output.cs" />
+    <Compile Include="Parser\ParserLocation.cs" />
     <Compile Include="Parser\Tree\Assignment.cs" />
     <Compile Include="Parser\Tree\Condition.cs" />
     <Compile Include="Parser\Tree\Media.cs" />
@@ -103,6 +104,7 @@
     <Compile Include="Parser\Tree\KeyFrame.cs" />
     <Compile Include="Parser\Tree\Script.cs" />
     <Compile Include="Parser\Tree\Root.cs" />
+    <Compile Include="Parser\Zone.cs" />
     <Compile Include="Plugins\ColorSpinPlugin.cs" />
     <Compile Include="Plugins\GenericPluginConfigurator.cs" />
     <Compile Include="Plugins\IFunctionPlugin.cs" />

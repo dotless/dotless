@@ -15,7 +15,7 @@
             if (string.IsNullOrEmpty(number.Unit))
                 return new Number(number.Value * 100, "%");
 
-            throw new ParsingException(string.Format("Expected unitless number in function 'percentage', found {0}", number.ToCSS(env)), number.Index);
+            throw new ParsingException(string.Format("Expected unitless number in function 'percentage', found {0}", number.ToCSS(env)), number.Location);
         }
     }
 }

@@ -6,7 +6,7 @@ namespace dotless.Core.Parser.Infrastructure.Nodes
 
     public abstract class Node
     {
-        public int Index { get; set; }
+        public NodeLocation Location { get; set; }
 
         public NodeList PreComments { get; set; }
         public NodeList PostComments { get; set; }
@@ -60,7 +60,7 @@ namespace dotless.Core.Parser.Infrastructure.Nodes
                     continue;
                 }
 
-                Index = node.Index;
+                Location = node.Location;
 
                 if (node.PreComments)
                 {

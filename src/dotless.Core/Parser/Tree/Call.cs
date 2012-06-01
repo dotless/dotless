@@ -31,7 +31,7 @@ namespace dotless.Core.Parser.Tree
                 if (function != null)
                 {
                     function.Name = Name;
-                    function.Index = Index;
+                    function.Location = Location;
                     return function.Call(env, args).ReducedFrom<Node>(this);
                 }
             }

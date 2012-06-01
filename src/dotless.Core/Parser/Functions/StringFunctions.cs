@@ -13,7 +13,7 @@ namespace dotless.Core.Parser.Functions
     {
         protected override Node Evaluate(Env env)
         {
-            Guard.ExpectMaxArguments(1, Arguments.Count, this, Index);
+            Guard.ExpectMaxArguments(1, Arguments.Count, this, Location);
 
             WarnNotSupportedByLessJS("e(string)", @"~""""");
 

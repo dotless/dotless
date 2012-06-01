@@ -11,14 +11,14 @@ namespace dotless.Core.Parser.Functions
         public string Name { get; set; }
         protected List<Node> Arguments { get; set; }
         public ILogger Logger { get; set; }
-        public int Index { get; set; }
+        public NodeLocation Location { get; set; }
 
         public Node Call(Env env, IEnumerable<Node> arguments)
         {
             Arguments = arguments.ToList();
 
             var node = Evaluate(env);
-            node.Index = Index;
+            node.Location = Location;
             return node;
         }
 

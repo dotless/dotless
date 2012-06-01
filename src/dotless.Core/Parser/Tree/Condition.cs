@@ -74,7 +74,7 @@
                         }
                         else
                         {
-                            throw new ParsingException("Cannot compare objects in mixin guard condition", Index);
+                            throw new ParsingException("Cannot compare objects in mixin guard condition", Location);
                         }
                     }
 
@@ -93,7 +93,7 @@
                     break;
             }
 
-            throw new ParsingException("C# compiler can't work out it is impossible to get here", Index);
+            throw new ParsingException("C# compiler can't work out it is impossible to get here", Location);
         }
 
         /// <summary>
