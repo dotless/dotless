@@ -71,6 +71,18 @@ namespace dotless.Test.Specs
     background-image: url('data:xxyhjgjshgjs');
 }
 ";
+            imports["import/twice/with/different/paths.less"] = @"
+@import-once ""../twice.less"";
+@import-once ""../other.less"";
+";
+
+            imports["import/twice/with/other.less"] = @"
+@import-once ""twice.less"";
+";
+
+            imports["import/twice/with/twice.less"] = @"
+body { background-color: foo; }
+";
 
             imports["import/import-test-a.less"] = @"
 @import ""import-test-b.less"";
@@ -547,6 +559,23 @@ body {
         }
 
         [Test]
+        public void LessImportWithMediaSpecificationsConvertedWithOnce()
+        {
+            var input = @"
+@import-once url(foo.less) screen and (color) and (max-width: 600px);";
+
+            var expected = @"
+@media screen and (color) and (max-width: 600px) {
+  body {
+    background-color: foo;
+  }
+}";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
         public void LessImportWithMediaSpecificationsConvertedMultipleRequirements()
         {
             var input = @"
@@ -626,6 +655,59 @@ body {
   border: none;
 }";
             var parser = GetEmbeddedParser(false, false, true);
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ImportTwiceImportsTwice()
+        {
+            var input = @"
+@import ""lib/color.less"";
+@import ""lib/color.less"";";
+
+            var expected = @"
+body {
+  background-color: foo;
+}
+body {
+  background-color: foo;
+}
+";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ImportOnceTwiceImportsOnce()
+        {
+            var input = @"
+@import-once ""lib/color.less"";
+@import-once ""lib/color.less"";";
+
+            var expected = @"
+body {
+  background-color: foo;
+}
+";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ImportTwiceWithDifferentRelativePathsImportsOnce()
+        {
+            var input = @"
+@import-once ""import/twice/with/different/paths.less"";";
+
+            var expected = @"
+body {
+  background-color: foo;
+}
+";
+            var parser = GetParser();
 
             AssertLess(input, expected, parser);
         }

@@ -17,9 +17,19 @@ namespace dotless.Core.Importers
 
         public static Regex EmbeddedResourceRegex { get { return _embeddedResourceRegex; } }
         public IFileReader FileReader { get; set; }
+        
+        /// <summary>
+        ///  List of successful imports
+        /// </summary>
         public List<string> Imports { get; set; }
+        
         public Func<Parser> Parser { get; set; }
         protected readonly List<string> _paths = new List<string>();
+
+        /// <summary>
+        ///  The raw imports of every @import node, for use with @import
+        /// </summary>
+        protected readonly List<string> _rawImports = new List<string>();
 
         protected string CurrentDirectory
         {
@@ -96,6 +106,32 @@ namespace dotless.Core.Importers
         }
 
         /// <summary>
+        ///  returns true if the import should be ignored because it is a duplicate and import-once was used
+        /// </summary>
+        /// <param name="import"></param>
+        /// <returns></returns>
+        protected bool CheckIgnoreImport(Import import)
+        {
+            return CheckIgnoreImport(import, import.Path);
+        }
+
+        /// <summary>
+        ///  returns true if the import should be ignored because it is a duplicate and import-once was used
+        /// </summary>
+        /// <param name="import"></param>
+        /// <returns></returns>
+        protected bool CheckIgnoreImport(Import import, string path)
+        {
+            if (_rawImports.Contains(path, StringComparer.InvariantCultureIgnoreCase))
+            {
+                return import.IsOnce;
+            }
+            _rawImports.Add(path);
+
+            return false;
+        }
+
+        /// <summary>
         ///  Imports the file inside the import as a dot-less file.
         /// </summary>
         /// <param name="import"></param>
@@ -109,6 +145,12 @@ namespace dotless.Core.Importers
                 {
                     throw new FileNotFoundException(".less cannot import non local less files.", import.Path);
                 }
+
+                if (CheckIgnoreImport(import))
+                {
+                    return ImportAction.ImportNothing;
+                }
+
                 return ImportAction.LeaveImport;
             }
 
@@ -117,6 +159,11 @@ namespace dotless.Core.Importers
             if (!IsNonRelativeUrl(file)) 
             {
                 file = GetAdjustedFilePath(import.Path, _paths);
+            }
+
+            if (CheckIgnoreImport(import, file))
+            {
+                return ImportAction.ImportNothing;
             }
 
             if (!ImportAllFilesAsLess && import.Path.EndsWith(".css"))

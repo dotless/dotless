@@ -40,18 +40,23 @@ namespace dotless.Core.Parser.Tree
         public Node Features { get; set; }
 
         /// <summary>
+        ///  Whether it is a "once" import
+        /// </summary>
+        public bool IsOnce { get; set; }
+
+        /// <summary>
         /// The action to perform with this node
         /// </summary>
         protected ImportAction ImportAction { get; set; }
 
-        public Import(Quoted path, IImporter importer, Value features)
-            : this(path.Value, importer, features)
+        public Import(Quoted path, IImporter importer, Value features, bool isOnce)
+            : this(path.Value, importer, features, isOnce)
         {
             OriginalPath = path;
         }
 
-        public Import(Url path, IImporter importer, Value features)
-            : this(path.GetUnadjustedUrl(), importer, features)
+        public Import(Url path, IImporter importer, Value features, bool isOnce)
+            : this(path.GetUnadjustedUrl(), importer, features, isOnce)
         {
             OriginalPath = path;
         }
@@ -68,7 +73,7 @@ namespace dotless.Core.Parser.Tree
             ImportAction = ImportAction.LeaveImport;
         }
 
-        private Import(string path, IImporter importer, Value features)
+        private Import(string path, IImporter importer, Value features, bool isOnce)
         {
             if (path == null)
                 throw new ParserException("Imports do not allow expressions");
@@ -76,12 +81,18 @@ namespace dotless.Core.Parser.Tree
             Importer = importer;
             Path = path;
             Features = features;
+            IsOnce = isOnce;
 
             ImportAction = Importer.Import(this); // it is assumed to be css if it cannot be found as less
         }
 
         public override void AppendCSS(Env env, Context context)
         {
+            if (ImportAction == ImportAction.ImportNothing)
+            {
+                return;
+            }
+
             if (ImportAction == ImportAction.ImportCss)
             {
                 env.Output.Append(InnerContent);
@@ -117,6 +128,11 @@ namespace dotless.Core.Parser.Tree
 
         public override Node Evaluate(Env env)
         {
+            if (ImportAction == Importers.ImportAction.ImportNothing)
+            {
+                return new NodeList().ReducedFrom<NodeList>(this);
+            }
+
             Node features = null;
 
             if (Features)

@@ -53,6 +53,10 @@
         /// <summary>
         ///  Leave a @import statement
         /// </summary>
-        LeaveImport
+        LeaveImport,
+        /// <summary>
+        ///  Do nothing (e.g. when it is an import-once and has already been imported)
+        /// </summary>
+        ImportNothing,
     }
 }

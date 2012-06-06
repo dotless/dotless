@@ -32,8 +32,8 @@ namespace dotless.Core.Parser.Infrastructure
         Condition Condition(Node left, string operation, Node right, bool negate, NodeLocation location);
 
         //directives
-        Import Import(Url path, IImporter importer, Value features, NodeLocation location);
-        Import Import(Quoted path, IImporter importer, Value features, NodeLocation location);
+        Import Import(Url path, IImporter importer, Value features, bool isOnce, NodeLocation location);
+        Import Import(Quoted path, IImporter importer, Value features, bool isOnce, NodeLocation location);
         Directive Directive(string name, string identifier, NodeList rules, NodeLocation location);
         Directive Directive(string name, Node value, NodeLocation location);
         Media Media(NodeList rules, Value features, NodeLocation location);

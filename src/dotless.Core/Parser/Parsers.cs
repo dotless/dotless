@@ -1045,17 +1045,21 @@ namespace dotless.Core.Parser
 
             var index = parser.Tokenizer.Location.Index;
 
-            if (parser.Tokenizer.Match(@"@import\s+") && (path = Quoted(parser) || Url(parser)))
+            var importMatch = parser.Tokenizer.Match(@"@import(-(once))?\s+");
+
+            if (importMatch && (path = Quoted(parser) || Url(parser)))
             {
+                bool isOnce = importMatch.Match.Groups.Count == 3 && importMatch.Match.Groups[2].Value == "once";
+                
                 var features = MediaFeatures(parser);
 
                 Expect(parser, ';', "Expected ';' (possibly unrecognised media sequence)");
 
                 if (path is Quoted)
-                    return NodeProvider.Import(path as Quoted, parser.Importer, features, parser.Tokenizer.GetNodeLocation(index));
+                    return NodeProvider.Import(path as Quoted, parser.Importer, features, isOnce, parser.Tokenizer.GetNodeLocation(index));
 
                 if (path is Url)
-                    return NodeProvider.Import(path as Url, parser.Importer, features, parser.Tokenizer.GetNodeLocation(index));
+                    return NodeProvider.Import(path as Url, parser.Importer, features, isOnce, parser.Tokenizer.GetNodeLocation(index));
 
                 throw new ParsingException("unrecognised @import format", parser.Tokenizer.GetNodeLocation(index));
             }
