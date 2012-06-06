@@ -428,5 +428,39 @@ image: url(http://); }";
 ";
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void DuplicatesRemoved1()
+        {
+            var input = @"
+.test {
+  background: none;
+  background: none;
+}";
+
+            var expected = @"
+.test {
+  background: none;
+}";
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void DuplicatesRemoved2()
+        {
+            var input = @"
+.test {
+  background: ~""none"";
+  color: red;
+  background: none;
+}";
+
+            var expected = @"
+.test {
+  background: none;
+  color: red;
+}";
+            AssertLess(input, expected);
+        }
     }
 }

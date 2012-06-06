@@ -5,7 +5,7 @@ namespace dotless.Test.Specs
     public class MixinsArgsFixture : SpecFixtureBase
     {
         [Test]
-        public void MixinsArgsHidden()
+        public void MixinsArgsHidden1()
         {
             var input =
                 @"
@@ -15,7 +15,6 @@ namespace dotless.Test.Specs
 
 #hidden {
   .hidden();
-  .hidden;
 }
 ";
 
@@ -23,6 +22,29 @@ namespace dotless.Test.Specs
                 @"
 #hidden {
   color: transparent;
+}
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void MixinsArgsHidden2()
+        {
+            var input =
+                @"
+.hidden() {
+  color: transparent;
+}
+
+#hidden {
+  .hidden;
+}
+";
+
+            var expected =
+                @"
+#hidden {
   color: transparent;
 }
 ";
@@ -373,7 +395,7 @@ body {
         }
 
         [Test]
-        public void MixinArgsHashMixin()
+        public void MixinArgsHashMixin1()
         {
             var input = @"
 #id-mixin () {
@@ -381,13 +403,31 @@ body {
 }
 .id-class {
     #id-mixin();
-    #id-mixin;
 }
 ";
 
             var expected = @"
 .id-class {
   color: red;
+}
+";
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void MixinArgsHashMixin2()
+        {
+            var input = @"
+#id-mixin () {
+    color: red;
+}
+.id-class {
+    #id-mixin;
+}
+";
+
+            var expected = @"
+.id-class {
   color: red;
 }
 ";

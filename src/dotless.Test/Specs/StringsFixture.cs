@@ -143,14 +143,12 @@ namespace dotless.Test.Specs
 .mix-mul-class {
     .mix-mul(blue);
     .mix-mul(red);
-    .mix-mul(blue);
     .mix-mul(orange);
 }";
             var expected = @"
 .mix-mul-class {
   color: blue;
   color: red;
-  color: blue;
   color: orange;
 }";
             AssertLess(input, expected);

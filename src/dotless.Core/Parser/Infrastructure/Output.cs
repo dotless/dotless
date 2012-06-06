@@ -102,6 +102,11 @@
             return AppendMany(nodes, n => Env.Output.Append(n), join);
         }
 
+        public Output AppendMany(IEnumerable<string> list, string join)
+        {
+            return AppendMany(list, (item, sb) => sb.Append(item), join);
+        }
+
         public Output AppendMany<T>(IEnumerable<T> list, Func<T, string> toString, string join)
         {
             return AppendMany(list, (item, sb) => sb.Append(toString(item)), join);

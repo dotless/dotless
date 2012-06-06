@@ -1499,5 +1499,28 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
 ";
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void DuplicatesRemovedFromMixinCall()
+        {
+            var input = @"
+.test() {
+  background: none;
+  color: red;
+  background: none;
+}
+
+.test2 {
+  .test();
+  .test;
+}";
+
+            var expected = @"
+.test2 {
+  background: none;
+  color: red;
+}";
+            AssertLess(input, expected);
+        }
     }
 }
