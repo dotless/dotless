@@ -46,8 +46,8 @@ namespace dotless.Core
 
         private string ComputeContentHash(string source)
         {
-            MD5 md5 = MD5.Create();
-            byte[] computeHash = md5.ComputeHash(Encoding.Default.GetBytes(source));
+            SHA1 sha1 = SHA1.Create();
+            byte[] computeHash = sha1.ComputeHash(Encoding.Default.GetBytes(source));
             return Convert.ToBase64String(computeHash);
         }
 

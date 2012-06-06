@@ -30,7 +30,7 @@ namespace dotless.Test.Unit.Engine
             Less = "the less";
             Css = "the css";
             FileName = "file.less";
-            CacheKey = FileName + "qVfC5MbLSQMCX/9zXfItUQ==";
+            CacheKey = FileName + "CEaZzayH8iHMO6dQWSalPiDS7TY=";
             Cached = false;
 
             Engine.Setup(e => e.GetImports()).Returns(Imports);
