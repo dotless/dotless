@@ -31,7 +31,7 @@ namespace dotless.Core.Importers
         /// </summary>
         protected readonly List<string> _rawImports = new List<string>();
 
-        protected string CurrentDirectory
+        protected virtual string CurrentDirectory
         {
             get
             {
