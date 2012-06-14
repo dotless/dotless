@@ -108,7 +108,7 @@ namespace dotless.Core.Parser
         }
 
         public Parser(int optimization, IStylizer stylizer, IImporter importer)
-            : this(defaultOptimization, stylizer, importer, defaultDebug)
+            : this(optimization, stylizer, importer, defaultDebug)
         {
         }
 

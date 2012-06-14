@@ -218,6 +218,7 @@
 
 
 <script language="C#" prefix="process">
+  <references><include name="system.dll"/></references>
   <code>
     <![CDATA[
       [Function("git")]
