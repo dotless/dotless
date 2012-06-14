@@ -1,6 +1,7 @@
 ﻿namespace dotless.Core.Plugins
 {
     using System;
+    using System.Globalization;
 
     public class PluginParameter : IPluginParameter
     {
@@ -57,7 +58,7 @@
             }
             else
             {
-                Value = Convert.ChangeType(stringValue, Type);
+                Value = Convert.ChangeType(stringValue, Type, CultureInfo.InvariantCulture);
             }
         }
     }

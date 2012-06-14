@@ -46,7 +46,7 @@
 
         protected void AssertLess(string input, string expected, Parser parser)
         {
-            var output = Evaluate(input, parser).Trim();
+            var output = Evaluate(input, parser).Trim().Replace("\r\n", "\n");
 
             expected = expected.Trim().Replace("\r\n", "\n");
 
