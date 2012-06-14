@@ -205,35 +205,40 @@ namespace dotless.Core.Importers
         /// <summary>
         ///  Imports a less file and puts the root into the import node
         /// </summary>
-        protected bool ImportLessFile(string file, Import import)
+        protected bool ImportLessFile(string lessPath, Import import)
         {
-            string contents;
-            if (IsEmbeddedResource(file))
+            string contents, file = null;
+            if (IsEmbeddedResource(lessPath))
             {
-                contents = ResourceLoader.GetResource(file, FileReader);
+                contents = ResourceLoader.GetResource(lessPath, FileReader, out file);
                 if (contents == null) return false;
             }
             else
             {
-                if (!FileReader.DoesFileExist(file) && !file.EndsWith(".less"))
+                if (!FileReader.DoesFileExist(lessPath) && !lessPath.EndsWith(".less"))
                 {
-                    file = file + ".less";
+                    lessPath = lessPath + ".less";
                 }
 
-                if (!FileReader.DoesFileExist(file))
+                if (!FileReader.DoesFileExist(lessPath))
                 {
                     return false;
                 }
 
-                contents = FileReader.GetFileContents(file);
+                contents = FileReader.GetFileContents(lessPath);
+
+                file = lessPath;
             }
 
             _paths.Add(Path.GetDirectoryName(import.Path));
 
             try
             {
-                Imports.Add(file);
-                import.InnerRoot = Parser().Parse(contents, file);
+                if (string.IsNullOrEmpty(file))
+                {
+                    Imports.Add(file);
+                }
+                import.InnerRoot = Parser().Parse(contents, lessPath);
             }
             catch
             {
@@ -256,7 +261,7 @@ namespace dotless.Core.Importers
         /// <returns></returns>
         private bool ImportEmbeddedCssContents(string file, Import import)
         {
-            string content = ResourceLoader.GetResource(file, FileReader);
+            string content = ResourceLoader.GetResource(file, FileReader, out file);
             if (content == null) return false;
             import.InnerContent = content;
             return true;
@@ -297,37 +302,49 @@ namespace dotless.Core.Importers
     /// </summary>
     class ResourceLoader : MarshalByRefObject
     {
-        private string _assemblyName;
+        private byte[] _fileContents;
         private string _resourceName;
         private string _resourceContent;
-        private IFileReader _fileReader;
 
         /// <summary>
         /// Gets the text content of an embedded resource.
         /// </summary>
         /// <param name="file">The path in the form: dll://AssemblyName/ResourceName</param>
         /// <returns>The content of the resource</returns>
-        public static string GetResource(string file, IFileReader fileReader)
+        public static string GetResource(string file, IFileReader fileReader, out string fileDependency)
         {
+            fileDependency = null;
+
             var match = Importer.EmbeddedResourceRegex.Match(file);
             if (!match.Success) return null;
 
             var loader = new ResourceLoader();
             loader._resourceName = match.Groups["Resource"].Value;
-            loader._assemblyName = match.Groups["Assembly"].Value;
-            loader._fileReader = fileReader;
 
             try
             {
+                fileDependency = match.Groups["Assembly"].Value;
+
+                if (!fileReader.DoesFileExist(fileDependency))
+                {
+                    throw new FileNotFoundException("Unable to locate assembly file [" + fileDependency + "]");
+                }
+
+                loader._fileContents = fileReader.GetBinaryFileContents(fileDependency);
+
                 var domainSetup = new AppDomainSetup();
                 domainSetup.ApplicationBase = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 var domain = AppDomain.CreateDomain("LoaderDomain", null, domainSetup);
                 domain.DoCallBack(loader.LoadResource);
                 AppDomain.Unload(domain);
             }
-            catch (Exception) 
+            catch (Exception)
             {
-                throw new FileNotFoundException("Unable to load resource [" + loader._resourceName + "] in assembly [" + loader._assemblyName + "]");
+                throw new FileNotFoundException("Unable to load resource [" + loader._resourceName + "] in assembly [" + fileDependency + "]");
+            }
+            finally
+            {
+                loader._fileContents = null;
             }
 
             return loader._resourceContent;
@@ -336,8 +353,7 @@ namespace dotless.Core.Importers
         // Runs in the separate app domain
         private void LoadResource()
         {
-            var fileBytes = _fileReader.GetBinaryFileContents(_assemblyName);
-            var assembly = Assembly.Load(fileBytes);
+            var assembly = Assembly.Load(_fileContents);
             using (var stream = assembly.GetManifestResourceStream(_resourceName))
             {
                 _resourceContent = new StreamReader(stream).ReadToEnd();
