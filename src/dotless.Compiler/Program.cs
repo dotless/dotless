@@ -133,7 +133,8 @@ namespace dotless.Compiler
             {
                 Console.WriteLine("{0} -> {1}", inputFilePath, outputFilePath);
                 var directoryPath = Path.GetDirectoryName(inputFilePath);
-                var source = new dotless.Core.Input.FileReader().GetFileContents(inputFilePath);
+                var fileReader = new dotless.Core.Input.FileReader();
+                var source = fileReader.GetFileContents(inputFilePath);
                 Directory.SetCurrentDirectory(directoryPath);
                 var css = engine.TransformToCss(source, inputFilePath);
 
