@@ -13,7 +13,7 @@ namespace dotless.Core.Importers
 
     public class Importer : IImporter
     {
-        private static readonly Regex _embeddedResourceRegex = new Regex(@"^dll://(?<Assembly>.+?)/(?<Resource>.+)$");
+        private static readonly Regex _embeddedResourceRegex = new Regex(@"^dll://(?<Assembly>.+?)#(?<Resource>.+)$");
 
         public static Regex EmbeddedResourceRegex { get { return _embeddedResourceRegex; } }
         public IFileReader FileReader { get; set; }

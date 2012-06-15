@@ -448,7 +448,7 @@ from line 3 in file 'test.less':
         [Test]
         public void ImportForMissingLessFileThrowsError4()
         {
-            var input = @"@import ""dll://someassembly/missing.less"";";
+            var input = @"@import ""dll://someassembly#missing.less"";";
 
             var parser = GetParser();
 
@@ -458,7 +458,7 @@ from line 3 in file 'test.less':
         [Test]
         public void ImportForMissingCssFileAsLessThrowsError()
         {
-            var input = @"@import ""dll://someassembly/missing.css"";";
+            var input = @"@import ""dll://someassembly#missing.css"";";
 
             var parser = GetParser(false, true, false);
 
@@ -629,8 +629,8 @@ body {
         public void LessImportFromEmbeddedResource()
         {
             var input = @"
-@import ""dll://dotless.Test.dll/dotless.Test.Resource.Embedded.less"";
-@import ""dll://dotless.Test.dll/dotless.Test.Resource.Embedded2.less"";";
+@import ""dll://dotless.Test.dll#dotless.Test.Resource.Embedded.less"";
+@import ""dll://dotless.Test.dll#dotless.Test.Resource.Embedded2.less"";";
 
             var expected = @"
 #import {
@@ -648,7 +648,7 @@ body {
         public void CssImportFromEmbeddedResource()
         {
             var input = @"
-@import ""dll://dotless.Test.dll/dotless.Test.Resource.Embedded.css"";";
+@import ""dll://dotless.Test.dll#dotless.Test.Resource.Embedded.css"";";
 
             var expected = @"
 .windowz .dos {
