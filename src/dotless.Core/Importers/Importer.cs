@@ -215,15 +215,14 @@ namespace dotless.Core.Importers
             }
             else
             {
-                if (!FileReader.DoesFileExist(lessPath) && !lessPath.EndsWith(".less"))
+                bool fileExists = FileReader.DoesFileExist(lessPath);
+                if (!fileExists && !lessPath.EndsWith(".less"))
                 {
-                    lessPath = lessPath + ".less";
+                    lessPath += ".less";
+                    fileExists = FileReader.DoesFileExist(lessPath);
                 }
 
-                if (!FileReader.DoesFileExist(lessPath))
-                {
-                    return false;
-                }
+                if (!fileExists) return false;
 
                 contents = FileReader.GetFileContents(lessPath);
 
