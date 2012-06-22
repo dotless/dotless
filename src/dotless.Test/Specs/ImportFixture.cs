@@ -216,11 +216,10 @@ body { margin-right: @a; }";
             AssertLess(input, expected, parser);
 
             // Calling the file reader with url's with a protocolis asking for trouble
-            Assert.AreEqual(2, dictionaryReader.DoesFileExistCalls.Count, "We should not ask the file reader if a protocol file exists");
+            Assert.AreEqual(1, dictionaryReader.DoesFileExistCalls.Count, "We should not ask the file reader if a protocol file exists");
             Assert.AreEqual(1, dictionaryReader.GetFileContentsCalls.Count, "We should not ask the file reader if a protocol file exists");
 
             Assert.AreEqual(@"import/other-protocol-test.less", dictionaryReader.DoesFileExistCalls[0], "We should not ask the file reader if a protocol file exists");
-            Assert.AreEqual(@"import/other-protocol-test.less", dictionaryReader.DoesFileExistCalls[1], "We should not ask the file reader if a protocol file exists");
             Assert.AreEqual(@"import/other-protocol-test.less", dictionaryReader.GetFileContentsCalls[0], "We should not ask the file reader if a protocol file exists");
         }
 
