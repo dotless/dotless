@@ -24,6 +24,7 @@
         public Output Output { get; private set; }
         public Stack<Media> MediaPath { get; private set; }
         public List<Media> MediaBlocks { get; private set; }
+        public bool DisableVariableRedefines { get; set; }
 
         public Env() : this(null, null)
         {
@@ -49,7 +50,7 @@
         /// </summary>
         public virtual Env CreateChildEnv(Stack<Ruleset> frames)
         {
-            return new Env(frames, _functionTypes);
+            return new Env(frames, _functionTypes) { Debug = Debug, Compress = Compress, DisableVariableRedefines = DisableVariableRedefines };
         }
 
         /// <summary>
@@ -104,7 +105,7 @@
             var previousNode = rule;
             foreach (var frame in Frames)
             {
-                var v = frame.Variable(name, previousNode);
+                var v = frame.Variable(name, DisableVariableRedefines ? null : previousNode);
                 if (v)
                     return v;
                 previousNode = frame;

@@ -24,6 +24,7 @@ namespace dotless.Core.configuration
             dotlessConfiguration.MapPathsToWeb = GetBoolValue(section, "mapPathsToWeb") ?? dotlessConfiguration.MapPathsToWeb;
             dotlessConfiguration.HandleWebCompression = GetBoolValue(section, "handleWebCompression") ?? dotlessConfiguration.HandleWebCompression;
             dotlessConfiguration.DisableParameters = GetBoolValue(section, "disableParameters") ?? dotlessConfiguration.DisableParameters;
+            dotlessConfiguration.DisableVariableRedefines = GetBoolValue(section, "disableVariableRedefines") ?? dotlessConfiguration.DisableVariableRedefines;
 
             var logLevel = GetStringValue(section, "log") ?? "default";
             switch (logLevel.ToLowerInvariant())

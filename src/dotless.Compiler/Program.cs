@@ -247,6 +247,7 @@ namespace dotless.Compiler
             Console.WriteLine("\t\t-r --disable-url-rewriting - Disables changing urls in imported files");
             Console.WriteLine("\t\t-a --import-all-less - treats every import as less even if ending in .css");
             Console.WriteLine("\t\t-c --inline-css - Inlines CSS file imports into the output");
+            Console.WriteLine("\t\t-v --disable-variable-redefines - Makes variables behave more like less.js, so the last variable definition is used");
             Console.WriteLine("\t\t-DKey=Value - prefixes variable to the less");
             Console.WriteLine("\t\t-l --listplugins - Lists the plugins available and options");
             Console.WriteLine("\t\t-p: --plugin:pluginName[:option=value[,option=value...]] - adds the named plugin to dotless with the supplied options");
@@ -309,6 +310,10 @@ namespace dotless.Compiler
                     else if (arg.StartsWith("-r") || arg.StartsWith("--disable-url-rewriting"))
                     {
                         configuration.DisableUrlRewriting = true;
+                    }
+                    else if (arg.StartsWith("-v") || arg.StartsWith("--disable-variable-redefines"))
+                    {
+                        configuration.DisableVariableRedefines = true;
                     }
                     else if (arg.StartsWith("-p:") || arg.StartsWith("--plugin:"))
                     {

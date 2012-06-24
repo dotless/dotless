@@ -233,6 +233,42 @@ h3 + * {
         }
 
         [Test]
+        public void ParentSelector8()
+        {
+            var input = @"
+.p {
+  .foo &.bar {
+    color: red;
+  }
+}
+";
+            var expected = @"
+.foo .p.bar {
+  color: red;
+}
+";
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void ParentSelector9()
+        {
+            var input = @"
+.p {
+  .foo&.bar {
+    color: red;
+  }
+}
+";
+            var expected = @"
+.foo.p.bar {
+  color: red;
+}
+";
+            AssertLess(input, expected);
+        }
+
+        [Test]
         public void ParentSelectorCombinators()
         {
             // Note: https://github.com/dotless/dotless/issues/171
@@ -485,6 +521,57 @@ a:nth-child(2) {
   color: red;
 }";
 
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void ParentSelectorWhenNoParentExists1()
+        {
+            //comes up in bootstrap
+            var input = @"
+.placeholder(@color) {
+  &:-moz-placeholder {
+    color: @color;
+  }
+  &:-ms-input-placeholder {
+    color: @color;
+  }
+  &::-webkit-input-placeholder {
+    color: @color;
+  }
+}
+.placeholder(red);
+";
+            var expected = @"
+:-moz-placeholder {
+  color: red;
+}
+:-ms-input-placeholder {
+  color: red;
+}
+::-webkit-input-placeholder {
+  color: red;
+}
+";
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void ParentSelectorWhenNoParentExists2()
+        {
+            var input = @"
+.placeholder(@color) {
+  .foo &.bar {
+    color: @color;
+  }
+}
+.placeholder(red);
+";
+            var expected = @"
+.foo .bar {
+  color: red;
+}
+";
             AssertLess(input, expected);
         }
 

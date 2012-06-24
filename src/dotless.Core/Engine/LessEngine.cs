@@ -14,26 +14,33 @@ namespace dotless.Core
         public ILogger Logger { get; set; }
         public bool Compress { get; set; }
         public bool Debug { get; set; }
+        public bool DisableVariableRedefines { get; set; }
         public Env Env { get; set; }
         public IEnumerable<IPluginConfigurator> Plugins { get; set; }
         public bool LastTransformationSuccessful { get; private set; }
 
-        public LessEngine(Parser.Parser parser, ILogger logger, bool compress, bool debug, IEnumerable<IPluginConfigurator> plugins)
+        public LessEngine(Parser.Parser parser, ILogger logger, bool compress, bool debug, bool disableVariableRedefines, IEnumerable<IPluginConfigurator> plugins)
         {
             Parser = parser;
             Logger = logger;
             Compress = compress;
             Debug = debug;
+            DisableVariableRedefines = disableVariableRedefines;
             Plugins = plugins;
         }
 
         public LessEngine(Parser.Parser parser, ILogger logger, bool compress, bool debug)
-            : this(parser, logger, compress, debug, null)
+            : this(parser, logger, compress, debug, false, null)
+        {
+        }
+
+        public LessEngine(Parser.Parser parser, ILogger logger, bool compress, bool debug, bool disableVariableRedefines)
+            : this(parser, logger, compress, debug, disableVariableRedefines, null)
         {
         }
 
         public LessEngine(Parser.Parser parser)
-            : this(parser, new ConsoleLogger(LogLevel.Error), false, false, null)
+            : this(parser, new ConsoleLogger(LogLevel.Error), false, false, false, null)
         {
         }
 
@@ -48,7 +55,7 @@ namespace dotless.Core
             {
                 var tree = Parser.Parse(source, fileName);
 
-                var env = Env ?? new Env {Compress = Compress, Debug = Debug};
+                var env = Env ?? new Env { Compress = Compress, Debug = Debug, DisableVariableRedefines = DisableVariableRedefines };
 
                 if (Plugins != null)
                 {

@@ -34,6 +34,7 @@ namespace dotless.Core.configuration
             Plugins = new List<IPluginConfigurator>();
             MapPathsToWeb = true;
             HandleWebCompression = true;
+            DisableVariableRedefines = false;
         }
 
         public DotlessConfiguration(DotlessConfiguration config)
@@ -54,6 +55,7 @@ namespace dotless.Core.configuration
             ImportAllFilesAsLess = config.ImportAllFilesAsLess;
             HandleWebCompression = config.HandleWebCompression;
             DisableParameters = config.DisableParameters;
+            DisableVariableRedefines = config.DisableVariableRedefines;
         }
 
         /// <summary>
@@ -65,6 +67,12 @@ namespace dotless.Core.configuration
         ///  Stops URL's being adjusted depending on the imported file location
         /// </summary>
         public bool DisableUrlRewriting { get; set; }
+
+        /// <summary>
+        ///  Disables variables being redefined, so less will search from the bottom of the input up.
+        ///  Makes dotless behave like less.js with regard variables
+        /// </summary>
+        public bool DisableVariableRedefines { get; set; }
 
         /// <summary>
         ///  Inlines css files into the less output
