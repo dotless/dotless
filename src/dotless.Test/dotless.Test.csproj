@@ -83,6 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config\AspNetConfigurationFixture.cs" />
+    <Compile Include="Config\XmlConfigurationFixture.cs" />
     <Compile Include="Plugins\ColorSpinPluginFixture.cs" />
     <Compile Include="Plugins\PluginFixture.cs" />
     <Compile Include="Plugins\RtlPluginFixture.cs" />
@@ -105,6 +106,7 @@
     <Compile Include="Specs\ScriptFixture.cs" />
     <Compile Include="TestLogger.cs" />
     <Compile Include="TestStylizer.cs" />
+    <Compile Include="Unit\HttpHandlerFixture.cs" />
     <Compile Include="Unit\Tokenizer\TokenizerFixture.cs" />
     <Compile Include="Unit\Engine\CacheDecoratorFixture.cs" />
     <Compile Include="Unit\Engine\CommentBug.cs" />

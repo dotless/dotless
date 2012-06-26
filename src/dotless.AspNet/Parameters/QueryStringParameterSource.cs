@@ -1,4 +1,7 @@
-﻿namespace dotless.Core.Parameters
+﻿using System;
+using dotless.Core.configuration;
+
+namespace dotless.Core.Parameters
 {
     using System.Collections.Generic;
     using Abstractions;
@@ -20,11 +23,13 @@
             var dictionary = new Dictionary<string, string>();
             var queryString = http.Context.Request.QueryString;
             var allKeys = queryString.AllKeys;
+            var config = new WebConfigConfigurationLoader().GetConfiguration();
+            var sessionParam = config.SessionMode == DotlessSessionStateMode.QueryParam ? config.SessionQueryParamName : null;
             foreach (var key in allKeys)
             {
                 if (key != null)
                 {
-                    if (!_keyWhitelist.IsMatch(key))
+                    if (key.Equals(sessionParam, StringComparison.OrdinalIgnoreCase) || !_keyWhitelist.IsMatch(key))
                         continue;
 
                     string s = queryString[key];

@@ -22,7 +22,7 @@ namespace dotless.Core.Parser.Tree
         {
             Name = name;
             Value = value;
-            Variable = name != null ? name[0] == '@' : false;
+            Variable = !string.IsNullOrEmpty(name) && name[0] == '@';
             IsSemiColonRequired = true;
             Variadic = variadic;
         }

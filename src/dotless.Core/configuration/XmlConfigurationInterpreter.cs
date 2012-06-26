@@ -1,3 +1,5 @@
+using System.Configuration;
+
 namespace dotless.Core.configuration
 {
     using System;
@@ -53,6 +55,19 @@ namespace dotless.Core.configuration
 
             dotlessConfiguration.Logger = GetTypeValue(section, "logger");
             dotlessConfiguration.Plugins.AddRange(GetPlugins(section));
+
+            var sessionMode = GetStringValue(section, "sessionMode");
+            dotlessConfiguration.SessionMode = string.IsNullOrEmpty(sessionMode)
+                                                   ? DotlessSessionStateMode.Disabled
+                                                   : (DotlessSessionStateMode) Enum.Parse(typeof (DotlessSessionStateMode), sessionMode, true);
+            
+            dotlessConfiguration.SessionQueryParamName = GetStringValue(section, "sessionQueryParamName")
+                                                         ?? DotlessConfiguration.DEFAULT_SESSION_QUERY_PARAM_NAME;
+
+            if (dotlessConfiguration.SessionMode == DotlessSessionStateMode.QueryParam && string.IsNullOrEmpty(dotlessConfiguration.SessionQueryParamName))
+            {
+                throw new ConfigurationErrorsException("The 'sessionQueryParamName' should be not empty when sessionMode is set to 'queryParam'", section);
+            }
 
             return dotlessConfiguration;
         }

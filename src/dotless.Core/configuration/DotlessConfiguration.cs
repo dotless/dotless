@@ -6,8 +6,29 @@ namespace dotless.Core.configuration
     using dotless.Core.Plugins;
     using System.Collections.Generic;
 
+    public enum DotlessSessionStateMode
+    {
+        /// <summary>
+        ///  Session is not used.
+        /// </summary>
+        Disabled,
+
+        /// <summary>
+        ///  Session is loaded for each request to Dotless HTTP handler.
+        /// </summary>
+        Enabled,
+
+        /// <summary>
+        ///  Session is loaded when URL QueryString parameter specified by <seealso cref="DotlessConfiguration.SessionQueryParamName"/> is truthy.
+        /// </summary>
+        QueryParam
+    }
+
     public class DotlessConfiguration
     {
+        public const string DEFAULT_SESSION_QUERY_PARAM_NAME = "sstate";
+        internal static IConfigurationManager _configurationManager;
+
         public static DotlessConfiguration GetDefault()
         {
             return new DotlessConfiguration();
@@ -28,6 +49,8 @@ namespace dotless.Core.configuration
             Debug = false;
             CacheEnabled = true;
             Web = false;
+            SessionMode = DotlessSessionStateMode.Disabled;
+            SessionQueryParamName = DEFAULT_SESSION_QUERY_PARAM_NAME;
             Logger = null;
             LogLevel = LogLevel.Error;
             Optimization = 1;
@@ -44,6 +67,8 @@ namespace dotless.Core.configuration
             Debug = config.Debug;
             CacheEnabled = config.CacheEnabled;
             Web = config.Web;
+            SessionMode = config.SessionMode;
+            SessionQueryParamName = config.SessionQueryParamName;
             Logger = null;
             LogLevel = config.LogLevel;
             Optimization = config.Optimization;
@@ -56,6 +81,19 @@ namespace dotless.Core.configuration
             HandleWebCompression = config.HandleWebCompression;
             DisableParameters = config.DisableParameters;
             DisableVariableRedefines = config.DisableVariableRedefines;
+        }
+
+        public static IConfigurationManager ConfigurationManager
+        {
+            get { return _configurationManager ?? (_configurationManager = new ConfigurationManagerWrapper()); }
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value");
+                }
+                _configurationManager = value;
+            }
         }
 
         /// <summary>
@@ -114,6 +152,16 @@ namespace dotless.Core.configuration
         ///  Whether this is used in a web context or not
         /// </summary>
         public bool Web { get; set; }
+
+        /// <summary>
+        ///  Specifies the mode the HttpContext.Session is loaded.
+        /// </summary>
+        public DotlessSessionStateMode SessionMode { get; set; }
+
+        /// <summary>
+        ///  Gets or sets the URL QueryString parameter name used in conjunction with <seealso cref="SessionMode"/> set to <seealso cref="DotlessSessionStateMode.QueryParam"/>.
+        /// </summary>
+        public string SessionQueryParamName { get; set; }
 
         /// <summary>
         ///  The ILogger type

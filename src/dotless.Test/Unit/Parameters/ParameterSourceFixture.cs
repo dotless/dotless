@@ -1,5 +1,6 @@
 namespace dotless.Test.Unit.Parameters
 {
+    using Core.configuration;
     using Core.Parameters;
     using NUnit.Framework;
 
@@ -106,6 +107,23 @@ namespace dotless.Test.Unit.Parameters
             var dictionary = queryStringParameterSource.GetParameters();
 
             Assert.AreEqual(7, dictionary.Count);
+        }
+
+        [Test]
+        public void ShouldSkipSessionParam()
+        {
+            const string paramName = "loadSession";
+
+            Config.SessionMode = DotlessSessionStateMode.QueryParam;
+            Config.SessionQueryParamName = paramName;
+
+            var queryStringParameterSource = new QueryStringParameterSource(Http.Object);
+
+            QueryString[paramName] = "yeah";
+
+            var dictionary = queryStringParameterSource.GetParameters();
+
+            Assert.IsFalse(dictionary.ContainsKey(paramName));
         }
     }
 }
