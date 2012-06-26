@@ -54,6 +54,8 @@
     <Compile Include="Input\AspServerPathResolver.cs" />
     <Compile Include="Input\VirtualFileReader.cs" />
     <Compile Include="LessCssHttpHandler.cs" />
+    <Compile Include="LessCssHttpHandlerBase.cs" />
+    <Compile Include="LessCssHttpHandlerFactory.cs" />
     <Compile Include="Loggers\AspNetTraceLogger.cs" />
     <Compile Include="Loggers\AspResponseLogger.cs" />
     <Compile Include="Parameters\QueryStringParameterSource.cs" />

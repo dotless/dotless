@@ -1,25 +1,14 @@
 ﻿namespace dotless.Core
 {
     using System.Web;
-    using configuration;
-    using Microsoft.Practices.ServiceLocation;
-
-    public class LessCssHttpHandler : IHttpHandler
+    using System.Web.SessionState;
+    
+    public class LessCssWithSessionHttpHandler : LessCssHttpHandler, IRequiresSessionState
     {
-        public IServiceLocator Container { get; set; }
-        public DotlessConfiguration Config { get; set; }
+    }
 
-        public LessCssHttpHandler()
-        {
-            Config = new WebConfigConfigurationLoader().GetConfiguration();
-            Container = GetContainerFactory().GetContainer(Config);
-        }
-
-        protected virtual ContainerFactory GetContainerFactory()
-        {
-            return new AspNetContainerFactory();
-        }
-
+    public class LessCssHttpHandler : LessCssHttpHandlerBase, IHttpHandler
+    {
         public void ProcessRequest(HttpContext context)
         {
             try

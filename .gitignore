@@ -17,6 +17,8 @@ gems/lib/*
 gems/*.gem
 gems/VERSION
 _site/
+src/_UpgradeReport_Files
+src/UpgradeLog.*
 *~
 *.userprefs
 *.pidb
