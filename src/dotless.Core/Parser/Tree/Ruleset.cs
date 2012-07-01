@@ -238,7 +238,7 @@ namespace dotless.Core.Parser.Tree
                     continue;
 
                 var comment = node as Comment;
-                if (comment != null && comment.Silent)
+                if (comment != null && !comment.IsValidCss)
                     continue;
 
                 var ruleset = node as Ruleset;

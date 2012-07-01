@@ -81,7 +81,7 @@ white;
         }
 
         [Test]
-        public void NewLines()
+        public void NewLines1()
         {
             var input =
                 @"
@@ -96,6 +96,22 @@ great,
 }";
 
             var expected = ".newlines{background:the, great, wall;border:2px solid black}";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void NewLines2()
+        {
+            var input =
+                @"
+.newlines,
+.are
+.bad {
+  foo: bar;
+}";
+
+            var expected = ".newlines,.are .bad{foo:bar}";
 
             AssertLess(input, expected);
         }

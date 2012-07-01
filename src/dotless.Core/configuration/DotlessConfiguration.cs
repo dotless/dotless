@@ -58,6 +58,7 @@ namespace dotless.Core.configuration
             MapPathsToWeb = true;
             HandleWebCompression = true;
             DisableVariableRedefines = false;
+            KeepFirstSpecialComment = false;
         }
 
         public DotlessConfiguration(DotlessConfiguration config)
@@ -81,6 +82,7 @@ namespace dotless.Core.configuration
             HandleWebCompression = config.HandleWebCompression;
             DisableParameters = config.DisableParameters;
             DisableVariableRedefines = config.DisableVariableRedefines;
+            KeepFirstSpecialComment = config.KeepFirstSpecialComment;
         }
 
         public static IConfigurationManager ConfigurationManager
@@ -95,6 +97,11 @@ namespace dotless.Core.configuration
                 _configurationManager = value;
             }
         }
+
+        /// <summary>
+        /// Keep first comment begining /**
+        /// </summary>
+        public bool KeepFirstSpecialComment { get; set; }
 
         /// <summary>
         ///  Disable using parameters

@@ -6,24 +6,26 @@
     public class Comment : Node
     {
         public string Value { get; set; }
-        public bool Silent { get; set; }
+        public bool IsValidCss { get; set; }
+        public bool IsSpecialCss { get; set; }
         public bool IsPreSelectorComment { get; set; }
         private bool IsCSSHack { get; set; }
 
-        public Comment(string value, bool silent)
+        public Comment(string value)
         {
             Value = value;
-            Silent = silent;
+            IsValidCss = !value.StartsWith("//");
+            IsSpecialCss = value.StartsWith("/**");
             IsCSSHack = value == "/**/" || value == "/*\\*/";
         }
 
         public override void AppendCSS(Env env)
         {
-            if (!Silent && (!env.Compress || IsCSSHack))
+            if (!env.IsCommentSilent(IsValidCss, IsCSSHack, IsSpecialCss))
             {
                 env.Output.Append(Value);
 
-                if (!env.Compress && !IsCSSHack && IsPreSelectorComment)
+                if (!IsCSSHack && IsPreSelectorComment)
                 {
                     env.Output.Append("\n");
                 }

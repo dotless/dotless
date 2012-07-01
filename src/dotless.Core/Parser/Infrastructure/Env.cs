@@ -25,6 +25,8 @@
         public Stack<Media> MediaPath { get; private set; }
         public List<Media> MediaBlocks { get; private set; }
         public bool DisableVariableRedefines { get; set; }
+        public bool KeepFirstSpecialComment { get; set; }
+        public bool IsFirstSpecialCommentOutput { get; set; }
 
         public Env() : this(null, null)
         {
@@ -81,12 +83,37 @@
             }
         }
 
+        /// <summary>
+        ///  All the visitor plugins to use
+        /// </summary>
         public IEnumerable<IVisitorPlugin> VisitorPlugins
         {
             get
             {
                 return _plugins.OfType<IVisitorPlugin>();
             }
+        }
+
+        /// <summary>
+        ///  Returns whether the comment should be silent
+        /// </summary>
+        /// <param name="isDoubleStarComment"></param>
+        /// <returns></returns>
+        public bool IsCommentSilent(bool isValidCss, bool isCssHack, bool isSpecialComment)
+        {
+            if (!isValidCss)
+                return true;
+
+            if (isCssHack)
+                return false;
+
+            if (Compress && KeepFirstSpecialComment && !IsFirstSpecialCommentOutput && isSpecialComment)
+            {
+                IsFirstSpecialCommentOutput = true;
+                return false;
+            }
+
+            return Compress;
         }
 
         /// <summary>

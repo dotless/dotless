@@ -31,9 +31,6 @@ namespace dotless.Core.Parser.Tree
             try
             {
                 base.AppendCSS(env);
-
-                if (env.Compress)
-                    env.Output.Reset(Regex.Replace(env.Output.ToString(), @"(\s)+", " "));
             }
             catch (ParsingException e)
             {

@@ -4,6 +4,7 @@ namespace dotless.Core.Parser.Tree
     using Infrastructure;
     using Infrastructure.Nodes;
     using Plugins;
+    using System.Text.RegularExpressions;
 
     public class Rule : Node
     {
@@ -50,11 +51,22 @@ namespace dotless.Core.Parser.Tree
             if (Variable)
                 return;
 
+            var value = Value;
+
             env.Output
                 .Append(Name)
                 .Append(PostNameComments)
-                .Append(env.Compress ? ":" : ": ")
-                .Append(Value);
+                .Append(env.Compress ? ":" : ": ");
+
+            env.Output.Push()
+                .Append(value);
+
+            if (env.Compress)
+            {
+                env.Output.Reset(Regex.Replace(env.Output.ToString(), @"(\s)+", " "));
+            }
+
+            env.Output.PopAndAppend();
 
             if (IsSemiColonRequired)
             {

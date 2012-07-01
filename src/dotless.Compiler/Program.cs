@@ -241,6 +241,7 @@ namespace dotless.Compiler
             Console.WriteLine("Usage: dotless.Compiler.exe [-switches] <inputfile> [outputfile]");
             Console.WriteLine("\tSwitches:");
             Console.WriteLine("\t\t-m --minify - Output CSS will be compressed");
+            Console.WriteLine("\t\t-k --keep-first-comment - Keeps the first comment begninning /** when minified");
             Console.WriteLine("\t\t-d --debug  - Print helpful debug comments in output (not compatible with -m)");
             Console.WriteLine("\t\t-w --watch  - Watches .less file for changes");
             Console.WriteLine("\t\t-h --help   - Displays this dialog");
@@ -271,6 +272,10 @@ namespace dotless.Compiler
                     if (arg == "-m" || arg == "--minify")
                     {
                         configuration.MinifyOutput = true;
+                    }
+                    else if (arg == "-k" || arg == "--keep-first-comment")
+                    {
+                        configuration.KeepFirstSpecialComment = true;
                     }
                     else if (arg == "-d" || arg == "--debug")
                     {

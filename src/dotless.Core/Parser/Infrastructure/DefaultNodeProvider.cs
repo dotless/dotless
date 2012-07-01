@@ -144,12 +144,7 @@ namespace dotless.Core.Parser.Infrastructure
 
         public Comment Comment(string value, NodeLocation location)
         {
-            return Comment(value, false, location);
-        }
-
-        public Comment Comment(string value, bool silent, NodeLocation location)
-        {
-            return new Comment(value, silent) { Location = location };
+            return new Comment(value) { Location = location };
         }
 
         public TextNode TextNode(string contents, NodeLocation location)

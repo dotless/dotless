@@ -163,7 +163,7 @@ namespace dotless.Core.Parser
 
             if (comment != null)
             {
-                return NodeProvider.Comment(comment, comment.StartsWith("//"), parser.Tokenizer.GetNodeLocation(index));
+                return NodeProvider.Comment(comment, parser.Tokenizer.GetNodeLocation(index));
             }
 
             return null;

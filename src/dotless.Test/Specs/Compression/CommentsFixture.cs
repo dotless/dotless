@@ -14,6 +14,15 @@ namespace dotless.Test.Specs.Compression
         }
 
         [Test]
+        public void DoubleStarBlockCommentGetsRemoved()
+        {
+            var input = "/** Comment */";
+            var expected = "";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
         public void CheckCommentsAreNotTakenToBeWhitespace1()
         {
             // IE7/IE8/FF/Chrome - All take a comment between selectors to mean as if the comment was not there
