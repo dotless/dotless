@@ -233,7 +233,7 @@ namespace dotless.Core.Importers
 
             try
             {
-                if (string.IsNullOrEmpty(file))
+                if (!string.IsNullOrEmpty(file))
                 {
                     Imports.Add(file);
                 }
@@ -277,6 +277,7 @@ namespace dotless.Core.Importers
             }
 
             import.InnerContent = FileReader.GetFileContents(file);
+            Imports.Add(file);
 
             return true;
         }
