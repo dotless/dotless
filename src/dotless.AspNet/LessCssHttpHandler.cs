@@ -20,13 +20,27 @@
             catch (System.IO.FileNotFoundException ex)
             {
                 context.Response.StatusCode = 404;
-                context.Response.Write("/* File Not Found while parsing: " + ex.Message + " */");
+                if (context.Request.IsLocal)
+                {
+                    context.Response.Write("/* File Not Found while parsing: " + ex.Message + " */");
+                }
+                else
+                {
+                    context.Response.Write("/* Error Occurred. Consult log or view on local machine. */");
+                }
                 context.Response.End();
             }
             catch (System.IO.IOException ex)
             {
                 context.Response.StatusCode = 500;
-                context.Response.Write("/* Error in less parsing: " + ex.Message + " */");
+                if (context.Request.IsLocal)
+                {
+                    context.Response.Write("/* Error in less parsing: " + ex.Message + " */");
+                }
+                else
+                {
+                    context.Response.Write("/* Error Occurred. Consult log or view on local machine. */");
+                }
                 context.Response.End();
             }
         }
