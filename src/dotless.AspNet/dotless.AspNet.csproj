@@ -53,6 +53,7 @@
     <Compile Include="Input\AspRelativePathResolver.cs" />
     <Compile Include="Input\AspServerPathResolver.cs" />
     <Compile Include="Input\VirtualFileReader.cs" />
+    <Compile Include="LessWeb.cs" />
     <Compile Include="LessCssHttpHandler.cs" />
     <Compile Include="LessCssHttpHandlerBase.cs" />
     <Compile Include="LessCssHttpHandlerFactory.cs" />
