@@ -60,6 +60,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -86,6 +87,7 @@
     <Compile Include="Parameters\ConsoleArgumentParameterSource.cs" />
     <Compile Include="Parameters\IParameterSource.cs" />
     <Compile Include="Parser\Functions\ColorFunction.cs" />
+    <Compile Include="Parser\Functions\GradientFunction.cs" />
     <Compile Include="Parser\Functions\IsFunctions.cs" />
     <Compile Include="Parser\Functions\PowFunction.cs" />
     <Compile Include="Parser\Functions\StringFunctions.cs" />
