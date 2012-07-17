@@ -83,7 +83,7 @@ namespace dotless.Core.Parser.Tree
             {
                 var message = String.Format("No matching definition was found for `{0}({1})`",
                                             Selector.ToCSS(env).Trim(),
-                                            StringExtensions.JoinStrings(Arguments.Select(a => a.Value.ToCSS(env)), ", "));
+                                            Arguments.Select(a => a.Value.ToCSS(env)).JoinStrings(env.Compress ? "," : ", "));
                 throw new ParsingException(message, Location);
             }
 
@@ -98,14 +98,9 @@ namespace dotless.Core.Parser.Tree
                     {
                         var valueNode = r.Value;
                         var value = valueNode as Value;
-                        if (value != null)
-                        {
-                            value = new Value(value.Values, "!important").ReducedFrom<Value>(value);
-                        }
-                        else
-                        {
-                            value = new Value(new NodeList() { valueNode }, "!important");
-                        }
+                        value = value != null
+                                    ? new Value(value.Values, "!important").ReducedFrom<Value>(value)
+                                    : new Value(new NodeList {valueNode}, "!important");
 
                         importantRules.Add((new Rule(r.Name, value)).ReducedFrom<Rule>(r));
                     }
@@ -117,10 +112,8 @@ namespace dotless.Core.Parser.Tree
 
                 return importantRules;
             }
-            else
-            {
-                return rules;
-            }
+
+            return rules;
         }
 
         public override void Accept(IVisitor visitor)

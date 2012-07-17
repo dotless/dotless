@@ -73,7 +73,7 @@ white;
         [Test]
         public void NoSemiColon3()
         {
-            var input = ".no-semi-colon {border: 2px solid white}";
+            var input = ".no-semi-colon { border: 2px solid white }";
 
             var expected = ".no-semi-colon{border:2px solid #fff}";
 
@@ -95,7 +95,7 @@ great,
           black;
 }";
 
-            var expected = ".newlines{background:the, great, wall;border:2px solid black}";
+            var expected = ".newlines{background:the,great,wall;border:2px solid black}";
 
             AssertLess(input, expected);
         }

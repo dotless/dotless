@@ -359,5 +359,13 @@ namespace dotless.Core.Parser.Tree
 
             return null;
         }
+
+        public static explicit operator System.Drawing.Color(Color color)
+        {
+            if (color == null)
+                throw new ArgumentNullException("color");
+
+            return System.Drawing.Color.FromArgb((int) Math.Round(color.Alpha * 255d), (int) color.R, (int) color.G, (int) color.B);
+        }
     }
 }
