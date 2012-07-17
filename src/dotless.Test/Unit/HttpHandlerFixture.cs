@@ -34,7 +34,7 @@ namespace dotless.Test.Unit
 
         private static void CheckHttpHandlerType(bool expectedIsSessionAware)
         {
-            var hdl = new LessCssHttpHandlerFactory().GetHandler(System.Web.HttpContext.Current, "GET", "file.less", @"c:\www\file.less");
+            var hdl = new LessCssHttpHandlerFactory().GetHandler();
             Assert.That(hdl, expectedIsSessionAware ? Is.TypeOf<LessCssWithSessionHttpHandler>() : Is.TypeOf<LessCssHttpHandler>());
         }
     }

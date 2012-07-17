@@ -1,3 +1,5 @@
+using System;
+
 namespace dotless.Core.Parser.Tree
 {
     using System.Linq;
@@ -22,26 +24,28 @@ namespace dotless.Core.Parser.Tree
 
         public override Node Evaluate(Env env)
         {
+            if (env == null)
+            {
+                throw new ArgumentNullException("env");
+            }
+
             var args = Arguments.Select(a => a.Evaluate(env));
 
-            if (env != null)
-            {
-                var function = env.GetFunction(Name);
+            var function = env.GetFunction(Name);
 
-                if (function != null)
-                {
-                    function.Name = Name;
-                    function.Location = Location;
-                    return function.Call(env, args).ReducedFrom<Node>(this);
-                }
+            if (function != null)
+            {
+                function.Name = Name;
+                function.Location = Location;
+                return function.Call(env, args).ReducedFrom<Node>(this);
             }
 
             env.Output.Push();
-
+            
             env.Output
                 .Append(Name)
                 .Append("(")
-                .AppendMany(Arguments.Select(a => a.Evaluate(env)), ", ")
+                .AppendMany(args, env.Compress ? "," : ", ")
                 .Append(")");
 
             var css = env.Output.Pop();

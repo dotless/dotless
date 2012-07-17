@@ -73,6 +73,16 @@
             Assert.That(EvaluateExpression(expression, variables), Is.EqualTo(output));
         }
 
+        protected void AssertMatchExpression(string pattern, string expression)
+        {
+            AssertMatchExpression(pattern, expression, null);
+        }
+
+        protected void AssertMatchExpression(string pattern, string expression, IDictionary<string, string> variables)
+        {
+            Assert.That(EvaluateExpression(expression, variables), Is.StringMatching(pattern));
+        }
+
         protected void AssertExpressionUnchanged(string expression)
         {
             AssertExpression(expression, expression);

@@ -63,7 +63,7 @@ namespace dotless.Core.Parser.Tree
 
             if (env.Compress)
             {
-                env.Output.Reset(Regex.Replace(env.Output.ToString(), @"(\s)+", " "));
+                env.Output.Reset(Regex.Replace(env.Output.ToString(), @"(\s)+", " ").Replace(", ", ","));
             }
 
             env.Output.PopAndAppend();

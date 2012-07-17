@@ -1,0 +1,9 @@
+@headerBgColor: #123456;
+
+.gradientHeader1{
+	.ui-widget-header { background: @headerBgColor gradientImage(@headerBgColor, desaturate(lighten(@headerBgColor, 30), 30)) 50% 50% repeat-x; }
+}
+
+.gradientHeader2{
+	.ui-widget-header { background: @headerBgColor gradientImage(@headerBgColor, desaturate(lighten(@headerBgColor, -30), -30)) 50% 50% repeat-x; }
+}
