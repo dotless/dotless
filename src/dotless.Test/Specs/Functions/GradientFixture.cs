@@ -7,6 +7,8 @@ namespace dotless.Test.Specs.Functions
     using System.Text.RegularExpressions;
     using Core.Exceptions;
     using Core.Parser.Functions;
+    using System.Collections;
+    using System.Reflection;
     using Color = Core.Parser.Tree.Color;
     using DrawingColor = System.Drawing.Color;
 
@@ -65,10 +67,37 @@ namespace dotless.Test.Specs.Functions
         }
 
         [Test]
-        [ExpectedException(typeof(ParserException))]
+        [ExpectedException(typeof (ParserException))]
         public void ShouldThrowOnPositionLessThanPrevious()
         {
             EvaluateExpression("gradient(#f00, #0f0, 10, #00f, 9)");
+        }
+
+        [Test]
+        public void ShouldCacheResult()
+        {
+            var cacheList = GetCacheList();
+            cacheList.Clear();
+            EvaluateExpression("gradient(#ff0000, #00ff00, 10, #0000ff)");
+            EvaluateExpression("gradient(#ff0000, #00ff00, 10, #000ff0)");
+            Assert.That(cacheList, Has.Count.EqualTo(2));
+        }
+
+        [Test]
+        public void ShouldCacheTheSameForEquivalentDeclarations()
+        {
+            var cacheList = GetCacheList();
+            cacheList.Clear();
+            EvaluateExpression("gradient(#f00,#0f0)");
+            EvaluateExpression("gradient(#ff0000, #00ff00, " + GradientFunction.DEFAULT_COLOR_OFFSET + ")");
+            Assert.That(cacheList, Has.Count.EqualTo(1));
+        }
+
+        private static IList GetCacheList()
+        {
+            var field = typeof (GradientFunction).GetField("_cache", BindingFlags.Static | BindingFlags.NonPublic);
+            Assert.That(field, Is.Not.Null, "GradientFunction._cache");
+            return (IList) field.GetValue(null);
         }
 
         private Bitmap EvaluateImage(string def)

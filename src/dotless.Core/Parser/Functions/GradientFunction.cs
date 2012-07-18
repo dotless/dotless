@@ -1,3 +1,5 @@
+using System.Threading;
+
 namespace dotless.Core.Parser.Functions
 {
     using System;
@@ -57,7 +59,7 @@ namespace dotless.Core.Parser.Functions
             {
                 return points.Aggregate("",
                                  (s, point) =>
-                                 string.Format("{0}{1}#{2:X}{3:X}{4:X}{5:X},{6}", s, s == "" ? "" : ",",
+                                 string.Format("{0}{1}#{2:X2}{3:X2}{4:X2}{5:X2},{6}", s, s == "" ? "" : ",",
                                                point.Color.A, point.Color.R, point.Color.G, point.Color.B, point.Position));
             }
 
@@ -67,8 +69,8 @@ namespace dotless.Core.Parser.Functions
 
         private class CacheItem
         {
-            private readonly string _def;
-            private readonly string _url;
+            public readonly string _def;
+            public readonly string _url;
 
             public CacheItem(string def, string url)
             {
@@ -77,8 +79,13 @@ namespace dotless.Core.Parser.Functions
             }
         }
 
+        #region Fields
         public const int DEFAULT_COLOR_OFFSET = 50;
 
+        private const int CACHE_LIMIT = 50;
+        private static readonly ReaderWriterLockSlim _cacheLock = new ReaderWriterLockSlim();
+        private static readonly List<CacheItem> _cache = new List<CacheItem>();
+        #endregion Fields
 
         protected override Node Evaluate(Env env)
         {
@@ -171,12 +178,43 @@ namespace dotless.Core.Parser.Functions
 
         private static string GetFromCache(string colorDefs)
         {
-            return null;
+            _cacheLock.EnterReadLock();
+            try
+            {
+                var cached = _cache.FirstOrDefault(item => item._def == colorDefs);
+                return cached != null ? cached._url : null;
+            }
+            finally
+            {
+                _cacheLock.ExitReadLock();
+            }
         }
 
         private static void AddToCache(string colorDefs, string imageUrl)
         {
-            var item = new CacheItem(colorDefs, imageUrl);
+            _cacheLock.EnterUpgradeableReadLock();
+            try
+            {
+                if (_cache.All(item => item._def != colorDefs))
+                {
+                    _cacheLock.EnterWriteLock();
+                    try
+                    {
+                        if (_cache.Count >= CACHE_LIMIT)
+                            _cache.RemoveRange(0, CACHE_LIMIT / 2);
+                        var item = new CacheItem(colorDefs, imageUrl);
+                        _cache.Add(item);
+                    }
+                    finally
+                    {
+                        _cacheLock.ExitWriteLock();
+                    }
+                }
+            }
+            finally
+            {
+                _cacheLock.ExitUpgradeableReadLock();
+            }
         }
     }
 }
