@@ -30,23 +30,23 @@ namespace dotless.Core.Parser.Functions
     /// <example>
     /// The following example shows how to render a gradient (.less file):
     /// <code>
-    /// .ui-widget-header { background: @headerBgColor gradient(@headerBgColor, desaturate(lighten(@headerBgColor, 30), 30)) 50% 50% repeat-x; }
+    /// .ui-widget-header { background: @headerBgColor gradientImage(@headerBgColor, desaturate(lighten(@headerBgColor, 30), 30)) 50% 50% repeat-x; }
     /// </code>
     /// </example>
     /// </remarks>
-    public class GradientFunction : Function
+    public class GradientImageFunction : Function
     {
         /*
          * TODO: 
-         * 1. Add URI length check for IE8: max 0x8000
+         * 1. Add URI length check for IE8: max 0x8000 - needs access to config and Context.Request.Browser
          * 2. Add fallback for IE7 and lower - dump the image to disk and refer it as ordinal url(...) - needs access to config and Context.Request.Browser + disk write permissions.
          * 3. Implement horisontal gradients (1px height)
          * 
          * Open questions:
          * 1. PNG 32bpp - is it ok for all cases? 
-         * 2. Is it required to cache images?
          */
 
+        #region Nested classes
         private class ColorPoint
         {
             public ColorPoint(System.Drawing.Color color, int position)
@@ -57,10 +57,9 @@ namespace dotless.Core.Parser.Functions
 
             public static string Stringify(IEnumerable<ColorPoint> points)
             {
-                return points.Aggregate("",
-                                 (s, point) =>
-                                 string.Format("{0}{1}#{2:X2}{3:X2}{4:X2}{5:X2},{6}", s, s == "" ? "" : ",",
-                                               point.Color.A, point.Color.R, point.Color.G, point.Color.B, point.Position));
+                return points.Aggregate(
+                    "", (s, point) => string.Format("{0}{1}#{2:X2}{3:X2}{4:X2}{5:X2},{6}", s, s == "" ? "" : ",",
+                                                    point.Color.A, point.Color.R, point.Color.G, point.Color.B, point.Position));
             }
 
             public System.Drawing.Color Color { get; private set; }
@@ -78,6 +77,7 @@ namespace dotless.Core.Parser.Functions
                 _url = url;
             }
         }
+        #endregion Nested classes
 
         #region Fields
         public const int DEFAULT_COLOR_OFFSET = 50;
@@ -91,7 +91,7 @@ namespace dotless.Core.Parser.Functions
         {
             ColorPoint[] points = GetColorPoints();
 
-            WarnNotSupportedByLessJS("gradient(color, color[, position])");
+            WarnNotSupportedByLessJS("gradientImage(color, color[, position])");
 
             string colorDefs = ColorPoint.Stringify(points);
             string imageUrl = GetFromCache(colorDefs);
