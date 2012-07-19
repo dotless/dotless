@@ -30,22 +30,37 @@ namespace dotless.Compiler
                 return -1;
             }
 
-            var inputDirectoryPath = Path.GetDirectoryName(arguments[0]);
-            if(string.IsNullOrEmpty(inputDirectoryPath)) inputDirectoryPath = "." + Path.DirectorySeparatorChar;
-            var inputFilePattern = Path.GetFileName(arguments[0]);
+            string inputDirectoryPath, inputFilePattern;
+
+            if (Directory.Exists(arguments[0]))
+            {
+                inputDirectoryPath = arguments[0];
+                inputFilePattern = "*.less";
+            }
+            else
+            {
+                inputDirectoryPath = Path.GetDirectoryName(arguments[0]);
+                if (string.IsNullOrEmpty(inputDirectoryPath)) inputDirectoryPath = "." + Path.DirectorySeparatorChar;
+                inputFilePattern = Path.GetFileName(arguments[0]);
+                if (!Path.HasExtension(inputFilePattern)) inputFilePattern = Path.ChangeExtension(inputFilePattern, "less");
+            }
+
             var outputDirectoryPath = string.Empty;
             var outputFilename = string.Empty;
-
-            if (string.IsNullOrEmpty(inputFilePattern)) inputFilePattern = "*.less";
-            if (!Path.HasExtension(inputFilePattern)) inputFilePattern = Path.ChangeExtension(inputFilePattern, "less");
-
             if (arguments.Count > 1)
             {
-                outputDirectoryPath = Path.GetDirectoryName(arguments[1]);
-                outputFilename = Path.GetFileName(arguments[1]);
+                if (Directory.Exists(arguments[1]))
+                {
+                    outputDirectoryPath = arguments[1];
+                }
+                else
+                {
+                    outputDirectoryPath = Path.GetDirectoryName(arguments[1]);
+                    outputFilename = Path.GetFileName(arguments[1]);
 
-                if (!Path.HasExtension(outputFilename))
-                    outputFilename = Path.ChangeExtension(outputFilename, "css");
+                    if (!Path.HasExtension(outputFilename))
+                        outputFilename = Path.ChangeExtension(outputFilename, "css");
+                }
             }
             
             if (string.IsNullOrEmpty(outputDirectoryPath))
