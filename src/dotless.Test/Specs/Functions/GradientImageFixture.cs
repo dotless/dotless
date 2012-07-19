@@ -18,9 +18,9 @@ namespace dotless.Test.Specs.Functions
         private static readonly Regex _catchImageData = new Regex(CATCH_DATA_IMAGE_PATTERN, RegexOptions.Compiled);
 
         [Test]
-        public void TestGradient()
+        public void TestGradientImage()
         {
-            AssertMatchExpression(CATCH_DATA_IMAGE_PATTERN, "gradient(#f00, #00f)");
+            AssertMatchExpression(CATCH_DATA_IMAGE_PATTERN, "gradientImage(#f00, #00f)");
         }
 
         [Test]
@@ -32,7 +32,7 @@ namespace dotless.Test.Specs.Functions
 
         private void CheckSimpleImage(string from, string to, int pos)
         {
-            using (var img = EvaluateImage(string.Format("gradient({0}, {1}, {2})", from, to, pos)))
+            using (var img = EvaluateImage(string.Format("gradientImage({0}, {1}, {2})", from, to, pos)))
             {
                 Assert.AreEqual(1, img.Width);
                 Assert.AreEqual(pos + 1, img.Height);
@@ -46,23 +46,23 @@ namespace dotless.Test.Specs.Functions
         [Test]
         public void TestGradientInfo()
         {
-            const string info1 = "gradient(color, color[, position]) is not supported by less.js, so this will work but not compile with other less implementations.";
+            const string info1 = "gradientImage(color, color[, position]) is not supported by less.js, so this will work but not compile with other less implementations.";
 
-            AssertExpressionLogMessage(info1, "gradient(#f00, #00f)");
+            AssertExpressionLogMessage(info1, "gradientImage(#f00, #00f)");
         }
 
         [Test]
         public void TestManyPoints()
         {
             // no position specified - default is used
-            using (var img = EvaluateImage("gradient(#f00, #0f0, #00f)"))
-                Assert.AreEqual(GradientFunction.DEFAULT_COLOR_OFFSET * 2 + 1, img.Height);
+            using (var img = EvaluateImage("gradientImage(#f00, #0f0, #00f)"))
+                Assert.AreEqual(GradientImageFunction.DEFAULT_COLOR_OFFSET * 2 + 1, img.Height);
 
             // no position for 3rd color - previous offset is used
-            using (var img = EvaluateImage("gradient(#f00, #0f0, 10, #00f)"))
+            using (var img = EvaluateImage("gradientImage(#f00, #0f0, 10, #00f)"))
                 Assert.AreEqual(21, img.Height);
 
-            using (var img = EvaluateImage("gradient(#f00, #0f0, 10, #00f, 39)"))
+            using (var img = EvaluateImage("gradientImage(#f00, #0f0, 10, #00f, 39)"))
                 Assert.AreEqual(40, img.Height);
         }
 
@@ -70,7 +70,7 @@ namespace dotless.Test.Specs.Functions
         [ExpectedException(typeof (ParserException))]
         public void ShouldThrowOnPositionLessThanPrevious()
         {
-            EvaluateExpression("gradient(#f00, #0f0, 10, #00f, 9)");
+            EvaluateExpression("gradientImage(#f00, #0f0, 10, #00f, 9)");
         }
 
         [Test]
@@ -78,8 +78,8 @@ namespace dotless.Test.Specs.Functions
         {
             var cacheList = GetCacheList();
             cacheList.Clear();
-            EvaluateExpression("gradient(#ff0000, #00ff00, 10, #0000ff)");
-            EvaluateExpression("gradient(#ff0000, #00ff00, 10, #000ff0)");
+            EvaluateExpression("gradientImage(#ff0000, #00ff00, 10, #0000ff)");
+            EvaluateExpression("gradientImage(#ff0000, #00ff00, 10, #000ff0)");
             Assert.That(cacheList, Has.Count.EqualTo(2));
         }
 
@@ -88,14 +88,14 @@ namespace dotless.Test.Specs.Functions
         {
             var cacheList = GetCacheList();
             cacheList.Clear();
-            EvaluateExpression("gradient(#f00,#0f0)");
-            EvaluateExpression("gradient(#ff0000, #00ff00, " + GradientFunction.DEFAULT_COLOR_OFFSET + ")");
+            EvaluateExpression("gradientImage(#f00,#0f0)");
+            EvaluateExpression("gradientImage(#ff0000, #00ff00, " + GradientImageFunction.DEFAULT_COLOR_OFFSET + ")");
             Assert.That(cacheList, Has.Count.EqualTo(1));
         }
 
         private static IList GetCacheList()
         {
-            var field = typeof (GradientFunction).GetField("_cache", BindingFlags.Static | BindingFlags.NonPublic);
+            var field = typeof (GradientImageFunction).GetField("_cache", BindingFlags.Static | BindingFlags.NonPublic);
             Assert.That(field, Is.Not.Null, "GradientFunction._cache");
             return (IList) field.GetValue(null);
         }

@@ -90,6 +90,9 @@
     <None Include="Input\functions.less">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Input\images.less">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Input\import.less">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

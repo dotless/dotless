@@ -61,13 +61,6 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
       <SpecificVersion>False</SpecificVersion>
@@ -87,7 +80,7 @@
     <Compile Include="Parameters\ConsoleArgumentParameterSource.cs" />
     <Compile Include="Parameters\IParameterSource.cs" />
     <Compile Include="Parser\Functions\ColorFunction.cs" />
-    <Compile Include="Parser\Functions\GradientFunction.cs" />
+    <Compile Include="Parser\Functions\GradientImageFunction.cs" />
     <Compile Include="Parser\Functions\IsFunctions.cs" />
     <Compile Include="Parser\Functions\PowFunction.cs" />
     <Compile Include="Parser\Functions\StringFunctions.cs" />
