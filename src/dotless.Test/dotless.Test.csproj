@@ -68,17 +68,11 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Abstractions">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -95,6 +89,7 @@
     <Compile Include="Specs\Compression\ImportFixture.cs" />
     <Compile Include="Specs\Compression\SelectorsFixture.cs" />
     <Compile Include="Specs\Compression\WhitespaceFixture.cs" />
+    <Compile Include="Specs\Functions\GradientImageFixture.cs" />
     <Compile Include="Specs\Functions\PowFixture.cs" />
     <Compile Include="Specs\LineNumbersFixture.cs" />
     <Compile Include="Specs\MediaFixture.cs" />

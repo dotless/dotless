@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using dotless.Core.configuration;
+﻿using dotless.Core.configuration;
 
 namespace dotless.Core
 {
@@ -10,7 +6,16 @@ namespace dotless.Core
     {
         public static string Parse(string less, DotlessConfiguration config)
         {
-            return new EngineFactory(config).GetEngine(new AspNetContainerFactory()).TransformToCss(less, null);
+            return GetEngine(config).TransformToCss(less, null);
+        }
+
+        public static ILessEngine GetEngine(DotlessConfiguration config)
+        {
+            if (config == null)
+            {
+                config = new WebConfigConfigurationLoader().GetConfiguration();
+            }
+            return new EngineFactory(config).GetEngine(new AspNetContainerFactory());
         }
     }
 }

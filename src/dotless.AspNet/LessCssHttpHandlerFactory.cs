@@ -7,7 +7,7 @@
     
     public class LessCssHttpHandlerFactory : LessCssHttpHandlerBase, IHttpHandlerFactory
     {
-        public IHttpHandler GetHandler(HttpContext context, string requestType, string url, string pathTranslated)
+        public IHttpHandler GetHandler()
         {
             bool sessionRequired;
             switch (Config.SessionMode)
@@ -28,6 +28,11 @@
             return sessionRequired
                        ? new LessCssWithSessionHttpHandler()
                        : new LessCssHttpHandler();
+        }
+
+        IHttpHandler IHttpHandlerFactory.GetHandler(HttpContext context, string requestType, string url, string pathTranslated)
+        {
+            return GetHandler();
         }
 
         void IHttpHandlerFactory.ReleaseHandler(IHttpHandler handler)
