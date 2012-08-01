@@ -10,7 +10,7 @@ namespace dotless.Core.Parser.Tree
     using Infrastructure.Nodes;
     using Utils;
 
-    public class Color : Node, IOperable
+    public class Color : Node, IOperable, IComparable
     {
         private static readonly Dictionary<int, string> Html4ColorsReverse;
 
@@ -358,6 +358,23 @@ namespace dotless.Core.Parser.Tree
                 return new Color(color);
 
             return null;
+        }
+
+        public int CompareTo(object obj)
+        {
+            var col = obj as Color;
+
+            if (col == null)
+            {
+                return -1;
+            }
+
+            if (col.R == R && col.G == G && col.B == B && col.Alpha == Alpha)
+            {
+                return 0;
+            }
+
+            return (((256 * 3) - (col.R + col.G + col.B)) * col.Alpha) < (((256 * 3) - (R + G + B)) * Alpha) ? 1 : -1;
         }
     }
 }

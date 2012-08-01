@@ -503,5 +503,83 @@ namespace dotless.Test.Specs
 
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void ColorCompare()
+        {
+            var input =
+                @"
+.light (@a) when (@a = transparent) {
+  color: red;
+}
+.light (@a) when (@a < grey) {
+  color: white;
+}
+.light (@a) when (@a = grey) {
+  color: grey;
+}
+.light (@a) when (@a > grey) {
+  color: black;
+}
+
+.light1 { .light(black) }
+.light2 { .light(#eee) }
+.light3 { .light(grey) }
+";
+
+            var expected =
+                @"
+.light1 {
+  color: black;
+}
+.light2 {
+  color: white;
+}
+.light3 {
+  color: grey;
+}";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void ColorCompareAlpha()
+        {
+            var input =
+                @"
+.light (@a) when (@a = transparent) {
+  color: red;
+}
+.light (@a) when (@a < grey) {
+  color: white;
+}
+.light (@a) when (@a = grey) {
+  color: grey;
+}
+.light (@a) when (@a > grey) {
+  color: black;
+}
+
+.light1 { .light(transparent) }
+.light2 { .light(alpha(black, -0.1)) }
+.light3 { .light(alpha(black, -0.9)) }
+
+";
+
+            var expected =
+                @"
+.light1 {
+  color: red;
+  color: white;
+}
+.light2 {
+  color: black;
+}
+.light3 {
+  color: white;
+}";
+
+            AssertLess(input, expected);
+        }
     }
 }
