@@ -505,6 +505,35 @@ namespace dotless.Test.Specs
         }
 
         [Test]
+        public void ComparisonAgainstFunctionCall()
+        {
+            var input =
+                @"
+.light (@a) when (alpha(@a) > 0.5) {
+  color: solid @a;
+}
+.light (@a) when (0.5 > alpha(@a)) {
+  color: trans @a;
+}
+
+.light1 { 
+  .light(red);
+  .light(transparent); 
+}
+";
+
+            var expected =
+                @"
+.light1 {
+  color: solid red;
+  color: trans transparent;
+}
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
         public void ColorCompare()
         {
             var input =
