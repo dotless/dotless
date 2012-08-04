@@ -360,6 +360,25 @@ namespace dotless.Core.Parser.Tree
             return null;
         }
 
+        /// <summary>
+        ///  Returns in the IE ARGB format e.g ##FF001122 = rgba(0x00, 0x11, 0x22, 1)
+        /// </summary>
+        /// <returns></returns>
+        public string ToArgb()
+        {
+            var argb = 
+                new double[] { Alpha * 255 }
+                .Concat(RGB)
+                .Select(d => (int)Math.Round(d, MidpointRounding.AwayFromZero))
+                .Select(i => i > 255 ? 255 : (i < 0 ? 0 : i))
+                .ToArray();
+
+            return '#' + argb
+                 .Select(i => i.ToString("X2"))
+                 .JoinStrings("")
+                 .ToLowerInvariant();
+        }
+
         public int CompareTo(object obj)
         {
             var col = obj as Color;
