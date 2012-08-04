@@ -12,7 +12,7 @@ namespace dotless.Test.Specs.Functions
     using Color = Core.Parser.Tree.Color;
     using DrawingColor = System.Drawing.Color;
 
-    public class GradientFixture : SpecFixtureBase
+    public class GradientImageFixture : SpecFixtureBase
     {
         private const string CATCH_DATA_IMAGE_PATTERN = @"^url\(data:image\/png;base64,([0-9a-zA-Z/=+]+)\)$";
         private static readonly Regex _catchImageData = new Regex(CATCH_DATA_IMAGE_PATTERN, RegexOptions.Compiled);
