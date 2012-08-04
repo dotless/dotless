@@ -581,5 +581,80 @@ namespace dotless.Test.Specs
 
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void StringCompare()
+        {
+            var input =
+                @"
+.light (@a) when (@a = ""test1"") {
+  color: red;
+}
+.light (@a) when not (@a = ""test2"") {
+  color: white;
+}
+.light (@a) when (""test1"" = @a) {
+  color: grey;
+}
+.light (@a) when not (""test2"" = @a) {
+  color: black;
+}
+.light (@a) when (~""test1"" = @a) {
+  color: blue;
+}
+
+.light1 { .light(""test1"") }
+.light2 { .light(""test2"") }
+";
+
+            var expected =
+                @"
+.light1 {
+  color: red;
+  color: white;
+  color: grey;
+  color: black;
+}
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void KeywordCompare()
+        {
+            var input =
+                @"
+.light (@a) when (@a = block) {
+  color: red;
+}
+.light (@a) when not (@a = inline) {
+  color: white;
+}
+.light (@a) when (~""inline"" = @a) {
+  color: blue;
+}
+.light (@a) when (@a = ~""inline"") {
+  color: pink;
+}
+
+.light1 { .light(inline) }
+.light2 { .light(block) }
+";
+
+            var expected =
+                @"
+.light1 {
+  color: blue;
+  color: pink;
+}
+.light2 {
+  color: red;
+  color: white;
+}
+";
+
+            AssertLess(input, expected);
+        }
     }
 }

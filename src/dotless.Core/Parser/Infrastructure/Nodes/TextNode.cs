@@ -1,6 +1,7 @@
-﻿namespace dotless.Core.Parser.Infrastructure.Nodes
+﻿using System;
+namespace dotless.Core.Parser.Infrastructure.Nodes
 {
-    public class TextNode : Node
+    public class TextNode : Node, IComparable
     {
         public string Value { get; set; }
 
@@ -27,6 +28,16 @@
         public override string ToString()
         {
             return Value;
+        }
+
+        public virtual int CompareTo(object obj)
+        {
+            if (obj == null)
+            {
+                return -1;
+            }
+
+            return obj.ToString().CompareTo(ToString());
         }
     }
 }

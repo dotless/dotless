@@ -23,14 +23,18 @@
             env.Output.Append(Value);
         }
 
+        public override string ToString()
+        {
+            return Value;
+        }
+
         public int CompareTo(object obj)
         {
-            Keyword k = obj as Keyword;
-            if (k)
+            if (obj == null)
             {
-                return k.Value.CompareTo(Value);
+                return -1;
             }
-            return -1;
+            return obj.ToString().CompareTo(ToString());
         }
     }
 }
