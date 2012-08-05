@@ -23,7 +23,14 @@
             response.Cache.SetLastModifiedFromFileDependencies();
 
             //response.Cache.SetOmitVaryStar(true);
-            response.Cache.SetVaryByCustom("Accept-Encoding");
+
+            //WriteCss is called multiple times when there is an error in the less file and the AspResponseLogger is being used.
+            //SetVaryByCustom("Accept-Encoding") can only be set once, ignore this error when it happens.
+            try
+            {
+                response.Cache.SetVaryByCustom("Accept-Encoding");
+            }
+            catch { }
 
             base.WriteCss(css);
         }
