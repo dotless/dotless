@@ -170,11 +170,20 @@ namespace dotless.Core.Parser.Tree
                 Selectors[i] = Selectors[i].Evaluate(env) as Selector;
             }
 
+            int mediaBlocks = env.MediaBlocks.Count;
+
             NodeHelper.ExpandNodes<MixinCall>(env, Rules);
 
             for (var i = 0; i < Rules.Count; i++)
             {
                 Rules[i] = Rules[i].Evaluate(env);
+            }
+
+            // if media blocks are inside this ruleset we have to "catch" the bubbling and
+            // make sure they get this rulesets selectors
+            for (var j = mediaBlocks; j < env.MediaBlocks.Count; j++)
+            {
+                env.MediaBlocks[j].BubbleSelectors(Selectors);
             }
 
             env.Frames.Pop();
