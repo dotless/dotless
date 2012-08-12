@@ -141,7 +141,7 @@
 
             if (parts.Length == 3)
             {
-                float.TryParse(parts[2], out target._weight);
+                float.TryParse(parts[2], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out target._weight);
             }
         }
 
