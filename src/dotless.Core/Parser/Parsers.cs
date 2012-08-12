@@ -1111,6 +1111,7 @@ namespace dotless.Core.Parser
                     hasBlock = true;
                     hasIdentifier = true;
                     break;
+                case "@viewport":
                 case "@top-left":
                 case "@top-left-corner":
                 case "@top-center":

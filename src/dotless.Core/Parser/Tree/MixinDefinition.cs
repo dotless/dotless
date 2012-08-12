@@ -65,7 +65,10 @@ namespace dotless.Core.Parser.Tree
                 if (i < args.Count && string.IsNullOrEmpty(args[i].Name))
                     val = args[i].Value;
                 else
+                {
+                    //evaluate in scope of mixin definition?
                     val = Params[i].Value;
+                }
 
                 if (val)
                 {
