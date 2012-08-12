@@ -22,3 +22,6 @@ src/UpgradeLog.*
 *~
 *.userprefs
 *.pidb
+*.ncrunchsolution
+*.crunchsolution.cache
+*.ncrunchproject
