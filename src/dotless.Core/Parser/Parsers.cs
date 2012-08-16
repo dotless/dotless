@@ -643,7 +643,10 @@ namespace dotless.Core.Parser
                 GatherAndPullComments(parser);
             }
 
-            Expect(parser, ')');
+            if (!parser.Tokenizer.Match(')'))
+            {
+                Recall(parser, memo);
+            }
 
             GatherAndPullComments(parser);
 
