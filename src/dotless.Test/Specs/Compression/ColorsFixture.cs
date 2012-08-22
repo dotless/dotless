@@ -10,6 +10,13 @@ namespace dotless.Test.Specs.Compression
             AssertExpression("#fea", "#ffeeaa");
             AssertExpression("blue", "#0000ff");
         }
+
+        [Test]
+        public void Should_not_compress_IE_ARGB()
+        {
+            AssertExpressionUnchanged("#ffaabbcc");
+            AssertExpressionUnchanged("#aabbccdd");
+        }
         
         [Test]
         public void Overflow()

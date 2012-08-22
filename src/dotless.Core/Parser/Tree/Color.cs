@@ -184,6 +184,8 @@ namespace dotless.Core.Parser.Tree
             }
         }
 
+        private bool isArgb = false;
+
         public readonly double[] RGB;
         public readonly double Alpha;
 
@@ -206,22 +208,32 @@ namespace dotless.Core.Parser.Tree
             Alpha = alpha.Normalize();
         }
 
-        public Color(string rgb)
+        public Color(string hex)
         {
-            if (rgb.Length == 6)
+            Alpha = 1;
+
+            if (hex.Length == 8)
+            {
+                isArgb = true;
+                RGB = Enumerable.Range(1, 3)
+                    .Select(i => hex.Substring(i * 2, 2))
+                    .Select(s => (double) int.Parse(s, NumberStyles.HexNumber))
+                    .ToArray();
+                Alpha = (double) int.Parse(hex.Substring(0, 2), NumberStyles.HexNumber) / 255d;
+            }
+            else if (hex.Length == 6)
             {
                 RGB = Enumerable.Range(0, 3)
-                    .Select(i => rgb.Substring(i*2, 2))
+                    .Select(i => hex.Substring(i*2, 2))
                     .Select(s => (double) int.Parse(s, NumberStyles.HexNumber))
                     .ToArray();
             }
             else
             {
-                RGB = rgb.ToCharArray()
+                RGB = hex.ToCharArray()
                     .Select(c => (double) int.Parse("" + c + c, NumberStyles.HexNumber))
                     .ToArray();
             }
-            Alpha = 1;
         }
 
         public Color(double red, double green, double blue, double alpha)
@@ -281,6 +293,12 @@ namespace dotless.Core.Parser.Tree
             if (Alpha == 0 && rgb[0] == 0 && rgb[1] == 0 && rgb[2] == 0)
             {
                 env.Output.AppendFormat(CultureInfo.InvariantCulture, "transparent");
+                return;
+            }
+
+            if (isArgb)
+            {
+                env.Output.Append(ToArgb());
                 return;
             }
 
