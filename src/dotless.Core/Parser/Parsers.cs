@@ -374,13 +374,13 @@ namespace dotless.Core.Parser
         //
         public Color Color(Parser parser)
         {
-            RegexMatchResult rgb;
+            RegexMatchResult hex;
 
             var index = parser.Tokenizer.Location.Index;
 
             if (parser.Tokenizer.CurrentChar == '#' &&
-                (rgb = parser.Tokenizer.Match(@"#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})")))
-                return NodeProvider.Color(rgb[1], parser.Tokenizer.GetNodeLocation(index));
+                (hex = parser.Tokenizer.Match(@"#([a-fA-F0-9]{8}|[a-fA-F0-9]{6}|[a-fA-F0-9]{3})")))
+                return NodeProvider.Color(hex[1], parser.Tokenizer.GetNodeLocation(index));
 
             return null;
         }
