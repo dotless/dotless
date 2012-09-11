@@ -12,12 +12,12 @@
         {
         }
 
-        public override void WriteCss(string css)
+        public override void WriteHeaders()
         {
             var response = Http.Context.Response;
 
             response.Cache.SetCacheability(HttpCacheability.Public);
-           
+
             response.Cache.SetExpires(DateTime.UtcNow.AddMinutes(CacheAgeMinutes));
             response.Cache.SetETagFromFileDependencies();
             response.Cache.SetLastModifiedFromFileDependencies();
@@ -25,7 +25,7 @@
             //response.Cache.SetOmitVaryStar(true);
             response.Cache.SetVaryByCustom("Accept-Encoding");
 
-            base.WriteCss(css);
+            base.WriteHeaders();
         }
     }
 }

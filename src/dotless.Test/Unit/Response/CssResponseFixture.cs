@@ -30,12 +30,14 @@ namespace dotless.Test.Unit.Response
             {
                 Headers.Add("Accept-Encoding", acceptEncoding);
             }
+            CompressedCssResponse.WriteHeaders();
             CompressedCssResponse.WriteCss("");
         }
 
         [Test]
         public void ContentTypeIsTextCss()
         {
+            CssResponse.WriteHeaders();
             CssResponse.WriteCss(null);
 
             HttpResponse.VerifySet(r => r.ContentType = "text/css", Times.Once());
@@ -45,7 +47,7 @@ namespace dotless.Test.Unit.Response
         public void CssIsWrittenToResponse()
         {
             var str = "testing";
-
+            CssResponse.WriteHeaders();
             CssResponse.WriteCss(str);
 
             HttpResponse.Verify(r => r.Write(str), Times.Once());

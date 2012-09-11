@@ -24,7 +24,8 @@ namespace dotless.Core
             var localPath = Http.Context.Request.Url.LocalPath;
 
             var source = FileReader.GetFileContents(localPath);
-            
+
+            Response.WriteHeaders();
             Response.WriteCss(Engine.TransformToCss(source, localPath));
         }
     }

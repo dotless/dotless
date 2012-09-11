@@ -22,16 +22,19 @@ namespace dotless.Core.Response
             set;
         }
 
-        public virtual void WriteCss(string css)
+        public virtual void WriteHeaders()
         {
             if (IsCompressionHandledByResponse)
             {
                 HandleCompression();
             }
 
-            var response = Http.Context.Response;
-            response.ContentType = "text/css";
-            response.Write(css);
+            Http.Context.Response.ContentType = "text/css";
+        }
+
+        public virtual void WriteCss(string css)
+        {
+            Http.Context.Response.Write(css);
         }
 
         /// <summary>
