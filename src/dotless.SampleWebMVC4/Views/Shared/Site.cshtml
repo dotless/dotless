@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link href="~/Content/Site.less" rel="stylesheet" type="text/css" />
+    <link href="~/Content/subfolder/test.less" rel="stylesheet" type="text/css" />
+</head>
+<body>
+     <div id="header" class="container">
+            <div id="title">
+                <h1>APPLICATION NAME</h1>
+            </div>
+            <div id="logindisplay">
+                LOGIN AND DISPLAY
+            </div>
+            <div id="menucontainer">
+                MENU CONTAINER
+            </div>
+        </div>
+        <div id="content">
+            @RenderBody()
+        </div>
+        <div id="footer"></div>
+    
+</body>
+</html>
