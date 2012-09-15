@@ -643,7 +643,10 @@ namespace dotless.Core.Parser
                 GatherAndPullComments(parser);
             }
 
-            Expect(parser, ')');
+            if (!parser.Tokenizer.Match(')'))
+            {
+                Recall(parser, memo);
+            }
 
             GatherAndPullComments(parser);
 
@@ -1111,6 +1114,7 @@ namespace dotless.Core.Parser
                     hasBlock = true;
                     hasIdentifier = true;
                     break;
+                case "@viewport":
                 case "@top-left":
                 case "@top-left-corner":
                 case "@top-center":
