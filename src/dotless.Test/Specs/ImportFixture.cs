@@ -140,6 +140,18 @@ body { background-color: foo; }
             imports["foo/bar.less"] = @"@import ""../lib/color.less"";";
             imports["lib/color.less"] = "body { background-color: foo; }";
 
+            imports["247-2.less"] = @"
+@color: red;
+text {
+  //@color: red;
+  color: @color;
+}";
+            imports["247-1.less"] = @"
+#nsTwoCss {
+  .css() {
+    @import '247-2.less';
+  }
+}";
             imports["foourl.less"] = @"@import url(""foo/barurl.less"");";
             imports["foo/barurl.less"] = @"@import url(""../lib/colorurl.less"");";
             imports["lib/colorurl.less"] = "body { background-color: foo; }";
@@ -155,6 +167,23 @@ body { margin-right: @a; }";
                     IsUrlRewritingDisabled = isUrlRewritingDisabled,
                     ImportAllFilesAsLess = importAllFilesAsLess,
                     InlineCssFiles = importCssInline} };
+        }
+
+        [Test]
+        public void Test247()
+        {
+            var input = @"
+@import '247-1.less';
+#nsTwo {
+  #nsTwoCss > .css();
+}";
+            var expected = @"
+#nsOne .text {
+  color: red;
+}";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
         }
 
         [Test]
