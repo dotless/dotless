@@ -406,7 +406,7 @@ a ~ p {
         {
             // see http://dev.w3.org/csswg/css3-values/
 
-            List<string> units = new List<string>() { "em", "ex", "ch", "rem", "vw", "vh", "vm", "cm", "mm", "%", "in", "pt", "px", "pc", "deg", "grad", "rad", "s", "ms", "fr", "gr", "Hz", "kHz" };
+            List<string> units = new List<string>() { "em", "ex", "ch", "rem", "vw", "vh", "vmin", "vm", "cm", "mm", "%", "in", "pt", "px", "pc", "deg", "grad", "rad", "s", "ms", "fr", "gr", "Hz", "kHz", "dpcm", "dppx" };
 
             foreach (string unit in units)
             {
