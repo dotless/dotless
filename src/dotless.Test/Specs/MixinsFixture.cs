@@ -1522,5 +1522,27 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
 }";
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void TestMixinCallIncorrectlyRecognisedLessJsBug901()
+        {
+            var input = @"
+.mixin_def(@url, @position){
+    background-image: @url;
+    background-position: @position;
+}
+.error{
+  @s: ""/"";
+  .mixin_def( ""@{s}a.png"", center center);
+}";
+            var expected = @"
+.error {
+  background-image: ""/a.png"";
+  background-position: center center;
+}
+";
+
+            AssertLess(input, expected);
+        }
     }
 }
