@@ -143,7 +143,6 @@ body { background-color: foo; }
             imports["247-2.less"] = @"
 @color: red;
 text {
-  //@color: red;
   color: @color;
 }";
             imports["247-1.less"] = @"
@@ -178,7 +177,7 @@ body { margin-right: @a; }";
   #nsTwoCss > .css();
 }";
             var expected = @"
-#nsOne .text {
+#nsTwo text {
   color: red;
 }";
             var parser = GetParser();

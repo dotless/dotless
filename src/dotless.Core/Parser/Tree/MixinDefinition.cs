@@ -131,6 +131,19 @@ namespace dotless.Core.Parser.Tree
                     var parameters = Enumerable.Concat(mixin.Params, frame.Rules.Cast<Rule>());
                     newRules.Add(new MixinDefinition(mixin.Name, new NodeList<Rule>(parameters), mixin.Rules, mixin.Condition, mixin.Variadic));
                 }
+                else if (rule is Import)
+                {
+                    var potentiolNodeList = rule.Evaluate(context);
+                    var nodeList = potentiolNodeList as NodeList;
+                    if (nodeList != null)
+                    {
+                        newRules.AddRange(nodeList);
+                    }
+                    else
+                    {
+                        newRules.Add(potentiolNodeList);
+                    }
+                }
                 else if (rule is Directive || rule is Media)
                 {
                     newRules.Add(rule.Evaluate(context));

@@ -18,7 +18,7 @@ namespace dotless.Core.Utils
                     var evaluated = node.Evaluate(env);
                     if (evaluated is IEnumerable<Node>)
                     {
-                        rules.InsertRange(i + 1, (IEnumerable<Node>)node.Evaluate(env));
+                        rules.InsertRange(i + 1, (IEnumerable<Node>)evaluated);
                         rules.RemoveAt(i);
                     }
                     else
