@@ -615,5 +615,15 @@ a:nth-child(2) {
 ";
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void AttributeCharacterTest()
+        {
+            var input = @"
+.item[data-cra_zy-attr1b-ut3=bold] {
+  foo: bar;
+}";
+            AssertLessUnchanged(input);
+        }
     }
 }
