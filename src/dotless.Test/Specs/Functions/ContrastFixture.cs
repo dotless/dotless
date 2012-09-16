@@ -20,16 +20,6 @@
     }
 
     [Test]
-    public void TestContrastInfo()
-    {
-        var info1 = "contrast(color, color[, color[, percentage]]) is not supported by less.js, so this will work but not compile with other less implementations.";
-
-        AssertExpressionLogMessage(info1, "contrast(#000000, blue)");
-        AssertExpressionLogMessage(info1, "contrast(#000000, blue, red)");
-        AssertExpressionLogMessage(info1, "contrast(#000000, blue, red, 5%)");
-    }
-
-    [Test]
     public void OverrideLightColor()
     {
       AssertExpression("blue", "contrast(#000000, blue)");
