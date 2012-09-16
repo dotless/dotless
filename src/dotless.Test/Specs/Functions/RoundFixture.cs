@@ -17,6 +17,16 @@ namespace dotless.Test.Specs.Functions
         }
 
         [Test]
+        public void TestRoundToDecimals()
+        {
+            AssertExpression("4", "round(4, 2)");
+            AssertExpression("5", "round(4.8, 0)");
+            AssertExpression("4.8", "round(4.8, 1)");
+            AssertExpression("4.86", "round(4.862, 2)");
+            AssertExpression("4.8px", "round(4.81px, 1)");
+        }
+
+        [Test]
         public void RoundsMidpointAwayFromZero()
         {
             AssertExpression("5", "round(4.5)");
