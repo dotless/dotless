@@ -139,6 +139,27 @@ white;
         }
 
         [Test]
+        public void NewLines2()
+        {
+            var input =
+                @"
+.new
+.lines {
+  background: new
+line;
+}";
+
+            var expected =
+                @"
+.new .lines {
+  background: new
+line;
+}";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
         public void Empty()
         {
             var input = @"
