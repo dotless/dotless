@@ -7,8 +7,6 @@
     {
         protected override Node Eval(Color color)
         {
-            WarnNotSupportedByLessJS("red(color)");
-
             return new Number(color.RGB[0]);
         }
 

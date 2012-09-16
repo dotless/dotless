@@ -8,10 +8,8 @@ namespace dotless.Test.Specs.Functions
         public void TestGreenInfo()
         {
             var greenInfo1 = "green(color, number) is not supported by less.js, so this will work but not compile with other less implementations.";
-            var greenInfo2 = "green(color) is not supported by less.js, so this will work but not compile with other less implementations.";
 
             AssertExpressionLogMessage(greenInfo1, "green(#123456, 10)");
-            AssertExpressionLogMessage(greenInfo2, "green(#123456)");
         }
 
         [Test]
