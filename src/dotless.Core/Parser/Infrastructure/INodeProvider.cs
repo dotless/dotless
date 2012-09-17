@@ -37,7 +37,7 @@ namespace dotless.Core.Parser.Infrastructure
         Directive Directive(string name, string identifier, NodeList rules, NodeLocation location);
         Directive Directive(string name, Node value, NodeLocation location);
         Media Media(NodeList rules, Value features, NodeLocation location);
-        KeyFrame KeyFrame(string identifier, NodeList rules, NodeLocation location);
+        KeyFrame KeyFrame(NodeList identifier, NodeList rules, NodeLocation location);
 
         //expressions
         Expression Expression(NodeList expression, NodeLocation location);

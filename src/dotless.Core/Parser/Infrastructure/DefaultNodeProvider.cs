@@ -112,7 +112,7 @@ namespace dotless.Core.Parser.Infrastructure
             return new Media(features, rules) { Location = location };
         }
 
-        public KeyFrame KeyFrame(string identifier, NodeList rules, NodeLocation location)
+        public KeyFrame KeyFrame(NodeList identifier, NodeList rules, NodeLocation location)
         {
             return new KeyFrame(identifier, rules) { Location = location };
         }

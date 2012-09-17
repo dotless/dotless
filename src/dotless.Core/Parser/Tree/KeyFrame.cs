@@ -9,11 +9,11 @@
 
     public class KeyFrame : Ruleset
     {
-        public string Identifier { get; set; }
+        public NodeList Identifiers { get; set; }
 
-        public KeyFrame(string identifier, NodeList rules)
+        public KeyFrame(NodeList identifiers, NodeList rules)
         {
-            Identifier = identifier;
+            Identifiers = identifiers;
             Rules = rules;
         }
 
@@ -34,7 +34,7 @@
 
         public override void AppendCSS(Env env, Context context)
         {
-            env.Output.Append(Identifier);
+            env.Output.AppendMany(Identifiers, env.Compress ? "," : ", ");
 
             // Append pre comments as we out put each rule ourselves
             if (Rules.PreComments)

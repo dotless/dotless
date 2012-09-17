@@ -1323,21 +1323,37 @@ namespace dotless.Core.Parser
             {
                 GatherComments(parser);
 
-                string keyFrameIdentifier;
-                var keyFrameIdentifier1 = parser.Tokenizer.Match(identifierRegEx);
+                NodeList keyFrameElements = new NodeList();
 
-                if (!keyFrameIdentifier1)
-                    break;
+                while(true) {
+                    RegexMatchResult keyFrameIdentifier;
 
-                keyFrameIdentifier = keyFrameIdentifier1.Value;
+                    if (keyFrameElements.Count > 0)
+                    {
+                        keyFrameIdentifier = Expect(parser.Tokenizer.Match(identifierRegEx), "@keyframe block unknown identifier", parser);
+                    }
+                    else
+                    {
+                        keyFrameIdentifier = parser.Tokenizer.Match(identifierRegEx);
+                        if (!keyFrameIdentifier)
+                        {
+                            break;
+                        }
+                    }
+                    
+                    keyFrameElements.Add(new Element(null, keyFrameIdentifier));
 
-                if (parser.Tokenizer.Match(","))
-                {
-                    var keyFrameIdentifier2 = Expect(parser.Tokenizer.Match(identifierRegEx), "Comma in @keyframe followed by unknown identifier", parser);
+                    GatherComments(parser);
 
-                    keyFrameIdentifier += "," + keyFrameIdentifier2;
+                    if(!parser.Tokenizer.Match(","))
+                        break;
+
+                    GatherComments(parser);
                 }
 
+                if (keyFrameElements.Count == 0)
+                    break;
+                
                 var preComments = GatherAndPullComments(parser);
 
                 var block = Expect(Block(parser), "Expected css block after key frame identifier", parser);
@@ -1345,7 +1361,7 @@ namespace dotless.Core.Parser
                 block.PreComments = preComments;
                 block.PostComments = GatherAndPullComments(parser);
 
-                keyFrames.Add(NodeProvider.KeyFrame(keyFrameIdentifier, block, parser.Tokenizer.GetNodeLocation()));
+                keyFrames.Add(NodeProvider.KeyFrame(keyFrameElements, block, parser.Tokenizer.GetNodeLocation()));
             }
 
             Expect(parser, '}', "Expected start, finish, % or '}}' but got {1}");
