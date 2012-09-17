@@ -49,7 +49,7 @@ namespace dotless.Core.Parser
                 _chunks.Add(new Chunk(_input));
             else
             {
-                var skip = new Regex(@"\G[^\""'{}/\\\(\)]+");
+                var skip = new Regex(@"\G(@\{[a-zA-Z0-9_-]+\}|[^\""'{}/\\\(\)]+)");
 
                 var comment = GetRegex(this._commentRegEx, RegexOptions.None);
                 var quotedstring = GetRegex(this._quotedRegEx, RegexOptions.None);

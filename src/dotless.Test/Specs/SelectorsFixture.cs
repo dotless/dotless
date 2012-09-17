@@ -625,5 +625,35 @@ a:nth-child(2) {
 }";
             AssertLessUnchanged(input);
         }
+
+        [Test]
+        public void SelectorInterpolation1()
+        {
+            var input = @"
+@num: 2;
+:nth-child(@{num}):nth-child(@num) {
+  foo: bar;
+}";
+            var expected = @"
+:nth-child(2):nth-child(2) {
+  foo: bar;
+}";
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void SelectorInterpolation2()
+        {
+            var input = @"
+@theme: blood;
+.@{theme} {
+  foo: bar;
+}";
+            var expected = @"
+.blood {
+  foo: bar;
+}";
+            AssertLess(input, expected);
+        }
     }
 }

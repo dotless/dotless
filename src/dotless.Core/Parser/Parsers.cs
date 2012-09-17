@@ -359,8 +359,25 @@ namespace dotless.Core.Parser
             RegexMatchResult name;
             var index = parser.Tokenizer.Location.Index;
 
-            if (parser.Tokenizer.CurrentChar == '@' && (name = parser.Tokenizer.Match(@"@?@[a-zA-Z0-9_-]+")))
+            if (parser.Tokenizer.CurrentChar == '@' && (name = parser.Tokenizer.Match(@"@(@?[a-zA-Z0-9_-]+)")))
                 return NodeProvider.Variable(name.Value, parser.Tokenizer.GetNodeLocation(index));
+
+            return null;
+        }
+
+        //
+        // A Variable entity as like in a selector e.g.
+        //
+        //     @{var} {
+        //     }
+        //
+        public Variable VariableCurly(Parser parser)
+        {
+            RegexMatchResult name;
+            var index = parser.Tokenizer.Location.Index;
+
+            if (parser.Tokenizer.CurrentChar == '@' && (name = parser.Tokenizer.Match(@"@\{([a-zA-Z0-9_-]+)\}")))
+                return NodeProvider.Variable("@" + name.Match.Groups[1].Value, parser.Tokenizer.GetNodeLocation(index));
 
             return null;
         }
@@ -797,13 +814,13 @@ namespace dotless.Core.Parser
 
             PushComments();
             GatherComments(parser); // to collect, combinator must have picked up something which would require memory anyway
-            Node e = parser.Tokenizer.Match(@"[.#:]?[a-zA-Z0-9_-]+") || parser.Tokenizer.Match('*') || parser.Tokenizer.Match('&') || 
-                Attribute(parser) || parser.Tokenizer.MatchAny(@"\([^)@]+\)");
+            Node e = parser.Tokenizer.Match(@"[.#:]?[a-zA-Z0-9_-]+") || parser.Tokenizer.Match('*') || parser.Tokenizer.Match('&') ||
+                Attribute(parser) || parser.Tokenizer.MatchAny(@"\([^)@]+\)") || parser.Tokenizer.Match(@"[\.#](?=@\{)") || VariableCurly(parser);
 
             if (!e)
             {
                 if (parser.Tokenizer.Match('(')) {
-                    var variable = Variable(parser);
+                    var variable = Variable(parser) ?? VariableCurly(parser);
                     if (variable)
                     {
                         parser.Tokenizer.Match(')');
