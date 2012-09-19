@@ -685,5 +685,23 @@ namespace dotless.Test.Specs
 
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void TestCompareArgsInGuard()
+        {
+            var input = @"
+.mixin(@c: bar, @a: red, @b: blue) when (@a = @b) {
+  foo: @c;
+}
+.test {
+  .mixin(@b:red, @a:red);
+}";
+            var expected = @"
+.test {
+  foo: bar;
+}
+";
+            AssertLess(input, expected);
+        }
     }
 }
