@@ -360,7 +360,7 @@ namespace dotless.Core.Parser
             var index = parser.Tokenizer.Location.Index;
 
             if (parser.Tokenizer.CurrentChar == '@' && (name = parser.Tokenizer.Match(@"@(@?[a-zA-Z0-9_-]+)")))
-                return NodeProvider.Variable(name.Value, parser.Tokenizer.GetNodeLocation(index));
+                return NodeProvider.Variable(name.Match.Groups[1].Value, parser.Tokenizer.GetNodeLocation(index));
 
             return null;
         }
@@ -377,7 +377,7 @@ namespace dotless.Core.Parser
             var index = parser.Tokenizer.Location.Index;
 
             if (parser.Tokenizer.CurrentChar == '@' && (name = parser.Tokenizer.Match(@"@\{([a-zA-Z0-9_-]+)\}")))
-                return NodeProvider.Variable("@" + name.Match.Groups[1].Value, parser.Tokenizer.GetNodeLocation(index));
+                return NodeProvider.Variable(name.Match.Groups[1].Value, parser.Tokenizer.GetNodeLocation(index));
 
             return null;
         }
@@ -814,7 +814,7 @@ namespace dotless.Core.Parser
 
             PushComments();
             GatherComments(parser); // to collect, combinator must have picked up something which would require memory anyway
-            Node e = parser.Tokenizer.Match(@"[.#:]?[a-zA-Z0-9_-]+") || parser.Tokenizer.Match('*') || parser.Tokenizer.Match('&') ||
+            Node e = parser.Tokenizer.Match(@"[.#:]?(\\.|[a-zA-Z0-9_-])+") || parser.Tokenizer.Match('*') || parser.Tokenizer.Match('&') ||
                 Attribute(parser) || parser.Tokenizer.MatchAny(@"\([^)@]+\)") || parser.Tokenizer.Match(@"[\.#](?=@\{)") || VariableCurly(parser);
 
             if (!e)
@@ -930,7 +930,7 @@ namespace dotless.Core.Parser
             if (!parser.Tokenizer.Match('['))
                 return null;
 
-            if (key = parser.Tokenizer.Match(@"[a-z0-9_-]+") || Quoted(parser))
+            if (key = parser.Tokenizer.Match(@"(\\.|[a-z0-9_-])+") || Quoted(parser))
             {
                 Node op;
                 if ((op = parser.Tokenizer.Match(@"[|~*$^]?=")) &&

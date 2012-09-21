@@ -655,5 +655,16 @@ a:nth-child(2) {
 }";
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void EscapedSelector()
+        {
+            var input = @"
+#odd\:id,
+[odd\.attr] {
+  foo: bar;
+}";
+            AssertLessUnchanged(input);
+        }
     }
 }
