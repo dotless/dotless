@@ -36,5 +36,16 @@ namespace dotless.Test.Specs.Functions
             AssertExpression("#445566", "mix(#123, #456, -0.001)");
             AssertExpression("#112233", "mix(#123, #456, 100.001)");
         }
+
+        [Test]
+        public void TestTintAndShade()
+        {
+            AssertExpression("#898989", "tint(#777777, 13)");
+            AssertExpression("white", "tint(#777777, 100)");
+            AssertExpression("#898989", "tint(#777777, 13%)");
+            AssertExpression("#686868", "shade(#777777, 13)");
+            AssertExpression("black", "shade(#777777, 100)");
+            AssertExpression("#686868", "shade(#777777, 13%)");
+        }
     }
 }
