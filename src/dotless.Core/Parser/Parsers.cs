@@ -360,7 +360,7 @@ namespace dotless.Core.Parser
             var index = parser.Tokenizer.Location.Index;
 
             if (parser.Tokenizer.CurrentChar == '@' && (name = parser.Tokenizer.Match(@"@(@?[a-zA-Z0-9_-]+)")))
-                return NodeProvider.Variable(name.Match.Groups[1].Value, parser.Tokenizer.GetNodeLocation(index));
+                return NodeProvider.Variable(name.Value, parser.Tokenizer.GetNodeLocation(index));
 
             return null;
         }
@@ -377,7 +377,7 @@ namespace dotless.Core.Parser
             var index = parser.Tokenizer.Location.Index;
 
             if (parser.Tokenizer.CurrentChar == '@' && (name = parser.Tokenizer.Match(@"@\{([a-zA-Z0-9_-]+)\}")))
-                return NodeProvider.Variable(name.Match.Groups[1].Value, parser.Tokenizer.GetNodeLocation(index));
+                return NodeProvider.Variable("@" + name.Match.Groups[1].Value, parser.Tokenizer.GetNodeLocation(index));
 
             return null;
         }
