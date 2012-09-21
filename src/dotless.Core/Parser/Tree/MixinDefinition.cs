@@ -187,10 +187,12 @@ namespace dotless.Core.Parser.Tree
             {
                 env.Frames.Push(EvaluateParams(env, arguments));
 
-                if (!Condition.Passes(env))
-                    return MixinMatch.GuardFail;
+                bool isPassingConditions = Condition.Passes(env);
 
                 env.Frames.Pop();
+
+                if (!isPassingConditions)
+                    return MixinMatch.GuardFail;
             }
 
             for (var i = 0; i < Math.Min(argsLength, _arity); i++)

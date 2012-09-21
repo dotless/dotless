@@ -703,5 +703,34 @@ namespace dotless.Test.Specs
 ";
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void GuardsVariableBug1()
+        {
+            var input = @"
+.backgroundColorFn (@a) when (lightness(@a) >= 50%) {
+    color:          black;
+}
+.backgroundColorFn (@a) when (lightness(@a) < 50%) {
+    color:          white;
+}
+
+.test1 {
+    .backgroundColorFn(red);
+}
+
+@calculatedVariable: 1em;
+
+.testClass { font-size: @calculatedVariable; }";
+            var expected = @"
+.test1 {
+  color: black;
+}
+.testClass {
+  font-size: 1em;
+}";
+
+            AssertLess(input, expected);
+        }
     }
 }
