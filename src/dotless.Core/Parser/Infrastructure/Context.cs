@@ -130,7 +130,14 @@
                                     newJoinedSelectorEmpty = false;
 
                                     // join the elements so far with the first part of the parent
-                                    newJoinedSelector.Elements.Add(new Element(el.Combinator, parentSel[0].Elements[0].Value));
+                                    if (parentSel[0].Elements[0].Value == null)
+                                    {
+                                        newJoinedSelector.Elements.Add(new Element(el.Combinator, parentSel[0].Elements[0].NodeValue));
+                                    }
+                                    else
+                                    {
+                                        newJoinedSelector.Elements.Add(new Element(el.Combinator, parentSel[0].Elements[0].Value));
+                                    }
                                     newJoinedSelector.Elements.AddRange(parentSel[0].Elements.Skip(1));
                                 }
 

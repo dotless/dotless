@@ -657,6 +657,40 @@ a:nth-child(2) {
         }
 
         [Test]
+        public void SelectorInterpolationAndParent()
+        {
+            var input = @"
+@theme: blood;
+.@{theme} {
+  .red& {
+    foo: bar;
+  }
+}";
+            var expected = @"
+.red.blood {
+  foo: bar;
+}";
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void SelectorInterpolationAndParent2()
+        {
+            var input = @"
+@theme: blood;
+(~"".@{theme}"") {
+  .red& {
+    foo: bar;
+  }
+}";
+            var expected = @"
+.red.blood {
+  foo: bar;
+}";
+            AssertLess(input, expected);
+        }
+
+        [Test]
         public void EscapedSelector()
         {
             var input = @"
