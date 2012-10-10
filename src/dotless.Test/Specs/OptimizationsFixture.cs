@@ -1,6 +1,5 @@
 namespace dotless.Test.Specs
 {
-    using Core.Parser;
     using NUnit.Framework;
 
     public class OptimizationsFixture : SpecFixtureBase
@@ -82,6 +81,35 @@ namespace dotless.Test.Specs
 
             Optimisation = 2;
             AssertError(".mixin is undefined", ".error { .mixin }", 5, 9, input);
+        }
+
+        [Test]
+        public void SkipExcessiveSemicolon()
+        {
+            var input = @"
+body {
+  ;
+  color: #123456;;
+}
+";
+            var expected = @"
+body {
+  color: #123456;
+}
+";
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void SkipEmptyRules()
+        {
+            var input = @"
+body {
+  /* before */ ; /* after */
+}
+";
+            var expected = @"";
+            AssertLess(input, expected);
         }
     }
 }
