@@ -74,24 +74,28 @@ namespace dotless.Core.Parser
             GatherComments(parser);
 
             while (node = MixinDefinition(parser) || Rule(parser) || PullComments() || Ruleset(parser) ||
-                          MixinCall(parser) || Directive(parser))
+                          MixinCall(parser) || Directive(parser) || parser.Tokenizer.Match(';'))
             {
                 if (comments = PullComments())
                 {
                     root.AddRange(comments);
                 }
 
-                comments = node as NodeList;
-                if (comments)
+                var charResult = node as CharMatchResult;
+                if (!charResult || charResult.Char != ';')
                 {
-                    foreach (Comment c in comments)
+                    comments = node as NodeList;
+                    if (comments)
                     {
-                        c.IsPreSelectorComment = true;
+                        foreach (Comment c in comments)
+                        {
+                            c.IsPreSelectorComment = true;
+                        }
+                        root.AddRange(comments);
                     }
-                    root.AddRange(comments);
+                    else
+                        root.Add(node);
                 }
-                else
-                    root.Add(node);
 
                 GatherComments(parser);
             }
