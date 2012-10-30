@@ -32,5 +32,7 @@ namespace dotless.Core.Input
             var virtualPathProvider = HostingEnvironment.VirtualPathProvider;
             return virtualPathProvider.GetFile(fileName) != null;
         }
+
+        public bool UseCacheDependencies { get { return false; } }
     }
 }

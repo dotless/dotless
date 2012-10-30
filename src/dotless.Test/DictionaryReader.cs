@@ -44,5 +44,7 @@ namespace dotless.Test
 
             return Contents.ContainsKey(fileName);
         }
+
+        public bool UseCacheDependencies { get { return false; } }
     }
 }
