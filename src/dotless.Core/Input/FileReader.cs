@@ -35,5 +35,7 @@ namespace dotless.Core.Input
 
             return File.Exists(fileName);
         }
+
+        public bool UseCacheDependencies { get { return true; } }
     }
 }

@@ -130,6 +130,11 @@ namespace dotless.Test.Config
             {
                 throw new NotImplementedException();
             }
+
+            public bool UseCacheDependencies
+            {
+                get { throw new NotImplementedException(); }
+            }
         }
     }
 }

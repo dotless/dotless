@@ -7,5 +7,7 @@ namespace dotless.Core.Input
         string GetFileContents(string fileName);
 
         bool DoesFileExist(string fileName);
+
+        bool UseCacheDependencies { get; }
     }
 }
