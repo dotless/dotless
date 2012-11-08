@@ -22,8 +22,12 @@
             response.Cache.SetETagFromFileDependencies();
             response.Cache.SetLastModifiedFromFileDependencies();
 
-            //response.Cache.SetOmitVaryStar(true);
-            response.Cache.SetVaryByCustom("Accept-Encoding");
+            // only modify the vary header if we are modifying the encoding
+            if (IsCompressionHandledByResponse)
+            {
+                // response.Cache.SetOmitVaryStar(true);
+                response.Cache.SetVaryByCustom("Accept-Encoding");
+            }
 
             base.WriteHeaders();
         }
