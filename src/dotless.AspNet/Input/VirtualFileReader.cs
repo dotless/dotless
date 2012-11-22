@@ -30,7 +30,7 @@ namespace dotless.Core.Input
         public bool DoesFileExist(string fileName)
         {
             var virtualPathProvider = HostingEnvironment.VirtualPathProvider;
-            return virtualPathProvider.GetFile(fileName) != null;
+            return virtualPathProvider.FileExists(fileName);
         }
 
         public bool UseCacheDependencies { get { return false; } }
