@@ -1,3 +1,5 @@
+using System.Web;
+
 namespace dotless.Core.Loggers
 {
     using Response;
@@ -13,7 +15,10 @@ namespace dotless.Core.Loggers
 
         protected override void Log(string message)
         {
-            Response.WriteCss(message);
+            if (HttpContext.Current.Request.IsLocal)
+            {
+                Response.WriteCss(message);    
+            }
         }
     }
 }
