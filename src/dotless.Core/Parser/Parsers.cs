@@ -1033,6 +1033,9 @@ namespace dotless.Core.Parser
 
                 if (End(parser))
                 {
+                    if(value == null)
+                        throw new ParsingException(name + " is incomplete", parser.Tokenizer.GetNodeLocation());
+
                     value.PreComments = preValueComments;
                     value.PostComments = postValueComments;
 
