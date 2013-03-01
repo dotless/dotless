@@ -462,5 +462,21 @@ image: url(http://); }";
 }";
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void IncompleteDeclaration()
+        {
+            var input = @"
+.test {
+  border-bottom: 
+}";
+
+            AssertError(@"
+border-bottom is incomplete on line 3 in file 'test.less':
+  [2]:   border-bottom: 
+  [3]: }
+       ^
+  [4]: /end of file", input);
+        }
     }
 }
