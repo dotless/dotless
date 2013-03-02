@@ -1,4 +1,5 @@
-﻿namespace dotless.Core.Parser.Infrastructure
+﻿
+namespace dotless.Core.Parser.Infrastructure
 {
     using System;
     using System.Collections.Generic;
@@ -9,7 +10,8 @@
     using Nodes;
     using Plugins;
     using Tree;
-    using dotless.Core.Loggers;
+    using dotless.Core.Loggers;      
+    using dotless.SourceMapping;
 
     public class Env
     {
@@ -28,6 +30,11 @@
         public bool KeepFirstSpecialComment { get; set; }
         public bool IsFirstSpecialCommentOutput { get; set; }
 
+        /// <summary>
+        /// source map to log the origin of the generated css code
+        /// </summary>
+        public SourceMap SourceMap {get; private set; }
+
         public Env() : this(null, null)
         {
         }
@@ -39,6 +46,8 @@
             MediaPath = new Stack<Media>();
             MediaBlocks = new List<Media>();
             Logger = new NullLogger(LogLevel.Info);
+            //todo: get the correct filename
+            SourceMap  = SourceMapGenerator.CreateMapForFile("someFile");
 
             _plugins = new List<IPlugin>();
             _functionTypes = functions ?? new Dictionary<string, Type>();

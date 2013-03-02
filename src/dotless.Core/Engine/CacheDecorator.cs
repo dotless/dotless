@@ -24,8 +24,13 @@ namespace dotless.Core
             Logger = logger;
         }
 
-        public string TransformToCss(string source, string fileName)
-        {
+        
+        public string TransformToCss(string source, string fileName) {
+            return TransformToCss(source, fileName, null);
+        }
+
+        public string TransformToCss(string source, string fileName, StringBuilder sourceMap) {
+
             //Compute Cache Key
             var hash = ComputeContentHash(source);
             var cacheKey = fileName + hash;
@@ -33,7 +38,7 @@ namespace dotless.Core
             {
                 Logger.Debug(String.Format("Inserting cache entry for {0}", cacheKey));
 
-                var css = Underlying.TransformToCss(source, fileName);
+                var css = Underlying.TransformToCss(source, fileName, sourceMap);
                 var dependancies = new[] { fileName }.Concat(GetImports());
                 
                 Cache.Insert(cacheKey, dependancies, css);

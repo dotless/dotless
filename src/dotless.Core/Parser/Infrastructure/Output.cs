@@ -28,6 +28,37 @@
             return this;
         }
 
+        public long Linenumber {
+            get {
+                return LinesCountIndexOf(Builder.ToString());
+            }
+        }
+
+        public int Column { 
+            get {
+                long count = 0;
+                int position = 0;
+                string text = Builder.ToString();
+
+                while ((position = text.IndexOf('\n', position)) != -1) {
+                    count++;
+                    position++;         // Skip this occurance!
+                }   
+                return text.Length - position;
+            }
+        }
+
+        static long LinesCountIndexOf(string s) {
+            long count = 0;
+            int position = 0;
+            while ((position = s.IndexOf('\n', position)) != -1) {
+                count++;
+                position++;         // Skip this occurance!
+            }
+            return count;
+        }
+
+
         public StringBuilder Pop()
         {
             if (BuilderStack.Count == 1)

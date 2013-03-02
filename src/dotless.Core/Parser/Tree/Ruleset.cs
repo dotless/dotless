@@ -7,6 +7,7 @@ namespace dotless.Core.Parser.Tree
     using Infrastructure.Nodes;
     using Utils;
     using Plugins;
+    using SourceMapping;
 
     public class Ruleset : Node
     {
@@ -228,13 +229,14 @@ namespace dotless.Core.Parser.Tree
         {
             var rules = new List<StringBuilder>(); // node.Ruleset instances
             int nonCommentRules = 0;
-            var paths = new Context(); // Current selectors
+            var paths = new Context(); // Current selectors            
 
             if (!IsRoot)
-            {
+            {                
                 if (!env.Compress && env.Debug && Location != null)
                 {
-                    env.Output.Append(string.Format("/* {0}:L{1} */\n", Location.FileName, Zone.GetLineNumber(Location)));
+                    env.Output.Append(string.Format("/* Source comment {0}:L{1} */\n", Location.FileName, Zone.GetLineNumber(Location)));
+                    
                 }
                 paths.AppendSelectors(context, Selectors);
             }
@@ -249,6 +251,20 @@ namespace dotless.Core.Parser.Tree
                 var comment = node as Comment;
                 if (comment != null && !comment.IsValidCss)
                     continue;
+
+                if (env.Debug && Location != null) {
+                    int sourceLine = 0;
+                    int sourceColumn = 0;
+                    Zone.GetLineNumber(Location, out sourceLine, out sourceColumn);
+
+                    env.SourceMap.AddSourceFragment(new SourceFragment {
+                        GeneratedColumn = env.Output.Column,
+                        GeneratedLine   = (int) env.Output.Linenumber,
+                        SourceColumn    = sourceColumn,
+                        SourceLine      = sourceLine,
+                        SourceFile      = Location.FileName
+                    });
+                }
 
                 var ruleset = node as Ruleset;
                 if (ruleset != null)

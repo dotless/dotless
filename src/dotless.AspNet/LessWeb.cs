@@ -1,4 +1,5 @@
-﻿using dotless.Core.configuration;
+﻿using System.Text;
+using dotless.Core.configuration;
 
 namespace dotless.Core
 {
@@ -8,6 +9,12 @@ namespace dotless.Core
         {
             return GetEngine(config).TransformToCss(less, null);
         }
+
+        public static string Parse(string less, DotlessConfiguration config, StringBuilder sourceMap) {
+            
+            return GetEngine(config).TransformToCss(less, null, sourceMap);
+        }
+
 
         public static ILessEngine GetEngine(DotlessConfiguration config)
         {

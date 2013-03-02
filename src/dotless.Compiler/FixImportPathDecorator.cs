@@ -1,4 +1,7 @@
-﻿namespace dotless.Compiler
+﻿using System;
+using System.Text;
+
+namespace dotless.Compiler
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -11,6 +14,10 @@
         public FixImportPathDecorator(ILessEngine underlying)
         {
             this.underlying = underlying;
+        }
+
+        public string TransformToCss(string source, string fileName, StringBuilder sourceMap) {
+            return TransformToCss(source, fileName);
         }
 
         public string TransformToCss(string source, string fileName)

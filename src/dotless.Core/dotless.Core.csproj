@@ -242,6 +242,12 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Users\Boschekt\Desktop\tmp\SourceMap\SourceMap\dotless.SourceMapping.csproj">
+      <Project>{8FA61608-27F9-47AC-930F-F878E5687CDA}</Project>
+      <Name>dotless.SourceMapping</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

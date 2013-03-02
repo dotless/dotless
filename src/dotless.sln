@@ -18,6 +18,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotless.SampleWeb", "dotles
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotless.AspNet", "dotless.AspNet\dotless.AspNet.csproj", "{27FDE40F-E671-4C5C-BC24-FD04EA6EA2B2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{5F121835-838E-4C91-B52B-2A54B034DCD6}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotless.SourceMapping", "..\..\..\Users\Boschekt\Desktop\tmp\SourceMap\SourceMap\dotless.SourceMapping.csproj", "{8FA61608-27F9-47AC-930F-F878E5687CDA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +55,10 @@ Global
 		{27FDE40F-E671-4C5C-BC24-FD04EA6EA2B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27FDE40F-E671-4C5C-BC24-FD04EA6EA2B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27FDE40F-E671-4C5C-BC24-FD04EA6EA2B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FA61608-27F9-47AC-930F-F878E5687CDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FA61608-27F9-47AC-930F-F878E5687CDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FA61608-27F9-47AC-930F-F878E5687CDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FA61608-27F9-47AC-930F-F878E5687CDA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

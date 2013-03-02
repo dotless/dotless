@@ -42,7 +42,7 @@
             return lineNumber + 1;
         }
 
-        private static void GetLineNumber(NodeLocation location, out int lineNumber, out int position)
+        public static void GetLineNumber(NodeLocation location, out int lineNumber, out int position)
         {
             var input = location.Source;
             var index = location.Index;

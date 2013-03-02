@@ -1,3 +1,5 @@
+using System;
+using System.Text;
 using dotless.Core.Plugins;
 
 namespace dotless.Core
@@ -53,6 +55,10 @@ namespace dotless.Core
 
         public string TransformToCss(string source, string fileName)
         {
+            return TransformToCss(source, fileName, null);
+        }
+        public string TransformToCss(string source, string fileName, StringBuilder sourceMap)
+        {
             try
             {
                 var tree = Parser.Parse(source, fileName);
@@ -68,6 +74,9 @@ namespace dotless.Core
                 }
 
                 var css = tree.ToCSS(env);
+
+                if (sourceMap != null)
+                    sourceMap.Append(env.SourceMap.GenerateSourceMap());
 
                 LastTransformationSuccessful = true;
                 return css;

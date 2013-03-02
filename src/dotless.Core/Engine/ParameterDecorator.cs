@@ -1,4 +1,6 @@
-﻿namespace dotless.Core
+﻿using System;
+
+namespace dotless.Core
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -16,8 +18,11 @@
             this.parameterSource = parameterSource;
         }
 
-        public string TransformToCss(string source, string fileName)
-        {
+        public string TransformToCss(string source, string fileName) {
+            return TransformToCss(source, fileName, null);            
+        }
+
+        public string TransformToCss(string source, string fileName, StringBuilder sourceMap) {
             var sb = new StringBuilder();
             var parameters = parameterSource.GetParameters()
                 .Where(ValueIsNotNullOrEmpty);
@@ -26,7 +31,7 @@
                 sb.AppendFormat("@{0}: {1};\n", parameter.Key, parameter.Value);
             }
             sb.Append(source);
-            return Underlying.TransformToCss(sb.ToString(), fileName);
+            return Underlying.TransformToCss(sb.ToString(), fileName, sourceMap);
         }
 
         public IEnumerable<string> GetImports()
