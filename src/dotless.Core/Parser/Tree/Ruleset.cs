@@ -233,15 +233,9 @@ namespace dotless.Core.Parser.Tree
 
             if (!IsRoot)
             {                
-                if (!env.Compress && env.Debug && Location != null)
-                {
-                    env.Output.Append(string.Format("/* Source comment {0}:L{1} */\n", Location.FileName, Zone.GetLineNumber(Location)));
-                    
-                }
                 paths.AppendSelectors(context, Selectors);
             }
 
-            env.Output.Push();
 
             foreach (var node in Rules)
             {
@@ -251,20 +245,6 @@ namespace dotless.Core.Parser.Tree
                 var comment = node as Comment;
                 if (comment != null && !comment.IsValidCss)
                     continue;
-
-                if (env.Debug && Location != null) {
-                    int sourceLine = 0;
-                    int sourceColumn = 0;
-                    Zone.GetLineNumber(Location, out sourceLine, out sourceColumn);
-
-                    env.SourceMap.AddSourceFragment(new SourceFragment {
-                        GeneratedColumn = env.Output.Column,
-                        GeneratedLine   = (int) env.Output.Linenumber,
-                        SourceColumn    = sourceColumn,
-                        SourceLine      = sourceLine,
-                        SourceFile      = Location.FileName
-                    });
-                }
 
                 var ruleset = node as Ruleset;
                 if (ruleset != null)
