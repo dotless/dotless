@@ -39,7 +39,7 @@
         {
             int lineNumber, position;
             GetLineNumber(location, out lineNumber, out position);
-            return lineNumber + 1;
+            return lineNumber;
         }
 
         public static void GetLineNumber(NodeLocation location, out int lineNumber, out int position)
@@ -55,7 +55,7 @@
             var first = input.Substring(0, index);
 
             var start = first.LastIndexOf('\n') + 1;
-            lineNumber = first.Count(c => c == '\n');
+            lineNumber = first.Count(c => c == '\n') + 1;
             position = index - start;
         }
 

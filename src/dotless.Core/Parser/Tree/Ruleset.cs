@@ -314,6 +314,15 @@ namespace dotless.Core.Parser.Tree
             {
                 if (nonCommentRules > 0)
                 {
+                    if (env.Debug && Location != null) {                        
+                        // add source line comment to the generated code
+                        int column = 0;
+                        // get current output buffer line number
+                        int lineNumber = 0;
+                        Zone.GetLineNumber(Location, out lineNumber, out column);
+                        
+                        env.Output.Append(string.Format("/*@source:\"{0}\"[{1}:{2}]*/", Location.FileName, lineNumber, column));
+                    }
                     paths.AppendCSS(env);
 
                     env.Output.Append(env.Compress ? "{" : " {\n  ");

@@ -1,5 +1,7 @@
+#define REMOVE_MARKER
 using System;
 using System.Text;
+using System.Text.RegularExpressions;
 using dotless.Core.Plugins;
 
 namespace dotless.Core
@@ -73,10 +75,12 @@ namespace dotless.Core
                     }
                 }
 
-                var css = tree.ToCSS(env);
+                var css = tree.ToCSS(env);                
 
-                if (sourceMap != null)
+                if (sourceMap != null) {                    
+                    this.PostProcessSourceMap(env, ref css);
                     sourceMap.Append(env.SourceMap.GenerateSourceMap());
+                }
 
                 LastTransformationSuccessful = true;
                 return css;
@@ -88,6 +92,64 @@ namespace dotless.Core
             }
 
             return "";
+        }
+
+        private string PostProcessSourceMap(Env env, ref string css) {
+            if (env == null) throw new ArgumentNullException("env");
+
+            // the position to start from
+            int offset = 0;
+
+            // pattern to match the source tags against
+            var regex = new Regex(@"\/\*@source:\""(.+?)\""\[(\d+):(\d+)\]\*\/", RegexOptions.Compiled);       
+
+            // var to hold the next match
+            Match match = null;
+                   
+            // create a buffer to hold the cleand up css
+            var buffer = new StringBuilder(css);
+            
+            do {
+                // look for the next marker in the string                
+                match = regex.Match(buffer.ToString(), offset);
+                if (match.Success) {            
+                    // get the markers position and it's length
+                    int markerPos    = match.Index;
+                    int markerLength = match.Value.Length - 1;
+
+                    // get the entry's column in row
+                    var column     = markerPos - Math.Max(css.LastIndexOf("\n", markerPos), 0) + markerLength;
+                    
+                    // get the linenumber
+                    var line       = css.Substring(0, markerPos).Count(c => c == '\n');
+
+                    // generate a source mapping-fragment with the found info
+                    var theFrag = new SourceMapping.SourceFragment {
+                        GeneratedColumn = column,
+                        GeneratedLine   = line,
+                        SourceFile      = match.Groups[1].Value,                    
+                        SourceLine      = int.Parse(match.Groups[2].Value),
+                        SourceColumn    = int.Parse(match.Groups[3].Value),
+                    };
+
+                    /*
+                     * get the "line" the marker is marking for debugging purpuses
+                    * int start = markerPos + match.Value.Length;
+                    * System.Diagnostics.Debug.WriteLine(css.Substring(start, css.IndexOf("\n", markerPos) - start) + " >> " + theFrag.ToString());
+                    */
+
+                    // add the fragment to the list
+                    env.SourceMap.AddSourceFragment(theFrag);
+                    
+                    #if REMOVE_MARKER
+                    // remove the marker from the buffer
+                    buffer.Remove(markerPos, markerLength);
+                    #endif
+                    offset = match.Index;
+                }
+            } while(match.Success);
+
+            return buffer.ToString();
         }
 
         public IEnumerable<string> GetImports()
