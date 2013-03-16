@@ -236,6 +236,7 @@ namespace dotless.Core.Parser.Tree
                 paths.AppendSelectors(context, Selectors);
             }
 
+            env.Output.Push();
 
             foreach (var node in Rules)
             {
