@@ -9,7 +9,7 @@ properties {
     $build_dir = "$base_dir\build\" 
     $release_dir = "$base_dir\release\"
     $source_dir = "$base_dir\src"
-    $version = Get-Git-Version
+    $version = "1.0.0.0"
 }
 
 task default -depends Release
@@ -84,7 +84,15 @@ For the client only dll on its own, see the DotlessClientOnly package.";
         -product $product `
         -version $version `
         -copyright $copyright
-
+		
+    Generate-Assembly-Info `
+        -file "$source_dir\dotless.SourceMap\Properties\AssemblyInfo.cs" `
+        -title $title `
+        -description $description `
+        -company $company `
+        -product $product `
+        -version $version `
+        -copyright $copyright
     new-item $release_dir -itemType directory    
 }
 

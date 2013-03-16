@@ -1,4 +1,4 @@
-#define REMOVE_MARKER
+#define _REMOVE_MARKER
 using System;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -77,8 +77,10 @@ namespace dotless.Core
 
                 var css = tree.ToCSS(env);                
 
-                if (sourceMap != null) {                    
-                    this.PostProcessSourceMap(env, ref css);
+                if (sourceMap != null) {           
+                    // post process the css to get rid of the markers
+                    css = this.PostProcessSourceMap(env, ref css);
+                    // add & generate the source map
                     sourceMap.Append(env.SourceMap.GenerateSourceMap());
                 }
 
@@ -113,8 +115,9 @@ namespace dotless.Core
                 // look for the next marker in the string                
                 match = regex.Match(buffer.ToString(), offset);
                 if (match.Success) {            
-                    // get the markers position and it's length
-                    int markerPos    = match.Index;
+                    // get the markers position
+                    int markerPos    = match.Index;               
+                    #if !REMOVE_MARKER
                     int markerLength = match.Value.Length - 1;
 
                     // get the entry's column in row
@@ -122,6 +125,12 @@ namespace dotless.Core
                     
                     // get the linenumber
                     var line       = css.Substring(0, markerPos).Count(c => c == '\n');
+                    #else
+                    // get the linenumber
+                    var column     = markerPos - css.LastIndexOf('\n', markerPos + 1);
+                    
+                    var line       = css.Substring(0, markerPos).Count(c => c == '\n');
+                    #endif
 
                     // generate a source mapping-fragment with the found info
                     var theFrag = new SourceMapping.SourceFragment {
@@ -143,9 +152,12 @@ namespace dotless.Core
                     
                     #if REMOVE_MARKER
                     // remove the marker from the buffer
-                    buffer.Remove(markerPos, markerLength);
+                    buffer.Remove(markerPos, match.Value.Length);
+
+                    offset = markerPos;
+                    #else
+                    offset = markerPos + markerLength;
                     #endif
-                    offset = match.Index;
                 }
             } while(match.Success);
 

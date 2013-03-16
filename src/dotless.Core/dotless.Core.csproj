@@ -243,9 +243,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Users\Boschekt\Desktop\tmp\SourceMap\SourceMap\dotless.SourceMapping.csproj">
+    <ProjectReference Include="..\dotless.SourceMap\dotless.SourceMapping.csproj">
       <Project>{8FA61608-27F9-47AC-930F-F878E5687CDA}</Project>
       <Name>dotless.SourceMapping</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
