@@ -1,4 +1,3 @@
-#define _REMOVE_MARKER
 using System;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -96,7 +95,7 @@ namespace dotless.Core
             return "";
         }
 
-        private string PostProcessSourceMap(Env env, ref string css) {
+        protected string PostProcessSourceMap(Env env, ref string css) {
             if (env == null) throw new ArgumentNullException("env");
 
             // the position to start from
@@ -112,25 +111,18 @@ namespace dotless.Core
             var buffer = new StringBuilder(css);
             
             do {
-                // look for the next marker in the string                
-                match = regex.Match(buffer.ToString(), offset);
+                var daCss = buffer.ToString();
+                // look for the next marker in the string
+                match = regex.Match(daCss, offset);
                 if (match.Success) {            
                     // get the markers position
                     int markerPos    = match.Index;               
-                    #if !REMOVE_MARKER
-                    int markerLength = match.Value.Length - 1;
-
+ 
                     // get the entry's column in row
-                    var column     = markerPos - Math.Max(css.LastIndexOf("\n", markerPos), 0) + markerLength;
+                    var column     = markerPos - Math.Max(daCss.LastIndexOf("\n", markerPos), 0) - 1;
                     
                     // get the linenumber
-                    var line       = css.Substring(0, markerPos).Count(c => c == '\n');
-                    #else
-                    // get the linenumber
-                    var column     = markerPos - css.LastIndexOf('\n', markerPos + 1);
-                    
-                    var line       = css.Substring(0, markerPos).Count(c => c == '\n');
-                    #endif
+                    var line       = daCss.Substring(0, markerPos).Count(c => c == '\n');
 
                     // generate a source mapping-fragment with the found info
                     var theFrag = new SourceMapping.SourceFragment {
@@ -141,23 +133,13 @@ namespace dotless.Core
                         SourceColumn    = int.Parse(match.Groups[3].Value),
                     };
 
-                    /*
-                     * get the "line" the marker is marking for debugging purpuses
-                    * int start = markerPos + match.Value.Length;
-                    * System.Diagnostics.Debug.WriteLine(css.Substring(start, css.IndexOf("\n", markerPos) - start) + " >> " + theFrag.ToString());
-                    */
-
                     // add the fragment to the list
                     env.SourceMap.AddSourceFragment(theFrag);
                     
-                    #if REMOVE_MARKER
+                 
+                    offset = markerPos;
                     // remove the marker from the buffer
                     buffer.Remove(markerPos, match.Value.Length);
-
-                    offset = markerPos;
-                    #else
-                    offset = markerPos + markerLength;
-                    #endif
                 }
             } while(match.Success);
 
