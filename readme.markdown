@@ -31,7 +31,7 @@ What does the fork do right now?
 
 Up to this point I've implemented some parts necessary, but not all of them.
 
-- [http://en.wikipedia.org/wiki/Variable-length_quantity]VLQ-Integers needed for Sourcemaps
+- [VLQ-Integers](http://en.wikipedia.org/wiki/Variable-length_quantity) needed for Sourcemaps
 - V3-Sourcemap data format wrapped in json
 - A easy to use object to aggregate information to be used in the sourcemap
 - The sourcemap generation from the added fragments
