@@ -2,12 +2,12 @@ What's a "Source map"?
 ======================
 
 Some of you might have heard about the new cool upcomming feature of source maps that is gaining some momentum. But what are sourcemaps anyway? 
-Sourcemaps (more correctly to say [https://docs.google.com/document/d/1U1RGAehQwRypUTovF1KRlpiOFze0b-_2gc6fAH0KY0k/edit?pli=1](Source Maps V3)) are a way to bind your source to the delivered to the browser.
+Sourcemaps (more correctly to say [Source Maps V3](https://docs.google.com/document/d/1U1RGAehQwRypUTovF1KRlpiOFze0b-_2gc6fAH0KY0k/edit?pli=1) are a way to bind your source to the delivered to the browser.
 The basic conecept is to provide an additional file (.map) with your generated js or css so that your brower can use to find the point of origin of a chunk of code.
-If you want to readup about the topic here are some links that might interesst you [http://www.html5rocks.com/en/tutorials/developertools/sourcemaps/?redirect_from_locale=de](html 5 rocks)
+If you want to readup about the topic here are some links that might interesst you [html 5 rocks](http://www.html5rocks.com/en/tutorials/developertools/sourcemaps/?redirect_from_locale=de)
 
 At the point of writing the support for sorcemaps is kind of limited. As far as I know there are no implementations of sourcemaps targeting any css frameworks (Sass has it's own way to deal with sources). There only implementations for js-libs and compressors.
-Up to this point I found two implementations of the V3-Sourcmap standard. The one by [https://github.com/mozilla/source-map](Mozilla) and the one used in [https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/WebCore/inspector/front-end/SourceMap.js&q=sourcemap&sq=package:chromium&l=32](Chromium). Both of them are (who'd guessed that) written is js.
+Up to this point I found two implementations of the V3-Sourcmap standard. The one by [Mozilla](https://github.com/mozilla/source-map) and the one used in [Chromium](https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/WebCore/inspector/front-end/SourceMap.js&q=sourcemap&sq=package:chromium&l=32). Both of them are (who'd guessed that) written is js.
 
 Goal of this fork is to implement the sourcemap support in c#.
 
