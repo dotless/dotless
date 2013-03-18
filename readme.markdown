@@ -41,8 +41,12 @@ Up to this point I've implemented some parts necessary, but not all of them.
 Known issues and things to do
 -----------------------------
 
-- The http-handlers for the filetypes are at this point client side and need to be moved into the lib it self
-- To generate the sourcemap from within dotless, I had to know some things like: The line and the column the source was generated to. Due to the recursive nature of the generation process I had a hard time to actually keep track about the code. The workaround I used wasn't very elegant, but works. I had to add markers (in form of css-comments) during the time of generation, which are tracked and remove by a post-processing routine. This might be a bottle-neck that speed things down.
+- The http-handlers for the filetypes are at this point client side and need to be moved into the lib itself
+- To generate the sourcemap from within dotless, I had to know some things like: 
+The line and the column the source was generated to. Due to the recursive nature of the generation process 
+I had a hard time to actually keep track of the code. The workaround I used wasn't very elegant, but works.
+I had to add markers (in form of css-comments) during the time of generation, which are tracked and remove by a 
+post-processing routine. This might be a bottle-neck that slows things down.
 - The lib is basicly untested!
 - I've no idea how to handle mixins.
 - The library currently only works with Chrome Canary, with sourcemaps enabled in the development settings AND the developer experiments swtiched on!
