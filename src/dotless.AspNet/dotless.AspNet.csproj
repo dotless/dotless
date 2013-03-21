@@ -66,6 +66,7 @@
     <Compile Include="Loggers\AspNetTraceLogger.cs" />
     <Compile Include="Loggers\AspResponseLogger.cs" />
     <Compile Include="Parameters\QueryStringParameterSource.cs" />
+	<Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Response\CachedCssResponse.cs" />
     <Compile Include="Response\CssResponse.cs" />
     <Compile Include="Response\IResponse.cs" />
@@ -77,9 +78,6 @@
       <Project>{D7A24E58-68D0-4B10-A324-EA33C822FA56}</Project>
       <Name>dotless.Core</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -153,6 +153,7 @@
     <Compile Include="Specs\StringsFixture.cs" />
     <Compile Include="Specs\RulesetsFixture.cs" />
     <Compile Include="Specs\WhitespaceFixture.cs" />
+	<Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Config\ConfigurationFixture.cs" />
     <Compile Include="HttpFixtureBase.cs" />
     <Compile Include="Unit\Response\CssResponseFixture.cs" />
@@ -192,9 +193,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resource\Embedded2.less" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
