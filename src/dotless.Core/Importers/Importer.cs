@@ -356,6 +356,9 @@ namespace dotless.Core.Importers
                     using (var reader = new StreamReader(stream))
                     {
                         loader._resourceContent = reader.ReadToEnd();
+
+                        if (!String.IsNullOrEmpty(loader._resourceContent))
+                            return;
                     }
                 }
             }
