@@ -1072,7 +1072,7 @@ namespace dotless.Core.Parser
 
             if (importMatch && (path = Quoted(parser) || Url(parser)))
             {
-                bool isOnce = importMatch.Match.Groups.Count == 3 && importMatch.Match.Groups[2].Value == "once";
+                const bool isOnce = true;
                 
                 var features = MediaFeatures(parser);
 

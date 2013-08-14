@@ -687,16 +687,13 @@ body {
         }
 
         [Test]
-        public void ImportTwiceImportsTwice()
+        public void ImportTwiceImportsOnce()
         {
             var input = @"
 @import ""lib/color.less"";
 @import ""lib/color.less"";";
 
             var expected = @"
-body {
-  background-color: foo;
-}
 body {
   background-color: foo;
 }
