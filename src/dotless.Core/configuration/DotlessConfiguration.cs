@@ -44,7 +44,7 @@ namespace dotless.Core.configuration
 
         public DotlessConfiguration()
         {
-            LessSource = typeof (FileReader);
+            LessSource = new FileReader();
             MinifyOutput = false;
             Debug = false;
             CacheEnabled = true;
@@ -153,7 +153,7 @@ namespace dotless.Core.configuration
         /// <summary>
         ///  IFileReader type to use to get imported files
         /// </summary>
-        public Type LessSource { get; set; }
+        public IFileReader LessSource { get; set; }
 
         /// <summary>
         ///  Whether this is used in a web context or not

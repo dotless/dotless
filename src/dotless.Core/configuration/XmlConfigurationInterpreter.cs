@@ -1,4 +1,5 @@
 using System.Configuration;
+using dotless.Core.Input;
 
 namespace dotless.Core.configuration
 {
@@ -52,7 +53,7 @@ namespace dotless.Core.configuration
 
             var source = GetTypeValue(section, "source");
             if (source != null)
-                dotlessConfiguration.LessSource = source;
+                dotlessConfiguration.LessSource = (IFileReader)Activator.CreateInstance(source);
 
             dotlessConfiguration.Logger = GetTypeValue(section, "logger");
             dotlessConfiguration.Plugins.AddRange(GetPlugins(section));

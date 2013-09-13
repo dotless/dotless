@@ -88,7 +88,7 @@ namespace dotless.Core
             pandora.Service<ILessEngine>().Implementor<LessEngine>().Parameters("plugins").Set("default-plugins").Lifestyle.Transient();
             pandora.Service<IEnumerable<IPluginConfigurator>>("default-plugins").Instance(configuration.Plugins);
 
-            pandora.Service<IFileReader>().Implementor(configuration.LessSource);
+            pandora.Service<IFileReader>().Instance(configuration.LessSource);
         }
     }
 }
