@@ -28,6 +28,7 @@ namespace dotless.Core.configuration
             dotlessConfiguration.DisableParameters = GetBoolValue(section, "disableParameters") ?? dotlessConfiguration.DisableParameters;
             dotlessConfiguration.KeepFirstSpecialComment = GetBoolValue(section, "keepFirstSpecialComment") ?? dotlessConfiguration.KeepFirstSpecialComment;
             dotlessConfiguration.DisableVariableRedefines = GetBoolValue(section, "disableVariableRedefines") ?? dotlessConfiguration.DisableVariableRedefines;
+            dotlessConfiguration.DisableColorCompression = GetBoolValue(section, "disableColorCompression") ?? dotlessConfiguration.DisableColorCompression;
 
             var logLevel = GetStringValue(section, "log") ?? "default";
             switch (logLevel.ToLowerInvariant())

@@ -25,6 +25,7 @@
         public Stack<Media> MediaPath { get; private set; }
         public List<Media> MediaBlocks { get; private set; }
         public bool DisableVariableRedefines { get; set; }
+        public bool DisableColorCompression { get; set; }
         public bool KeepFirstSpecialComment { get; set; }
         public bool IsFirstSpecialCommentOutput { get; set; }
 
