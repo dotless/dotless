@@ -84,13 +84,12 @@ namespace dotless.Compiler
             }
 
             var filenames = Directory.GetFiles(inputDirectoryPath, inputFilePattern);
-            var engine = new EngineFactory(configuration).GetEngine();
 
             using (var watcher = new Watcher() { Watch = configuration.Watch })
             {
                 if (watcher.Watch && HasWildcards(inputFilePattern))
                 {
-                    CompilationFactoryDelegate factoryDelegate = (input) => CreationImpl(engine, input, Path.GetFullPath(outputDirectoryPath));
+                    CompilationFactoryDelegate factoryDelegate = (input) => CreationImpl(new EngineFactory(configuration).GetEngine(), input, Path.GetFullPath(outputDirectoryPath));
                     watcher.SetupDirectoryWatcher(Path.GetFullPath(inputDirectoryPath), inputFilePattern, factoryDelegate);
                 }
 
@@ -105,7 +104,7 @@ namespace dotless.Compiler
 
                     var outputFilePath = Path.GetFullPath(outputFile);
 
-                    CompilationDelegate compilationDelegate = () => CompileImpl(engine, inputFile.FullName, outputFilePath);
+                    CompilationDelegate compilationDelegate = () => CompileImpl(new EngineFactory(configuration).GetEngine(), inputFile.FullName, outputFilePath);
 
                     Console.WriteLine("[Compile]");
 
