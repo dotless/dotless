@@ -930,7 +930,7 @@ namespace dotless.Core.Parser
             if (!parser.Tokenizer.Match('['))
                 return null;
 
-            if (key = parser.Tokenizer.Match(@"(\\.|[a-z0-9_-])+") || Quoted(parser))
+            if (key = parser.Tokenizer.Match(@"(\\.|[a-z0-9_-])+", true) || Quoted(parser))
             {
                 Node op;
                 if ((op = parser.Tokenizer.Match(@"[|~*$^]?=")) &&
