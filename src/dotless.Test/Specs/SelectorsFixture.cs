@@ -700,5 +700,16 @@ a:nth-child(2) {
 }";
             AssertLessUnchanged(input);
         }
+        
+		[Test]
+		public void MixedCaseAttributeSelector()
+		{
+			var input = @"
+img[imgType=""sort""] {
+  foo: bar;
+}";
+			AssertLessUnchanged(input);
+		}
+
     }
 }
