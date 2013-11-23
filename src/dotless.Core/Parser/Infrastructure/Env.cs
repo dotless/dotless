@@ -142,24 +142,27 @@
         }
 
         /// <summary>
-        ///  Finds the first Ruleset matching the selector argument
+        ///  Finds the first Ruleset matching the selector argument that inherits from or is of type TRuleset (pass this as Ruleset if
+        ///  you are trying to find ANY Ruleset that matches the selector)
         /// </summary>
-        public IEnumerable<Closure> FindRulesets(Selector selector)
+        public IEnumerable<Closure> FindRulesets<TRuleset>(Selector selector) where TRuleset : Ruleset
         {
-            return Frames.Select(frame => frame.Find(this, selector, null))
-                .Select(matchedClosuresList => matchedClosuresList.Where(
+            return Frames
+                .Select(frame => frame.Find<TRuleset>(this, selector, null))
+                .Select(
+                    matchedClosuresList => matchedClosuresList.Where(
                             matchedClosure => {
                                 if (!Frames.Any(frame => frame.IsEqualOrClonedFrom(matchedClosure.Ruleset)))
                                     return true;
 
                                 var mixinDef = matchedClosure.Ruleset as MixinDefinition;
                                 if (mixinDef != null)
-                                {
                                     return mixinDef.Condition != null;
-                                }
 
                                 return false;
-                            }))
+                        }
+                    )
+                )
                 .FirstOrDefault(matchedClosuresList => matchedClosuresList.Count() != 0);
         }
 
