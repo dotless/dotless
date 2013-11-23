@@ -1544,5 +1544,40 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
 
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void MixinUsedInsideSelectorWithInsideSameNameAndInsideSiblingSelector()
+        {
+            // This relates to https://github.com/dotless/dotless/issues/136, the bare minimum reproduce case appears to be a mixin (eg. ".clearfix()"),
+            // followed by a selector (eg. ".panel-body") that imports that mixin follow by a selector whose name matches the mixin's name (".clearfix")
+            // that also imports that mixin. Previously this would lead to a stack overflow when the ".panel-body" selector was evaluated. Note that if
+            // only the ".clearfix()" mixin and the ".clearfix" selector are present then the stack overflow does not occur, it is the ".panel-body"
+            // selector that triggers it.
+            var input =
+                @"
+.clearfix() {
+  color: red;
+}
+
+.panel-body {
+  .clearfix();
+}
+
+.clearfix {
+  .clearfix();
+}
+";
+
+            var expected = @"
+.panel-body {
+  color: red;
+}
+.clearfix {
+  color: red;
+}";
+
+            AssertLess(input, expected);
+        }
+
     }
 }
