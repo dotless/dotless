@@ -25,8 +25,11 @@ namespace dotless.Core.Parser.Tree
         public override Node Evaluate(Env env)
         {
             var found = false;
-            var closures = env.FindRulesets(Selector);
 
+            // To address bug https://github.com/dotless/dotless/issues/136, where a mixin and ruleset selector may have the same name, we
+            // need to favour matching a MixinDefinition with the required Selector and only fall back to considering other Ruleset types
+            // if no match is found.
+            var closures = env.FindRulesets<MixinDefinition>(Selector) ?? env.FindRulesets<Ruleset>(Selector);
             if(closures == null)
                 throw new ParsingException(Selector.ToCSS(env).Trim() + " is undefined", Location);
 

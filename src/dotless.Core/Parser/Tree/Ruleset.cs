@@ -85,17 +85,20 @@ namespace dotless.Core.Parser.Tree
             return Rules.OfType<Ruleset>().ToList();
         }
 
-        public List<Closure> Find(Env env, Selector selector, Ruleset self)
+        public List<Closure> Find<TRuleset>(Env env, Selector selector, Ruleset self) where TRuleset : Ruleset
         {
             self = self ?? this;
             var rules = new List<Closure>();
-            var key = selector.ToCSS(env);
 
+            var key = typeof(TRuleset).ToString() + ":" + selector.ToCSS(env);
             if (_lookups.ContainsKey(key))
                 return _lookups[key];
 
             var validRulesets = Rulesets().Where(rule =>
                 {
+                    if (!typeof(TRuleset).IsAssignableFrom(rule.GetType()))
+                        return false;
+
                     if (rule != self)
                         return true;
 
@@ -116,7 +119,7 @@ namespace dotless.Core.Parser.Tree
                     if (selector.Elements.Count > 1)
                     {
                         var remainingSelectors = new Selector(new NodeList<Element>(selector.Elements.Skip(1)));
-                        var closures = rule.Find(env, remainingSelectors, self);
+                        var closures = rule.Find<Ruleset>(env, remainingSelectors, self);
 
                         foreach (var closure in closures)
                         {
