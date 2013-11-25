@@ -106,5 +106,34 @@ a:hover {
 
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void IESlash9HackAllowedForEvaluatedValues()
+        {
+            // This has been a problem, where a value must be evaluated a ParsingException would be raised if that value was followed by the
+            // IE-targeting "\9" hack
+            var input = @"li {
+  color: #f00 \9;
+}
+";
+            var expected = @"li {
+  color: red \9;
+}
+";
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void IESlash9HackAllowedForNonEvaluatedValues()
+        {
+            // This has never been a problem but this test is here to illustrate the difference between this parsing and the work required
+            // in IESlash9HackAllowedForEvaluatedValues
+            var input = @"li {
+  color: red \9;
+}
+";
+            var expected = input;
+            AssertLess(input, expected);
+        }
     }
 }
