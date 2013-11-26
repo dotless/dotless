@@ -87,6 +87,27 @@ namespace dotless.Test.Specs
         }
 
 		[Test]
+        public void MixinCallWithSemiColonSeparator()
+        {
+            // MixinsArgsTwoArgs_with_semi_colon_separator tests the a MixinDefinition will support semicolon-separated arguments while this
+            // test that a MixinCall will support them
+            var input = @".size(@width, @height) {
+  width: @width;
+  height: @height;
+}
+.container {
+  .size(100px; 50px);
+}";
+
+            var expected = @".container {
+  width: 100px;
+  height: 50px;
+}";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
 		public void MixinsArgsTwoArgs_with_semi_colon_separator()
 		{
 			var input =

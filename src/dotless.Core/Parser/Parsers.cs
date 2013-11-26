@@ -545,7 +545,7 @@ namespace dotless.Core.Parser
 
                     args.Add(new NamedArgument { Name = name, Value = value });
 
-                    if (!parser.Tokenizer.Match(','))
+                    if (!parser.Tokenizer.Match(',') && !parser.Tokenizer.Match(';'))
                         break;
                 }
                 Expect(parser, ')');
