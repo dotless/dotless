@@ -36,6 +36,7 @@ namespace dotless.Core.Parser
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Exceptions;
     using Infrastructure;
     using Infrastructure.Nodes;
@@ -1439,7 +1440,14 @@ namespace dotless.Core.Parser
 
             GatherComments(parser);
 
-            var important = Important(parser);
+            var important = string.Join(
+                " ",
+                new[]
+                {
+                    IESlash9Hack(parser),
+                    Important(parser)
+                }.Where(x => x != "").ToArray()
+            );
 
             if (expressions.Count > 0)
             {
@@ -1461,6 +1469,12 @@ namespace dotless.Core.Parser
             var important = parser.Tokenizer.Match(@"!\s*important");
 
             return important == null ? "" : important.Value;
+        }
+
+        public string IESlash9Hack(Parser parser)
+        {
+            var slashNine = parser.Tokenizer.Match(@"\\9");
+            return slashNine == null ? "" : slashNine.Value;
         }
 
         public Expression Sub(Parser parser)
