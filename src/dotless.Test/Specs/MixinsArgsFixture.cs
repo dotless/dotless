@@ -86,6 +86,41 @@ namespace dotless.Test.Specs
             AssertLess(input, expected);
         }
 
+		[Test]
+		public void MixinsArgsTwoArgs_with_semi_colon_separator()
+		{
+			var input =
+				@"
+.mixin (@a: 1px; @b: 50%) {
+  width: @a * 5;
+  height: @b - 1%;
+}
+
+.mixina (@style, @width, @color: black) {
+    border: @width @style @color;
+}
+
+.two-args {
+  color: blue;
+  .mixin(2px, 100%);
+  .mixina(dotted, 2px);
+}
+";
+
+			var expected =
+				@"
+.two-args {
+  color: blue;
+  width: 10px;
+  height: 99%;
+  border: 2px dotted black;
+}
+";
+
+			AssertLess(input, expected);
+		}
+
+
         [Test]
         public void MixinCallError()
         {
