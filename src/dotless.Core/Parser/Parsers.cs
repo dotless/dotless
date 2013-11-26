@@ -763,10 +763,14 @@ namespace dotless.Core.Parser
         // A Rule terminator. Note that we use `Peek()` to check for '}',
         // because the `block` rule will be expecting it, but we still need to make sure
         // it's there, if ';' was ommitted.
-        //
+        // Also note that there might be multiple semicolons between consecutive
+        // declarations, and those semicolons may be separated by whitespace.
         public bool End(Parser parser)
         {
-            return parser.Tokenizer.Match(';') || parser.Tokenizer.Peek('}');
+            // The regular expression searches for a semicolon which may be followed by whitespace and other semicolons.
+            const string SemicolonSearch = @";[;\s]*";
+
+            return parser.Tokenizer.Match(SemicolonSearch) || parser.Tokenizer.Peek('}');
         }
 
         //
