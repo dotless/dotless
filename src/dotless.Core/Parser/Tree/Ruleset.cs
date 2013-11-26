@@ -116,7 +116,9 @@ namespace dotless.Core.Parser.Tree
             {
                 if (rule.Selectors && rule.Selectors.Any(selector.Match))
                 {
-                    if (selector.Elements.Count > 1)
+                    if ((selector.Elements.Count == 1) || rule.Selectors.Any(s => s.ToCSS(new Env()) == selector.ToCSS(new Env())))
+                        rules.Add(new Closure { Ruleset = rule, Context = new List<Ruleset> { rule } });
+                    else if (selector.Elements.Count > 1)
                     {
                         var remainingSelectors = new Selector(new NodeList<Element>(selector.Elements.Skip(1)));
                         var closures = rule.Find<Ruleset>(env, remainingSelectors, self);
@@ -128,8 +130,6 @@ namespace dotless.Core.Parser.Tree
 
                         rules.AddRange(closures);
                     }
-                    else
-                        rules.Add(new Closure { Ruleset = rule, Context = new List<Ruleset> { rule } });
                 }
             }
             return _lookups[key] = rules;

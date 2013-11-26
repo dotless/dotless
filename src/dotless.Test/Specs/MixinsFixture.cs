@@ -1579,5 +1579,31 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
             AssertLess(input, expected);
         }
 
+        [Test]
+        public void MultipleElementSelectorMixin()
+        {
+            // Previously, dotLess would require that mixins be selectors with single elements (eg. ".dropdown-menu") since the matching algorithm
+            // would try to match only a single element and then drill down into the selector's rules for any additional elements.. Bootstrap uses
+            // multi-element mixin selectors (eg. ".pull-right > .dropdown"), the drilling down should only be done if the selector does not already
+            // fully match the specified selector.
+            var input = @".pull-right > .dropdown-menu {
+  right: 0;
+}
+
+.navbar-right {
+  .dropdown-menu {
+    .pull-right > .dropdown-menu();
+  }
+}";
+
+            var expected = @".pull-right > .dropdown-menu {
+  right: 0;
+}
+.navbar-right .dropdown-menu {
+  right: 0;
+}";
+            
+            AssertLess(input, expected);
+        }
     }
 }
