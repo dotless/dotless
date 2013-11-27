@@ -125,5 +125,64 @@ great,
 
             AssertLess(input, expected);
         }
+
+        //
+        // CSS/LESS may contain empty declarations. Instead of throwing an exception,
+        // one can simply ignore them, just like browsers would do.
+        //
+        [Test]
+        public void ConsecutiveSemicolons()
+        {
+            var input = ".semicolon { background:red;; color:blue; }";
+
+            var expected = ".semicolon{background:red;color:blue}";
+
+            AssertLess(input, expected);
+        }
+
+        //
+        // CSS/LESS may contain multiple empty declarations. Instead of throwing an
+        // exception, one can simply ignore them, just like browsers would do.
+        //
+        [Test]
+        public void ConsecutiveMultipleSemicolons()
+        {
+            var input = ".semicolon { background:red;;; color:blue; }";
+
+            var expected = ".semicolon{background:red;color:blue}";
+
+            AssertLess(input, expected);
+        }
+
+        //
+        // CSS/LESS may contain declarations which have only whitespace characters
+        // inside it. Instead of throwing an exception, one can simply ignore them,
+        // just like browsers would do.
+        //
+        [Test]
+        public void ConsecutiveSemicolonsWithWhitespace()
+        {
+            var input = @".semicolon { background:red;   
+  ; color:blue; }";
+
+            var expected = ".semicolon{background:red;color:blue}";
+
+            AssertLess(input, expected);
+        }
+
+        //
+        // CSS/LESS may contain empty declaration at the end of the declaration block.
+        // Instead of throwing an exception, one can simply ignore it, just like browsers
+        // would do.
+        //
+        [Test]
+        public void ConsecutiveSemicolonsBeforeClosingCurlyBracket()
+        {
+            var input = ".semicolon { background:red; color:blue;; }";
+
+            var expected = ".semicolon{background:red;color:blue}";
+
+            AssertLess(input, expected);
+        }
     }
 }
