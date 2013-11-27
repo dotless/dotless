@@ -545,7 +545,7 @@ namespace dotless.Core.Parser
 
                     args.Add(new NamedArgument { Name = name, Value = value });
 
-                    if (!parser.Tokenizer.Match(','))
+                    if (!parser.Tokenizer.Match(',') && !parser.Tokenizer.Match(';'))
                         break;
                 }
                 Expect(parser, ')');
@@ -595,7 +595,7 @@ namespace dotless.Core.Parser
         public MixinDefinition MixinDefinition(Parser parser)
         {
             if ((parser.Tokenizer.CurrentChar != '.' && parser.Tokenizer.CurrentChar != '#') ||
-                parser.Tokenizer.Peek(@"[^{]*(;|})"))
+                parser.Tokenizer.Peek(@"[^{]*}"))
                 return null;
 
             var index = parser.Tokenizer.Location.Index;
@@ -655,7 +655,7 @@ namespace dotless.Core.Parser
 
                 GatherAndPullComments(parser);
 
-                if (!parser.Tokenizer.Match(','))
+				if (!(parser.Tokenizer.Match(',') || parser.Tokenizer.Match(';')))
                     break;
 
                 GatherAndPullComments(parser);
