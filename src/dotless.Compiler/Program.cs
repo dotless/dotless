@@ -168,7 +168,7 @@ namespace dotless.Compiler
                 var files = new List<string>();
                 files.Add(inputFilePath);
                 foreach (var file in engine.GetImports())
-                    files.Add(Path.Combine(directoryPath, Path.ChangeExtension(file, "less")));
+					files.Add(Path.Combine(directoryPath, Path.GetExtension(file)));
                 engine.ResetImports();
                 return files;
             }
