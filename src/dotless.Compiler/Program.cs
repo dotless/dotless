@@ -172,10 +172,13 @@ namespace dotless.Compiler
                 engine.ResetImports();
                 return files;
             }
-            catch (IOException)
+            catch (IOException ex)
             {
+                Console.WriteLine("[FAILED]");
+                Console.WriteLine("Compilation failed: {0}", ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 returnCode = -2;
-                throw;
+                return null;
             }
             catch (Exception ex)
             {
