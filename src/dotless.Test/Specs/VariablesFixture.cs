@@ -6,6 +6,95 @@ namespace dotless.Test.Specs
     public class VariablesFixture : SpecFixtureBase
     {
         [Test]
+        public void VariableOerators_1()
+        {
+            var input = @"
+@value: 10px;
+@var: @value;
+.mixin(@value:8px) {
+  width: @var;
+}
+.mixin{
+  .mixin();
+}";
+            var expected = @"
+.mixin {
+  width: 8px;
+}";
+            AssertLess(input, expected);
+        }
+
+
+        [Test]
+        public void VariableOerators_2()
+        {
+            var input = @"
+@value: 10px;
+@var: @value;
+.mixin(@value:@value) {
+  width: @var;
+}
+.mixin{
+  .mixin(8px);
+}";
+            var expected = @"
+.mixin {
+  width: 8px;
+}";
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void VariableOerators_3()
+        {
+            var input = @"
+@value: 10px;
+@var: @value;
+.mixin(@value:@value) {
+  width: @var;
+}
+.mixin{
+  .mixin(8px);
+}
+.mixin1{
+  .mixin(12px);
+}";
+            var expected = @"
+.mixin {
+  width: 8px;
+}
+.mixin1 {
+  width: 12px;
+}";
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void VariableOerators_4()
+        {
+            var input = @"
+@value1: 10px;
+@var: @value1;
+.mixin(@value1:@value) {
+  width: @var;
+}
+.mixin{
+  .mixin(8px);
+}
+.mixin1{
+  .mixin(12px);
+}";
+            var expected = @"
+.mixin {
+  width: 8px;
+}
+.mixin1 {
+  width: 12px;
+}";
+            AssertLess(input, expected);
+        }
+
+        [Test]
         public void VariableOerators()
         {
             var input = @"
