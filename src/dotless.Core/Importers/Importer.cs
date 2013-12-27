@@ -17,12 +17,12 @@ namespace dotless.Core.Importers
 
         public static Regex EmbeddedResourceRegex { get { return _embeddedResourceRegex; } }
         public IFileReader FileReader { get; set; }
-        
+
         /// <summary>
         ///  List of successful imports
         /// </summary>
         public List<string> Imports { get; set; }
-        
+
         public Func<Parser> Parser { get; set; }
         protected readonly List<string> _paths = new List<string>();
 
@@ -35,7 +35,7 @@ namespace dotless.Core.Importers
         {
             get
             {
-                return System.Environment.CurrentDirectory;
+                return AppDomain.CurrentDomain.BaseDirectory;
             }
         }
 
@@ -55,11 +55,13 @@ namespace dotless.Core.Importers
         public bool InlineCssFiles { get; set; }
 
 
-        public Importer() : this(new FileReader())
+        public Importer()
+            : this(new FileReader())
         {
         }
 
-        public Importer(IFileReader fileReader) : this(fileReader, false, false, false)
+        public Importer(IFileReader fileReader)
+            : this(fileReader, false, false, false)
         {
         }
 
@@ -155,8 +157,8 @@ namespace dotless.Core.Importers
             }
 
             var file = import.Path;
-            
-            if (!IsNonRelativeUrl(file)) 
+
+            if (!IsNonRelativeUrl(file))
             {
                 file = GetAdjustedFilePath(import.Path, _paths);
             }
@@ -170,7 +172,7 @@ namespace dotless.Core.Importers
             {
                 if (InlineCssFiles)
                 {
-                    if (IsEmbeddedResource(import.Path) && ImportEmbeddedCssContents(file, import))                         
+                    if (IsEmbeddedResource(import.Path) && ImportEmbeddedCssContents(file, import))
                         return ImportAction.ImportCss;
                     if (ImportCssFileContents(file, import))
                         return ImportAction.ImportCss;
