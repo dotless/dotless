@@ -142,7 +142,7 @@ namespace dotless.Core.Parser.Tree
 
         public override Node Evaluate(Env env)
         {
-            if(Evaluated) return this;
+            if (Evaluated) return this;
 
             // create a clone so it is non destructive
             var clone = new Ruleset(new NodeList<Selector>(Selectors), new NodeList(Rules), OriginalRuleset).ReducedFrom<Ruleset>(this);
@@ -177,7 +177,7 @@ namespace dotless.Core.Parser.Tree
 
             NodeHelper.ExpandNodes<MixinCall>(env, Rules);
 
-            for (var i = 0; i < Rules.Count; i++)
+            for (var i = Rules.Count - 1; i >= 0; i--)
             {
                 Rules[i] = Rules[i].Evaluate(env);
             }
@@ -197,7 +197,7 @@ namespace dotless.Core.Parser.Tree
             if (!Rules.Any())
                 return;
 
-            ((Ruleset) Evaluate(env)).AppendCSS(env, new Context());
+            ((Ruleset)Evaluate(env)).AppendCSS(env, new Context());
         }
 
         /// <summary>
