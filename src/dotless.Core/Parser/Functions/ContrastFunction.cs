@@ -27,9 +27,14 @@ namespace dotless.Core.Parser.Functions
             var darkColor = Arguments.Count > 2 ? (Color)Arguments[2] : new Color(0d, 0d, 0d);
             var threshold = Arguments.Count > 3 ? ((Number) Arguments[3]).ToNumber() : 0.43d;
 
-            var luma = (0.2126 * color.R / 255d) + (0.7152 * color.G / 255d) + (0.0722 * color.B / 255d);
+            if (darkColor.Luma > lightColor.Luma)
+            {
+                var tempColor = lightColor;
+                lightColor = darkColor;
+                darkColor = tempColor;
+            }
 
-            return (luma < threshold) ? lightColor : darkColor;
+            return (color.Luma < threshold) ? lightColor : darkColor;
         }
     }
 }

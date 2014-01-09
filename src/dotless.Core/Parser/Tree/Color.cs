@@ -283,6 +283,14 @@ namespace dotless.Core.Parser.Tree
             set { RGB[2] = value; }
         }
 
+        public double Luma
+        {
+            get
+            {
+                return (0.2126 * R / 255d) + (0.7152 * G / 255d) + (0.0722 * B / 255d);
+            }
+        }
+
         public override void AppendCSS(Env env)
         {
             var rgb = RGB
