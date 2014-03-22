@@ -27,6 +27,9 @@ You may need to execute the following command before being able to execute the s
 Set-ExecutionPolicy remotesigned
 (Make sure you run this as administrator and inside PowerShell)
 
+If you get an error about git-describe or similar, exit Powershell, add the path to your Git binaries to 
+the PATH env variable, then open up Powershell again.
+
 
 
 ==== NAnt ====
