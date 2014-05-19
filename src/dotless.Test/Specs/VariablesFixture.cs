@@ -48,6 +48,27 @@ namespace dotless.Test.Specs
         }
 
         [Test]
+        public void NumericVariables()
+        {
+            var input =
+                @"@wiget-container: widget-container-8675309;
+
+#@{wiget-container} {
+    color: blue;
+}";
+
+            var expected =
+                @"
+#widget-container-8675309 {
+  color: blue;
+}
+";
+
+            AssertLess(input, expected);
+
+        }
+
+        [Test]
         public void VariablesChangingUnit()
         {
             var input =
