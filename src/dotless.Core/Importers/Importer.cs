@@ -215,9 +215,6 @@ namespace dotless.Core.Importers
             }
             else
             {
-                if (!IsNonRelativeUrl(lessPath)) {
-                    lessPath = Path.Combine(CurrentDirectory, lessPath);
-                }
                 bool fileExists = FileReader.DoesFileExist(lessPath);
                 if (!fileExists && !lessPath.EndsWith(".less"))
                 {
