@@ -34,7 +34,6 @@
 
 namespace dotless.Core.Parser
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Exceptions;
@@ -70,13 +69,13 @@ namespace dotless.Core.Parser
         {
             Node node;
             var root = new NodeList();
-            NodeList comments = null;
 
             GatherComments(parser);
 
             while (node = MixinDefinition(parser) || Rule(parser) || PullComments() || Ruleset(parser) ||
                           MixinCall(parser) || Directive(parser))
             {
+                NodeList comments;
                 if (comments = PullComments())
                 {
                     root.AddRange(comments);
@@ -99,6 +98,7 @@ namespace dotless.Core.Parser
             return root;
         }
 
+        private NodeList CurrentExtends { get; set; }
         private NodeList CurrentComments { get; set; }
 
         /// <summary>
@@ -381,6 +381,13 @@ namespace dotless.Core.Parser
                 return NodeProvider.Variable("@" + name.Match.Groups[1].Value, parser.Tokenizer.GetNodeLocation(index));
 
             return null;
+        }
+
+        public Extender ExtendRule(Parser parser)
+        {
+            RegexMatchResult name;
+            var index = parser.Tokenizer.Location.Index;
+
         }
 
         //
@@ -819,7 +826,7 @@ namespace dotless.Core.Parser
 
             PushComments();
             GatherComments(parser); // to collect, combinator must have picked up something which would require memory anyway
-            Node e = parser.Tokenizer.Match(@"[.#:]?(\\.|[a-zA-Z0-9_-])+") || parser.Tokenizer.Match('*') || parser.Tokenizer.Match('&') ||
+            Node e = ExtendRule(parser) || parser.Tokenizer.Match(@"[.#:]?(\\.|[a-zA-Z0-9_-])+") || parser.Tokenizer.Match('*') || parser.Tokenizer.Match('&') ||
                 Attribute(parser) || parser.Tokenizer.MatchAny(@"\([^)@]+\)") || parser.Tokenizer.Match(@"[\.#](?=@\{)") || VariableCurly(parser);
 
             if (!e)

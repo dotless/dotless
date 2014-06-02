@@ -89,6 +89,7 @@
     <Compile Include="Specs\Compression\ImportFixture.cs" />
     <Compile Include="Specs\Compression\SelectorsFixture.cs" />
     <Compile Include="Specs\Compression\WhitespaceFixture.cs" />
+    <Compile Include="Specs\ExtendFixture.cs" />
     <Compile Include="Specs\Functions\ArgbFixture.cs" />
     <Compile Include="Specs\Functions\BlendModesFixture.cs" />
     <Compile Include="Specs\Functions\GradientImageFixture.cs" />
@@ -153,7 +154,7 @@
     <Compile Include="Specs\StringsFixture.cs" />
     <Compile Include="Specs\RulesetsFixture.cs" />
     <Compile Include="Specs\WhitespaceFixture.cs" />
-	<Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Config\ConfigurationFixture.cs" />
     <Compile Include="HttpFixtureBase.cs" />
     <Compile Include="Unit\Response\CssResponseFixture.cs" />

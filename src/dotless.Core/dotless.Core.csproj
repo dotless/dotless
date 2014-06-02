@@ -105,6 +105,7 @@
     <Compile Include="Parser\ParserLocation.cs" />
     <Compile Include="Parser\Tree\Assignment.cs" />
     <Compile Include="Parser\Tree\Condition.cs" />
+    <Compile Include="Parser\Tree\Extender.cs" />
     <Compile Include="Parser\Tree\Media.cs" />
     <Compile Include="Parser\Tree\RepeatEntity.cs" />
     <Compile Include="Parser\Tree\Paren.cs" />
@@ -124,7 +125,7 @@
     <Compile Include="Plugins\PluginParameter.cs" />
     <Compile Include="Plugins\RtlPlugin.cs" />
     <Compile Include="Plugins\VisitorPlugin.cs" />
-	<Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Cache\ICache.cs">
       <SubType>Code</SubType>
     </Compile>
