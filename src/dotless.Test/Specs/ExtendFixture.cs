@@ -17,7 +17,8 @@
             string expected = @"nav ul {
   background: blue;
 }
-.inline, nav ul {
+.inline,
+nav ul {
   color: red;
 }";
             AssertLess(input, expected);

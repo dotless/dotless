@@ -30,7 +30,14 @@
             NodeList<Element> evaldElements = new NodeList<Element>();
             foreach (Element element in Elements)
             {
-                evaldElements.Add(element.Evaluate(env) as Element);
+                if (element.NodeValue is SelectorExtend)
+                {
+                    env.AddExtension(this, ((SelectorExtend)element.NodeValue).Selectors);
+                }
+                else
+                {
+                    evaldElements.Add(element.Evaluate(env) as Element);
+                }
             }
 
             return new Selector(evaldElements).ReducedFrom<Selector>(this);

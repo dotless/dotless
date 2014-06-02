@@ -29,6 +29,8 @@
 //
 
 
+using System.Net.NetworkInformation;
+
 #pragma warning disable 665
 // ReSharper disable RedundantNameQualifier
 
@@ -72,7 +74,7 @@ namespace dotless.Core.Parser
 
             GatherComments(parser);
 
-            while (node = MixinDefinition(parser) || Rule(parser) || PullComments() || Ruleset(parser) ||
+            while (node = MixinDefinition(parser) || ExtendRule(parser) || Rule(parser) || PullComments() || Ruleset(parser) ||
                           MixinCall(parser) || Directive(parser))
             {
                 NodeList comments;
@@ -98,7 +100,6 @@ namespace dotless.Core.Parser
             return root;
         }
 
-        private NodeList CurrentExtends { get; set; }
         private NodeList CurrentComments { get; set; }
 
         /// <summary>
@@ -156,7 +157,7 @@ namespace dotless.Core.Parser
 
         // We create a Comment node for CSS comments `/* */`,
         // but keep the LeSS comments `//` silent, by just skipping
-        // over them.
+        // over them.e
         public Comment Comment(Parser parser)
         {
             var index = parser.Tokenizer.Location.Index;
@@ -383,11 +384,38 @@ namespace dotless.Core.Parser
             return null;
         }
 
-        public Extender ExtendRule(Parser parser)
+        /// 
+        /// An extend statement placed at the end of a rule
+        /// 
+        /// <param name="parser"></param>
+        /// <returns></returns>
+        public SelectorExtend ExtendRule(Parser parser)
         {
-            RegexMatchResult name;
+            RegexMatchResult extendKeyword;
             var index = parser.Tokenizer.Location.Index;
 
+            if ((extendKeyword = parser.Tokenizer.Match(@"\&?:extend\(")) != null)
+            {
+                var selectors = new List<Selector>();
+
+                Selector s;
+                while (s = Selector(parser))
+                {
+                    selectors.Add(s);
+                    if (!parser.Tokenizer.Match(','))
+                        break;
+                }
+                if (!parser.Tokenizer.Match(')'))
+                {
+                    throw new ParsingException(@"Extend rule not correctly terminated",parser.Tokenizer.GetNodeLocation(index));
+                }
+                if (extendKeyword.Match.Value[0] == '&')
+                {
+                    parser.Tokenizer.Match(';');
+                }
+                return NodeProvider.SelectorExtend(selectors, parser.Tokenizer.GetNodeLocation(index));
+            }
+            return null;
         }
 
         //
@@ -1045,13 +1073,14 @@ namespace dotless.Core.Parser
 
                 if (End(parser))
                 {
-                    if(value == null)
+                    if (value == null)
                         throw new ParsingException(name + " is incomplete", parser.Tokenizer.GetNodeLocation());
 
                     value.PreComments = preValueComments;
                     value.PostComments = postValueComments;
 
-                    var rule = NodeProvider.Rule(name, value, parser.Tokenizer.GetNodeLocation(memo.TokenizerLocation.Index));
+                    var rule = NodeProvider.Rule(name, value,
+                        parser.Tokenizer.GetNodeLocation(memo.TokenizerLocation.Index));
                     rule.PostNameComments = postNameComments;
                     PopComments();
                     return rule;
