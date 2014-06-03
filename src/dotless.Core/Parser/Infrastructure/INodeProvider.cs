@@ -54,6 +54,6 @@ namespace dotless.Core.Parser.Infrastructure
         Quoted Quoted(string value, string contents, bool escaped, NodeLocation location);
 
         //extenders
-        SelectorExtend SelectorExtend(List<Selector> selectors, NodeLocation getNodeLocation);
+        Extend Extend(List<Selector> selectors, NodeLocation getNodeLocation);
     }
 }

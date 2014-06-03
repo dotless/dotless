@@ -30,9 +30,9 @@
             NodeList<Element> evaldElements = new NodeList<Element>();
             foreach (Element element in Elements)
             {
-                if (element.NodeValue is SelectorExtend)
+                if (element.NodeValue is Extend)
                 {
-                    env.AddExtension(this, ((SelectorExtend)element.NodeValue).Selectors);
+                    env.AddExtension(this, ((Extend)element.NodeValue).Selectors);
                 }
                 else
                 {

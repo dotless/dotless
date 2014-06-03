@@ -389,7 +389,7 @@ namespace dotless.Core.Parser
         /// 
         /// <param name="parser"></param>
         /// <returns></returns>
-        public SelectorExtend ExtendRule(Parser parser)
+        public Extend ExtendRule(Parser parser)
         {
             RegexMatchResult extendKeyword;
             var index = parser.Tokenizer.Location.Index;
@@ -413,7 +413,7 @@ namespace dotless.Core.Parser
                 {
                     parser.Tokenizer.Match(';');
                 }
-                return NodeProvider.SelectorExtend(selectors, parser.Tokenizer.GetNodeLocation(index));
+                return NodeProvider.Extend(selectors, parser.Tokenizer.GetNodeLocation(index));
             }
             return null;
         }

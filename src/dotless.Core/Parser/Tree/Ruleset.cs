@@ -177,7 +177,7 @@ namespace dotless.Core.Parser.Tree
 
             NodeHelper.ExpandNodes<MixinCall>(env, Rules);
 
-            foreach (var r in Rules.OfType<SelectorExtend>().ToArray())
+            foreach (var r in Rules.OfType<Extend>().ToArray())
             {
                 env.AddExtension(this.Selectors.First(),r.Selectors);
                 Rules.Remove(r);

@@ -110,7 +110,7 @@
     <Compile Include="Parser\Tree\RepeatEntity.cs" />
     <Compile Include="Parser\Tree\Paren.cs" />
     <Compile Include="Parser\Tree\KeyFrame.cs" />
-    <Compile Include="Parser\Tree\SelectorExtend.cs" />
+    <Compile Include="Parser\Tree\Extend.cs" />
     <Compile Include="Parser\Tree\Script.cs" />
     <Compile Include="Parser\Tree\Root.cs" />
     <Compile Include="Parser\Zone.cs" />

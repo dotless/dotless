@@ -157,9 +157,9 @@ namespace dotless.Core.Parser.Infrastructure
             return new Quoted(value, contents, escaped) { Location = location };
         }
 
-        public SelectorExtend SelectorExtend(List<Selector> selectors, NodeLocation location)
+        public Extend Extend(List<Selector> selectors, NodeLocation location)
         {
-            return new SelectorExtend(selectors) { Location = location };
+            return new Extend(selectors) { Location = location };
         }
 
         public Paren Paren(Node value, NodeLocation location)

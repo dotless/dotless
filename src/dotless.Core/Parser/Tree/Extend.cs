@@ -7,9 +7,9 @@ using dotless.Core.Parser.Infrastructure.Nodes;
 
 namespace dotless.Core.Parser.Tree
 {
-    public class SelectorExtend : Node
+    public class Extend : Node
     {
-        public SelectorExtend(List<Selector> selectors)
+        public Extend(List<Selector> selectors)
         {
             Selectors = selectors;
         }
