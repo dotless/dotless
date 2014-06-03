@@ -15,6 +15,7 @@
     {
         private readonly Dictionary<string, Type> _functionTypes;
         private readonly List<IPlugin> _plugins;
+        private readonly List<Extender> _extensions;
 
         public Stack<Ruleset> Frames { get; protected set; }
         public bool Compress { get; set; }
@@ -43,6 +44,7 @@
 
             _plugins = new List<IPlugin>();
             _functionTypes = functions ?? new Dictionary<string, Type>();
+            _extensions = new List<Extender>();
 
             if (_functionTypes.Count == 0)
                 AddCoreFunctions();
@@ -234,6 +236,26 @@
 
             if(name.Contains("-"))
                 yield return new KeyValuePair<string, Type>(name.Replace("-", ""), t);
+        }
+
+        public void AddExtension(Selector selector, IEnumerable<Selector> extends)
+        {
+            Extender match = null;
+            foreach (var extending in extends)
+            {
+                if ((match = _extensions.FirstOrDefault(e => e.BaseSelector.Match(extending))) == null)
+                {
+                    match = new Extender(extending);
+                    _extensions.Add(match);
+                }
+
+                match.AddExtension(selector);
+            }
+        }
+
+        public Extender FindExtension(Selector selector)
+        {
+            return _extensions.FirstOrDefault(e => e.BaseSelector.Match(selector));
         }
     }
 }

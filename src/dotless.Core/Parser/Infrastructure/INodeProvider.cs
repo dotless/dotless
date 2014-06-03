@@ -52,5 +52,8 @@ namespace dotless.Core.Parser.Infrastructure
         Comment Comment(string value, NodeLocation location);
         TextNode TextNode(string contents, NodeLocation location);
         Quoted Quoted(string value, string contents, bool escaped, NodeLocation location);
+
+        //extenders
+        Extend Extend(List<Selector> selectors, NodeLocation getNodeLocation);
     }
 }

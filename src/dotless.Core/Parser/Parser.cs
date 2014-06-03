@@ -7,8 +7,6 @@ namespace dotless.Core.Parser
     using Infrastructure;
     using Stylizers;
     using Tree;
-    using dotless.Core.Plugins;
-    using System.Collections.Generic;
 
     //
     // less.js - parser
@@ -122,7 +120,7 @@ namespace dotless.Core.Parser
 
         public Ruleset Parse(string input, string fileName)
         {
-            Ruleset root = null;
+            Ruleset root;
             FileName = fileName;
 
             try
@@ -130,7 +128,7 @@ namespace dotless.Core.Parser
                 Tokenizer.SetupInput(input, fileName);
 
                 var parsers = new Parsers(NodeProvider);
-                root = new Root(parsers.Primary(this), e => GenerateParserError(e));
+                root = new Root(parsers.Primary(this), GenerateParserError);
             }
             catch (ParsingException e)
             {

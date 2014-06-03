@@ -98,6 +98,7 @@
     <Compile Include="Parser\Functions\HexFunction.cs" />
     <Compile Include="Parser\Functions\ContrastFunction.cs" />
     <Compile Include="Parser\Infrastructure\Closure.cs" />
+    <Compile Include="Parser\Infrastructure\Extender.cs" />
     <Compile Include="Parser\Infrastructure\MixinMatch.cs" />
     <Compile Include="Parser\Infrastructure\NamedArgument.cs" />
     <Compile Include="Parser\Infrastructure\Nodes\BooleanNode.cs" />
@@ -109,6 +110,7 @@
     <Compile Include="Parser\Tree\RepeatEntity.cs" />
     <Compile Include="Parser\Tree\Paren.cs" />
     <Compile Include="Parser\Tree\KeyFrame.cs" />
+    <Compile Include="Parser\Tree\Extend.cs" />
     <Compile Include="Parser\Tree\Script.cs" />
     <Compile Include="Parser\Tree\Root.cs" />
     <Compile Include="Parser\Zone.cs" />
@@ -124,7 +126,7 @@
     <Compile Include="Plugins\PluginParameter.cs" />
     <Compile Include="Plugins\RtlPlugin.cs" />
     <Compile Include="Plugins\VisitorPlugin.cs" />
-	<Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Cache\ICache.cs">
       <SubType>Code</SubType>
     </Compile>

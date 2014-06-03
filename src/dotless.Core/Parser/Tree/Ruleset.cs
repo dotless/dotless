@@ -177,6 +177,12 @@ namespace dotless.Core.Parser.Tree
 
             NodeHelper.ExpandNodes<MixinCall>(env, Rules);
 
+            foreach (var r in Rules.OfType<Extend>().ToArray())
+            {
+                env.AddExtension(this.Selectors.First(),r.Selectors);
+                Rules.Remove(r);
+            }
+
             for (var i = 0; i < Rules.Count; i++)
             {
                 Rules[i] = Rules[i].Evaluate(env);
@@ -240,6 +246,14 @@ namespace dotless.Core.Parser.Tree
                     env.Output.Append(string.Format("/* {0}:L{1} */\n", Location.FileName, Zone.GetLineNumber(Location)));
                 }
                 paths.AppendSelectors(context, Selectors);
+                foreach (var s in Selectors)
+                {
+                    var extensions = env.FindExtension(s);
+                    if (extensions != null)
+                    {
+                        paths.AppendSelectors(context, extensions.ExtendedBy);
+                    }
+                }
             }
 
             env.Output.Push();

@@ -157,6 +157,11 @@ namespace dotless.Core.Parser.Infrastructure
             return new Quoted(value, contents, escaped) { Location = location };
         }
 
+        public Extend Extend(List<Selector> selectors, NodeLocation location)
+        {
+            return new Extend(selectors) { Location = location };
+        }
+
         public Paren Paren(Node value, NodeLocation location)
         {
             return new Paren(value) { Location = location };
