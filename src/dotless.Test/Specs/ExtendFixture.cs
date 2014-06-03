@@ -68,5 +68,33 @@ nav ul {
             AssertLess(input,expected);
         }
 
+        [Test]
+        public void ExtendSelectorAll()
+        {
+            string input = @".a.b.test,
+.test.c {
+  color: orange;
+}
+.test {
+  &:hover {
+    color: green;
+  }
+}
+
+.replacement:extend(.test all) {}";
+
+            string expected = @".a.b.test,
+.test.c,
+.a.b.replacement,
+.replacement.c {
+  color: orange;
+}
+.test:hover,
+.replacement:hover {
+  color: green;
+}";
+            AssertLess(input, expected);
+        }
+
     }
 }

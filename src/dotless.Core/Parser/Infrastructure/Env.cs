@@ -238,14 +238,26 @@
                 yield return new KeyValuePair<string, Type>(name.Replace("-", ""), t);
         }
 
-        public void AddExtension(Selector selector, IEnumerable<Selector> extends)
+        public void AddExtension(Selector selector, Extend extends)
         {
-            Extender match = null;
-            foreach (var extending in extends)
+            foreach (var extending in extends.Exact)
             {
-                if ((match = _extensions.FirstOrDefault(e => e.BaseSelector.Match(extending))) == null)
+                Extender match = null;
+                if ((match = _extensions.OfType<ExactExtender>().FirstOrDefault(e => e.BaseSelector.Match(extending))) == null)
                 {
-                    match = new Extender(extending);
+                    match = new ExactExtender(extending);
+                    _extensions.Add(match);
+                }
+
+                match.AddExtension(selector);
+            }
+
+            foreach (var extending in extends.Partial)
+            {
+                Extender match = null;
+                if ((match = _extensions.OfType<PartialExtender>().FirstOrDefault(e => e.BaseSelector.Match(extending))) == null)
+                {
+                    match = new PartialExtender(extending);
                     _extensions.Add(match);
                 }
 
@@ -253,9 +265,14 @@
             }
         }
 
-        public Extender FindExtension(Selector selector)
+        public ExactExtender FindExactExtension(Selector selector)
         {
-            return _extensions.FirstOrDefault(e => e.BaseSelector.Match(selector));
+            return _extensions.OfType<ExactExtender>().FirstOrDefault(e => e.BaseSelector.Match(selector));
+        }
+
+        public PartialExtender[] FindPartialExtensions(Selector selector)
+        {
+            return _extensions.OfType<PartialExtender>().Where(e => selector.ToString().Trim().Contains(e.BaseSelector.ToString().Trim())).ToArray();
         }
     }
 }

@@ -179,7 +179,7 @@ namespace dotless.Core.Parser.Tree
 
             foreach (var r in Rules.OfType<Extend>().ToArray())
             {
-                env.AddExtension(this.Selectors.First(),r.Selectors);
+                env.AddExtension(this.Selectors.First(),r);
                 Rules.Remove(r);
             }
 
@@ -248,10 +248,16 @@ namespace dotless.Core.Parser.Tree
                 paths.AppendSelectors(context, Selectors);
                 foreach (var s in Selectors)
                 {
-                    var extensions = env.FindExtension(s);
+                    var extensions = env.FindExactExtension(s);
                     if (extensions != null)
                     {
                         paths.AppendSelectors(context, extensions.ExtendedBy);
+                    }
+
+                    var partials = env.FindPartialExtensions(s);
+                    if (partials != null)
+                    {
+                        paths.AppendSelectors(context,partials.SelectMany(p => p.Replacements(s)));
                     }
                 }
             }

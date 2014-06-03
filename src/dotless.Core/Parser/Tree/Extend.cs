@@ -9,12 +9,14 @@ namespace dotless.Core.Parser.Tree
 {
     public class Extend : Node
     {
-        public Extend(List<Selector> selectors)
+        public Extend(List<Selector> exact, List<Selector> partial)
         {
-            Selectors = selectors;
+            Exact = exact;
+            Partial = partial;
         }
 
-        public List<Selector> Selectors { get; set; }
+        public List<Selector> Exact{ get; set; }
+        public List<Selector> Partial { get; set; }
 
         public override Node Evaluate(Env env)
         {
