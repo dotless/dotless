@@ -67,7 +67,7 @@ nav ul {
   color: blue;
 }
 ";
-            AssertLess(input,expected);
+            AssertLess(input, expected);
         }
 
         [Test]
@@ -114,6 +114,5 @@ pre:hover,
   color: red;
 }";
         }
-
     }
 }
