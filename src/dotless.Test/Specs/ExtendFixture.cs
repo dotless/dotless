@@ -1,4 +1,6 @@
-﻿namespace dotless.Test.Specs
+﻿using dotless.Core.Parser.Infrastructure;
+
+namespace dotless.Test.Specs
 {
     using System.Collections.Generic;
     using NUnit.Framework;
@@ -47,7 +49,7 @@ nav ul {
         }
 
         [Test]
-        public void ExtendMultiple()
+        public void ExtendSelectorMultiple()
         {
             string input = @".e:extend(.f, .g) { background-color:green; }
 .f { color: red; }
@@ -94,6 +96,23 @@ nav ul {
   color: green;
 }";
             AssertLess(input, expected);
+        }
+
+        [Test]
+        public void ExtendInsideBodyRuleset()
+        {
+            string input = @"
+div pre { color:red; }
+
+pre:hover,
+.some-class {
+  &:extend(div pre);
+}";
+            string expected = @"div pre,
+pre:hover,
+.some-class {
+  color: red;
+}";
         }
 
     }

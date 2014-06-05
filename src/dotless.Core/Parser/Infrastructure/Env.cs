@@ -243,7 +243,7 @@
             foreach (var extending in extends.Exact)
             {
                 Extender match = null;
-                if ((match = _extensions.OfType<ExactExtender>().FirstOrDefault(e => e.BaseSelector.Match(extending))) == null)
+                if ((match = _extensions.OfType<ExactExtender>().FirstOrDefault(e => e.BaseSelector.ToString().Trim() == extending.ToString().Trim())) == null)
                 {
                     match = new ExactExtender(extending);
                     _extensions.Add(match);
@@ -255,7 +255,7 @@
             foreach (var extending in extends.Partial)
             {
                 Extender match = null;
-                if ((match = _extensions.OfType<PartialExtender>().FirstOrDefault(e => e.BaseSelector.Match(extending))) == null)
+                if ((match = _extensions.OfType<PartialExtender>().FirstOrDefault(e => e.BaseSelector.ToString().Trim() == extending.ToString().Trim())) == null)
                 {
                     match = new PartialExtender(extending);
                     _extensions.Add(match);
@@ -267,7 +267,7 @@
 
         public ExactExtender FindExactExtension(Selector selector)
         {
-            return _extensions.OfType<ExactExtender>().FirstOrDefault(e => e.BaseSelector.Match(selector));
+            return _extensions.OfType<ExactExtender>().FirstOrDefault(e => e.BaseSelector.ToString().Trim() == selector.ToString().Trim());
         }
 
         public PartialExtender[] FindPartialExtensions(Selector selector)

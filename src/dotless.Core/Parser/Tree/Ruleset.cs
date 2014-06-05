@@ -179,7 +179,11 @@ namespace dotless.Core.Parser.Tree
 
             foreach (var r in Rules.OfType<Extend>().ToArray())
             {
-                env.AddExtension(this.Selectors.First(),r);
+                foreach (var s in this.Selectors)
+                {
+                    env.AddExtension(s, r);
+                }
+                
                 Rules.Remove(r);
             }
 
