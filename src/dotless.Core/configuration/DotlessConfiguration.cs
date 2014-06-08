@@ -3,7 +3,7 @@ namespace dotless.Core.configuration
     using System;
     using Input;
     using Loggers;
-    using dotless.Core.Plugins;
+    using Plugins;
     using System.Collections.Generic;
 
     public enum DotlessSessionStateMode
@@ -27,11 +27,12 @@ namespace dotless.Core.configuration
     public class DotlessConfiguration
     {
         public const string DEFAULT_SESSION_QUERY_PARAM_NAME = "sstate";
+        public const int DefaultCacheAgeInMinutes = 10080; //7 days
         internal static IConfigurationManager _configurationManager;
 
         public static DotlessConfiguration GetDefault()
         {
-            return new DotlessConfiguration();
+            return new DotlessConfiguration();;
         }
 
         public static DotlessConfiguration GetDefaultWeb()
@@ -48,6 +49,7 @@ namespace dotless.Core.configuration
             MinifyOutput = false;
             Debug = false;
             CacheEnabled = true;
+            CacheAgeInMinutes = DefaultCacheAgeInMinutes;
             Web = false;
             SessionMode = DotlessSessionStateMode.Disabled;
             SessionQueryParamName = DEFAULT_SESSION_QUERY_PARAM_NAME;
@@ -156,6 +158,12 @@ namespace dotless.Core.configuration
         ///  For web handlers output in a cached mode. Reccommended on.
         /// </summary>
         public bool CacheEnabled { get; set; }
+
+        /// <summary>
+        /// When <seealso cref="CacheEnabled"/> is set to true, use this parameter to set how far in the future the expires header will be set. 
+        /// For example, to have the browser cache the CSS for five minutes, set this property to 5. 
+        /// </summary>
+        public int CacheAgeInMinutes { get; set; }
 
         /// <summary>
         ///  IFileReader type to use to get imported files

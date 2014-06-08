@@ -34,6 +34,12 @@
             responseService.Parameters("isCompressionHandledByResponse").Set("default-is-compression-handled-by-response").Lifestyle.Transient();
             pandora.Service<bool>("default-is-compression-handled-by-response").Instance(configuration.HandleWebCompression);
 
+            if (configuration.CacheEnabled)
+            {
+                responseService.Parameters("cacheAgeInMinutes").Set("cache-age-in-minutes").Lifestyle.Transient();
+                pandora.Service<int>("cache-age-in-minutes").Instance(configuration.CacheAgeInMinutes);
+            }
+
             pandora.Service<ICache>().Implementor<HttpCache>().Lifestyle.Transient();
             pandora.Service<ILogger>().Implementor<AspResponseLogger>().Parameters("level").Set("error-level").Lifestyle.Transient();
 

@@ -15,6 +15,18 @@
         }
 
         [Test]
+        public void DefaultCacheExpiryInMinutes()
+        {
+            Assert.That(LoadConfig(@"<dotless />").CacheAgeInMinutes, Is.EqualTo(DotlessConfiguration.DefaultCacheAgeInMinutes));
+        }
+
+        [Test]
+        public void CustomCacheExpiryInMinutes()
+        {
+            Assert.That(LoadConfig(@"<dotless cacheAgeInMinutes=""5""/>").CacheAgeInMinutes, Is.EqualTo(5));
+        }
+
+        [Test]
         [ExpectedException]
         public void ShouldThrowOnEmptySessionParamName()
         {

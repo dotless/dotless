@@ -5,7 +5,7 @@ namespace dotless.Core.configuration
     using System;
     using System.Xml;
     using Loggers;
-    using dotless.Core.Plugins;
+    using Plugins;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
@@ -19,6 +19,7 @@ namespace dotless.Core.configuration
             dotlessConfiguration.MinifyOutput = GetBoolValue(section, "minifyCss") ?? dotlessConfiguration.MinifyOutput;
             dotlessConfiguration.Debug = GetBoolValue(section, "debug") ?? dotlessConfiguration.Debug;
             dotlessConfiguration.CacheEnabled = GetBoolValue(section, "cache") ?? dotlessConfiguration.CacheEnabled;
+            dotlessConfiguration.CacheAgeInMinutes = GetIntValue(section, "cacheAgeInMinutes") ?? dotlessConfiguration.CacheAgeInMinutes;
             dotlessConfiguration.Optimization = GetIntValue(section, "optimization") ?? dotlessConfiguration.Optimization;
             dotlessConfiguration.DisableUrlRewriting = GetBoolValue(section, "disableUrlRewriting") ?? dotlessConfiguration.DisableUrlRewriting;
             dotlessConfiguration.InlineCssFiles = GetBoolValue(section, "inlineCssFiles") ?? dotlessConfiguration.InlineCssFiles;
@@ -46,8 +47,6 @@ namespace dotless.Core.configuration
                     dotlessConfiguration.LogLevel = LogLevel.Error;
                     break;
                 case "default":
-                    break;
-                default: 
                     break;
             }
 

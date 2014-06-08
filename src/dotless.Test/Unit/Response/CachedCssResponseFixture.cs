@@ -1,12 +1,11 @@
-using System;
+using dotless.Core.configuration;
+using dotless.Core.Response;
+using Moq;
+using NUnit.Framework;
+using System.Web;
 
 namespace dotless.Test.Unit.Response
 {
-    using Core.Response;
-    using Moq;
-    using NUnit.Framework;
-    using System.Web;
-
     public class CachedCssResponseFixture : HttpFixtureBase
     {
         CachedCssResponse CachedCssResponse { get; set; }
@@ -14,7 +13,7 @@ namespace dotless.Test.Unit.Response
         [SetUp]
         public void Setup()
         {
-            CachedCssResponse = new CachedCssResponse(Http.Object, false, Clock.Object);
+            CachedCssResponse = new CachedCssResponse(Http.Object, false, DotlessConfiguration.DefaultCacheAgeInMinutes, Clock.Object);
         }
 
         [Test]
@@ -40,7 +39,18 @@ namespace dotless.Test.Unit.Response
         {
             CachedCssResponse.WriteHeaders();
 
-            HttpCache.Verify(c => c.SetExpires(Now.AddMinutes(CachedCssResponse.DefaultCacheAgeMinutes)), Times.Once());
+            HttpCache.Verify(c => c.SetExpires(Now.AddMinutes(CachedCssResponse.DefaultCacheAgeInMinutes)), Times.Once());
+        }
+
+        [Test]
+        public void CustomExpiryCanBeSetThroughConfiguration()
+        {
+            const int expiryInMinutes = 5;
+            CachedCssResponse = new CachedCssResponse(Http.Object, false, expiryInMinutes, Clock.Object);
+
+            CachedCssResponse.WriteHeaders();
+
+            HttpCache.Verify(c => c.SetExpires(Now.AddMinutes(expiryInMinutes)), Times.Once());
         }
     }
 }
