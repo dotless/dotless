@@ -51,7 +51,9 @@
     <Reference Include="System.Web.Abstractions" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abstractions\Clock.cs" />
     <Compile Include="Abstractions\Http.cs" />
+    <Compile Include="Abstractions\IClock.cs" />
     <Compile Include="Abstractions\IHttp.cs" />
     <Compile Include="AspNetContainerFactory.cs" />
     <Compile Include="Cache\HttpCache.cs" />
@@ -66,7 +68,7 @@
     <Compile Include="Loggers\AspNetTraceLogger.cs" />
     <Compile Include="Loggers\AspResponseLogger.cs" />
     <Compile Include="Parameters\QueryStringParameterSource.cs" />
-	<Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Response\CachedCssResponse.cs" />
     <Compile Include="Response\CssResponse.cs" />
     <Compile Include="Response\IResponse.cs" />

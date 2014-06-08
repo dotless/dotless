@@ -1,3 +1,5 @@
+using System;
+
 namespace dotless.Test.Unit.Response
 {
     using Core.Response;
@@ -12,7 +14,7 @@ namespace dotless.Test.Unit.Response
         [SetUp]
         public void Setup()
         {
-            CachedCssResponse = new CachedCssResponse(Http.Object, false);
+            CachedCssResponse = new CachedCssResponse(Http.Object, false, Clock.Object);
         }
 
         [Test]
@@ -31,6 +33,14 @@ namespace dotless.Test.Unit.Response
             CachedCssResponse.WriteCss("test2");
 
             HttpCache.Verify(c => c.SetCacheability(HttpCacheability.Public), Times.Once());
+        }
+
+        [Test]
+        public void ExpiryIsSetToOneWeekByDefault()
+        {
+            CachedCssResponse.WriteHeaders();
+
+            HttpCache.Verify(c => c.SetExpires(Now.AddMinutes(CachedCssResponse.DefaultCacheAgeMinutes)), Times.Once());
         }
     }
 }

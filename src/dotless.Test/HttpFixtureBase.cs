@@ -1,3 +1,5 @@
+using System;
+
 namespace dotless.Test
 {
     using System.Collections.Specialized;
@@ -17,6 +19,8 @@ namespace dotless.Test
         protected Mock<HttpServerUtilityBase> HttpServer { get; set; }
         protected Mock<HttpCachePolicyBase> HttpCache { get; set; }
         protected Mock<IHttp> Http { get; set; }
+        protected Mock<IClock> Clock { get; set; }
+        protected DateTime Now { get; set; }
         protected Mock<IConfigurationManager> ConfigManager { get; set; }
         protected NameValueCollection QueryString { get; set; }
         protected NameValueCollection Form { get; set; }
@@ -33,6 +37,7 @@ namespace dotless.Test
             HttpServer = new Mock<HttpServerUtilityBase>();
             HttpCache = new Mock<HttpCachePolicyBase>();
             Http = new Mock<IHttp>();
+            Clock = new Mock<IClock>();
             ConfigManager = new Mock<IConfigurationManager>();
 
             QueryString = new NameValueCollection();
@@ -44,6 +49,9 @@ namespace dotless.Test
 
             ConfigManager.Setup(c => c.GetSection<DotlessConfiguration>(It.IsRegex("^dotless$"))).Returns(Config);
             DotlessConfiguration.ConfigurationManager = ConfigManager.Object;
+
+            Now = DateTime.Now;
+            Clock.Setup(c => c.GetUtcNow()).Returns(Now);
 
             HttpContext.SetupGet(c => c.Request).Returns(HttpRequest.Object);
             HttpContext.SetupGet(c => c.Response).Returns(HttpResponse.Object);
