@@ -19,7 +19,7 @@ namespace dotless.Core.configuration
             dotlessConfiguration.MinifyOutput = GetBoolValue(section, "minifyCss") ?? dotlessConfiguration.MinifyOutput;
             dotlessConfiguration.Debug = GetBoolValue(section, "debug") ?? dotlessConfiguration.Debug;
             dotlessConfiguration.CacheEnabled = GetBoolValue(section, "cache") ?? dotlessConfiguration.CacheEnabled;
-            dotlessConfiguration.CacheAgeInMinutes = GetIntValue(section, "cacheAgeInMinutes") ?? dotlessConfiguration.CacheAgeInMinutes;
+            dotlessConfiguration.HttpExpiryInMinutes = GetIntValue(section, "httpExpiryInMinutes") ?? dotlessConfiguration.HttpExpiryInMinutes;
             dotlessConfiguration.Optimization = GetIntValue(section, "optimization") ?? dotlessConfiguration.Optimization;
             dotlessConfiguration.DisableUrlRewriting = GetBoolValue(section, "disableUrlRewriting") ?? dotlessConfiguration.DisableUrlRewriting;
             dotlessConfiguration.InlineCssFiles = GetBoolValue(section, "inlineCssFiles") ?? dotlessConfiguration.InlineCssFiles;

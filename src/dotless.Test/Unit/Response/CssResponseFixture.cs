@@ -1,10 +1,10 @@
+using dotless.Core.Response;
+using Moq;
+using NUnit.Framework;
+using System.IO.Compression;
+
 namespace dotless.Test.Unit.Response
 {
-    using System.Web;
-    using Core.Response;
-    using Moq;
-    using NUnit.Framework;
-    using System.IO.Compression;
 
     public class CssResponseFixture : HttpFixtureBase
     {

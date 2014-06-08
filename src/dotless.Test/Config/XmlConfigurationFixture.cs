@@ -15,15 +15,15 @@
         }
 
         [Test]
-        public void DefaultCacheExpiryInMinutes()
+        public void DefaultHttpExpiryInMinutes()
         {
-            Assert.That(LoadConfig(@"<dotless />").CacheAgeInMinutes, Is.EqualTo(DotlessConfiguration.DefaultCacheAgeInMinutes));
+            Assert.That(LoadConfig(@"<dotless />").HttpExpiryInMinutes, Is.EqualTo(DotlessConfiguration.DefaultHttpExpiryInMinutes));
         }
 
         [Test]
-        public void CustomCacheExpiryInMinutes()
+        public void CustomHttpExpiryInMinutes()
         {
-            Assert.That(LoadConfig(@"<dotless cacheAgeInMinutes=""5""/>").CacheAgeInMinutes, Is.EqualTo(5));
+            Assert.That(LoadConfig(@"<dotless httpExpiryInMinutes=""5""/>").HttpExpiryInMinutes, Is.EqualTo(5));
         }
 
         [Test]

@@ -27,7 +27,7 @@ namespace dotless.Core.configuration
     public class DotlessConfiguration
     {
         public const string DEFAULT_SESSION_QUERY_PARAM_NAME = "sstate";
-        public const int DefaultCacheAgeInMinutes = 10080; //7 days
+        public const int DefaultHttpExpiryInMinutes = 10080; //7 days
         internal static IConfigurationManager _configurationManager;
 
         public static DotlessConfiguration GetDefault()
@@ -49,7 +49,7 @@ namespace dotless.Core.configuration
             MinifyOutput = false;
             Debug = false;
             CacheEnabled = true;
-            CacheAgeInMinutes = DefaultCacheAgeInMinutes;
+            HttpExpiryInMinutes = DefaultHttpExpiryInMinutes;
             Web = false;
             SessionMode = DotlessSessionStateMode.Disabled;
             SessionQueryParamName = DEFAULT_SESSION_QUERY_PARAM_NAME;
@@ -163,7 +163,7 @@ namespace dotless.Core.configuration
         /// When <seealso cref="CacheEnabled"/> is set to true, use this parameter to set how far in the future the expires header will be set. 
         /// For example, to have the browser cache the CSS for five minutes, set this property to 5. 
         /// </summary>
-        public int CacheAgeInMinutes { get; set; }
+        public int HttpExpiryInMinutes { get; set; }
 
         /// <summary>
         ///  IFileReader type to use to get imported files

@@ -6,19 +6,18 @@
 
     public class CachedCssResponse : CssResponse
     {
-        private readonly int _cacheAgeInMinutes;
+        private readonly int _httpExpiryInMinutes;
         private readonly IClock _clock;
-        public const int DefaultCacheAgeInMinutes = 10080; //7 days
 
-        public CachedCssResponse(IHttp http, bool isCompressionHandledByResponse, int cacheAgeInMinutes) :
-            this(http, isCompressionHandledByResponse, cacheAgeInMinutes, new Clock())
+        public CachedCssResponse(IHttp http, bool isCompressionHandledByResponse, int httpExpiryInMinutes) :
+            this(http, isCompressionHandledByResponse, httpExpiryInMinutes, new Clock())
         {
         }
 
-        public CachedCssResponse(IHttp http, bool isCompressionHandledByResponse, int cacheAgeInMinutes, IClock clock) 
+        public CachedCssResponse(IHttp http, bool isCompressionHandledByResponse, int httpExpiryInMinutes, IClock clock) 
             : base(http, isCompressionHandledByResponse)
         {
-            _cacheAgeInMinutes = cacheAgeInMinutes;
+            _httpExpiryInMinutes = httpExpiryInMinutes;
             _clock = clock;
         }
 
@@ -28,7 +27,7 @@
 
             response.Cache.SetCacheability(HttpCacheability.Public);
 
-            response.Cache.SetExpires(_clock.GetUtcNow().AddMinutes(_cacheAgeInMinutes));
+            response.Cache.SetExpires(_clock.GetUtcNow().AddMinutes(_httpExpiryInMinutes));
             response.Cache.SetETagFromFileDependencies();
             response.Cache.SetLastModifiedFromFileDependencies();
 

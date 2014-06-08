@@ -36,8 +36,8 @@
 
             if (configuration.CacheEnabled)
             {
-                responseService.Parameters("cacheAgeInMinutes").Set("cache-age-in-minutes").Lifestyle.Transient();
-                pandora.Service<int>("cache-age-in-minutes").Instance(configuration.CacheAgeInMinutes);
+                responseService.Parameters("httpExpiryInMinutes").Set("http-expiry-in-minutes").Lifestyle.Transient();
+                pandora.Service<int>("http-expiry-in-minutes").Instance(configuration.HttpExpiryInMinutes);
             }
 
             pandora.Service<ICache>().Implementor<HttpCache>().Lifestyle.Transient();

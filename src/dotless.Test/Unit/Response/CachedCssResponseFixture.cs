@@ -13,7 +13,7 @@ namespace dotless.Test.Unit.Response
         [SetUp]
         public void Setup()
         {
-            CachedCssResponse = new CachedCssResponse(Http.Object, false, DotlessConfiguration.DefaultCacheAgeInMinutes, Clock.Object);
+            CachedCssResponse = new CachedCssResponse(Http.Object, false, DotlessConfiguration.DefaultHttpExpiryInMinutes, Clock.Object);
         }
 
         [Test]
@@ -39,7 +39,7 @@ namespace dotless.Test.Unit.Response
         {
             CachedCssResponse.WriteHeaders();
 
-            HttpCache.Verify(c => c.SetExpires(Now.AddMinutes(CachedCssResponse.DefaultCacheAgeInMinutes)), Times.Once());
+            HttpCache.Verify(c => c.SetExpires(Now.AddMinutes(DotlessConfiguration.DefaultHttpExpiryInMinutes)), Times.Once());
         }
 
         [Test]
