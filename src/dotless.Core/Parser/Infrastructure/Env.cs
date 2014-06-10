@@ -55,7 +55,13 @@
         /// </summary>
         public virtual Env CreateChildEnv(Stack<Ruleset> frames)
         {
-            return new Env(frames, _functionTypes) { Debug = Debug, Compress = Compress, DisableVariableRedefines = DisableVariableRedefines };
+            return new Env(frames, _functionTypes)
+            {
+                Debug = Debug,
+                Compress = Compress,
+                DisableColorCompression = DisableColorCompression,
+                DisableVariableRedefines = DisableVariableRedefines
+            };
         }
 
         /// <summary>
