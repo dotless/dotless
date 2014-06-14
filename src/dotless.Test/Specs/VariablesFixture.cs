@@ -48,12 +48,12 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void NumericVariables()
+        public void VariablesWithNumbers()
         {
             var input =
-                @"@wiget-container: widget-container-8675309;
+                @"@widget-container: widget-container-8675309;
 
-#@{wiget-container} {
+#@{widget-container} {
     color: blue;
 }";
 
