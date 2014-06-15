@@ -15,6 +15,8 @@ namespace dotless.Core.Exceptions
         public ParsingException(Exception innerException, NodeLocation location) : this(innerException, location, null) { }
 
         public ParsingException(Exception innerException, NodeLocation location, NodeLocation callLocation) : this(innerException.Message, innerException, location, callLocation) { }
+        
+        public ParsingException(string message, Exception innerException, NodeLocation location) : this(message, innerException, location, null) { }
 
         public ParsingException(string message, Exception innerException, NodeLocation location, NodeLocation callLocation)
             : base(message, innerException)

@@ -92,6 +92,7 @@
     <Compile Include="Specs\ExtendFixture.cs" />
     <Compile Include="Specs\Functions\ArgbFixture.cs" />
     <Compile Include="Specs\Functions\BlendModesFixture.cs" />
+    <Compile Include="Specs\Functions\DataUriFixture.cs" />
     <Compile Include="Specs\Functions\GradientImageFixture.cs" />
     <Compile Include="Specs\Functions\PowFixture.cs" />
     <Compile Include="Specs\LineNumbersFixture.cs" />
@@ -194,6 +195,16 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resource\Embedded2.less" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resource\data-uri\unicorn.gif">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resource\data-uri\lobster.woff">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

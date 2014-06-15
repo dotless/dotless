@@ -81,6 +81,8 @@
     <Compile Include="Parameters\IParameterSource.cs" />
     <Compile Include="Parser\Functions\ArgbFunction.cs" />
     <Compile Include="Parser\Functions\ColorFunction.cs" />
+    <Compile Include="Parser\Functions\DataUriFunction.cs" />
+    <Compile Include="Parser\Infrastructure\MimeTypeLookup.cs" />
     <Compile Include="Parser\Functions\NegationFunction.cs" />
     <Compile Include="Parser\Functions\AverageFunction.cs" />
     <Compile Include="Parser\Functions\ExclusionFunction.cs" />
