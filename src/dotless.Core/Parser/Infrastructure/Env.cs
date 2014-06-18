@@ -238,7 +238,7 @@
                 yield return new KeyValuePair<string, Type>(name.Replace("-", ""), t);
         }
 
-        public void AddExtension(Selector selector, Extend extends)
+        public void AddExtension(Selector selector, Extend extends, Env env)
         {
             foreach (var extending in extends.Exact)
             {
@@ -249,7 +249,7 @@
                     _extensions.Add(match);
                 }
 
-                match.AddExtension(selector);
+                match.AddExtension(selector,env);
             }
 
             foreach (var extending in extends.Partial)
@@ -261,18 +261,18 @@
                     _extensions.Add(match);
                 }
 
-                match.AddExtension(selector);
+                match.AddExtension(selector,env);
             }
         }
 
-        public ExactExtender FindExactExtension(Selector selector)
+        public ExactExtender FindExactExtension(string selection)
         {
-            return _extensions.OfType<ExactExtender>().FirstOrDefault(e => e.BaseSelector.ToString().Trim() == selector.ToString().Trim());
+            return _extensions.OfType<ExactExtender>().FirstOrDefault(e => e.BaseSelector.ToString().Trim() == selection);
         }
 
-        public PartialExtender[] FindPartialExtensions(Selector selector)
+        public PartialExtender[] FindPartialExtensions(string selection)
         {
-            return _extensions.OfType<PartialExtender>().Where(e => selector.ToString().Trim().Contains(e.BaseSelector.ToString().Trim())).ToArray();
+            return _extensions.OfType<PartialExtender>().Where(e => selection.Contains(e.BaseSelector.ToString().Trim())).ToArray();
         }
     }
 }

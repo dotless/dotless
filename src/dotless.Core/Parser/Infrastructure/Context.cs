@@ -16,6 +16,12 @@
             Paths = new List<List<Selector>>();
         }
 
+        public Context Clone()
+        {
+            var newPathList = new List<List<Selector>>();
+            return new Context {Paths = newPathList};
+        }
+
         public void AppendSelectors(Context context, IEnumerable<Selector> selectors)
         {
             foreach (var selector in selectors)
@@ -200,6 +206,11 @@
                 Paths,
                 path => path.Select(p => p.ToCSS(env)).JoinStrings("").Trim(),
                 env.Compress ? "," : ",\n");
+        }
+
+        public string ToCss(Env env)
+        {
+            return string.Join(env.Compress ? "," : ",\n",Paths.Select(path => path.Select(p => p.ToCSS(env)).JoinStrings("").Trim()).ToArray());
         }
 
         public int Count

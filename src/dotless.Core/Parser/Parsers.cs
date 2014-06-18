@@ -402,6 +402,11 @@ namespace dotless.Core.Parser
                 Selector s;
                 while (s = Selector(parser))
                 {
+                    if (s.Elements.Count == 1 && s.Elements.First().Value == null)
+                    {
+                        continue;
+                    }
+
                     if (s.Elements.Count > 1 && s.Elements.Last().Value == "all")
                     {
                         s.Elements.Remove(s.Elements.Last());
@@ -422,10 +427,17 @@ namespace dotless.Core.Parser
                 {
                     throw new ParsingException(@"Extend rule not correctly terminated",parser.Tokenizer.GetNodeLocation(index));
                 }
+
                 if (extendKeyword.Match.Value[0] == '&')
                 {
                     parser.Tokenizer.Match(';');
                 }
+
+                if (partial.Count == 0 && exact.Count == 0)
+                {
+                    return null;
+                }
+
                 return NodeProvider.Extend(exact,partial, parser.Tokenizer.GetNodeLocation(index));
             }
             return null;

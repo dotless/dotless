@@ -102,13 +102,18 @@ nav ul {
             string input = @".bucket {
   color: blue;
 }
+
+
 .some-class:extend(@{variable}) {} // interpolated selector matches nothing
-@variable: .bucket;";
+@variable: bucket;
+";
+
 
             string expected = @".bucket {
   color: blue;
 }
 ";
+                AssertLess(input,expected);;
         }
 
         [Test]
@@ -126,10 +131,29 @@ pre:hover,
 .some-class {
   color: red;
 }";
+
+            AssertLess(input,expected);
         }
 
         [Test]
-        public void ExtendNested()
+        public void ExtendNestedSmall()
+        {
+            var input = @".bucket {
+  tr { // nested ruleset with target selector
+    color: blue;
+  }
+}
+.some-class:extend(.bucket tr) {} // nested ruleset is recognized";
+
+            var expected = @".bucket tr,
+.some-class {
+  color: blue;
+}";
+            AssertLess(input,expected);
+        }
+
+        [Test]
+        public void ExtendNestedLarge()
         {
             var input = @".img-responsive(@display: block) {
   display: @display;
@@ -159,25 +183,22 @@ pre:hover,
   }
 }";
 
-            var extended = @".img-responsive,
+            var expected = @".img-responsive,
 .carousel-inner > .item > img,
 .carousel-inner > .item > a > img {
   display: block;
   max-width: 100%;
   height: auto;
 }
-
 .carousel-inner {
   position: relative;
   overflow: hidden;
   width: 100%;
 }
-
 .carousel-inner > .item {
   display: none;
   position: relative;
 }
-
 .carousel-inner > .item > img,
 .carousel-inner > .item > a > img {
   line-height: 1;
@@ -185,7 +206,7 @@ pre:hover,
 
 ";
             //var output = Evaluate(input, DefaultParser()).Trim().Replace("\r\n", "\n");
-            AssertLess(input, extended);
+            AssertLess(input, expected);
         }
     }
 }

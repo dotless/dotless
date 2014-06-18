@@ -32,7 +32,7 @@
             {
                 if (element.NodeValue is Extend)
                 {
-                    env.AddExtension(this, ((Extend)element.NodeValue));
+                    env.AddExtension(this, (Extend)(((Extend)element.NodeValue).Evaluate(env)),env);
                 }
                 else
                 {

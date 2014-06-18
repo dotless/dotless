@@ -15,16 +15,29 @@ namespace dotless.Core.Parser.Tree
             Partial = partial;
         }
 
-        private List<Selector> Exact{ get; set; }
-        private List<Selector> Partial { get; set; }
-
-        public string[] ExactSelector { get; set; }
-        public string[] PartialSelector { get; set; }
+        public List<Selector> Exact{ get; set; }
+        public List<Selector> Partial { get; set; }
 
 
         public override Node Evaluate(Env env)
         {
-            return this;
+            var newExact = new List<Selector>();
+            foreach (var e in Exact)
+            {
+                var childContext = env.CreateChildEnv(new Stack<Ruleset>(env.Frames.Reverse()));
+                e.AppendCSS(childContext);
+                newExact.Add(new Selector(new []{new Element(e.Elements.First().Combinator,childContext.Output.ToString().Trim())}));
+            }
+
+            var newPartial = new List<Selector>();
+            foreach (var e in Partial)
+            {
+                var childContext = env.CreateChildEnv(new Stack<Ruleset>(env.Frames.Reverse()));
+                e.AppendCSS(childContext);
+                newPartial.Add(new Selector(new[] { new Element(e.Elements.First().Combinator, childContext.Output.ToString().Trim()) }));
+            }
+
+            return new Extend(newExact,newPartial);
         }
 
         public override void AppendCSS(Env env)
