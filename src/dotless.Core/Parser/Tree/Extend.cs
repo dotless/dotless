@@ -15,8 +15,12 @@ namespace dotless.Core.Parser.Tree
             Partial = partial;
         }
 
-        public List<Selector> Exact{ get; set; }
-        public List<Selector> Partial { get; set; }
+        private List<Selector> Exact{ get; set; }
+        private List<Selector> Partial { get; set; }
+
+        public string[] ExactSelector { get; set; }
+        public string[] PartialSelector { get; set; }
+
 
         public override Node Evaluate(Env env)
         {

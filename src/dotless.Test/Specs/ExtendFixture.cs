@@ -1,6 +1,4 @@
-﻿using dotless.Core.Parser.Infrastructure;
-
-namespace dotless.Test.Specs
+﻿namespace dotless.Test.Specs
 {
     using System.Collections.Generic;
     using NUnit.Framework;
@@ -49,7 +47,7 @@ nav ul {
         }
 
         [Test]
-        public void ExtendSelectorMultiple()
+        public void ExtendMultiple()
         {
             string input = @".e:extend(.f, .g) { background-color:green; }
 .f { color: red; }
@@ -96,6 +94,21 @@ nav ul {
   color: green;
 }";
             AssertLess(input, expected);
+        }
+
+        [Test]
+        public void IgnoreVariableSelector()
+        {
+            string input = @".bucket {
+  color: blue;
+}
+.some-class:extend(@{variable}) {} // interpolated selector matches nothing
+@variable: .bucket;";
+
+            string expected = @".bucket {
+  color: blue;
+}
+";
         }
 
         [Test]
@@ -172,7 +185,7 @@ pre:hover,
 
 ";
             //var output = Evaluate(input, DefaultParser()).Trim().Replace("\r\n", "\n");
-            AssertLess(input,extended);
+            AssertLess(input, extended);
         }
     }
 }
