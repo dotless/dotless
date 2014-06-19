@@ -179,7 +179,11 @@ namespace dotless.Core.Parser.Tree
 
             foreach (var r in Rules.OfType<Extend>().ToArray())
             {
-                env.AddExtension(this.Selectors.First(),r.Selectors);
+                foreach (var s in this.Selectors)
+                {
+                    env.AddExtension(s, (Extend)r.Evaluate(env),env);
+                }
+                
                 Rules.Remove(r);
             }
 
@@ -246,14 +250,6 @@ namespace dotless.Core.Parser.Tree
                     env.Output.Append(string.Format("/* {0}:L{1} */\n", Location.FileName, Zone.GetLineNumber(Location)));
                 }
                 paths.AppendSelectors(context, Selectors);
-                foreach (var s in Selectors)
-                {
-                    var extensions = env.FindExtension(s);
-                    if (extensions != null)
-                    {
-                        paths.AppendSelectors(context, extensions.ExtendedBy);
-                    }
-                }
             }
 
             env.Output.Push();
@@ -315,6 +311,26 @@ namespace dotless.Core.Parser.Tree
             {
                 if (nonCommentRules > 0)
                 {
+
+                    foreach (var s in Selectors.Where(s => s.Elements.First().Value != null))
+                    {
+                        var local = context.Clone();
+                        local.AppendSelectors(context, new[] { s });
+                        var finalString = local.ToCss(env);
+                        var extensions = env.FindExactExtension(finalString);
+                        if (extensions != null)
+                        {
+                            paths.AppendSelectors(context.Clone(), extensions.ExtendedBy);
+                        }
+
+                        var partials = env.FindPartialExtensions(finalString);
+                        if (partials != null)
+                        {
+                            paths.AppendSelectors(context.Clone(), partials.SelectMany(p => p.Replacements(finalString)));
+                        }
+                    }
+
+
                     paths.AppendCSS(env);
 
                     env.Output.Append(env.Compress ? "{" : " {\n  ");

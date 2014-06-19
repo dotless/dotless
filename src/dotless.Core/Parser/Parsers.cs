@@ -396,24 +396,49 @@ namespace dotless.Core.Parser
 
             if ((extendKeyword = parser.Tokenizer.Match(@"\&?:extend\(")) != null)
             {
-                var selectors = new List<Selector>();
+                var exact = new List<Selector>();
+                var partial = new List<Selector>();
 
                 Selector s;
                 while (s = Selector(parser))
                 {
-                    selectors.Add(s);
+                    if (s.Elements.Count == 1 && s.Elements.First().Value == null)
+                    {
+                        continue;
+                    }
+
+                    if (s.Elements.Count > 1 && s.Elements.Last().Value == "all")
+                    {
+                        s.Elements.Remove(s.Elements.Last());
+                        partial.Add(s);
+                    }
+                    else
+                    {
+                        exact.Add(s);
+                    }
+                    
                     if (!parser.Tokenizer.Match(','))
+                    {
                         break;
+                    }
                 }
+
                 if (!parser.Tokenizer.Match(')'))
                 {
                     throw new ParsingException(@"Extend rule not correctly terminated",parser.Tokenizer.GetNodeLocation(index));
                 }
+
                 if (extendKeyword.Match.Value[0] == '&')
                 {
                     parser.Tokenizer.Match(';');
                 }
-                return NodeProvider.Extend(selectors, parser.Tokenizer.GetNodeLocation(index));
+
+                if (partial.Count == 0 && exact.Count == 0)
+                {
+                    return null;
+                }
+
+                return NodeProvider.Extend(exact,partial, parser.Tokenizer.GetNodeLocation(index));
             }
             return null;
         }
