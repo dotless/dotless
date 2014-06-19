@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using dotless.Core.Exceptions;
 
 namespace dotless.Test.Specs
 {
@@ -578,18 +579,22 @@ a:nth-child(2) {
         [Test]
         public void VariableSelector()
         {
-            var input = @"
-@index: 4;
-(~"".span@{index}"") { 
-    border: 1px;
-}
-";
-            var expected = @"
-.span4 {
-  border: 1px;
-}
-";
-            AssertLess(input, expected);
+            var input = @"// Variables
+@mySelector: banner;
+
+// Usage
+.@{mySelector} {
+  font-weight: bold;
+  line-height: 40px;
+  margin: 0 auto;
+}";
+
+            var expected = @".banner {
+  font-weight: bold;
+  line-height: 40px;
+  margin: 0 auto;
+}";
+            AssertLess(input,expected);
         }
 
         [Test]
@@ -600,7 +605,7 @@ a:nth-child(2) {
   margin: @index;
 }
 .spanX (@index) when (@index > 0) {
-    (~"".span@{index}"") { .span(@index); }
+    .span@{index} { .span(@index); }
     .spanX(@index - 1);
 }
 .spanX(2);
@@ -678,7 +683,7 @@ a:nth-child(2) {
         {
             var input = @"
 @theme: blood;
-(~"".@{theme}"") {
+.@{theme} {
   .red& {
     foo: bar;
   }

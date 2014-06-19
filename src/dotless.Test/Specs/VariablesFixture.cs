@@ -430,5 +430,28 @@ namespace dotless.Test.Specs
 }";
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void VariableSelector()
+        {
+            string input = @"// Variables
+@mySelector: banner;
+
+// Usage
+.@{mySelector} {
+  font-weight: bold;
+  line-height: 40px;
+  margin: 0 auto;
+}
+";
+
+            string expected = @".banner {
+  font-weight: bold;
+  line-height: 40px;
+  margin: 0 auto;
+}
+";
+            AssertLess(input,expected);
+        }
     }
 }
