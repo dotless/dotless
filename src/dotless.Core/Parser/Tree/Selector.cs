@@ -3,6 +3,7 @@
     using Infrastructure;
     using Infrastructure.Nodes;
     using System.Collections.Generic;
+	using System.Linq;
     using Plugins;
 
     public class Selector : Node
@@ -32,7 +33,14 @@
             {
                 if (element.NodeValue is Extend)
                 {
-                    env.AddExtension(this, (Extend)(((Extend)element.NodeValue).Evaluate(env)),env);
+                    if (env.MediaPath.Any())
+                    {
+                        env.MediaPath.Peek().AddExtension(this, (Extend)(((Extend)element.NodeValue).Evaluate(env)),env);
+                    }
+                    else //Global extend
+                    {
+                        env.AddExtension(this, (Extend)(((Extend)element.NodeValue).Evaluate(env)), env);
+                    }
                 }
                 else
                 {

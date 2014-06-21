@@ -45,6 +45,7 @@
             _plugins = new List<IPlugin>();
             _functionTypes = functions ?? new Dictionary<string, Type>();
             _extensions = new List<Extender>();
+            ExtendMediaScope = new Stack<Media>();
 
             if (_functionTypes.Count == 0)
                 AddCoreFunctions();
@@ -102,6 +103,9 @@
                 return _plugins.OfType<IVisitorPlugin>();
             }
         }
+
+        //Keep track of media scoping for extenders
+        public Stack<Media> ExtendMediaScope { get; set; }
 
         /// <summary>
         ///  Returns whether the comment should be silent
@@ -273,11 +277,21 @@
 
         public ExactExtender FindExactExtension(string selection)
         {
+            if (ExtendMediaScope.Any())
+            {
+                return ExtendMediaScope.Select(media => media.FindExactExtension(selection)).FirstOrDefault(result => result != null);
+            }
+
             return _extensions.OfType<ExactExtender>().FirstOrDefault(e => e.BaseSelector.ToString().Trim() == selection);
         }
 
         public PartialExtender[] FindPartialExtensions(string selection)
         {
+            if (ExtendMediaScope.Any())
+            {
+                return ExtendMediaScope.Select(media => media.FindPartialExtensions(selection)).FirstOrDefault(result => result.Any());
+            }
+
             return _extensions.OfType<PartialExtender>().Where(e => selection.Contains(e.BaseSelector.ToString().Trim())).ToArray();
         }
     }

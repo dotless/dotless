@@ -181,7 +181,15 @@ namespace dotless.Core.Parser.Tree
             {
                 foreach (var s in this.Selectors)
                 {
-                    env.AddExtension(s, (Extend)r.Evaluate(env),env);
+                    //If we're in a media block, then extenders can only apply to that media block
+                    if (env.MediaPath.Any())
+                    {
+                        env.MediaPath.Peek().AddExtension(s, (Extend) r.Evaluate(env), env);
+                    }
+                    else //Global extend
+                    {
+                        env.AddExtension(s, (Extend) r.Evaluate(env), env);
+                    }
                 }
                 
                 Rules.Remove(r);
@@ -204,7 +212,7 @@ namespace dotless.Core.Parser.Tree
 
         public override void AppendCSS(Env env)
         {
-            if (!Rules.Any())
+            if (Rules == null || !Rules.Any())
                 return;
 
             ((Ruleset) Evaluate(env)).AppendCSS(env, new Context());

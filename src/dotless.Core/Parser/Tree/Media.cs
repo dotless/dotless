@@ -9,16 +9,18 @@
     {
         public Node Features { get; set; }
         public Ruleset Ruleset { get; set; }
+		public List<Extender> Extensions { get; set; }
 
         public Media(Node features, NodeList rules)
-            : this(features, new Ruleset(GetEmptySelector(), rules))
+            : this(features, new Ruleset(GetEmptySelector(), rules),null)
         {
         }
 
-        public Media(Node features, Ruleset ruleset)
+        public Media(Node features, Ruleset ruleset, List<Extender> extensions)
         {
             Features = features;
             Ruleset = ruleset;
+			Extensions = extensions ?? new List<Extender>();
         }
 
         public static NodeList<Selector> GetEmptySelector()
@@ -42,7 +44,7 @@
             var features = Features.Evaluate(env);
             var ruleset = Ruleset.Evaluate(env) as Ruleset;
 
-            var media = new Media(features, ruleset).ReducedFrom<Media>(this);
+            var media = new Media(features, ruleset,Extensions).ReducedFrom<Media>(this);
 
             env.MediaPath.Pop();
             env.MediaBlocks[blockIndex] = media;
@@ -205,7 +207,13 @@
 
             Ruleset.IsRoot = ctx.Count == 0;
 
+			//Track the last media block being appended for extender filters
+            env.ExtendMediaScope.Push(this);
+
+            // Set the current feeatures to filter extenders
             Ruleset.AppendCSS(env, ctx);
+
+            env.ExtendMediaScope.Pop();
 
             if (!env.Compress)
                 env.Output.Trim().Indent(2);
@@ -237,6 +245,43 @@
                 env.Output.Append('}');
             else
                 env.Output.Append("\n}\n");
+}
+
+        public void AddExtension(Selector selector, Extend extends, Env env)
+        {
+            foreach (var extending in extends.Exact)
+            {
+                Extender match = null;
+                if ((match = Extensions.OfType<ExactExtender>().FirstOrDefault(e => e.BaseSelector.ToString().Trim() == extending.ToString().Trim())) == null)
+                {
+                    match = new ExactExtender(extending);
+                    Extensions.Add(match);
+                }
+
+                match.AddExtension(selector, env);
+            }
+
+            foreach (var extending in extends.Partial)
+            {
+                Extender match = null;
+                if ((match = Extensions.OfType<PartialExtender>().FirstOrDefault(e => e.BaseSelector.ToString().Trim() == extending.ToString().Trim())) == null)
+                {
+                    match = new PartialExtender(extending);
+                    Extensions.Add(match);
+                }
+
+                match.AddExtension(selector, env);
+            }
+        }
+
+        public ExactExtender FindExactExtension(string selection)
+        {
+            return Extensions.OfType<ExactExtender>().FirstOrDefault(e => e.BaseSelector.ToString().Trim() == selection);
+        }
+
+        public PartialExtender[] FindPartialExtensions(string selection)
+        {
+            return Extensions.OfType<PartialExtender>().Where(e => selection.Contains(e.BaseSelector.ToString().Trim())).ToArray();
         }
     }
 }

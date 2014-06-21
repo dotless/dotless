@@ -208,5 +208,42 @@ pre:hover,
             //var output = Evaluate(input, DefaultParser()).Trim().Replace("\r\n", "\n");
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void ExtendMediaScoping()
+        {
+            var input = @"@media print {
+  .screenClass:extend(.selector) {}
+  .selector {
+    color: black;
+  }
+}
+.selector {
+  color: red;
+}
+@media screen {
+  .selector {
+    color: blue;
+  }
+}";
+
+            var expected = @"@media print {
+  .selector,
+  .screenClass {
+    color: black;
+  }
+}
+.selector {
+  color: red;
+}
+@media screen {
+  .selector {
+    color: blue;
+  }
+}";
+
+            AssertLess(input, expected);
+        }
+
     }
 }
