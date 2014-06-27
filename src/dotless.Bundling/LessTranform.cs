@@ -15,8 +15,8 @@ namespace dotless.Bundling
             foreach (var file in response.Files)
             {
                 // TODO - support a mixture of CSS and less files
-                file.Transforms.Add(new CssRewriteUrlTransform());
                 file.Transforms.Add(new DotLessItemTransform());
+                file.Transforms.Add(new CssRewriteUrlTransform());
 
                 output += file.ApplyTransforms();
             }
