@@ -1,14 +1,9 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Web.Hosting;
-using System.Web.Optimization;
+﻿using System.Web.Optimization;
 using dotless.Bundling;
+using NUnit.Framework;
 
-namespace dotless.Test.Unit
+namespace dotless.Test.Unit.Bundling
 {
-    using NUnit.Framework;
-
     public class LessTransformerFixture : HttpFixtureBase
     {
 
@@ -36,61 +31,6 @@ namespace dotless.Test.Unit
         private BundleContext CreateBundleContext(Bundle bundle, string virtualPath)
         {
             return new BundleContext(HttpContext.Object, new BundleCollection {bundle}, virtualPath);
-        }
-    }
-
-    public class InMemoryVirtualPathProvider : VirtualPathProvider
-    {
-        readonly IDictionary<string, string> _files = new Dictionary<string, string>();
-
-        public InMemoryVirtualPathProvider(IDictionary<string, string> files)
-        {
-            _files = files;
-        }
-
-        public InMemoryVirtualPathProvider()
-        {
-        }
-
-        public InMemoryVirtualPathProvider AddFile(string filename, string contents)
-        {
-            _files.Add(filename, contents);
-            return this;
-        } 
-
-        public override bool FileExists(string virtualPath)
-        {
-            return _files.ContainsKey(virtualPath);
-        }
-
-        public override VirtualFile GetFile(string virtualPath)
-        {
-            return new InMemoryVirtualFile(virtualPath, _files[virtualPath]);
-        }
-
-         
-    }
-
-    public class InMemoryVirtualFile : VirtualFile
-    {
-        private readonly string _virtualPath;
-        private readonly string _content;
-
-        public InMemoryVirtualFile(string virtualPath, string content) : base(virtualPath.Replace("~", @"c:"))
-        {
-            _virtualPath = virtualPath;
-            _content = content;
-        }
-
-        public override Stream Open()
-        {
-            var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(_content ?? ""));
-            return memoryStream;
-        }
-
-        public override string Name
-        {
-            get { return _virtualPath; }
         }
     }
 }
