@@ -10,6 +10,7 @@ namespace dotless.Bundling
             // todo: virtual paths
             // todo: support running all files as a single less file
             // todo: minification
+            // todo: what about in debug mode? - can the less handler help here?
 
             var output = "";
             foreach (var file in response.Files)

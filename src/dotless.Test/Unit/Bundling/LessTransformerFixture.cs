@@ -27,6 +27,31 @@ namespace dotless.Test.Unit.Bundling
             Assert.That(bundleResponse.Content, Is.EqualTo("body {\n  width: 2px;\n}\nh1 {\n  font-size: 18em;\n}\n"));
         }
 
+        // TODO: does it also work for bundling directories? Does the framework figure that out and
+        // pass through the files or does the transform have to do it?
+
+        // TODO: can it resolve relative path imports?
+
+        [Test]
+        public void IncludedFilesRunInTheSameScope()
+        {
+            // complication: each of these files could be in a different directory, which could change the
+            // relative paths of the imports
+            string inputFilename1 = "~/content/file1.less";
+            string inputFilename2 = "~/content/file2.less";
+
+            var pathProvider = new InMemoryVirtualPathProvider()
+                .AddFile(inputFilename1, "@nice-blue: #5B83AD;")
+                .AddFile(inputFilename2, ".selector { background-color: @nice-blue; }");
+            BundleTable.VirtualPathProvider = pathProvider;
+
+            var bundle = new LessBundle("~/Content/file.css")
+                .Include(inputFilename1)
+                .Include(inputFilename2);
+            var bundleResponse = bundle.GenerateBundleResponse(CreateBundleContext(bundle));
+
+            Assert.That(bundleResponse.Content, Is.EqualTo(".selector {\n background-color: @nice-blue;\n}\n"));
+        }
 
         [Test]
         public void AppRelativePathsTranslatedToSiteRelative()
@@ -41,7 +66,6 @@ namespace dotless.Test.Unit.Bundling
                 .Include(inputFilename);
             var bundleResponse = bundle.GenerateBundleResponse(CreateBundleContext(bundle));
 
-            Assert.That(bundleResponse.ContentType, Is.EqualTo("text/css"));
             Assert.That(bundleResponse.Content, Is.EqualTo(".button { background: url('/images/image.png'); }"));
         }
 
@@ -59,7 +83,6 @@ namespace dotless.Test.Unit.Bundling
                 .Include(inputFilename);
             var bundleResponse = bundle.GenerateBundleResponse(CreateBundleContext(bundle));
 
-            Assert.That(bundleResponse.ContentType, Is.EqualTo("text/css"));
             Assert.That(bundleResponse.Content, Is.EqualTo(".button{background:blue;}"));
         }
 
