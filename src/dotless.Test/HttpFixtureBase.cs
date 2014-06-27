@@ -1,4 +1,5 @@
 using System;
+using System.Web.Hosting;
 
 namespace dotless.Test
 {
@@ -26,6 +27,7 @@ namespace dotless.Test
         protected NameValueCollection Form { get; set; }
         protected NameValueCollection Headers { get; set; }
         protected DotlessConfiguration Config { get; set; }
+        protected Mock<VirtualPathProvider> VirtualPathProvider { get; set; }
 
         [SetUp]
         public void BaseSetup()
@@ -39,6 +41,8 @@ namespace dotless.Test
             Http = new Mock<IHttp>();
             Clock = new Mock<IClock>();
             ConfigManager = new Mock<IConfigurationManager>();
+            VirtualPathProvider = new Mock<VirtualPathProvider>();
+            
 
             QueryString = new NameValueCollection();
             Form = new NameValueCollection();
