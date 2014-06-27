@@ -16,6 +16,11 @@ namespace dotless.Test.Unit.Bundling
         {
         }
 
+        public InMemoryVirtualPathProvider(string filename, string contents)
+        {
+            AddFile(filename, contents);
+        }
+
         public InMemoryVirtualPathProvider AddFile(string filename, string contents)
         {
             _files.Add(filename, contents);
