@@ -63,7 +63,6 @@ namespace dotless.Test.Unit.Bundling
             Assert.That(bundleResponse.Content, Is.EqualTo(".button{background:blue;}"));
         }
 
-
         private BundleContext CreateBundleContext(Bundle bundle)
         {
             return new BundleContext(HttpContext.Object, new BundleCollection { bundle }, bundle.Path);
