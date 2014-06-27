@@ -57,7 +57,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DotLessItemTransform.cs" />
     <Compile Include="LessBundle.cs" />
+    <Compile Include="LessTranform.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
