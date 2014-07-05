@@ -1,3 +1,4 @@
+using System.Web;
 using System.Web.Optimization;
 
 namespace dotless.Bundling
@@ -15,8 +16,8 @@ namespace dotless.Bundling
             var output = "";
             foreach (var file in response.Files)
             {
-                // TODO - support a mixture of CSS and less files
-                file.Transforms.Add(new DotLessItemTransform());
+                // TODO - support a mixture of CSS and less files?
+                file.Transforms.Add(new DotLessItemTransform(context));
                 file.Transforms.Add(new CssRewriteUrlTransform());
 
                 output += file.ApplyTransforms();

@@ -110,10 +110,8 @@ namespace dotless.Test.Unit.Bundling
         [Test]
         public void UsesDotLessConfigurationFromWebConfig()
         {
-            // complication: have to figure out how the damn IOC container works (and most likely
-            // write a new setup just for bundling)
             string inputFilename = "~/content/input.less";
-            var pathProvider = new InMemoryVirtualPathProvider(inputFilename, ".button { background: blue; }");
+            var pathProvider = new InMemoryVirtualPathProvider(inputFilename, ".button { background: blue;}");
             BundleTable.VirtualPathProvider = pathProvider;
             Config.MinifyOutput = true;
 
@@ -121,7 +119,7 @@ namespace dotless.Test.Unit.Bundling
                 .Include(inputFilename);
             var bundleResponse = bundle.GenerateBundleResponse(CreateBundleContext(bundle));
 
-            Assert.That(bundleResponse.Content, Is.EqualTo(".button{background:blue;}"));
+            Assert.That(bundleResponse.Content, Is.EqualTo(".button{background:blue}"));
         }
 
         private BundleContext CreateBundleContext(Bundle bundle)

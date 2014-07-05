@@ -1,4 +1,5 @@
 ﻿using System.Web.Optimization;
+using dotless.Core;
 
 namespace dotless.Bundling
 {
