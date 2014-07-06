@@ -1,12 +1,19 @@
+using dotless.Core.Abstractions;
+
 namespace dotless.Core.Input
 {
-    using System.Web;
-
     public class AspServerPathResolver : IPathResolver
     {
+        private readonly IHttp _http;
+
+        public AspServerPathResolver(IHttp http)
+        {
+            _http = http;
+        }
+
         public string GetFullPath(string path)
         {
-            return HttpContext.Current.Server.MapPath(path);
+            return _http.Context.Server.MapPath(path);
         }
     }
 }

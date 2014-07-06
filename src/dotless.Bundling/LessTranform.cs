@@ -1,5 +1,8 @@
-using System.Web;
+using System.Collections.Generic;
+using System.Text;
 using System.Web.Optimization;
+using dotless.Core;
+using dotless.Core.configuration;
 
 namespace dotless.Bundling
 {
@@ -8,23 +11,34 @@ namespace dotless.Bundling
         public void Process(BundleContext context, BundleResponse response)
         {
             // todo: what about cacheability?
-            // todo: virtual paths
             // todo: support running all files as a single less file
             // todo: minification
             // todo: what about in debug mode? - can the less handler help here?
 
-            var output = "";
-            foreach (var file in response.Files)
-            {
-                // TODO - support a mixture of CSS and less files?
-                file.Transforms.Add(new DotLessItemTransform(context));
-                file.Transforms.Add(new CssRewriteUrlTransform());
+            var sharedLessFile = CreateSharedLessFile(response.Files);
 
-                output += file.ApplyTransforms();
-            }
-
-            response.Content = output;
+            response.Content = GenerateCss(sharedLessFile, context);
             response.ContentType = "text/css";
+        }
+
+        private string CreateSharedLessFile(IEnumerable<BundleFile> files)
+        {
+            var root = new StringBuilder();
+            foreach (var file in files)
+            {
+                root.AppendFormat("@import \"{0}\";", file.IncludedVirtualPath);
+            }
+            return root.ToString();
+        }
+
+        private string GenerateCss(string import, BundleContext context)
+        {
+            var configuration = new WebConfigConfigurationLoader().GetConfiguration();
+            configuration.DisableParameters = true; // todo: what?
+
+            // todo: should we create the container each time?
+            var engine = new EngineFactory(configuration).GetEngine(new BundlingContainerFactory(context.HttpContext, BundleTable.VirtualPathProvider));
+            return engine.TransformToCss(import, context.BundleVirtualPath);
         }
     }
 }

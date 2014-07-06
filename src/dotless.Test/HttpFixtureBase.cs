@@ -58,6 +58,7 @@ namespace dotless.Test
             HttpContext.SetupGet(c => c.Response).Returns(HttpResponse.Object);
             HttpContext.SetupGet(c => c.Server).Returns(HttpServer.Object);
             HttpContext.SetupGet(c => c.Session).Returns(HttpSession.Object);
+            HttpServer.Setup(s => s.MapPath(It.IsAny<string>())).Returns((string path) => path);
             HttpResponse.SetupGet(r => r.Cache).Returns(HttpCache.Object);
             HttpResponse.SetupGet(r => r.Filter).Returns(new MemoryStream(new byte[1000], true));
             HttpRequest.SetupGet(r => r.QueryString).Returns(QueryString);
