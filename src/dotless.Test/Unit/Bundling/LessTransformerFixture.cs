@@ -1,12 +1,12 @@
 ﻿using System.Web.Optimization;
 using dotless.Bundling;
+using dotless.Core.Input;
 using NUnit.Framework;
 
 namespace dotless.Test.Unit.Bundling
 {
     public class LessTransformerFixture : HttpFixtureBase
     {
-
         [Test]
         public void TransformFilesToLess()
         {
@@ -16,7 +16,7 @@ namespace dotless.Test.Unit.Bundling
             var pathProvider = new InMemoryVirtualPathProvider()
                 .AddFile(inputFilename1, "body { width: 1+1px; }")
                 .AddFile(inputFilename2, "h1 { font-size: 3*6em; }");
-            BundleTable.VirtualPathProvider = pathProvider;
+            SetUpPathProvider(pathProvider);
 
             var bundle = new LessBundle("~/Content/file.css")
                 .Include(inputFilename1)
@@ -26,8 +26,6 @@ namespace dotless.Test.Unit.Bundling
             Assert.That(bundleResponse.ContentType, Is.EqualTo("text/css"));
             Assert.That(bundleResponse.Content, Is.EqualTo("body {\n  width: 2px;\n}\nh1 {\n  font-size: 18em;\n}\n"));
         }
-
-        // TODO: can it resolve relative path imports?
 
         [Test]
         public void CanUseRelativePathsInImportStatements()
@@ -39,13 +37,13 @@ namespace dotless.Test.Unit.Bundling
             var pathProvider = new InMemoryVirtualPathProvider()
                 .AddFile(inputFilename1, "@import \"file2.less\";")
                 .AddFile(inputFilename2, ".selector { background: yellow; }");
-            BundleTable.VirtualPathProvider = pathProvider;
+            SetUpPathProvider(pathProvider);
 
             var bundle = new LessBundle("~/Content/file.css")
                 .Include(inputFilename1);
             var bundleResponse = bundle.GenerateBundleResponse(CreateBundleContext(bundle));
 
-            Assert.That(bundleResponse.Content, Is.EqualTo(".selector {\n background: yellow;\n}\n"));
+            Assert.That(bundleResponse.Content, Is.EqualTo(".selector {\n  background: yellow;\n}\n"));
         }
 
         [Test]
@@ -60,35 +58,32 @@ namespace dotless.Test.Unit.Bundling
                 .AddFile(inputFilename1, "@import \"project/file2.less\";")
                 .AddFile(inputFilename2, "@import \"sub/file3.less\";")
                 .AddFile(inputFilename3, ".selector { background: yellow; }");
-            BundleTable.VirtualPathProvider = pathProvider;
+            SetUpPathProvider(pathProvider);
 
             var bundle = new LessBundle("~/Content/file.css")
                 .Include(inputFilename1);
             var bundleResponse = bundle.GenerateBundleResponse(CreateBundleContext(bundle));
 
-            Assert.That(bundleResponse.Content, Is.EqualTo(".selector {\n background: yellow;\n}\n"));
+            Assert.That(bundleResponse.Content, Is.EqualTo(".selector {\n  background: yellow;\n}\n"));
         }
-
 
         [Test]
         public void IncludedFilesRunInTheSameScope()
         {
-            // complication: each of these files could be in a different directory, which could change the
-            // relative paths of the imports
             string inputFilename1 = "~/content/file1.less";
             string inputFilename2 = "~/content/file2.less";
 
             var pathProvider = new InMemoryVirtualPathProvider()
                 .AddFile(inputFilename1, "@nice-blue: #5B83AD;")
                 .AddFile(inputFilename2, ".selector { background: @nice-blue; }");
-            BundleTable.VirtualPathProvider = pathProvider;
+            SetUpPathProvider(pathProvider);
 
             var bundle = new LessBundle("~/Content/file.css")
                 .Include(inputFilename1)
                 .Include(inputFilename2);
             var bundleResponse = bundle.GenerateBundleResponse(CreateBundleContext(bundle));
 
-            Assert.That(bundleResponse.Content, Is.EqualTo(".selector {\n background: @nice-blue;\n}\n"));
+            Assert.That(bundleResponse.Content, Is.EqualTo(".selector {\n  background: #5b83ad;\n}\n"));
         }
 
         [Test]
@@ -98,13 +93,13 @@ namespace dotless.Test.Unit.Bundling
             // the HTTP handler does it, but I'm not sure it does it correctly (or how)
             string inputFilename = "~/content/input.less";
             var pathProvider = new InMemoryVirtualPathProvider(inputFilename, ".button { background: url('~/image.png'); }");
-            BundleTable.VirtualPathProvider = pathProvider;
+            SetUpPathProvider(pathProvider);
 
             var bundle = new LessBundle("~/Content/output.css")
                 .Include(inputFilename);
             var bundleResponse = bundle.GenerateBundleResponse(CreateBundleContext(bundle));
 
-            Assert.That(bundleResponse.Content, Is.EqualTo(".button { background: url('/images/image.png'); }"));
+            Assert.That(bundleResponse.Content, Is.EqualTo(".button {\n  background: url(/image.png);\n}\n"));
         }
 
         [Test]
@@ -112,7 +107,7 @@ namespace dotless.Test.Unit.Bundling
         {
             string inputFilename = "~/content/input.less";
             var pathProvider = new InMemoryVirtualPathProvider(inputFilename, ".button { background: blue;}");
-            BundleTable.VirtualPathProvider = pathProvider;
+            SetUpPathProvider(pathProvider);
             Config.MinifyOutput = true;
 
             var bundle = new LessBundle("~/Content/output.css")
@@ -125,6 +120,12 @@ namespace dotless.Test.Unit.Bundling
         private BundleContext CreateBundleContext(Bundle bundle)
         {
             return new BundleContext(HttpContext.Object, new BundleCollection { bundle }, bundle.Path);
+        }
+
+        private void SetUpPathProvider(InMemoryVirtualPathProvider pathProvider)
+        {
+            BundleTable.VirtualPathProvider = pathProvider;
+            Config.LessSource = typeof(VirtualFileReader);
         }
     }
 }

@@ -4,13 +4,14 @@ namespace dotless.Core.Abstractions
 
     public class Http : IHttp
     {
-        private readonly HttpContextBase _context;
+        private HttpContextBase _context;
 
         public Http()
         {
             _context = new HttpContextWrapper(HttpContext.Current);
         }
 
+        /*
         public Http(HttpContextBase context)
         {
             _context = context;
@@ -19,6 +20,18 @@ namespace dotless.Core.Abstractions
         public HttpContextBase Context
         {
             get { return _context; }
+        }
+         */
+
+        public HttpContextBase Context
+        {
+            get
+            {
+                if (_context == null)
+                    _context = new HttpContextWrapper(HttpContext.Current);
+
+                return _context;
+            }
         }
     }
 }

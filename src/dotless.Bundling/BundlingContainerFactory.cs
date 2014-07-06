@@ -1,4 +1,5 @@
 ﻿using System.Web;
+using System.Web.Hosting;
 using dotless.Core;
 using dotless.Core.Abstractions;
 using dotless.Core.Cache;
@@ -14,10 +15,12 @@ namespace dotless.Bundling
     public class BundlingContainerFactory : ContainerFactory
     {
         private readonly HttpContextBase _httpContext;
+        private readonly VirtualPathProvider _virtualPathProvider;
 
-        public BundlingContainerFactory(HttpContextBase httpContext)
+        public BundlingContainerFactory(HttpContextBase httpContext, VirtualPathProvider virtualPathProvider)
         {
             _httpContext = httpContext;
+            _virtualPathProvider = virtualPathProvider;
         }
 
         protected override void RegisterServices(FluentRegistration pandora, DotlessConfiguration configuration)
@@ -28,7 +31,10 @@ namespace dotless.Bundling
 
         private void RegisterWebServices(FluentRegistration pandora, DotlessConfiguration configuration)
         {
-            pandora.Service<IHttp>().Instance(new Http(_httpContext));
+            //pandora.Service<IHttp>().Instance(new Http(_httpContext));
+            pandora.Service<IFileReader>().Implementor<VirtualFileReader>();
+            pandora.Service<VirtualPathProvider>().Instance(_virtualPathProvider);
+
             //pandora.Service<HandlerImpl>().Implementor<HandlerImpl>().Lifestyle.Transient();
 
             //if (!configuration.DisableParameters)
@@ -52,7 +58,7 @@ namespace dotless.Bundling
             pandora.Service<ICache>().Implementor<InMemoryCache>().Lifestyle.Transient(); // TODO - need to figure out what caching to do
             pandora.Service<ILogger>().Implementor<AspResponseLogger>().Parameters("level").Set("error-level").Lifestyle.Transient(); // todo: does this make sense outside of webforms?
 
-            pandora.Service<IPathResolver>().Implementor<BundlingPathResolver>().Lifestyle.Transient();
+            pandora.Service<IPathResolver>().Implementor<AspServerPathResolver>().Lifestyle.Transient();
         }
     }
 }
