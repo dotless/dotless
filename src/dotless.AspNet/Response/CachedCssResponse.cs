@@ -1,6 +1,5 @@
 ﻿namespace dotless.Core.Response
 {
-    using System;
     using System.Web;
     using Abstractions;
 
@@ -8,11 +7,6 @@
     {
         private readonly int _httpExpiryInMinutes;
         private readonly IClock _clock;
-
-        public CachedCssResponse(IHttp http, bool isCompressionHandledByResponse, int httpExpiryInMinutes) :
-            this(http, isCompressionHandledByResponse, httpExpiryInMinutes, new Clock())
-        {
-        }
 
         public CachedCssResponse(IHttp http, bool isCompressionHandledByResponse, int httpExpiryInMinutes, IClock clock) 
             : base(http, isCompressionHandledByResponse)

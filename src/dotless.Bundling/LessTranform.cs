@@ -3,6 +3,7 @@ using System.Text;
 using System.Web.Optimization;
 using dotless.Core;
 using dotless.Core.configuration;
+using dotless.Core.Loggers;
 
 namespace dotless.Bundling
 {
@@ -37,8 +38,15 @@ namespace dotless.Bundling
             configuration.DisableParameters = true; // todo: what?
 
             // todo: should we create the container each time?
-            var engine = new EngineFactory(configuration).GetEngine(new BundlingContainerFactory(context.HttpContext, BundleTable.VirtualPathProvider));
-            return engine.TransformToCss(import, context.BundleVirtualPath);
+            var logger = new InMemoryLogger(LogLevel.Error);
+            var engine = new EngineFactory(configuration).GetEngine(new BundlingContainerFactory(logger, BundleTable.VirtualPathProvider));
+            var cssOutput = engine.TransformToCss(import, context.BundleVirtualPath);
+            if (!engine.LastTransformationSuccessful)
+            {
+                return logger.GetOutput();
+            }
+
+            return cssOutput;
         }
     }
 }

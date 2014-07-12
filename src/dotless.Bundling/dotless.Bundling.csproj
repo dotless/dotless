@@ -64,7 +64,7 @@
   <ItemGroup>
     <Compile Include="BundlingContainerFactory.cs" />
     <Compile Include="BundlingPathResolver.cs" />
-    <Compile Include="DotLessItemTransform.cs" />
+    <Compile Include="InMemoryLogger.cs" />
     <Compile Include="LessBundle.cs" />
     <Compile Include="LessTranform.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

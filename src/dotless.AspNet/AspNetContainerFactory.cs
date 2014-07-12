@@ -30,6 +30,7 @@
             var responseService = configuration.CacheEnabled ?
                 pandora.Service<IResponse>().Implementor<CachedCssResponse>() :
                 pandora.Service<IResponse>().Implementor<CssResponse>();
+            pandora.Service<IClock>().Implementor<Clock>();
 
             responseService.Parameters("isCompressionHandledByResponse").Set("default-is-compression-handled-by-response").Lifestyle.Transient();
             pandora.Service<bool>("default-is-compression-handled-by-response").Instance(configuration.HandleWebCompression);
