@@ -8,10 +8,10 @@ namespace dotless.Core.Abstractions
 
         public Http()
         {
-            _context = new HttpContextWrapper(HttpContext.Current);
+            if (HttpContext.Current != null)
+                _context = new HttpContextWrapper(HttpContext.Current);
         }
 
-        /*
         public Http(HttpContextBase context)
         {
             _context = context;
@@ -20,18 +20,6 @@ namespace dotless.Core.Abstractions
         public HttpContextBase Context
         {
             get { return _context; }
-        }
-         */
-
-        public HttpContextBase Context
-        {
-            get
-            {
-                if (_context == null)
-                    _context = new HttpContextWrapper(HttpContext.Current);
-
-                return _context;
-            }
         }
     }
 }

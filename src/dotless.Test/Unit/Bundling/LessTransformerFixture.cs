@@ -117,6 +117,20 @@ namespace dotless.Test.Unit.Bundling
             Assert.That(bundleResponse.Content, Is.EqualTo(".button{background:blue}"));
         }
 
+        [Test]
+        public void ShowParsingErrorsInBundleResponse()
+        {
+            string inputFilename = "~/content/input.less";
+            var pathProvider = new InMemoryVirtualPathProvider(inputFilename, ".button { background: blue;");
+            SetUpPathProvider(pathProvider);
+
+            var bundle = new LessBundle("~/Content/output.css")
+                .Include(inputFilename);
+            var bundleResponse = bundle.GenerateBundleResponse(CreateBundleContext(bundle));
+
+            Assert.That(bundleResponse.Content, Is.StringStarting("Missing closing '}' on line 1 in file '~/content/input.less':"));
+        }
+
         private BundleContext CreateBundleContext(Bundle bundle)
         {
             return new BundleContext(HttpContext.Object, new BundleCollection { bundle }, bundle.Path);
