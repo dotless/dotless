@@ -84,6 +84,14 @@ For the client only dll on its own, see the DotlessClientOnly package.";
         -product $product `
         -version $version `
         -copyright $copyright
+	Generate-Assembly-Info `
+        -file "$source_dir\dotless.Bundling\Properties\AssemblyInfo.cs" `
+        -title $title `
+        -description $description `
+        -company $company `
+        -product $product `
+        -version $version `
+        -copyright $copyright
 
     new-item $release_dir -itemType directory    
 }
