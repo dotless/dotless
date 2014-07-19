@@ -1,4 +1,5 @@
 using System;
+using System.Web.Caching;
 
 namespace dotless.Test
 {
@@ -30,11 +31,13 @@ namespace dotless.Test
         [SetUp]
         public void BaseSetup()
         {
+            
             HttpContext = new Mock<HttpContextBase>();
             HttpRequest = new Mock<HttpRequestBase>();
             HttpResponse = new Mock<HttpResponseBase>();
             HttpSession = new Mock<HttpSessionStateBase>();
             HttpServer = new Mock<HttpServerUtilityBase>();
+            
             HttpCache = new Mock<HttpCachePolicyBase>();
             Http = new Mock<IHttp>();
             Clock = new Mock<IClock>();
@@ -58,6 +61,7 @@ namespace dotless.Test
             HttpContext.SetupGet(c => c.Response).Returns(HttpResponse.Object);
             HttpContext.SetupGet(c => c.Server).Returns(HttpServer.Object);
             HttpContext.SetupGet(c => c.Session).Returns(HttpSession.Object);
+            HttpContext.SetupGet(c => c.Cache).Returns(HttpRuntime.Cache);
             HttpServer.Setup(s => s.MapPath(It.IsAny<string>())).Returns((string path) => path);
             HttpResponse.SetupGet(r => r.Cache).Returns(HttpCache.Object);
             HttpResponse.SetupGet(r => r.Filter).Returns(new MemoryStream(new byte[1000], true));
