@@ -254,7 +254,7 @@ exit 1 unless result"
     gem build dotless.gemspec
 }
 
-task Release -depends Test, Merge, NuGetPackage, NuGetClientOnlyPackage, t4css {
+task Release -depends Test, Merge, NuGetPackage, NuGetClientOnlyPackage, NuGetBundlingPackage, t4css {
     $commit = Get-Git-Commit
     $filename = "dotless.core"
     & $lib_dir\7zip\7za.exe a $release_dir\dotless-$commit.zip `
