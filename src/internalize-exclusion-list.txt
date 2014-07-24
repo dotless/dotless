@@ -1,1 +1,2 @@
 \[dotless\.AspNet\].*
+\[dotless\.Bundling\].*
