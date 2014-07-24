@@ -178,6 +178,22 @@ task Merge -depends Build {
     if ($lastExitCode -ne 0) {
         throw "Error: Failed to merge assemblies"
     }
+	
+    $compilerfilename = "dotless.Core.Bundling.dll"
+    write-host "Executing ILMerge - Creating Bundling"
+    & $source_dir\packages\ilmerge.2.13.0307\ILMerge.exe $filename-partial.dll `
+        Pandora.dll `
+        Microsoft.Practices.ServiceLocation.dll `
+		dotless.AspNet.dll `
+		dotless.Bundling.dll `
+        /out:$compilerfilename `
+        /internalize:../src/internalize-exclusion-list.txt `
+        /keyfile:../src/dotless-open-source.snk `
+		/v4 `
+        /t:library 
+    if ($lastExitCode -ne 0) {
+        throw "Error: Failed to merge assemblies"
+    }
     
     $compilerfilename = "dotless.ClientOnly.dll"
     write-host "Executing ILMerge - Creating Client Only Dll"
@@ -317,8 +333,7 @@ task NuGetBundlingPackage -depends Merge {
     
     Copy-Item $build_dir\DotlessBundling.nuspec $target
     Copy-Item $source_dir\dotless.Bundling\web.config.transform $target\content\
-    Copy-Item $build_dir\dotless.Core.dll $target\lib\
-	Copy-Item $build_dir\dotless.Bundling.dll $target\lib\
+	Copy-Item $build_dir\dotless.Core.Bundling.dll $target\lib\
     Copy-Item acknowledgements.txt $target
     Copy-Item license.txt $target
         
