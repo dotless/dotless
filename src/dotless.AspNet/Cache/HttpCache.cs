@@ -1,3 +1,5 @@
+using System.IO;
+
 namespace dotless.Core.Cache
 {
     using System.Collections.Generic;
@@ -25,7 +27,7 @@ namespace dotless.Core.Cache
 
             if (_reader.UseCacheDependencies)
             {
-                var fullPaths = fileDependancies.Select(f => PathResolver.GetFullPath(f)).ToArray();
+                var fullPaths = fileDependancies.Select(f => PathResolver.GetFullPath(f)).Where(File.Exists).ToArray();
 
                 _http.Context.Response.AddFileDependencies(fullPaths);
 
