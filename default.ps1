@@ -1,4 +1,5 @@
 # This script was derived from the Rhino.Mocks buildscript written by Ayende Rahien.
+#Framework "4.0"
 include .\psake_ext.ps1
 
 properties {
@@ -35,6 +36,10 @@ For the client only dll on its own, see the DotlessClientOnly package.";
     $nugetDotlessClientOnly = "This package only contains the dot net client only dll. You should only use this package if you do not want any ASP.net functionality.
     
     " + $nugetDescription;
+	
+	$nugetDotlessBundling = "This package includes all of the things needed to bundle Less files using the System.Web.Optimization bundling framework. 
+    
+    " + $nugetDescription;
 
     Write-Host $version
     new-item $build_dir -itemType directory
@@ -51,6 +56,12 @@ For the client only dll on its own, see the DotlessClientOnly package.";
         -version $version `
         -authors $authors `
         -description $nugetDotlessClientOnly
+	Generate-NuGet `
+        -file "$build_dir\DotlessBundling.nuspec" `
+        -id "DotlessBundling" `
+        -version $version `
+        -authors $authors `
+        -description $nugetDotlessBundling
     Generate-Assembly-Info `
         -file "$source_dir\dotless.Core\Properties\AssemblyInfo.cs" `
         -title $title `
@@ -78,6 +89,14 @@ For the client only dll on its own, see the DotlessClientOnly package.";
         -copyright $copyright
     Generate-Assembly-Info `
         -file "$source_dir\dotless.AspNet\Properties\AssemblyInfo.cs" `
+        -title $title `
+        -description $description `
+        -company $company `
+        -product $product `
+        -version $version `
+        -copyright $copyright
+	Generate-Assembly-Info `
+        -file "$source_dir\dotless.Bundling\Properties\AssemblyInfo.cs" `
         -title $title `
         -description $description `
         -company $company `
@@ -112,7 +131,7 @@ task Test -depends Build {
     }
     $old = pwd
     cd $build_dir
-    & $lib_dir\NUnit\nunit-console-x86.exe $build_dir\dotless.Test.dll 
+    & $source_dir\packages\NUnit.Runners.2.6.3\tools\nunit-console-x86.exe $build_dir\dotless.Test.dll /framework:net-4.0
     if ($lastExitCode -ne 0) {
         throw "Error: Failed to execute tests"
         if ($showtestresult)
@@ -156,6 +175,24 @@ task Merge -depends Build {
         /internalize:../src/internalize-exclusion-list.txt `
         /keyfile:../src/dotless-open-source.snk `
         /t:library
+    if ($lastExitCode -ne 0) {
+        throw "Error: Failed to merge assemblies"
+    }
+	
+    $bundlingfilename = "dotless.Bundling.dll"
+	Remove-Item $bundlingfilename-partial.dll -ErrorAction SilentlyContinue
+    Rename-Item $bundlingfilename $bundlingfilename-partial.dll
+    write-host "Executing ILMerge - Creating Bundling"
+    & $source_dir\packages\ilmerge.2.13.0307\ILMerge.exe $filename-partial.dll `
+        Pandora.dll `
+        Microsoft.Practices.ServiceLocation.dll `
+		dotless.AspNet.dll `
+		$bundlingfilename-partial.dll `
+        /out:dotless.Bundling.dll `
+        /internalize:../src/internalize-exclusion-list.txt `
+        /keyfile:../src/dotless-open-source.snk `
+		/v4 `
+        /t:library 
     if ($lastExitCode -ne 0) {
         throw "Error: Failed to merge assemblies"
     }
@@ -235,7 +272,7 @@ exit 1 unless result"
     gem build dotless.gemspec
 }
 
-task Release -depends Test, Merge, NuGetPackage, NuGetClientOnlyPackage, t4css {
+task Release -depends Test, Merge, NuGetPackage, NuGetClientOnlyPackage, NuGetBundlingPackage, t4css {
     $commit = Get-Git-Commit
     $filename = "dotless.core"
     & $lib_dir\7zip\7za.exe a $release_dir\dotless-$commit.zip `
@@ -286,4 +323,21 @@ task NuGetClientOnlyPackage -depends Merge {
     Copy-Item license.txt $target
         
     .\lib\NuGet.exe pack $target\DotlessClientOnly.nuspec -o $build_dir
+}
+
+task NuGetBundlingPackage -depends Merge {
+    $target = "$build_dir\NuGetBundling\"
+    remove-item -force -recurse $target -ErrorAction SilentlyContinue     
+    New-Item $target -ItemType directory
+    New-Item $target\lib -ItemType directory
+    New-Item $target\tool -ItemType directory
+    New-Item $target\content -ItemType directory
+    
+    Copy-Item $build_dir\DotlessBundling.nuspec $target
+    Copy-Item $source_dir\dotless.Bundling\web.config.transform $target\content\
+	Copy-Item $build_dir\dotless.Bundling.dll $target\lib\
+    Copy-Item acknowledgements.txt $target
+    Copy-Item license.txt $target
+        
+    .\lib\NuGet.exe pack $target\DotlessBundling.nuspec -o $build_dir
 }

@@ -79,7 +79,7 @@
     <Compile Include="FixImportPathDecorator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Watcher.cs" />
-	<Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\dotless.Core\dotless.Core.csproj">
@@ -104,7 +104,50 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="bootstrap3.1.1\alerts.less" />
+    <None Include="bootstrap3.1.1\badges.less" />
+    <None Include="bootstrap3.1.1\bootstrap.less" />
+    <None Include="bootstrap3.1.1\breadcrumbs.less" />
+    <None Include="bootstrap3.1.1\button-groups.less" />
+    <None Include="bootstrap3.1.1\buttons.less" />
+    <None Include="bootstrap3.1.1\carousel.less" />
+    <None Include="bootstrap3.1.1\close.less" />
+    <None Include="bootstrap3.1.1\code.less" />
+    <None Include="bootstrap3.1.1\component-animations.less" />
+    <None Include="bootstrap3.1.1\dropdowns.less" />
+    <None Include="bootstrap3.1.1\forms.less" />
+    <None Include="bootstrap3.1.1\glyphicons.less" />
+    <None Include="bootstrap3.1.1\grid.less" />
+    <None Include="bootstrap3.1.1\input-groups.less" />
+    <None Include="bootstrap3.1.1\jumbotron.less" />
+    <None Include="bootstrap3.1.1\labels.less" />
+    <None Include="bootstrap3.1.1\list-group.less" />
+    <None Include="bootstrap3.1.1\media.less" />
+    <None Include="bootstrap3.1.1\mixins.less" />
+    <None Include="bootstrap3.1.1\modals.less" />
+    <None Include="bootstrap3.1.1\navbar.less" />
+    <None Include="bootstrap3.1.1\navs.less" />
+    <None Include="bootstrap3.1.1\normalize.less" />
+    <None Include="bootstrap3.1.1\pager.less" />
+    <None Include="bootstrap3.1.1\pagination.less" />
+    <None Include="bootstrap3.1.1\panels.less" />
+    <None Include="bootstrap3.1.1\popovers.less" />
+    <None Include="bootstrap3.1.1\print.less" />
+    <None Include="bootstrap3.1.1\progress-bars.less" />
+    <None Include="bootstrap3.1.1\responsive-utilities.less" />
+    <None Include="bootstrap3.1.1\scaffolding.less" />
+    <None Include="bootstrap3.1.1\tables.less" />
+    <None Include="bootstrap3.1.1\theme.less" />
+    <None Include="bootstrap3.1.1\thumbnails.less" />
+    <None Include="bootstrap3.1.1\tooltip.less" />
+    <None Include="bootstrap3.1.1\type.less" />
+    <None Include="bootstrap3.1.1\utilities.less" />
+    <None Include="bootstrap3.1.1\variables.less" />
+    <None Include="bootstrap3.1.1\wells.less" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

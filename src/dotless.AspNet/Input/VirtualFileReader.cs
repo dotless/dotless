@@ -5,10 +5,16 @@ namespace dotless.Core.Input
 
     public class VirtualFileReader : IFileReader
     {
+        private readonly VirtualPathProvider _virtualPathProvider;
+
+        public VirtualFileReader(VirtualPathProvider virtualPathProvider)
+        {
+            _virtualPathProvider = virtualPathProvider;
+        }
+
         public byte[] GetBinaryFileContents(string fileName)
         {
-            var virtualPathProvider = HostingEnvironment.VirtualPathProvider;
-            var virtualFile = virtualPathProvider.GetFile(fileName);
+            var virtualFile = _virtualPathProvider.GetFile(fileName);
             using (var stream = virtualFile.Open())
             {
                 var buffer = new byte[stream.Length];
@@ -19,8 +25,7 @@ namespace dotless.Core.Input
 
         public string GetFileContents(string fileName)
         {
-            var virtualPathProvider = HostingEnvironment.VirtualPathProvider;
-            var virtualFile = virtualPathProvider.GetFile(fileName);
+            var virtualFile = _virtualPathProvider.GetFile(fileName);
             using (var streamReader = new StreamReader(virtualFile.Open()))
             {
                 return streamReader.ReadToEnd();
@@ -29,8 +34,7 @@ namespace dotless.Core.Input
 
         public bool DoesFileExist(string fileName)
         {
-            var virtualPathProvider = HostingEnvironment.VirtualPathProvider;
-            return virtualPathProvider.FileExists(fileName);
+            return _virtualPathProvider.FileExists(fileName);
         }
 
         public bool UseCacheDependencies { get { return false; } }

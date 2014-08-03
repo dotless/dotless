@@ -4,17 +4,22 @@ namespace dotless.Core.Abstractions
 
     public class Http : IHttp
     {
-        private HttpContextWrapper _context;
+        private HttpContextBase _context;
+
+        public Http()
+        {
+            if (HttpContext.Current != null)
+                _context = new HttpContextWrapper(HttpContext.Current);
+        }
+
+        public Http(HttpContextBase context)
+        {
+            _context = context;
+        }
 
         public HttpContextBase Context
         {
-            get
-            {
-                if (_context == null)
-                    _context = new HttpContextWrapper(HttpContext.Current);
-
-                return _context;
-            }
+            get { return _context; }
         }
     }
 }
