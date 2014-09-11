@@ -29,7 +29,7 @@
 //
 
 
-using System.Net.NetworkInformation;
+
 
 #pragma warning disable 665
 // ReSharper disable RedundantNameQualifier
@@ -75,7 +75,7 @@ namespace dotless.Core.Parser
             GatherComments(parser);
 
             while (node = MixinDefinition(parser) || ExtendRule(parser) || Rule(parser) || PullComments() || Ruleset(parser) ||
-                          MixinCall(parser) || Directive(parser))
+                          MixinCall(parser) || Directive(parser) || GuardedRuleset(parser))
             {
                 NodeList comments;
                 if (comments = PullComments())
@@ -380,6 +380,28 @@ namespace dotless.Core.Parser
 
             if (parser.Tokenizer.CurrentChar == '@' && (name = parser.Tokenizer.Match(@"@\{([a-zA-Z0-9_-]+)\}")))
                 return NodeProvider.Variable("@" + name.Match.Groups[1].Value, parser.Tokenizer.GetNodeLocation(index));
+
+            return null;
+        }
+
+        /// 
+        /// A guarded ruleset placed inside another e.g.
+        /// 
+        ///    & when (@x = true) {
+        ///    }
+        /// 
+        public GuardedRuleset GuardedRuleset(Parser parser)
+        {
+            var index = parser.Tokenizer.Location.Index;
+            if (parser.Tokenizer.Match("&") && parser.Tokenizer.Match(@"when"))
+            {
+                GatherAndPullComments(parser);
+
+                var condition = Expect(Conditions(parser), "Expected conditions after when (guard)", parser);
+                var rules = Block(parser);
+                
+                return NodeProvider.GuardedRuleset(new NodeList<Selector>(), rules, condition, parser.Tokenizer.GetNodeLocation(index));
+            }
 
             return null;
         }
