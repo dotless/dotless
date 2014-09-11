@@ -1,4 +1,5 @@
-﻿using dotless.Core.Parser.Infrastructure;
+﻿using System.Linq;
+using dotless.Core.Parser.Infrastructure;
 using dotless.Core.Parser.Infrastructure.Nodes;
 using dotless.Core.Plugins;
 
@@ -16,12 +17,16 @@ namespace dotless.Core.Parser.Tree
 
         public override Node Evaluate(Env env)
         {
-            var nodeList = new NodeList();
             if (Condition.Passes(env))
             {
-                nodeList.Add(Rules);
+                if (Selectors.Any())
+                {
+                    if(!(Selectors.Count == 1 && Selectors[0].Elements.Count == 1 && Selectors[0].Elements[0].Value == "&"))
+                        return base.Evaluate(env);
+                }
+                return new NodeList(Rules);
             }
-            return nodeList;
+            return new NodeList();
         }
 
         public override void Accept(IVisitor visitor)

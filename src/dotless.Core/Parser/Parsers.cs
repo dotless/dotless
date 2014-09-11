@@ -74,8 +74,8 @@ namespace dotless.Core.Parser
 
             GatherComments(parser);
 
-            while (node = MixinDefinition(parser) || ExtendRule(parser) || Rule(parser) || PullComments() || Ruleset(parser) ||
-                          MixinCall(parser) || Directive(parser) || GuardedRuleset(parser))
+            while (node = MixinDefinition(parser) || ExtendRule(parser) || Rule(parser) || PullComments() || GuardedRuleset(parser) || Ruleset(parser) ||
+                          MixinCall(parser) || Directive(parser))
             {
                 NodeList comments;
                 if (comments = PullComments())
@@ -392,16 +392,32 @@ namespace dotless.Core.Parser
         /// 
         public GuardedRuleset GuardedRuleset(Parser parser)
         {
-            var index = parser.Tokenizer.Location.Index;
-            if (parser.Tokenizer.Match("&") && parser.Tokenizer.Match(@"when"))
+            var selectors = new NodeList<Selector>();
+
+            var memo = Remember(parser);
+            var index = memo.TokenizerLocation.Index;
+
+            Selector s;
+            while (s = Selector(parser))
+            {
+                selectors.Add(s);
+                if (!parser.Tokenizer.Match(','))
+                    break;
+
+                GatherComments(parser);
+            }
+
+            if (parser.Tokenizer.Match(@"when"))
             {
                 GatherAndPullComments(parser);
 
                 var condition = Expect(Conditions(parser), "Expected conditions after when (guard)", parser);
                 var rules = Block(parser);
                 
-                return NodeProvider.GuardedRuleset(new NodeList<Selector>(), rules, condition, parser.Tokenizer.GetNodeLocation(index));
+                return NodeProvider.GuardedRuleset(selectors, rules, condition, parser.Tokenizer.GetNodeLocation(index));
             }
+
+            Recall(parser, memo);
 
             return null;
         }
@@ -901,8 +917,12 @@ namespace dotless.Core.Parser
 
             PushComments();
             GatherComments(parser); // to collect, combinator must have picked up something which would require memory anyway
-            Node e = ExtendRule(parser) || parser.Tokenizer.Match(@"[.#:]?(\\.|[a-zA-Z0-9_-])+") || parser.Tokenizer.Match('*') || parser.Tokenizer.Match('&') ||
-                Attribute(parser) || parser.Tokenizer.MatchAny(@"\([^)@]+\)") || parser.Tokenizer.Match(@"[\.#](?=@\{)") || VariableCurly(parser);
+            Node e = null;
+            if(!parser.Tokenizer.Peek("when"))
+            {
+                e = ExtendRule(parser) || parser.Tokenizer.Match(@"[.#:]?(\\.|[a-zA-Z0-9_-])+") || parser.Tokenizer.Match('*') || parser.Tokenizer.Match('&') ||
+                    Attribute(parser) || parser.Tokenizer.MatchAny(@"\([^)@]+\)") || parser.Tokenizer.Match(@"[\.#](?=@\{)") || VariableCurly(parser);
+            }
 
             if (!e)
             {

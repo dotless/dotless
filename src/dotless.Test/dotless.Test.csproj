@@ -95,6 +95,7 @@
     <Compile Include="Specs\Functions\DataUriFixture.cs" />
     <Compile Include="Specs\Functions\GradientImageFixture.cs" />
     <Compile Include="Specs\Functions\PowFixture.cs" />
+    <Compile Include="Specs\GuardedRulesetsFixture.cs" />
     <Compile Include="Specs\LineNumbersFixture.cs" />
     <Compile Include="Specs\MediaFixture.cs" />
     <Compile Include="Specs\Functions\ColorFixture.cs" />
