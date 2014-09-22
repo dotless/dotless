@@ -11,7 +11,7 @@
                 @"
 @list: ""Arial"", ""Helvetica"";
 .someClass {
-    font-family: e(extract(@list, 2));
+  font-family: e(extract(@list, 2));
 }";
 
             var expected =
@@ -29,7 +29,7 @@
                 @"
 @list: 1px solid blue;
 .someClass {
-    border: e(extract(@list, 2));
+  border: e(extract(@list, 2));
 }";
 
             var expected =
