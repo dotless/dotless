@@ -752,14 +752,18 @@ namespace dotless.Test.Specs
             var expected =
                 @"
 .light1 {
+  
+  margin: 1px;
+}
+.light1 {
   color: white;
+}
+.light2 {
   
   margin: 1px;
 }
 .light2 {
-  
   color: black;
-  margin: 1px;
 }";
 
             AssertLess(input, expected);

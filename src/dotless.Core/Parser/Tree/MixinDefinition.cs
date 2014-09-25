@@ -121,54 +121,7 @@ namespace dotless.Core.Parser.Tree
             var frames = new[] { this, frame }.Concat(env.Frames).Concat(closureContext).Reverse();
             var context = env.CreateChildEnv(new Stack<Ruleset>(frames));
 
-            var newRules = new NodeList();
-
-            foreach (var rule in Rules)
-            {
-                if (rule is MixinDefinition)
-                {
-                    var mixin = rule as MixinDefinition;
-                    var parameters = Enumerable.Concat(mixin.Params, frame.Rules.Cast<Rule>());
-                    newRules.Add(new MixinDefinition(mixin.Name, new NodeList<Rule>(parameters), mixin.Rules, mixin.Condition, mixin.Variadic));
-                }
-                else if (rule is Import)
-                {
-                    var potentiolNodeList = rule.Evaluate(context);
-                    var nodeList = potentiolNodeList as NodeList;
-                    if (nodeList != null)
-                    {
-                        newRules.AddRange(nodeList);
-                    }
-                    else
-                    {
-                        newRules.Add(potentiolNodeList);
-                    }
-                }
-                else if (rule is Directive || rule is Media)
-                {
-                    newRules.Add(rule.Evaluate(context));
-                }
-                else if (rule is Ruleset)
-                {
-                    var ruleset = (rule as Ruleset);
-
-                    context.Frames.Push(ruleset);
-
-                    newRules.Add(ruleset.Evaluate(context));
-
-                    context.Frames.Pop();
-                }
-                else if (rule is MixinCall)
-                {
-                    newRules.AddRange((NodeList)rule.Evaluate(context));
-                }
-                else
-                {
-                    newRules.Add(rule.Evaluate(context));
-                }
-            }
-
-            return new Ruleset(null, newRules);
+            return EvaluateRulesForFrame(frame, context);
         }
 
         public override MixinMatch MatchArguments(List<NamedArgument> arguments, Env env)

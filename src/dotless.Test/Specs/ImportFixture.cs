@@ -735,5 +735,55 @@ body {
 
             AssertLess(input, expected, parser);
         }
+
+        [Test]
+        public void ImportProtocolCssInsideMixinsWithNestedGuards()
+        {
+            var input = @"
+.generateImports(@fontFamily) {
+  & when (@fontFamily = Lato) {
+    @import url(https://fonts.googleapis.com/css?family=Lato);
+  }
+  & when (@fontFamily = Cabin) {
+    @import url(https://fonts.googleapis.com/css?family=Cabin);
+  }
+}
+.generateImports(Lato);
+.generateImports(Cabin);
+";
+            
+            var expected = @"
+@import url(https://fonts.googleapis.com/css?family=Lato);
+
+
+@import url(https://fonts.googleapis.com/css?family=Cabin);
+";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ImportProtocolCssInsideMixinsWithGuards()
+        {
+            var input = @"
+.generateImports(@fontFamily) when (@fontFamily = Lato) {
+  @import url(https://fonts.googleapis.com/css?family=Lato);
+}
+.generateImports(@fontFamily) when (@fontFamily = Cabin) {
+  @import url(https://fonts.googleapis.com/css?family=Cabin);
+}
+.generateImports(Lato);
+.generateImports(Cabin);
+";
+
+            var expected = @"
+@import url(https://fonts.googleapis.com/css?family=Lato);
+@import url(https://fonts.googleapis.com/css?family=Cabin);
+";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
     }
 }

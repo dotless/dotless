@@ -19,12 +19,7 @@ namespace dotless.Core.Parser.Tree
         {
             if (Condition.Passes(env))
             {
-                if (Selectors.Any())
-                {
-                    if(!(Selectors.Count == 1 && Selectors[0].Elements.Count == 1 && Selectors[0].Elements[0].Value == "&"))
-                        return base.Evaluate(env);
-                }
-                return new NodeList(Rules);
+                return EvaluateRulesForFrame(this, env);
             }
             return new NodeList();
         }
