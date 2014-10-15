@@ -186,7 +186,7 @@ namespace dotless.Core.Importers
             {
                 if (import.Path.EndsWith(".less", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    throw new FileNotFoundException("You are importing a file ending in .less that cannot be found.", import.Path);
+                    throw new FileNotFoundException("You are importing a file ending in .less ('{0}') that cannot be found.", import.Path);
                 }
                 return ImportAction.LeaveImport;
             }
