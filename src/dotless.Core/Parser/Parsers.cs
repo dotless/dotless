@@ -29,7 +29,7 @@
 //
 
 
-using System.Net.NetworkInformation;
+
 
 #pragma warning disable 665
 // ReSharper disable RedundantNameQualifier
@@ -74,7 +74,7 @@ namespace dotless.Core.Parser
 
             GatherComments(parser);
 
-            while (node = MixinDefinition(parser) || ExtendRule(parser) || Rule(parser) || PullComments() || Ruleset(parser) ||
+            while (node = MixinDefinition(parser) || ExtendRule(parser) || Rule(parser) || PullComments() || GuardedRuleset(parser) || Ruleset(parser) ||
                           MixinCall(parser) || Directive(parser))
             {
                 NodeList comments;
@@ -380,6 +380,44 @@ namespace dotless.Core.Parser
 
             if (parser.Tokenizer.CurrentChar == '@' && (name = parser.Tokenizer.Match(@"@\{([a-zA-Z0-9_-]+)\}")))
                 return NodeProvider.Variable("@" + name.Match.Groups[1].Value, parser.Tokenizer.GetNodeLocation(index));
+
+            return null;
+        }
+
+        /// 
+        /// A guarded ruleset placed inside another e.g.
+        /// 
+        ///    & when (@x = true) {
+        ///    }
+        /// 
+        public GuardedRuleset GuardedRuleset(Parser parser)
+        {
+            var selectors = new NodeList<Selector>();
+
+            var memo = Remember(parser);
+            var index = memo.TokenizerLocation.Index;
+
+            Selector s;
+            while (s = Selector(parser))
+            {
+                selectors.Add(s);
+                if (!parser.Tokenizer.Match(','))
+                    break;
+
+                GatherComments(parser);
+            }
+
+            if (parser.Tokenizer.Match(@"when"))
+            {
+                GatherAndPullComments(parser);
+
+                var condition = Expect(Conditions(parser), "Expected conditions after when (guard)", parser);
+                var rules = Block(parser);
+                
+                return NodeProvider.GuardedRuleset(selectors, rules, condition, parser.Tokenizer.GetNodeLocation(index));
+            }
+
+            Recall(parser, memo);
 
             return null;
         }
@@ -879,8 +917,12 @@ namespace dotless.Core.Parser
 
             PushComments();
             GatherComments(parser); // to collect, combinator must have picked up something which would require memory anyway
-            Node e = ExtendRule(parser) || parser.Tokenizer.Match(@"[.#:]?(\\.|[a-zA-Z0-9_-])+") || parser.Tokenizer.Match('*') || parser.Tokenizer.Match('&') ||
-                Attribute(parser) || parser.Tokenizer.MatchAny(@"\([^)@]+\)") || parser.Tokenizer.Match(@"[\.#](?=@\{)") || VariableCurly(parser);
+            Node e = null;
+            if(!parser.Tokenizer.Peek("when"))
+            {
+                e = ExtendRule(parser) || parser.Tokenizer.Match(@"[.#:]?(\\.|[a-zA-Z0-9_-])+") || parser.Tokenizer.Match('*') || parser.Tokenizer.Match('&') ||
+                    Attribute(parser) || parser.Tokenizer.MatchAny(@"\([^)@]+\)") || parser.Tokenizer.Match(@"[\.#](?=@\{)") || VariableCurly(parser);
+            }
 
             if (!e)
             {

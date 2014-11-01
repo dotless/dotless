@@ -82,6 +82,11 @@ namespace dotless.Core.Parser.Infrastructure
             return new Script(script) { Location = location };
         }
 
+        public GuardedRuleset GuardedRuleset(NodeList<Selector> selectors, NodeList rules, Condition condition, NodeLocation location)
+        {
+            return new GuardedRuleset(selectors, rules, condition) { Location = location };
+        }
+
         public MixinCall MixinCall(NodeList<Element> elements, List<NamedArgument> arguments, bool important, NodeLocation location)
         {
             return new MixinCall(elements, arguments, important) { Location = location };

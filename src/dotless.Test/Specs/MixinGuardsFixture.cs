@@ -1,8 +1,5 @@
 namespace dotless.Test.Specs
 {
-    using System;
-    using System.Globalization;
-    using System.Threading;
     using NUnit.Framework;
 
     public class MixinGuardsFixture : SpecFixtureBase
@@ -728,6 +725,45 @@ namespace dotless.Test.Specs
 }
 .testClass {
   font-size: 1em;
+}";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void MixinsUsingNestedGuards()
+        {
+            var input =
+                @"
+.light (@a) {
+  & when (lightness(@a) > 50%) {
+    color: white;
+  }
+  & when (lightness(@a) < 50%) {
+    color: black;
+  }
+  margin: 1px;
+}
+
+.light1 { .light(#ddd) }
+.light2 { .light(#444) }
+";
+
+            var expected =
+                @"
+.light1 {
+  
+  margin: 1px;
+}
+.light1 {
+  color: white;
+}
+.light2 {
+  
+  margin: 1px;
+}
+.light2 {
+  color: black;
 }";
 
             AssertLess(input, expected);

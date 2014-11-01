@@ -108,6 +108,7 @@
     <Compile Include="Parser\ParserLocation.cs" />
     <Compile Include="Parser\Tree\Assignment.cs" />
     <Compile Include="Parser\Tree\Condition.cs" />
+    <Compile Include="Parser\Tree\GuardedRuleset.cs" />
     <Compile Include="Parser\Tree\Media.cs" />
     <Compile Include="Parser\Tree\RepeatEntity.cs" />
     <Compile Include="Parser\Tree\Paren.cs" />
