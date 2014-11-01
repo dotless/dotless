@@ -44,6 +44,8 @@ namespace dotless.Core.Importers
         /// </summary>
         public bool IsUrlRewritingDisabled { get; set; }
 
+        public string RootPath { get; set; }
+
         /// <summary>
         ///  Import all files as if they are less regardless of file extension
         /// </summary>
@@ -59,14 +61,15 @@ namespace dotless.Core.Importers
         {
         }
 
-        public Importer(IFileReader fileReader) : this(fileReader, false, false, false)
+        public Importer(IFileReader fileReader) : this(fileReader, false, "", false, false)
         {
         }
 
-        public Importer(IFileReader fileReader, bool disableUrlReWriting, bool inlineCssFiles, bool importAllFilesAsLess)
+        public Importer(IFileReader fileReader, bool disableUrlReWriting, string rootPath, bool inlineCssFiles, bool importAllFilesAsLess)
         {
             FileReader = fileReader;
             IsUrlRewritingDisabled = disableUrlReWriting;
+            RootPath = rootPath;
             InlineCssFiles = inlineCssFiles;
             ImportAllFilesAsLess = importAllFilesAsLess;
             Imports = new List<string>();
@@ -288,11 +291,14 @@ namespace dotless.Core.Importers
         /// </summary>
         public string AlterUrl(string url, List<string> pathList)
         {
-            if (pathList.Any() && !IsUrlRewritingDisabled && !IsProtocolUrl(url) && !IsNonRelativeUrl(url))
+            if (!IsProtocolUrl (url) && !IsNonRelativeUrl (url))
             {
-                return GetAdjustedFilePath(url, pathList);
+                if (pathList.Any() && !IsUrlRewritingDisabled)
+                {
+                    url = GetAdjustedFilePath(url, pathList);
+                }
+                return RootPath + url;
             }
-
             return url;
         }
     }

@@ -62,6 +62,7 @@ namespace dotless.Core.configuration
             DisableVariableRedefines = false;
             DisableColorCompression = false;
             KeepFirstSpecialComment = false;
+            RootPath = "";
         }
 
         public DotlessConfiguration(DotlessConfiguration config)
@@ -87,6 +88,7 @@ namespace dotless.Core.configuration
             DisableVariableRedefines = config.DisableVariableRedefines;
             DisableColorCompression = config.DisableColorCompression;
             KeepFirstSpecialComment = config.KeepFirstSpecialComment;
+            RootPath = config.RootPath;
         }
 
         public static IConfigurationManager ConfigurationManager
@@ -117,6 +119,12 @@ namespace dotless.Core.configuration
         /// </summary>
         public bool DisableUrlRewriting { get; set; }
 
+        /// <summary>
+        ///  Allows you to add a path to every generated import and url in your output css.
+        ///  This corresponds to 'rootpath' option of lessc.
+        /// </summary>
+        public string RootPath { get; set; }
+        
         /// <summary>
         ///  Disables variables being redefined, so less will search from the bottom of the input up.
         ///  Makes dotless behave like less.js with regard variables
