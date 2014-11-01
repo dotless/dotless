@@ -40,6 +40,19 @@ namespace dotless.Core.Utils
             throw new ParsingException(message, location);
         }
 
+        public static void ExpectNodeToBeOneOf<TExpected1, TExpected2>(Node actual, object @in, NodeLocation location) where TExpected1 : Node where TExpected2 : Node
+        {
+            if (actual is TExpected1 || actual is TExpected2)
+                return;
+
+            var expected1 = typeof(TExpected1).Name.ToLowerInvariant();
+            var expected2 = typeof(TExpected2).Name.ToLowerInvariant();
+
+            var message = string.Format("Expected {0} or {1} in {2}, found {3}", expected1, expected2, @in, actual.ToCSS(new Env()));
+
+            throw new ParsingException(message, location);
+        }
+
         public static void ExpectAllNodes<TExpected>(IEnumerable<Node> actual, object @in, NodeLocation location) where TExpected : Node
         {
             foreach (var node in actual)
