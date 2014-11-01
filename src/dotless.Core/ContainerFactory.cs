@@ -59,9 +59,11 @@ namespace dotless.Core
 
             importer.Parameters("inlineCssFiles").Set("default-inline-css-files").Lifestyle.Transient();
             importer.Parameters("disableUrlRewriting").Set("default-disable-url-rewriting").Lifestyle.Transient();
+            importer.Parameters("rootPath").Set("default-root-path").Lifestyle.Transient();
             importer.Parameters("importAllFilesAsLess").Set("default-import-all-files-as-less").Lifestyle.Transient();
 
             pandora.Service<bool>("default-disable-url-rewriting").Instance(configuration.DisableUrlRewriting);
+            pandora.Service<string>("default-root-path").Instance(configuration.RootPath);
             pandora.Service<bool>("default-inline-css-files").Instance(configuration.InlineCssFiles);
             pandora.Service<bool>("default-import-all-files-as-less").Instance(configuration.ImportAllFilesAsLess);
 

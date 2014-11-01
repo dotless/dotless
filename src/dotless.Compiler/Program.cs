@@ -263,6 +263,7 @@ namespace dotless.Compiler
             Console.WriteLine("\t\t-w --watch  - Watches .less file for changes");
             Console.WriteLine("\t\t-h --help   - Displays this dialog");
             Console.WriteLine("\t\t-r --disable-url-rewriting - Disables changing urls in imported files");
+            Console.WriteLine("\t\t--root-path=PATH - Prepends every generated import and url in your output css with PATH");
             Console.WriteLine("\t\t-a --import-all-less - treats every import as less even if ending in .css");
             Console.WriteLine("\t\t-c --inline-css - Inlines CSS file imports into the output");
             Console.WriteLine("\t\t-v --disable-variable-redefines - Makes variables behave more like less.js, so the last variable definition is used");
@@ -333,6 +334,10 @@ namespace dotless.Compiler
                     else if (arg.StartsWith("-r") || arg.StartsWith("--disable-url-rewriting"))
                     {
                         configuration.DisableUrlRewriting = true;
+                    }
+                    else if (arg.StartsWith("--root-path") && arg.Contains("="))
+                    {
+                        configuration.RootPath = arg.Split('=')[1];
                     }
                     else if (arg.StartsWith("-v") || arg.StartsWith("--disable-variable-redefines"))
                     {

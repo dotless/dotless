@@ -28,6 +28,7 @@ namespace dotless.Core.configuration
             dotlessConfiguration.HandleWebCompression = GetBoolValue(section, "handleWebCompression") ?? dotlessConfiguration.HandleWebCompression;
             dotlessConfiguration.DisableParameters = GetBoolValue(section, "disableParameters") ?? dotlessConfiguration.DisableParameters;
             dotlessConfiguration.KeepFirstSpecialComment = GetBoolValue(section, "keepFirstSpecialComment") ?? dotlessConfiguration.KeepFirstSpecialComment;
+            dotlessConfiguration.RootPath = GetStringValue(section, "rootPath") ?? dotlessConfiguration.RootPath;
             dotlessConfiguration.DisableVariableRedefines = GetBoolValue(section, "disableVariableRedefines") ?? dotlessConfiguration.DisableVariableRedefines;
             dotlessConfiguration.DisableColorCompression = GetBoolValue(section, "disableColorCompression") ?? dotlessConfiguration.DisableColorCompression;
 
