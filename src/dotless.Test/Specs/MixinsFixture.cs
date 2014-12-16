@@ -1458,6 +1458,71 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
         }
 
         [Test]
+        public void MixinImportantRecursive()
+        {
+            var input = @"
+.x
+{
+    .test !important;
+}
+
+.test
+{
+	color: red;
+    &.testinner
+    {
+        .anothermixin;
+        color: blue;
+        &.testinner2
+        {
+            color: green;
+        }
+        
+        a
+        {
+            color: orange;
+        }
+    }
+}
+
+.anothermixin
+{
+    background-color: black;
+}";
+            var expected = @"
+.x {
+  color: red !important;
+}
+.x.testinner {
+  background-color: black !important;
+  color: blue !important;
+}
+.x.testinner.testinner2 {
+  color: green !important;
+}
+.x.testinner a {
+  color: orange !important;
+}
+.test {
+  color: red;
+}
+.test.testinner {
+  background-color: black;
+  color: blue;
+}
+.test.testinner.testinner2 {
+  color: green;
+}
+.test.testinner a {
+  color: orange;
+}
+.anothermixin {
+  background-color: black;
+}";
+            AssertLess(input, expected);
+        }
+
+        [Test]
         public void MixinCallingSameName()
         {
             // attempt to reproduce bug #136

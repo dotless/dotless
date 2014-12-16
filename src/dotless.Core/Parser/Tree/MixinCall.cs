@@ -96,17 +96,14 @@ namespace dotless.Core.Parser.Tree
 
                 foreach (Node node in rules)
                 {
-                    Rule r = node as Rule;
-                    if (r != null)
+                    if (node is Rule)
                     {
-                        var valueNode = r.Value;
-                        var value = valueNode as Value;
-                        value = value != null
-                                    ? new Value(value.Values, "!important").ReducedFrom<Value>(value)
-                                    : new Value(new NodeList {valueNode}, "!important");
-
-                        importantRules.Add((new Rule(r.Name, value)).ReducedFrom<Rule>(r));
+						importantRules.Add(MakeRuleImportant(node as Rule));
                     }
+					else if (node is Ruleset)
+					{
+						importantRules.Add(MakeRulesetImportant(node as Ruleset));
+					}
                     else
                     {
                         importantRules.Add(node);
@@ -128,5 +125,39 @@ namespace dotless.Core.Parser.Tree
                 a.Value = VisitAndReplace(a.Value, visitor);
             }
         }
+
+	    private Ruleset MakeRulesetImportant(Ruleset ruleset)
+	    {
+		    var importantRules = new NodeList();
+		    foreach (var x in ruleset.Rules)
+		    {
+			    if (x is Rule)
+			    {
+				    importantRules.Add(MakeRuleImportant((Rule) x));
+			    }
+				else if (x is Ruleset)
+				{
+					importantRules.Add(MakeRulesetImportant((Ruleset) x));
+				}
+				else
+				{
+					importantRules.Add(x);
+				}
+		    }
+		    var importantRuleset = new Ruleset(ruleset.Selectors, importantRules).ReducedFrom<Ruleset>(ruleset);
+			return importantRuleset;
+	    }
+
+	    private Rule MakeRuleImportant(Rule rule)
+	    {
+		    var valueNode = rule.Value;
+            var value = valueNode as Value;
+            value = value != null
+                        ? new Value(value.Values, "!important").ReducedFrom<Value>(value)
+                        : new Value(new NodeList {valueNode}, "!important");
+
+			var importantRule = new Rule(rule.Name, value).ReducedFrom<Rule>(rule);
+		    return importantRule;
+	    }
     }
 }
