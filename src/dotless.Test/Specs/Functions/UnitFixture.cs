@@ -24,5 +24,11 @@ namespace dotless.Test.Specs.Functions
         {
             AssertExpressionError("Expected number in function 'unit', found at", 0, "unit(at, px)");
         }
+
+        [Test]
+        public void ThrowIsIncorrectParametersCount()
+        {
+            AssertExpressionError("Expected at most 2 arguments in function 'unit', found 3", 0, "unit(5, 12, px)");
+        }
     }
 }
