@@ -85,6 +85,7 @@
     <Compile Include="Parser\Functions\ListFunctionBase.cs" />
     <Compile Include="Parser\Functions\ExtractFunction.cs" />
     <Compile Include="Parser\Functions\LengthFunction.cs" />
+    <Compile Include="Parser\Functions\UnitFunction.cs" />
     <Compile Include="Parser\Infrastructure\MimeTypeLookup.cs" />
     <Compile Include="Parser\Functions\NegationFunction.cs" />
     <Compile Include="Parser\Functions\AverageFunction.cs" />
