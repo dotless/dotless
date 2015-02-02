@@ -449,7 +449,7 @@ from line 3 in file 'test.less':
 
             var parser = GetParser();
 
-            AssertError(".less cannot import non local less files.", input, parser);
+            AssertError(".less cannot import non local less files. [http://www.someone.com/external1.less]", input, parser);
         }
 
         [Test]
@@ -459,7 +459,7 @@ from line 3 in file 'test.less':
 
             var parser = GetParser();
 
-            AssertError("You are importing a file ending in .less that cannot be found.", input, parser);
+            AssertError("You are importing a file ending in .less that cannot be found. [external1.less]", input, parser);
         }
 
         [Test]
@@ -469,7 +469,7 @@ from line 3 in file 'test.less':
 
             var parser = GetParser();
 
-            AssertError(".less cannot import non local less files.", input, parser);
+            AssertError(".less cannot import non local less files. [http://www.someone.com/external1.less]", input, parser);
         }
 
         [Test]
@@ -734,6 +734,31 @@ body {
             var parser = GetParser();
 
             AssertLess(input, expected, parser);
+        }
+
+        /// <summary>
+        /// Used to test import performance of ResourceLoader.LoadFromCurrentAppDomain and ResourceLoader.LoadFromNewAppDomain by enabling and disabling 
+        /// within Importer. ResourceLoader.LoadFromCurrentAppDomain found to be significantly quicker
+        /// </summary>
+        [Test]
+        [Ignore]
+        public void ImportPerformance()
+        {
+            var input = @"
+@import ""dll://dotless.Test.dll#dotless.Test.Resource.Embedded.less"";
+@import ""dll://dotless.Test.dll#dotless.Test.Resource.Embedded2.less"";";
+
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+
+            for (int i = 0; i < 50; i++)
+            {
+                var parser = GetEmbeddedParser(false, false, false);
+                Evaluate(input, parser);
+            }
+
+            sw.Stop();
+
+            Assert.IsTrue(false, "Speed: " + sw.Elapsed.TotalMilliseconds.ToString());
         }
     }
 }
