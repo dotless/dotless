@@ -736,5 +736,85 @@ body {
 }";
             AssertLess(input, expected);
         }
+
+        #region GitHub issue 408
+        /// <summary>
+        /// This is the failure case reported at https://github.com/dotless/dotless/issues/408
+        /// </summary>
+        [Test]
+        public void ExpressionArguments() {
+            var input = @"@tilebasewidth : 130px;
+@tilemargin: 10px;
+
+.test(@param1, @param2) {
+ width: @param1;
+ height: @param2;
+}
+
+.two-c {
+    .test(@tilebasewidth, (@tilebasewidth + @tilemargin)*2);
+}";
+
+
+            var expected = @".two-c {
+  width: 130px;
+  height: 280px;
+}";
+
+            AssertLess(input, expected);
+        }
+
+        /// <summary>
+        /// This case actually worked before, too. Included here to ensure that fixing one case doesn't break another.
+        /// </summary>
+        [Test]
+        public void ExpressionArguments2() {
+            var input = @"@tilebasewidth : 130px;
+@tilemargin: 10px;
+
+.test(@param1, @param2) {
+ width: @param1;
+ height: @param2;
+}
+
+.two-c {
+    .test((@tilebasewidth + @tilemargin) * 2, @tilebasewidth);
+}";
+
+
+            var expected = @".two-c {
+  width: 280px;
+  height: 130px;
+}";
+
+            AssertLess(input, expected);
+        }
+
+        /// <summary>
+        /// This case actually worked before, too. Included here to ensure that fixing one case doesn't break another.
+        /// </summary>
+        [Test]
+        public void ExpressionArguments3() {
+            var input = @"@tilebasewidth : 130px;
+@tilemargin: 10px;
+
+.test(@param1, @param2) {
+ width: @param1;
+ height: @param2;
+}
+
+.two-c {
+    .test(5px, (@tilebasewidth + @tilemargin) * 2);
+}";
+
+
+            var expected = @".two-c {
+  width: 5px;
+  height: 280px;
+}";
+
+            AssertLess(input, expected);
+        }
+        #endregion
     }
 }
