@@ -245,5 +245,28 @@ pre:hover,
             AssertLess(input, expected);
         }
 
+        [Test]
+        public void ExtendInMixinDoesNotCauseError() {
+            var input = @"
+.extension {
+  color: red;
+}
+
+.mixin() {
+    .rule {
+        &:extend(.extension all);
+    }
+}
+
+.mixin();
+";
+            var expected = @"
+.extension,
+.rule {
+  color: red;
+}
+";
+            AssertLess(input, expected);
+        }
     }
 }
