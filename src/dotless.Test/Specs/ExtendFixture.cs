@@ -268,5 +268,67 @@ pre:hover,
 ";
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void ExtendInLoop() {
+            var input = @"
+.clearfix() {
+  &:before,
+  &:after {
+    content: "" ""; // 1
+    display: table; // 2
+  }
+  &:after {
+    clear: both;
+  }
+}
+
+.make-row() {
+  &:extend(.clearfix all);
+}
+
+.make-rows() {
+  .row(@index) when (@index < 3) {
+    .row@{index} {
+      height: 10 * @index;
+      .make-row();
+    }
+    .row(@index + 1);
+  }
+  .row(1);
+}
+
+.clearfix
+{
+  .clearfix();
+}
+
+.make-rows();
+";
+
+            var expected = @"
+.clearfix:before,
+.clearfix:after,
+.row1:before,
+.row2:before,
+.row1:after,
+.row2:after {
+  content: "" "";
+  display: table;
+}
+.clearfix:after,
+.row1:after,
+.row2:after {
+  clear: both;
+}
+.row1 {
+  height: 10;
+}
+.row2 {
+  height: 20;
+}
+";
+            AssertLess(input, expected);
+        }
     }
 }
