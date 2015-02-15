@@ -59,7 +59,8 @@ namespace dotless.Core.Parser.Tree
                     try
                     {
                         var mixin = ruleset as MixinDefinition;
-                        rules.AddRange(mixin.Evaluate(Arguments, env, closure.Context).Rules);
+                        var closureEnvironment = env.CreateChildEnvWithClosure(closure);
+                        rules.AddRange(mixin.Evaluate(Arguments, closureEnvironment).Rules);
                     }
                     catch (ParsingException e)
                     {
