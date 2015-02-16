@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Linq;
+
 namespace dotless.Core.Parser.Tree
 {
     using Exceptions;
@@ -22,10 +25,15 @@ namespace dotless.Core.Parser.Tree
                 name = '@' + (v is TextNode ? (v as TextNode).Value : v.ToCSS(env));
             }
 
+            if (env.IsEvaluatingVariable(name)) {
+                throw new ParsingException("Recursive variable definition for " + name, Location);
+            }
+
             var variable = env.FindVariable(name);
 
-            if (variable)
-                return variable.Value.Evaluate(env);
+            if (variable) {
+                return variable.Value.Evaluate(env.CreateVariableEvaluationEnv(name, new Stack<Ruleset>(env.Frames.Reverse())));
+            }
 
             throw new ParsingException("variable " + name + " is undefined", Location);
         }

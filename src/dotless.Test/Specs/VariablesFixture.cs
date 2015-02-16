@@ -542,5 +542,50 @@ namespace dotless.Test.Specs
 ";
             AssertLess(input,expected);
         }
+
+        [Test]
+        public void SimpleRecursiveVariableDefinition()
+        {
+            string input = @"
+@var: 1px;
+@var: @var + 1;
+
+.rule {
+    left: @var;
+}
+";
+
+            string expectedError = @"
+Recursive variable definition for @var on line 2 in file 'test.less':
+  [1]: @var: 1px;
+  [2]: @var: @var + 1;
+       ------^
+  [3]: ";
+
+            AssertError(expectedError, input);
+        }
+
+        [Test]
+        public void IndirectRecursiveVariableDefinition()
+        {
+            string input = @"
+@var: 1px;
+@var2: @var;
+@var: @var2 + 1;
+
+.rule {
+    left: @var;
+}
+";
+
+            string expectedError = @"
+Recursive variable definition for @var on line 2 in file 'test.less':
+  [1]: @var: 1px;
+  [2]: @var2: @var;
+       -------^
+  [3]: @var: @var2 + 1;";
+
+            AssertError(expectedError, input);
+        }
     }
 }
