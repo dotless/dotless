@@ -217,11 +217,6 @@ namespace dotless.Core.Parser.Tree
             env.Frames.Pop();
         }
 
-        public override bool IgnoreOutput()
-        {
-            return IsReference;
-        }
-
         public override void AppendCSS(Env env)
         {
             if (Rules == null || !Rules.Any())
@@ -263,7 +258,7 @@ namespace dotless.Core.Parser.Tree
             int nonCommentRules = 0;
             var paths = new Context(); // Current selectors
 
-            if (!IsRoot)
+            if (!IsRoot && !IsReference)
             {
                 if (!env.Compress && env.Debug && Location != null)
                 {
@@ -348,25 +343,39 @@ namespace dotless.Core.Parser.Tree
                         {
                             paths.AppendSelectors(context.Clone(), partials.SelectMany(p => p.Replacements(finalString)));
                         }
+
+                        // We don't add paths for the selectors of reference nodes
+                        // but if there's an extender, we add that so that mixing 
+                        // reference imported rules and extenders works the way it should
+                        if (IsReference && paths.Any())
+                        {
+                            IsReference = false;
+                        }
                     }
 
 
-                    paths.AppendCSS(env);
-
-                    env.Output.Append(env.Compress ? "{" : " {\n  ");
-
-                    env.Output.AppendMany(rules.ConvertAll(stringBuilder => stringBuilder.ToString()).Distinct(), env.Compress ? "" : "\n  ");
-
-                    if (env.Compress)
+                    if (!IsReference)
                     {
-                        env.Output.TrimRight(';');
-                    }
+                        paths.AppendCSS(env);
 
-                    env.Output.Append(env.Compress ? "}" : "\n}\n");
+                        env.Output.Append(env.Compress ? "{" : " {\n  ");
+
+                        env.Output.AppendMany(rules.ConvertAll(stringBuilder => stringBuilder.ToString()).Distinct(), env.Compress ? "" : "\n  ");
+
+                        if (env.Compress)
+                        {
+                            env.Output.TrimRight(';');
+                        }
+
+                        env.Output.Append(env.Compress ? "}" : "\n}\n");
+                    }
                 }
             }
 
-            env.Output.Append(rulesetOutput);
+            if (!IsReference)
+            {
+                env.Output.Append(rulesetOutput);
+            }
         }
 
         public override string ToString()

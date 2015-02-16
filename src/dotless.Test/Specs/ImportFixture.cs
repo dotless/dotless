@@ -886,5 +886,23 @@ body { background-color: foo; invalid ""; }
 
             AssertLess(input, expected, parser);
         }
+
+        [Test]
+        public void ExtendingReferenceImportsWorks()
+        {
+            var input = @"
+@import (reference) ""simple-rule.less"";
+.test:extend(.rule all) { }
+";
+
+            var expected = @"
+.test {
+  background-color: black;
+}
+";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
     }
 }
