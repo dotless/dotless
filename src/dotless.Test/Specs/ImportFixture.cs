@@ -757,5 +757,24 @@ body {
 
             AssertLess(input, expected, parser);
         }
+
+        [Test]
+        public void ImportOptionalIgnoresFilesThatAreNotFound()
+        {
+            var input = @"
+@var: 10px;
+@import (optional) ""this-file-does-not-exist.less"";
+.rule { width: @var; }
+";
+
+            var expected = @"
+.rule {
+  width: 10px;
+}
+";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
     }
 }

@@ -127,7 +127,7 @@ namespace dotless.Core.Importers
         {
             if (_rawImports.Contains(path, StringComparer.InvariantCultureIgnoreCase))
             {
-                return import.IsOnce;
+                return import.ImportOption != ImportOption.Multiple;
             }
             _rawImports.Add(path);
 
@@ -187,6 +187,11 @@ namespace dotless.Core.Importers
 
             if (!ImportLessFile(file, import))
             {
+                if (import.ImportOption == ImportOption.Optional)
+                {
+                    return ImportAction.ImportNothing;
+                }
+
                 if (import.Path.EndsWith(".less", StringComparison.InvariantCultureIgnoreCase))
                 {
                     throw new FileNotFoundException("You are importing a file ending in .less that cannot be found.", import.Path);

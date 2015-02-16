@@ -1140,27 +1140,25 @@ namespace dotless.Core.Parser
             }
 
             var optionsMatch = parser.Tokenizer.Match(@"\((?<keyword>(reference|inline|less|css|once|multiple|optional))\)");
-            string option =
+            ImportOption option =
                 optionsMatch
-                    ? optionsMatch.Match.Groups["keyword"].Value
-                    : null;
+                    ? (ImportOption) Enum.Parse(typeof (ImportOption), optionsMatch.Match.Groups["keyword"].Value, true)
+                    : ImportOption.None;
 
             Node path = Quoted(parser) || Url(parser);
             if (!path) {
                 return null;
             }
 
-            bool isOnce = !string.Equals("multiple", option, StringComparison.InvariantCulture);
-                
             var features = MediaFeatures(parser);
 
             Expect(parser, ';', "Expected ';' (possibly unrecognised media sequence)");
 
             if (path is Quoted)
-                return NodeProvider.Import(path as Quoted, parser.Importer, features, isOnce, parser.Tokenizer.GetNodeLocation(index));
+                return NodeProvider.Import(path as Quoted, parser.Importer, features, option, parser.Tokenizer.GetNodeLocation(index));
 
             if (path is Url)
-                return NodeProvider.Import(path as Url, parser.Importer, features, isOnce, parser.Tokenizer.GetNodeLocation(index));
+                return NodeProvider.Import(path as Url, parser.Importer, features, option, parser.Tokenizer.GetNodeLocation(index));
 
             throw new ParsingException("unrecognised @import format", parser.Tokenizer.GetNodeLocation(index));
         }
