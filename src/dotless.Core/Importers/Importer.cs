@@ -192,6 +192,11 @@ namespace dotless.Core.Importers
                     return ImportAction.ImportNothing;
                 }
 
+                if (import.ImportOption == ImportOption.Css)
+                {
+                    return ImportAction.LeaveImport;
+                }
+
                 if (import.Path.EndsWith(".less", StringComparison.InvariantCultureIgnoreCase))
                 {
                     throw new FileNotFoundException("You are importing a file ending in .less that cannot be found.", import.Path);

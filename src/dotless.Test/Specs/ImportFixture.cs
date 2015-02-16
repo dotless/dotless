@@ -776,5 +776,20 @@ body {
 
             AssertLess(input, expected, parser);
         }
+
+        [Test]
+        public void ImportCssGeneratesImportDirective()
+        {
+            var input = @"
+@import (css) ""this-file-does-not-exist.less"";
+";
+
+            var expected = @"
+@import ""this-file-does-not-exist.less"";
+";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
     }
 }
