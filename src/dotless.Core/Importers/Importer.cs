@@ -169,7 +169,9 @@ namespace dotless.Core.Importers
                 return ImportAction.ImportNothing;
             }
 
-            if (!ImportAllFilesAsLess && import.Path.EndsWith(".css") && !import.Path.EndsWith(".less.css"))
+            bool importAsless = ImportAllFilesAsLess || import.ImportOption == ImportOption.Less;
+
+            if (!importAsless && import.Path.EndsWith(".css") && !import.Path.EndsWith(".less.css"))
             {
                 if (InlineCssFiles)
                 {

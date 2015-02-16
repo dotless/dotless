@@ -163,6 +163,9 @@ body { margin-right: @a; }";
 
             imports["vardef.less"] = @"@var: 9px;";
 
+            imports["css-as-less.css"] = @"@var1: 10px;";
+            imports["arbitrary-extension-as-less.ext"] = @"@var2: 11px;";
+
             return new Parser { 
                 Importer = new Importer(new DictionaryReader(imports)) { 
                     IsUrlRewritingDisabled = isUrlRewritingDisabled,
@@ -787,6 +790,29 @@ body {
             var expected = @"
 @import ""this-file-does-not-exist.less"";
 ";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ImportLessParsesAnyExtensionAsLess()
+        {
+            var input = @"
+@import (less) ""css-as-less.css"";
+@import (less) ""arbitrary-extension-as-less.ext"";
+
+.rule {
+  width: @var1;
+  height: @var2;
+}
+";
+
+            var expected = @"
+.rule {
+  width: 10px;
+  height: 11px;
+}";
             var parser = GetParser();
 
             AssertLess(input, expected, parser);
