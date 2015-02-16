@@ -26,11 +26,8 @@ namespace dotless.Core.Parser.Tree
         {
             var found = false;
 
-            // To address bug https://github.com/dotless/dotless/issues/136, where a mixin and ruleset selector may have the same name, we
-            // need to favour matching a MixinDefinition with the required Selector and only fall back to considering other Ruleset types
-            // if no match is found.
-            var closures = env.FindRulesets<MixinDefinition>(Selector) ?? env.FindRulesets<Ruleset>(Selector);
-            if(closures == null)
+            var closures = env.FindRulesets<Ruleset>(Selector);
+            if (closures == null)
                 throw new ParsingException(Selector.ToCSS(env).Trim() + " is undefined", Location);
 
             env.Rule = this;
@@ -40,43 +37,61 @@ namespace dotless.Core.Parser.Tree
             if (PreComments)
                 rules.AddRange(PreComments);
 
-            foreach (var closure in closures)
+            var rulesetList = closures.ToList();
+
+            // To address bug https://github.com/dotless/dotless/issues/136, where a mixin and ruleset selector may have the same name, we
+            // need to favour matching a MixinDefinition with the required Selector and only fall back to considering other Ruleset types
+            // if no match is found.
+            // However, in order to support having a regular ruleset with the same name as a parameterized
+            // mixin (see https://github.com/dotless/dotless/issues/387), we need to take argument counts into account, so we make the
+            // decision after evaluating for argument match.
+
+            var mixins = rulesetList.Where(c => c.Ruleset is MixinDefinition).ToList();
+
+            foreach (var closure in mixins)
             {
-                var ruleset = closure.Ruleset;
-
+                var ruleset = (MixinDefinition)closure.Ruleset;
                 var matchType = ruleset.MatchArguments(Arguments, env);
-
                 if (matchType == MixinMatch.ArgumentMismatch)
+                {
                     continue;
+                }
 
                 found = true;
 
                 if (matchType == MixinMatch.GuardFail)
+                {
                     continue;
-
-                if (ruleset is MixinDefinition)
-                {
-                    try
-                    {
-                        var mixin = ruleset as MixinDefinition;
-                        rules.AddRange(mixin.Evaluate(Arguments, env, closure.Context).Rules);
-                    }
-                    catch (ParsingException e)
-                    {
-                        throw new ParsingException(e.Message, e.Location, Location);
-                    }
                 }
-                else
+
+                try
                 {
-                    if (ruleset.Rules != null)
+                    rules.AddRange(ruleset.Evaluate(Arguments, env, closure.Context).Rules);
+                }
+                catch (ParsingException e)
+                {
+                    throw new ParsingException(e.Message, e.Location, Location);
+                }
+            }
+
+            if (!found)
+            {
+                var regularRulesets = rulesetList.Except(mixins);
+
+                foreach (var closure in regularRulesets)
+                {
+                    if (closure.Ruleset.Rules != null)
                     {
-                        var nodes = new NodeList(ruleset.Rules);
+                        var nodes = new NodeList(closure.Ruleset.Rules);
                         NodeHelper.ExpandNodes<MixinCall>(env, nodes);
 
                         rules.AddRange(nodes);
                     }
+
+                    found = true;
                 }
             }
+
             if (PostComments)
                 rules.AddRange(PostComments);
 
