@@ -166,6 +166,8 @@ body { margin-right: @a; }";
             imports["css-as-less.css"] = @"@var1: 10px;";
             imports["arbitrary-extension-as-less.ext"] = @"@var2: 11px;";
 
+            imports["simple-rule.less"] = ".rule { background-color: black; }";
+
             return new Parser { 
                 Importer = new Importer(new DictionaryReader(imports)) { 
                     IsUrlRewritingDisabled = isUrlRewritingDisabled,
@@ -827,6 +829,58 @@ body {
 
             var expected = @"
 body { background-color: foo; invalid ""; }
+";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ImportReferenceAloneDoesNotProduceOutput()
+        {
+            var input = @"
+@import (reference) ""simple-rule.less"";
+";
+
+            var expected = @"";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ImportReferenceWithMixinCallProducesOutput()
+        {
+            var input = @"
+@import (reference) ""simple-rule.less"";
+
+.caller {
+  .rule
+}
+";
+
+            var expected = @"
+.caller {
+  background-color: black;
+}
+";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ImportReferenceDoesNotPreventNonReferenceImport()
+        {
+            var input = @"
+@import (reference) ""simple-rule.less"";
+@import  ""simple-rule.less"";
+";
+
+            var expected = @"
+.rule {
+  background-color: black;
+}
 ";
             var parser = GetParser();
 

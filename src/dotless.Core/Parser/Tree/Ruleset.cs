@@ -14,6 +14,7 @@ namespace dotless.Core.Parser.Tree
         public NodeList Rules { get; set; }
         public bool Evaluated { get; protected set; }
         public bool IsRoot { get; set; }
+        public bool IsReference { get; set; }
         public bool MultiMedia { get; set; }
 
         /// <summary>
@@ -145,12 +146,18 @@ namespace dotless.Core.Parser.Tree
             if (Evaluated) return this;
 
             // create a clone so it is non destructive
-            var clone = new Ruleset(new NodeList<Selector>(Selectors), new NodeList(Rules), OriginalRuleset).ReducedFrom<Ruleset>(this);
+            var clone = Clone().ReducedFrom<Ruleset>(this);
 
             clone.EvaluateRules(env);
             clone.Evaluated = true;
 
             return clone;
+        }
+
+        private Ruleset Clone() {
+            return new Ruleset(new NodeList<Selector>(Selectors), new NodeList(Rules), OriginalRuleset) {
+                IsReference = IsReference
+            };
         }
 
         public override void Accept(IVisitor visitor)
@@ -208,6 +215,11 @@ namespace dotless.Core.Parser.Tree
             }
 
             env.Frames.Pop();
+        }
+
+        public override bool IgnoreOutput()
+        {
+            return IsReference;
         }
 
         public override void AppendCSS(Env env)

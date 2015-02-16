@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace dotless.Core.Parser.Tree
 {
     using System.IO;
@@ -152,6 +154,13 @@ namespace dotless.Core.Parser.Tree
             NodeHelper.ExpandNodes<Import>(env, InnerRoot.Rules);
 
             var rulesList = new NodeList(InnerRoot.Rules).ReducedFrom<NodeList>(this);
+            if (ImportOption == ImportOption.Reference)
+            {
+                foreach (var ruleSet in rulesList.OfType<Ruleset>())
+                {
+                    ruleSet.IsReference = true;
+                }
+            }
 
             if (features)
             {

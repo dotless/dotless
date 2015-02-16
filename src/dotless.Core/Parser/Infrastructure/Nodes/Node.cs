@@ -112,7 +112,7 @@ namespace dotless.Core.Parser.Infrastructure.Nodes
             return this;
         }
 
-        public bool IgnoreOutput()
+        public virtual bool IgnoreOutput()
         {
             return
                 this is RegexMatchResult ||

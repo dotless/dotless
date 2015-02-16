@@ -31,6 +31,12 @@ namespace dotless.Core.Importers
         /// </summary>
         protected readonly List<string> _rawImports = new List<string>();
 
+        /// <summary>
+        /// Duplicates of reference imports should be ignored just like normal imports
+        /// but a reference import must not interfere with a regular import, hence a different list
+        /// </summary>
+        private readonly List<string> _referenceImports = new List<string>();
+
         protected virtual string CurrentDirectory
         {
             get
@@ -125,12 +131,25 @@ namespace dotless.Core.Importers
         /// <returns></returns>
         protected bool CheckIgnoreImport(Import import, string path)
         {
-            if (_rawImports.Contains(path, StringComparer.InvariantCultureIgnoreCase))
+            if (import.ImportOption == ImportOption.Multiple)
             {
-                return import.ImportOption != ImportOption.Multiple;
+                return false;
             }
-            _rawImports.Add(path);
 
+            if (import.ImportOption == ImportOption.Reference)
+            {
+                return CheckIgnoreImport(_referenceImports, path);
+            }
+            
+            return CheckIgnoreImport(_rawImports, path);
+        }
+
+        private bool CheckIgnoreImport(List<string> importList, string path) {
+            if (importList.Contains(path, StringComparer.InvariantCultureIgnoreCase))
+            {
+                return true;
+            }
+            importList.Add(path);
             return false;
         }
 
