@@ -26,7 +26,7 @@ namespace dotless.Core.Parser.Tree
         {
             var found = false;
 
-            var closures = env.FindRulesets<Ruleset>(Selector);
+            var closures = env.FindRulesets(Selector);
             if (closures == null)
                 throw new ParsingException(Selector.ToCSS(env).Trim() + " is undefined", Location);
 
