@@ -29,6 +29,7 @@
 //
 
 
+using System;
 using System.Net.NetworkInformation;
 
 #pragma warning disable 665
@@ -1130,30 +1131,38 @@ namespace dotless.Core.Parser
         //
         public Import Import(Parser parser)
         {
-            Node path = null;
 
             var index = parser.Tokenizer.Location.Index;
 
             var importMatch = parser.Tokenizer.Match(@"@import(-(once))?\s+");
-
-            if (importMatch && (path = Quoted(parser) || Url(parser)))
-            {
-                const bool isOnce = true;
-                
-                var features = MediaFeatures(parser);
-
-                Expect(parser, ';', "Expected ';' (possibly unrecognised media sequence)");
-
-                if (path is Quoted)
-                    return NodeProvider.Import(path as Quoted, parser.Importer, features, isOnce, parser.Tokenizer.GetNodeLocation(index));
-
-                if (path is Url)
-                    return NodeProvider.Import(path as Url, parser.Importer, features, isOnce, parser.Tokenizer.GetNodeLocation(index));
-
-                throw new ParsingException("unrecognised @import format", parser.Tokenizer.GetNodeLocation(index));
+            if (!importMatch) {
+                return null;
             }
 
-            return null;
+            var optionsMatch = parser.Tokenizer.Match(@"\((?<keyword>(reference|inline|less|css|once|multiple|optional))\)");
+            string option =
+                optionsMatch
+                    ? optionsMatch.Match.Groups["keyword"].Value
+                    : null;
+
+            Node path = Quoted(parser) || Url(parser);
+            if (!path) {
+                return null;
+            }
+
+            bool isOnce = !string.Equals("multiple", option, StringComparison.InvariantCulture);
+                
+            var features = MediaFeatures(parser);
+
+            Expect(parser, ';', "Expected ';' (possibly unrecognised media sequence)");
+
+            if (path is Quoted)
+                return NodeProvider.Import(path as Quoted, parser.Importer, features, isOnce, parser.Tokenizer.GetNodeLocation(index));
+
+            if (path is Url)
+                return NodeProvider.Import(path as Url, parser.Importer, features, isOnce, parser.Tokenizer.GetNodeLocation(index));
+
+            throw new ParsingException("unrecognised @import format", parser.Tokenizer.GetNodeLocation(index));
         }
 
         //

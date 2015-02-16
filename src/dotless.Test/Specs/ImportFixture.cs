@@ -161,6 +161,8 @@ text {
 @a: 9px;
 body { margin-right: @a; }";
 
+            imports["vardef.less"] = @"@var: 9px;";
+
             return new Parser { 
                 Importer = new Importer(new DictionaryReader(imports)) { 
                     IsUrlRewritingDisabled = isUrlRewritingDisabled,
@@ -729,6 +731,26 @@ body {
             var expected = @"
 body {
   background-color: foo;
+}
+";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ImportMultipleImportsMoreThanOnce()
+        {
+            var input = @"
+@import ""vardef.less"";
+@var: 10px;
+@import (multiple) ""vardef.less"";
+.rule { width: @var; }
+";
+
+            var expected = @"
+.rule {
+  width: 9px;
 }
 ";
             var parser = GetParser();
