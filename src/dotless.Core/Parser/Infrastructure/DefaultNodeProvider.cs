@@ -92,12 +92,12 @@ namespace dotless.Core.Parser.Infrastructure
             return new MixinDefinition(name, parameters, rules, condition, variadic) { Location = location };
         }
 
-        public Import Import(Url path, IImporter importer, Value features, ImportOption option, NodeLocation location)
+        public Import Import(Url path, IImporter importer, Value features, ImportOptions option, NodeLocation location)
         {
             return new Import(path, importer, features, option) { Location = location };
         }
 
-        public Import Import(Quoted path, IImporter importer, Value features, ImportOption option, NodeLocation location)
+        public Import Import(Quoted path, IImporter importer, Value features, ImportOptions option, NodeLocation location)
         {
             return new Import(path, importer, features, option) { Location = location };
         }

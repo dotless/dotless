@@ -167,6 +167,7 @@ body { margin-right: @a; }";
             imports["arbitrary-extension-as-less.ext"] = @"@var2: 11px;";
 
             imports["simple-rule.less"] = ".rule { background-color: black; }";
+            imports["simple-rule.css"] = ".rule { background-color: black; }";
 
             return new Parser { 
                 Importer = new Importer(new DictionaryReader(imports)) { 
@@ -903,6 +904,138 @@ body { background-color: foo; invalid ""; }
             var parser = GetParser();
 
             AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ImportingReferenceAsLessWorks()
+        {
+            var input = @"
+@import (reference, less) ""simple-rule.css"";
+.test {
+  .rule
+}
+";
+
+            var expected = @"
+.test {
+  background-color: black;
+}
+";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ImportingReferenceAsCssFails()
+        {
+            var input = @"
+@import (reference, css) ""simple-rule.css"";
+";
+
+            var expectedError = @"
+invalid combination of @import options (reference, css) -- specify either reference or css, but not both on line 1 in file 'test.less':
+   []: /beginning of file
+  [1]: @import (reference, css) ""simple-rule.css"";
+       --------^
+  [2]: /end of file";
+            AssertError(expectedError, input);
+        }
+
+        [Test]
+        public void ImportingAsBothCssAndLessFails()
+        {
+            var input = @"
+@import (css, less) ""simple-rule.css"";
+";
+
+            var expectedError = @"
+invalid combination of @import options (css, less) -- specify either css or less, but not both on line 1 in file 'test.less':
+   []: /beginning of file
+  [1]: @import (css, less) ""simple-rule.css"";
+       --------^
+  [2]: /end of file";
+            AssertError(expectedError, input);
+        }
+
+        [Test]
+        public void ImportingAsBothInlineAndReferenceFails()
+        {
+            var input = @"
+@import (inline, reference) ""simple-rule.css"";
+";
+
+            var expectedError = @"
+invalid combination of @import options (inline, reference) -- specify either inline or reference, but not both on line 1 in file 'test.less':
+   []: /beginning of file
+  [1]: @import (inline, reference) ""simple-rule.css"";
+       --------^
+  [2]: /end of file";
+            AssertError(expectedError, input);
+        }
+
+        [Test]
+        public void ImportingAsBothInlineAndCssFails()
+        {
+            var input = @"
+@import (inline, css) ""simple-rule.css"";
+";
+
+            var expectedError = @"
+invalid combination of @import options (inline, css) -- specify either inline or css, but not both on line 1 in file 'test.less':
+   []: /beginning of file
+  [1]: @import (inline, css) ""simple-rule.css"";
+       --------^
+  [2]: /end of file";
+            AssertError(expectedError, input);
+        }
+
+        [Test]
+        public void ImportingAsBothInlineAndLessFails()
+        {
+            var input = @"
+@import (inline, less) ""simple-rule.css"";
+";
+
+            var expectedError = @"
+invalid combination of @import options (inline, less) -- specify either inline or less, but not both on line 1 in file 'test.less':
+   []: /beginning of file
+  [1]: @import (inline, less) ""simple-rule.css"";
+       --------^
+  [2]: /end of file";
+            AssertError(expectedError, input);
+        }
+
+        [Test]
+        public void ImportingAsBothOnceAndMultipleFails()
+        {
+            var input = @"
+@import (once, multiple) ""simple-rule.css"";
+";
+
+            var expectedError = @"
+invalid combination of @import options (once, multiple) -- specify either once or multiple, but not both on line 1 in file 'test.less':
+   []: /beginning of file
+  [1]: @import (once, multiple) ""simple-rule.css"";
+       --------^
+  [2]: /end of file";
+            AssertError(expectedError, input);
+        }
+
+        [Test]
+        public void UnrecognizedImportOptionFails()
+        {
+            var input = @"
+@import (invalid-option) ""simple-rule.css"";
+";
+
+            var expectedError = @"
+unrecognized @import option 'invalid-option' on line 1 in file 'test.less':
+   []: /beginning of file
+  [1]: @import (invalid-option) ""simple-rule.css"";
+       --------^
+  [2]: /end of file";
+            AssertError(expectedError, input);
         }
     }
 }

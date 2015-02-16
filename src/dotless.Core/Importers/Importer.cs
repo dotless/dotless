@@ -131,12 +131,12 @@ namespace dotless.Core.Importers
         /// <returns></returns>
         protected bool CheckIgnoreImport(Import import, string path)
         {
-            if (import.ImportOption == ImportOption.Multiple)
+            if (IsOptionSet(import.ImportOptions, ImportOptions.Multiple))
             {
                 return false;
             }
 
-            if (import.ImportOption == ImportOption.Reference)
+            if (IsOptionSet(import.ImportOptions, ImportOptions.Reference))
             {
                 return CheckIgnoreImport(_referenceImports, path);
             }
@@ -188,11 +188,11 @@ namespace dotless.Core.Importers
                 return ImportAction.ImportNothing;
             }
 
-            bool importAsless = ImportAllFilesAsLess || import.ImportOption == ImportOption.Less;
+            bool importAsless = ImportAllFilesAsLess || IsOptionSet(import.ImportOptions, ImportOptions.Less);
 
             if (!importAsless && import.Path.EndsWith(".css") && !import.Path.EndsWith(".less.css"))
             {
-                if (InlineCssFiles || import.ImportOption == ImportOption.Inline)
+                if (InlineCssFiles || IsOptionSet(import.ImportOptions, ImportOptions.Inline))
                 {
                     if (IsEmbeddedResource(import.Path) && ImportEmbeddedCssContents(file, import))                         
                         return ImportAction.ImportCss;
@@ -208,12 +208,12 @@ namespace dotless.Core.Importers
 
             if (!ImportLessFile(file, import))
             {
-                if (import.ImportOption == ImportOption.Optional)
+                if (IsOptionSet(import.ImportOptions, ImportOptions.Optional))
                 {
                     return ImportAction.ImportNothing;
                 }
 
-                if (import.ImportOption == ImportOption.Css)
+                if (IsOptionSet(import.ImportOptions, ImportOptions.Css))
                 {
                     return ImportAction.LeaveImport;
                 }
@@ -331,6 +331,11 @@ namespace dotless.Core.Importers
                 return RootPath + url;
             }
             return url;
+        }
+
+        private bool IsOptionSet(ImportOptions options, ImportOptions test)
+        {
+            return (options & test) == test;
         }
     }
 

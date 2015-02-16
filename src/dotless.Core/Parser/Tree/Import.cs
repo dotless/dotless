@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 
 namespace dotless.Core.Parser.Tree
@@ -44,20 +45,20 @@ namespace dotless.Core.Parser.Tree
         /// <summary>
         ///  The type of import: reference, inline, less, css, once, multiple or optional
         /// </summary>
-        public ImportOption ImportOption { get; set; }
+        public ImportOptions ImportOptions { get; set; }
 
         /// <summary>
         /// The action to perform with this node
         /// </summary>
         protected ImportAction ImportAction { get; set; }
 
-        public Import(Quoted path, IImporter importer, Value features, ImportOption option)
+        public Import(Quoted path, IImporter importer, Value features, ImportOptions option)
             : this(path.Value, importer, features, option)
         {
             OriginalPath = path;
         }
 
-        public Import(Url path, IImporter importer, Value features, ImportOption option)
+        public Import(Url path, IImporter importer, Value features, ImportOptions option)
             : this(path.GetUnadjustedUrl(), importer, features, option)
         {
             OriginalPath = path;
@@ -75,7 +76,7 @@ namespace dotless.Core.Parser.Tree
             ImportAction = ImportAction.LeaveImport;
         }
 
-        private Import(string path, IImporter importer, Value features, ImportOption option)
+        private Import(string path, IImporter importer, Value features, ImportOptions option)
         {
             if (path == null)
                 throw new ParserException("Imports do not allow expressions");
@@ -83,7 +84,7 @@ namespace dotless.Core.Parser.Tree
             Importer = importer;
             Path = path;
             Features = features;
-            ImportOption = option;
+            ImportOptions = option;
 
             ImportAction = Importer.Import(this); // it is assumed to be css if it cannot be found as less
         }
@@ -154,7 +155,7 @@ namespace dotless.Core.Parser.Tree
             NodeHelper.ExpandNodes<Import>(env, InnerRoot.Rules);
 
             var rulesList = new NodeList(InnerRoot.Rules).ReducedFrom<NodeList>(this);
-            if (ImportOption == ImportOption.Reference)
+            if (IsOptionSet(ImportOptions, ImportOptions.Reference))
             {
                 foreach (var ruleSet in rulesList.OfType<Ruleset>())
                 {
@@ -169,16 +170,20 @@ namespace dotless.Core.Parser.Tree
 
             return rulesList;
         }
+        private bool IsOptionSet(ImportOptions options, ImportOptions test)
+        {
+            return (options & test) == test;
+        }
     }
 
-    public enum ImportOption {
-        None = 0,
-        Once = None,
-        Multiple = 1,
-        Optional = 2,
-        Css = 3,
-        Less = 4,
-        Inline = 5,
-        Reference = 6
+    [Flags]
+    public enum ImportOptions {
+        Once = 1,
+        Multiple = 2,
+        Optional = 4,
+        Css = 8,
+        Less = 16,
+        Inline = 32,
+        Reference = 64 
     }
 }

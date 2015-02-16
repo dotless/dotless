@@ -1139,11 +1139,7 @@ namespace dotless.Core.Parser
                 return null;
             }
 
-            var optionsMatch = parser.Tokenizer.Match(@"\((?<keyword>(reference|inline|less|css|once|multiple|optional))\)");
-            ImportOption option =
-                optionsMatch
-                    ? (ImportOption) Enum.Parse(typeof (ImportOption), optionsMatch.Match.Groups["keyword"].Value, true)
-                    : ImportOption.None;
+            ImportOptions option = ParseOptions(parser);
 
             Node path = Quoted(parser) || Url(parser);
             if (!path) {
@@ -1161,6 +1157,68 @@ namespace dotless.Core.Parser
                 return NodeProvider.Import(path as Url, parser.Importer, features, option, parser.Tokenizer.GetNodeLocation(index));
 
             throw new ParsingException("unrecognised @import format", parser.Tokenizer.GetNodeLocation(index));
+        }
+
+        private static ImportOptions ParseOptions(Parser parser)
+        {
+            var index = parser.Tokenizer.Location.Index;
+            var optionsMatch = parser.Tokenizer.Match(@"\((?<keywords>.*)\)");
+            if (!optionsMatch) {
+                return ImportOptions.Once;
+            }
+
+            var allKeywords = optionsMatch.Match.Groups["keywords"].Value;
+            var keywords = allKeywords.Split(',').Select(kw => kw.Trim());
+
+            ImportOptions options = 0;
+            foreach (var keyword in keywords)
+            {
+                try
+                {
+                    ImportOptions value = (ImportOptions) Enum.Parse(typeof (ImportOptions), keyword, true);
+                    options |= value;
+                }
+                catch (ArgumentException)
+                {
+                    throw new ParsingException(string.Format("unrecognized @import option '{0}'", keyword), parser.Tokenizer.GetNodeLocation(index));
+                }
+            }
+
+            CheckForConflictingOptions(parser, options, allKeywords, index);
+            
+            return options;
+        }
+
+        private static readonly ImportOptions[][] illegalOptionCombinations =
+            {
+                new[] {ImportOptions.Css, ImportOptions.Less},
+                new[] {ImportOptions.Inline, ImportOptions.Css},
+                new[] {ImportOptions.Inline, ImportOptions.Less},
+                new[] {ImportOptions.Inline, ImportOptions.Reference},
+                new[] {ImportOptions.Once, ImportOptions.Multiple},
+                new[] {ImportOptions.Reference, ImportOptions.Css},
+            };
+        private static void CheckForConflictingOptions(Parser parser, ImportOptions options, string allKeywords, int index)
+        {
+            foreach (var illegalCombination in illegalOptionCombinations)
+            {
+                if (IsOptionSet(options, illegalCombination[0]) && IsOptionSet(options, illegalCombination[1]))
+                {
+                    throw new ParsingException(
+                        string.Format(
+                            "invalid combination of @import options ({0}) -- specify either {1} or {2}, but not both",
+                            allKeywords,
+                            illegalCombination[0].ToString().ToLowerInvariant(),
+                            illegalCombination[1].ToString().ToLowerInvariant()
+                            ),
+                        parser.Tokenizer.GetNodeLocation(index));
+                }
+            }
+        }
+
+        private static bool IsOptionSet(ImportOptions options, ImportOptions test)
+        {
+            return (options & test) == test;
         }
 
         //
