@@ -173,7 +173,7 @@ namespace dotless.Core.Importers
 
             if (!importAsless && import.Path.EndsWith(".css") && !import.Path.EndsWith(".less.css"))
             {
-                if (InlineCssFiles)
+                if (InlineCssFiles || import.ImportOption == ImportOption.Inline)
                 {
                     if (IsEmbeddedResource(import.Path) && ImportEmbeddedCssContents(file, import))                         
                         return ImportAction.ImportCss;

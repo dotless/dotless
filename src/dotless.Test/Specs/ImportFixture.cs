@@ -817,5 +817,20 @@ body {
 
             AssertLess(input, expected, parser);
         }
+
+        [Test]
+        public void ImportInlineIncludesContentsOfCssFile()
+        {
+            var input = @"
+@import (inline) ""something.css"";
+";
+
+            var expected = @"
+body { background-color: foo; invalid ""; }
+";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
     }
 }
