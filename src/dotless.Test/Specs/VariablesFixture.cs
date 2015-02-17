@@ -542,5 +542,15 @@ namespace dotless.Test.Specs
 ";
             AssertLess(input,expected);
         }
+
+        [Test]
+        public void VariableDeclarationWithMissingSemicolon() {
+            var input = @"
+@v1:Normal;
+@v2:
+";
+
+            AssertError("missing semicolon in expression", "@v2:", 2, 3, input);
+        }
     }
 }

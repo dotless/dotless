@@ -1179,6 +1179,10 @@ namespace dotless.Core.Parser
             var index = parser.Tokenizer.Location.Index;
 
             var name = parser.Tokenizer.MatchString(@"@[-a-z]+");
+            if (string.IsNullOrEmpty(name))
+            {
+                return null;
+            }
             bool hasIdentifier = false, hasBlock = false, isKeyFrame = false;
             NodeList rules, preRulesComments = null, preComments = null;
             string identifierRegEx = @"[^{]+";
@@ -1263,11 +1267,12 @@ namespace dotless.Core.Parser
                 if (value = Expression(parser)) {
                     value.PreComments = preRulesComments;
                     value.PostComments = GatherAndPullComments(parser);
-                    if (parser.Tokenizer.Match(';')) {
-                        var directive = NodeProvider.Directive(name, value, parser.Tokenizer.GetNodeLocation(index));
-                        directive.PreComments = preComments;
-                        return directive;
-                    }
+
+                    Expect(parser, ';', "missing semicolon in expression");
+
+                    var directive = NodeProvider.Directive(name, value, parser.Tokenizer.GetNodeLocation(index));
+                    directive.PreComments = preComments;
+                    return directive;
                 }
             }
 
