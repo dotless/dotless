@@ -50,27 +50,27 @@ namespace dotless.Core.Parser.Infrastructure
 
         public void AddExtension(Selector selector, Env env)
         {
-            var path = new List<IEnumerable<Selector>> {new [] {selector} };
-            path.AddRange(env.Frames.Skip(1).Select(f => f.Selectors.Where(partialSelector => partialSelector != null)));
+            var selectorPath = new List<IEnumerable<Selector>> {new [] {selector} };
+            selectorPath.AddRange(env.Frames.Skip(1).Select(f => f.Selectors.Where(partialSelector => partialSelector != null)));
 
-            path.Reverse();
-
-            ExtendedBy.Add(GenerateExtenderSelector(env, path));
+            ExtendedBy.Add(GenerateExtenderSelector(env, selectorPath));
         }
 
-        private Selector GenerateExtenderSelector(Env env, List<IEnumerable<Selector>> selectorStack) {
-            var context = GenerateExtenderSelector(new Context(), selectorStack);
+        private Selector GenerateExtenderSelector(Env env, List<IEnumerable<Selector>> selectorPath) {
+            var context = GenerateExtenderSelector(selectorPath);
             return new Selector(new[] {new Element(null, context.ToCss(env)) });
         }
 
-        private Context GenerateExtenderSelector(Context parentContext, List<IEnumerable<Selector>> selectorStack) {
+        private Context GenerateExtenderSelector(List<IEnumerable<Selector>> selectorStack) {
             if (!selectorStack.Any()) {
-                return parentContext;
+                return null;
             }
+
+            var parentContext = GenerateExtenderSelector(selectorStack.Skip(1).ToList());
 
             var childContext = new Context();
             childContext.AppendSelectors(parentContext, selectorStack.First());
-            return GenerateExtenderSelector(childContext, selectorStack.Skip(1).ToList());
+            return childContext;
         }
     }
 }
