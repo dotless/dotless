@@ -168,5 +168,11 @@ namespace dotless.Test.Specs
             AssertExpression("3 !important", "1 + 2 !important");
             AssertExpression("3 !important", "6 / 2 !important");
         }
+
+        [Test]
+        public void UnaryPlus()
+        { 
+            AssertExpression("1px", "+1px");
+        }
     }
 }
