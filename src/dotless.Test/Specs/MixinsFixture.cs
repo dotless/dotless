@@ -119,7 +119,7 @@ namespace dotless.Test.Specs
 
             AssertLess(input, expected);
         }
-
+        
         [Test, Ignore("Unsupported")]
         public void CommaSeparatedMixins()
         {
@@ -1668,6 +1668,72 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
   right: 0;
 }";
             
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void SemicolonAsSeparatorAllowsListArguments()
+        {
+            var input = @"
+.mix(@list1, @list2) {
+    test: @list1;
+    test2: @list2;
+}
+
+.test {
+    .mix(1, 2, 3; 4, 5, 6)
+}
+";
+            var expected = @"
+.test {
+  test: 1, 2, 3;
+  test2: 4, 5, 6;
+}
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void DummySemicolonInArgumentListAllowsUnaryCallWithListArgument()
+        {
+            var input = @"
+.mix(@list) {
+    test: @list;
+}
+
+.test {
+    .mix(1, 2, 3;)
+}
+";
+            var expected = @"
+.test {
+  test: 1, 2, 3;
+}
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void SemicolonAsArgumentSeparator() {
+            var input = @"
+.mix(@p1, @p2) {
+    test: @p1;
+    test2: @p2;
+}
+
+.test {
+    .mix(1; 2)
+}
+";
+
+            var expected = @"
+.test {
+  test: 1;
+  test2: 2;
+}";
+
             AssertLess(input, expected);
         }
     }
