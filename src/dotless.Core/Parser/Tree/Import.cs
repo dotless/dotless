@@ -133,6 +133,8 @@ namespace dotless.Core.Parser.Tree
                 return new NodeList().ReducedFrom<NodeList>(this);
             }
 
+            OriginalPath = OriginalPath.Evaluate(env);
+
             Node features = null;
 
             if (Features)

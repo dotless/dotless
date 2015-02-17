@@ -735,5 +735,23 @@ body {
 
             AssertLess(input, expected, parser);
         }
+
+        [Test]
+        public void VariableInterpolationInQuotedImport()
+        {
+            var input =
+                @"
+@var: ""foo"";
+
+@import ""@{var}/bar.css"";
+";
+
+            var expected =
+                @"
+@import ""foo/bar.css"";
+";
+
+            AssertLess(input, expected);
+        }
     }
 }
