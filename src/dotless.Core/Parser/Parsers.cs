@@ -588,8 +588,11 @@ namespace dotless.Core.Parser
             var args = new List<NamedArgument>();
             if (parser.Tokenizer.Match('('))
             {
+                bool argumentListIsSemicolonSeparated = parser.Tokenizer.Peek(@".*;.*\)");
+                char expectedSeparator = argumentListIsSemicolonSeparated ? ';' : ',';
+
                 Expression arg;
-                while (arg = Expression(parser))
+                while (arg = Expression(parser, argumentListIsSemicolonSeparated))
                 {
                     var value = arg;
                     string name = null;
@@ -605,7 +608,7 @@ namespace dotless.Core.Parser
 
                     args.Add(new NamedArgument { Name = name, Value = value });
 
-                    if (!parser.Tokenizer.Match(',') && !parser.Tokenizer.Match(';'))
+                    if (!parser.Tokenizer.Match(expectedSeparator))
                         break;
                 }
                 Expect(parser, ')');
@@ -631,6 +634,11 @@ namespace dotless.Core.Parser
 
             PopComments();
             return null;
+        }
+
+        private Expression Expression(Parser parser, bool allowList)
+        {
+            return allowList ? ExpressionOrExpressionList(parser) : Expression(parser);
         }
 
         //
@@ -817,6 +825,37 @@ namespace dotless.Core.Parser
         {
             return Literal(parser) || Variable(parser) || Url(parser) ||
                    Call(parser) || Keyword(parser) || Script(parser);
+        }
+
+        private Expression ExpressionOrExpressionList(Parser parser)
+        {
+            var memo = Remember(parser);
+
+            List<Expression> entities = new List<Expression>();
+
+            Expression entity;
+            while (entity = Expression(parser))
+            {
+                entities.Add(entity);
+
+                if (!parser.Tokenizer.Match(','))
+                {
+                    break;
+                }
+            }
+
+            if (entities.Count == 0)
+            {
+                Recall(parser, memo);
+                return null;
+            }
+
+            if (entities.Count == 1)
+            {
+                return entities[0];
+            }
+
+            return new Expression(entities.Cast<Node>(), true);
         }
 
         //
