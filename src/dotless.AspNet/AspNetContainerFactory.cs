@@ -19,13 +19,10 @@
 
         private void RegisterWebServices(FluentRegistration pandora, DotlessConfiguration configuration)
         {
+            pandora.Service<IParameterSource>().Implementor<NullParameterSource>().Lifestyle.Transient();
+
             pandora.Service<IHttp>().Implementor<Http>().Lifestyle.Transient();
             pandora.Service<HandlerImpl>().Implementor<HandlerImpl>().Lifestyle.Transient();
-
-            if (!configuration.DisableParameters)
-            {
-                pandora.Service<IParameterSource>().Implementor<QueryStringParameterSource>().Lifestyle.Transient();
-            }
 
             var responseService = configuration.CacheEnabled ?
                 pandora.Service<IResponse>().Implementor<CachedCssResponse>() :
