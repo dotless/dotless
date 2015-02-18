@@ -368,6 +368,21 @@ namespace dotless.Core.Parser
         }
 
         //
+        // An interpolated Variable entity, such as `@{foo}`, in
+        //
+        //     [@{foo}="value"]
+        //
+        public Variable InterpolatedVariable(Parser parser) {
+            RegexMatchResult name;
+            var index = parser.Tokenizer.Location.Index;
+
+            if (parser.Tokenizer.CurrentChar == '@' && (name = parser.Tokenizer.Match(@"@\{(?<name>@?[a-zA-Z0-9_-]+)\}")))
+                return NodeProvider.Variable("@" + name.Match.Groups["name"].Value, parser.Tokenizer.GetNodeLocation(index));
+
+            return null;
+        }
+
+        //
         // A Variable entity as like in a selector e.g.
         //
         //     @{var} {
@@ -984,35 +999,26 @@ namespace dotless.Core.Parser
             return parser.Tokenizer.Match(@"[a-zA-Z][a-zA-Z-]*[0-9]?") || parser.Tokenizer.Match('*');
         }
 
-        public TextNode Attribute(Parser parser)
+        public Node Attribute(Parser parser)
         {
-            var attr = "";
-            Node key;
-            Node val = null;
-
             var index = parser.Tokenizer.Location.Index;
 
             if (!parser.Tokenizer.Match('['))
                 return null;
 
-            if (key = parser.Tokenizer.Match(@"(\\.|[a-z0-9_-])+", true) || Quoted(parser))
+            Node key = InterpolatedVariable(parser) || parser.Tokenizer.Match(@"(\\.|[a-z0-9_-])+", true) || Quoted(parser);
+
+            if (!key)
             {
-                Node op;
-                if ((op = parser.Tokenizer.Match(@"[|~*$^]?=")) &&
-                    (val = Quoted(parser) || parser.Tokenizer.Match(@"[\w-]+")))
-                    // Would be nice if this wasn't one block - we could make Attribute node
-                    // see CommentsInSelectorAttributes in CommentsFixture.cs
-                    attr = string.Format("{0}{1}{2}", key, op, val.ToCSS(new Env())); 
-                else
-                    attr = key.ToString();
+                return null;
             }
+
+            Node op = parser.Tokenizer.Match(@"[|~*$^]?=");
+            Node val = Quoted(parser) || parser.Tokenizer.Match(@"[\w-]+");
 
             Expect(parser, ']');
 
-            if (!string.IsNullOrEmpty(attr))
-                return NodeProvider.TextNode("[" + attr + "]", parser.Tokenizer.GetNodeLocation(index));
-
-            return null;
+            return NodeProvider.Attribute(key, op, val, parser.Tokenizer.GetNodeLocation(index));
         }
 
         //
