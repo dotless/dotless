@@ -542,5 +542,23 @@ namespace dotless.Test.Specs
 ";
             AssertLess(input,expected);
         }
+
+        [Test]
+        public void VariablesInAttributeSelectorValue() {
+            var input = @"
+@breakpoint-alias: ""desktop"";
+[class*=""@{breakpoint-alias}-rule""] {
+    margin-top: 0;
+    zoom: 1; 
+}";
+
+            var expected = @"
+[class*=""desktop-rule""] {
+  margin-top: 0;
+  zoom: 1;
+}";
+
+            AssertLess(input, expected);
+        }
     }
 }

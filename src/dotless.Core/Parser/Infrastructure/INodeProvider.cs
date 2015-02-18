@@ -55,5 +55,6 @@ namespace dotless.Core.Parser.Infrastructure
 
         //extenders
         Extend Extend(List<Selector> exact, List<Selector> partial, NodeLocation location);
+        Node Attribute(Node key, Node op, Node val, NodeLocation location);
     }
 }
