@@ -116,7 +116,7 @@ namespace dotless.Core.Parser.Tree
             {
                 if (rule.Selectors && rule.Selectors.Any(selector.Match))
                 {
-                    if ((selector.Elements.Count == 1) || rule.Selectors.Any(s => s.ToCSS(new Env()) == selector.ToCSS(new Env())))
+                    if ((selector.Elements.Count == 1) || rule.Selectors.Any(s => s.ToCSS(new Env(null)) == selector.ToCSS(new Env(null))))
                         rules.Add(new Closure { Ruleset = rule, Context = new List<Ruleset> { rule } });
                     else if (selector.Elements.Count > 1)
                     {
@@ -361,7 +361,7 @@ namespace dotless.Core.Parser.Tree
         {
             var format = "{0}{{{1}}}";
             return Selectors != null && Selectors.Count > 0
-                       ? string.Format(format, Selectors.Select(s => s.ToCSS(new Env())).JoinStrings(""), Rules.Count)
+                       ? string.Format(format, Selectors.Select(s => s.ToCSS(new Env(null))).JoinStrings(""), Rules.Count)
                        : string.Format(format, "*", Rules.Count);
         }
     }

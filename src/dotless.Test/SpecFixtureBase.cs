@@ -31,7 +31,7 @@
             DefaultParser = () => new Parser(Optimisation, DefaultStylizer(), DefaultImporter());
             DefaultEnv = () =>
             {
-                var env = new Env();
+                var env = new Env(DefaultParser());
                 env.AddPlugin(PassThroughAfterPlugin = new PassThroughAfterPlugin());
                 env.AddPlugin(PassThroughBeforePlugin = new PassThroughBeforePlugin());
                 return env;
@@ -232,6 +232,7 @@
         {
             var tree = parser.Parse(input.Trim(), filename);
             var env = DefaultEnv();
+            env.Parser = parser;
             env.Logger = testLogger = new TestLogger(LogLevel.Info);
             return tree.ToCSS(env);
         }

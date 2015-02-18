@@ -35,6 +35,8 @@
         ///  primary url
         /// </summary>
         string AlterUrl(string url, List<string> pathList);
+
+        IDisposable BeginScope(Import parent);
     }
 
     /// <summary>

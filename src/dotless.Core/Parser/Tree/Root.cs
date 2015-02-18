@@ -64,7 +64,7 @@ namespace dotless.Core.Parser.Tree
 
             try
             {
-                env = env ?? new Env();
+                env = env ?? new Env(null);
 
                 env.Frames.Push(this);
                 NodeHelper.ExpandNodes<Import>(env, Rules);
