@@ -368,6 +368,21 @@ namespace dotless.Core.Parser
         }
 
         //
+        // An interpolated Variable entity, such as `@{foo}`, in
+        //
+        //     [@{foo}="value"]
+        //
+        public Variable InterpolatedVariable(Parser parser) {
+            RegexMatchResult name;
+            var index = parser.Tokenizer.Location.Index;
+
+            if (parser.Tokenizer.CurrentChar == '@' && (name = parser.Tokenizer.Match(@"@\{(?<name>@?[a-zA-Z0-9_-]+)\}")))
+                return NodeProvider.Variable("@" + name.Match.Groups["name"].Value, parser.Tokenizer.GetNodeLocation(index));
+
+            return null;
+        }
+
+        //
         // A Variable entity as like in a selector e.g.
         //
         //     @{var} {
@@ -991,7 +1006,7 @@ namespace dotless.Core.Parser
             if (!parser.Tokenizer.Match('['))
                 return null;
 
-            Node key = parser.Tokenizer.Match(@"(\\.|[a-z0-9_-])+", true) || Quoted(parser);
+            Node key = InterpolatedVariable(parser) || parser.Tokenizer.Match(@"(\\.|[a-z0-9_-])+", true) || Quoted(parser);
 
             if (!key)
             {

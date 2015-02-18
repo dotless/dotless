@@ -560,5 +560,41 @@ namespace dotless.Test.Specs
 
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void VariablesAsAttributeName() {
+            var input = @"
+@key: ""desktop"";
+[@{key}=""value""] {
+    margin-top: 0;
+    zoom: 1; 
+}";
+
+            var expected = @"
+[""desktop""=""value""] {
+  margin-top: 0;
+  zoom: 1;
+}";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void VariablesAsPartOfAttributeNameNotAllowed() {
+            var input = @"
+@key: ""desktop"";
+[@{key}-something=""value""] {
+    margin-top: 0;
+    zoom: 1; 
+}";
+
+            var expected = @"
+[""desktop""=""value""] {
+  margin-top: 0;
+  zoom: 1;
+}";
+
+            AssertError("Expected ']' but found '\"'", "[@{key}-something=\"value\"] {", 2, 17, input);
+        }
     }
 }
