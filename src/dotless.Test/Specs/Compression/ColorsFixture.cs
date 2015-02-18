@@ -44,14 +44,14 @@ namespace dotless.Test.Specs.Compression
         {
             var oldEnv = DefaultEnv();
 
-            DefaultEnv = () => new Env()
+            DefaultEnv = () => new Env(null)
                 {
                     Compress = true,
                     DisableColorCompression = false
                 };
             AssertExpression("#111", "#111111");
 
-            DefaultEnv = () => new Env()
+            DefaultEnv = () => new Env(null)
             {
                 Compress = true,
                 DisableColorCompression = true

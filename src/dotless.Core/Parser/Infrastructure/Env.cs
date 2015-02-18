@@ -29,13 +29,14 @@
         public bool DisableColorCompression { get; set; }
         public bool KeepFirstSpecialComment { get; set; }
         public bool IsFirstSpecialCommentOutput { get; set; }
+        public Parser Parser { get; set; }
 
-        public Env() : this(null, null)
+        public Env(Parser parser) : this(parser, null, null)
         {
         }
 
-        protected Env(Stack<Ruleset> frames, Dictionary<string, Type> functions)
-        {
+        protected Env(Parser parser, Stack<Ruleset> frames, Dictionary<string, Type> functions) {
+            Parser = parser;
             Frames = frames ?? new Stack<Ruleset>();
             Output = new Output(this);
             MediaPath = new Stack<Media>();
@@ -56,7 +57,7 @@
         /// </summary>
         public virtual Env CreateChildEnv(Stack<Ruleset> frames)
         {
-            return new Env(frames, _functionTypes)
+            return new Env(Parser, frames, _functionTypes)
             {
                 Debug = Debug,
                 Compress = Compress,

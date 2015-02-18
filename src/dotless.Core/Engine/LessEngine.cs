@@ -60,7 +60,7 @@ namespace dotless.Core
                 var tree = Parser.Parse(source, fileName);
 
                 var env = Env ??
-                          new Env
+                          new Env(Parser)
                               {
                                   Compress = Compress,
                                   Debug = Debug,

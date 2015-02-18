@@ -737,7 +737,7 @@ body {
         }
 
         [Test]
-        public void VariableInterpolationInQuotedImport()
+        public void VariableInterpolationInQuotedCssImport()
         {
             var input =
                 @"
@@ -752,6 +752,25 @@ body {
 ";
 
             AssertLess(input, expected);
+        }
+
+        [Test]
+        public void VariableInterpolationInQuotedLessImport()
+        {
+            var input =
+                @"
+@component: ""color"";
+
+@import ""lib/@{component}.less"";
+";
+
+            var expected =
+                @"
+body {
+  background-color: foo;
+}";
+
+            AssertLess(input, expected, GetParser());
         }
     }
 }

@@ -10,19 +10,11 @@ namespace dotless.Core.Parser.Tree
     public class Import : Directive
     {
         /// <summary>
-        ///  The importer to use to import the 
-        /// </summary>
-        public IImporter Importer { get; set; }
-
-        /// <summary>
-        ///  The path to this import
-        /// </summary>
-        public string Path { get; set; }
-
-        /// <summary>
         ///  The original path node
         /// </summary>
         protected Node OriginalPath { get; set; }
+
+        public string Path { get; set; }
 
         /// <summary>
         ///  The inner root - if the action is ImportLess
@@ -47,18 +39,19 @@ namespace dotless.Core.Parser.Tree
         /// <summary>
         /// The action to perform with this node
         /// </summary>
-        protected ImportAction ImportAction { get; set; }
+        private ImportAction? _importAction;
 
-        public Import(Quoted path, IImporter importer, Value features, bool isOnce)
-            : this(path.Value, importer, features, isOnce)
+        public Import(Quoted path, Value features, bool isOnce)
+            : this((Node)path, features, isOnce)
         {
             OriginalPath = path;
         }
 
-        public Import(Url path, IImporter importer, Value features, bool isOnce)
-            : this(path.GetUnadjustedUrl(), importer, features, isOnce)
+        public Import(Url path, Value features, bool isOnce)
+            : this((Node)path, features, isOnce)
         {
             OriginalPath = path;
+            Path = path.GetUnadjustedUrl();
         }
 
         /// <summary>
@@ -70,30 +63,38 @@ namespace dotless.Core.Parser.Tree
         {
             OriginalPath = originalPath;
             Features = features;
-            ImportAction = ImportAction.LeaveImport;
+            _importAction = ImportAction.LeaveImport;
         }
 
-        private Import(string path, IImporter importer, Value features, bool isOnce)
+        private Import(Node path, Value features, bool isOnce)
         {
             if (path == null)
                 throw new ParserException("Imports do not allow expressions");
 
-            Importer = importer;
-            Path = path;
+            OriginalPath = path;
             Features = features;
             IsOnce = isOnce;
+        }
 
-            ImportAction = Importer.Import(this); // it is assumed to be css if it cannot be found as less
+        private ImportAction GetImportAction(IImporter importer)
+        {
+            if (!_importAction.HasValue)
+            {
+                _importAction = importer.Import(this);
+            }
+
+            return _importAction.Value;
         }
 
         public override void AppendCSS(Env env, Context context)
         {
-            if (ImportAction == ImportAction.ImportNothing)
+            ImportAction action = GetImportAction(env.Parser.Importer);
+            if (action == ImportAction.ImportNothing)
             {
                 return;
             }
 
-            if (ImportAction == ImportAction.ImportCss)
+            if (action == ImportAction.ImportCss)
             {
                 env.Output.Append(InnerContent);
                 return;
@@ -120,7 +121,7 @@ namespace dotless.Core.Parser.Tree
         {
             Features = VisitAndReplace(Features, visitor, true);
 
-            if (ImportAction == ImportAction.ImportLess)
+            if (_importAction == ImportAction.ImportLess)
             {
                 InnerRoot = VisitAndReplace(InnerRoot, visitor);
             }
@@ -128,30 +129,39 @@ namespace dotless.Core.Parser.Tree
 
         public override Node Evaluate(Env env)
         {
-            if (ImportAction == Importers.ImportAction.ImportNothing)
+            OriginalPath = OriginalPath.Evaluate(env);
+            var quoted = OriginalPath as Quoted;
+            if (quoted != null)
+            {
+                Path = quoted.Value;
+            }
+
+            ImportAction action = GetImportAction(env.Parser.Importer);
+            if (action == Importers.ImportAction.ImportNothing)
             {
                 return new NodeList().ReducedFrom<NodeList>(this);
             }
-
-            OriginalPath = OriginalPath.Evaluate(env);
 
             Node features = null;
 
             if (Features)
                 features = Features.Evaluate(env);
 
-            if (ImportAction == ImportAction.LeaveImport)
+            if (action == ImportAction.LeaveImport)
                 return new Import(OriginalPath, features);
 
-            if (ImportAction == ImportAction.ImportCss)
+            if (action == ImportAction.ImportCss)
             {
-                var importCss = new Import(OriginalPath, null) { ImportAction = ImportAction.ImportCss, InnerContent = InnerContent };
+                var importCss = new Import(OriginalPath, null) { _importAction = ImportAction.ImportCss, InnerContent = InnerContent };
                 if (features)
                     return new Media(features, new NodeList() { importCss });
                 return importCss;
             }
 
-            NodeHelper.ExpandNodes<Import>(env, InnerRoot.Rules);
+            using (env.Parser.Importer.BeginScope(this))
+            {
+                NodeHelper.ExpandNodes<Import>(env, InnerRoot.Rules);
+            }
 
             var rulesList = new NodeList(InnerRoot.Rules).ReducedFrom<NodeList>(this);
 
