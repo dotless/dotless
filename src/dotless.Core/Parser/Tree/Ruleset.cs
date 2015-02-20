@@ -268,6 +268,7 @@ namespace dotless.Core.Parser.Tree
 
             env.Output.Push();
 
+            bool hasNonReferenceChildRulesets = false;
             foreach (var node in Rules)
             {
                 if (node.IgnoreOutput())
@@ -283,7 +284,7 @@ namespace dotless.Core.Parser.Tree
                     ruleset.AppendCSS(env, paths);
                     if (!ruleset.IsReference)
                     {
-                        IsReference = false;
+                        hasNonReferenceChildRulesets = true;
                     }
                 }
                 else
@@ -324,34 +325,34 @@ namespace dotless.Core.Parser.Tree
                 IsReference = false;
             }
 
-            if (IsReference)
-            {
-                return;
-            }
-
             // If this is the root node, we don't render
             // a selector, or {}.
             // Otherwise, only output if this ruleset has rules.
-            if (IsRoot) {
-                env.Output.AppendMany(rules, env.Compress ? "" : "\n");
-            } else {
-                if (nonCommentRules > 0) {
-                    paths.AppendCSS(env);
+            if (!IsReference) {
+                if (IsRoot) {
+                    env.Output.AppendMany(rules, env.Compress ? "" : "\n");
+                } else {
+                    if (nonCommentRules > 0) {
+                        paths.AppendCSS(env);
 
-                    env.Output.Append(env.Compress ? "{" : " {\n  ");
+                        env.Output.Append(env.Compress ? "{" : " {\n  ");
 
-                    env.Output.AppendMany(rules.ConvertAll(stringBuilder => stringBuilder.ToString()).Distinct(),
-                        env.Compress ? "" : "\n  ");
+                        env.Output.AppendMany(rules.ConvertAll(stringBuilder => stringBuilder.ToString()).Distinct(),
+                            env.Compress ? "" : "\n  ");
 
-                    if (env.Compress) {
-                        env.Output.TrimRight(';');
+                        if (env.Compress) {
+                            env.Output.TrimRight(';');
+                        }
+
+                        env.Output.Append(env.Compress ? "}" : "\n}\n");
                     }
-
-                    env.Output.Append(env.Compress ? "}" : "\n}\n");
                 }
             }
 
-            env.Output.Append(rulesetOutput);
+            if (!IsReference || hasNonReferenceChildRulesets)
+            {
+                env.Output.Append(rulesetOutput);
+            }
         }
 
         private bool AddExtenders(Env env, Context context, Context paths) {

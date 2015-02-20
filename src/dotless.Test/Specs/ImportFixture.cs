@@ -202,6 +202,16 @@ body { margin-right: @a; }";
 }
 ";
 
+            imports["reference/ruleset-with-child-ruleset-and-rules.less"] = @"
+.parent {
+    .child {
+        background-color: black;
+    }
+
+    background-color: blue;
+}
+";
+
             return new Parser { 
                 Importer = new Importer(new DictionaryReader(imports)) { 
                     IsUrlRewritingDisabled = isUrlRewritingDisabled,
@@ -984,6 +994,24 @@ body { background-color: foo; invalid ""; }
             var parser = GetParser();
 
             AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ExtendingNestedReferenceRulesIgnoresRulesFromParentRuleset() {
+            var input = @"
+@import (reference) ""reference/ruleset-with-child-ruleset-and-rules.less"";
+
+.test:extend(.child all) { }
+";
+
+            var expected = @"
+.parent .child,
+.parent .test {
+  background-color: black;
+}
+";
+
+            AssertLess(input, expected, GetParser());
         }
 
         [Test]
