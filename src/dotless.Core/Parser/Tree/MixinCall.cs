@@ -36,7 +36,6 @@ namespace dotless.Core.Parser.Tree
             env.Rule = this;
 
             var rules = new NodeList();
-            rules.IsReference = IsReference;
 
             if (PreComments)
                 rules.AddRange(PreComments);
@@ -89,6 +88,11 @@ namespace dotless.Core.Parser.Tree
                                             Selector.ToCSS(env).Trim(),
                                             Arguments.Select(a => a.Value.ToCSS(env)).JoinStrings(env.Compress ? "," : ", "));
                 throw new ParsingException(message, Location);
+            }
+
+            rules.IsReference = IsReference;
+            foreach (var rule in rules) {
+                rule.IsReference = IsReference;
             }
 
             if (Important)

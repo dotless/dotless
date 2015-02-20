@@ -222,6 +222,32 @@ body { margin-right: @a; }";
 }
 ";
 
+            imports["mixin-loop.less"] = @"
+@grid-columns: 12;
+.float-grid-columns(@class) {
+  .col(@index) { // initial    
+    .col((@index + 1), """");
+  }
+  .col(@index, @list) when (@index =< @grid-columns) { // general
+    .col((@index + 1), """");
+  }
+  .col(@index, @list) when (@index > @grid-columns) { // terminal
+
+  }
+  .col(1); // kickstart it
+}
+
+// Create grid for specific class
+.make-grid(@class) {
+  .float-grid-columns(@class);
+}
+
+
+@media (screen) {
+  .make-grid(sm);
+}
+";
+
             return new Parser { 
                 Importer = new Importer(new DictionaryReader(imports)) { 
                     IsUrlRewritingDisabled = isUrlRewritingDisabled,
@@ -907,6 +933,20 @@ body { background-color: foo; invalid ""; }
         {
             var input = @"
 @import (reference) ""media-scoped-rules.less"";
+";
+
+            var expected = @"";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+
+        [Test]
+        public void ImportReferenceDoesNotOutputRulesetsThatCallLoopingMixins()
+        {
+            var input = @"
+@import (reference) ""mixin-loop.less"";
 ";
 
             var expected = @"";
