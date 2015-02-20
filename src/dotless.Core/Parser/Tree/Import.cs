@@ -164,6 +164,7 @@ namespace dotless.Core.Parser.Tree
                     if (ruleset != null && ruleset.Rules != null)
                     {
                         ruleset.Rules.Accept(referenceImporter);
+                        ruleset.Rules.IsReference = true;
                     }
 
                     var media = node as Media;
@@ -177,7 +178,9 @@ namespace dotless.Core.Parser.Tree
                     {
                         nodeList.Accept(referenceImporter);
                     }
-                    return node.Do(i => i.IsReference = true);
+                    node.IsReference = true;
+
+                    return node;
                 });
                 Accept(referenceImporter);
             }

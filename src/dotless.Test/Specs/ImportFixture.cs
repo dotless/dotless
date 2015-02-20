@@ -212,6 +212,16 @@ body { margin-right: @a; }";
 }
 ";
 
+            imports["two-level-import.less"] = @"
+@import ""simple-rule.less"";
+.rule3 { background-color: red; }";
+
+            imports["directives.less"] = @"
+@font-face {
+  font-family: 'Glyphicons Halflings';
+}
+";
+
             return new Parser { 
                 Importer = new Importer(new DictionaryReader(imports)) { 
                     IsUrlRewritingDisabled = isUrlRewritingDisabled,
@@ -903,6 +913,16 @@ body { background-color: foo; invalid ""; }
             var parser = GetParser();
 
             AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ImportReferenceDoesNotOutputDirectives()
+        {
+            var input = @"
+@import (reference) ""directives.less"";
+";
+
+            AssertLess(input, @"", GetParser());
         }
 
         [Test]
