@@ -153,7 +153,7 @@ namespace dotless.Core.Parser.Tree
                 return importCss;
             }
 
-            if (IsOptionSet(ImportOptions, ImportOptions.Reference))
+            if (IsReference || IsOptionSet(ImportOptions, ImportOptions.Reference))
             {
                 // Walk the parse tree and mark all nodes as references.
                 IsReference = true;

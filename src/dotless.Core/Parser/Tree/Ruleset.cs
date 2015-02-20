@@ -281,6 +281,10 @@ namespace dotless.Core.Parser.Tree
                 if (ruleset != null)
                 {
                     ruleset.AppendCSS(env, paths);
+                    if (!ruleset.IsReference)
+                    {
+                        IsReference = false;
+                    }
                 }
                 else
                 {
@@ -315,8 +319,13 @@ namespace dotless.Core.Parser.Tree
             var rulesetOutput = env.Output.Pop();
 
             var hasExtenders = AddExtenders(env, context, paths);
+            if (hasExtenders)
+            {
+                IsReference = false;
+            }
 
-            if (IsReference && !hasExtenders) {
+            if (IsReference)
+            {
                 return;
             }
 
