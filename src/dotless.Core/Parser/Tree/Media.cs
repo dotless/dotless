@@ -199,7 +199,7 @@
 
         public override void AppendCSS(Env env, Context ctx)
         {
-            if (env.Compress && !Ruleset.Rules.Any())
+            if (IsReference || env.Compress && !Ruleset.Rules.Any())
                 return;
 
             // first deal with the contents, in case its empty

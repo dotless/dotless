@@ -169,6 +169,39 @@ body { margin-right: @a; }";
             imports["simple-rule.less"] = ".rule { background-color: black; }";
             imports["simple-rule.css"] = ".rule { background-color: black; }";
 
+            imports["media-scoped-rules.less"] = @"@media (screen) { 
+    .rule { background-color: black; }
+    .another-rule { color: white; }
+}";
+
+            imports["nested-rules.less"] = @"
+.parent-selector {
+    .rule { background-color: black; }
+    .another-rule { color: white; }
+}";
+
+            imports["imports-simple-rule.less"] = @"
+@import ""simple-rule.less"";
+.rule2 { background-color: blue; }";
+
+            imports["two-level-import.less"] = @"
+@import ""simple-rule.less"";
+.rule3 { background-color: red; }";
+
+            imports["reference/main.less"] = @"
+@import ""mixins/test.less"";
+
+.mixin(red);
+";
+
+            imports["reference/mixins/test.less"] = @"
+.mixin(@arg) {
+    .test-ruleset {
+        background-color: @arg;
+    }
+}
+";
+
             return new Parser { 
                 Importer = new Importer(new DictionaryReader(imports)) { 
                     IsUrlRewritingDisabled = isUrlRewritingDisabled,
@@ -850,6 +883,32 @@ body { background-color: foo; invalid ""; }
         }
 
         [Test]
+        public void ImportReferenceDoesNotOutputMediaBlocks()
+        {
+            var input = @"
+@import (reference) ""media-scoped-rules.less"";
+";
+
+            var expected = @"";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ImportReferenceDoesNotOutputMixinCalls()
+        {
+            var input = @"
+@import (reference) ""reference/main.less"";
+";
+
+            var expected = @"";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
         public void ImportReferenceWithMixinCallProducesOutput()
         {
             var input = @"
@@ -897,8 +956,71 @@ body { background-color: foo; invalid ""; }
 ";
 
             var expected = @"
+.rule,
 .test {
   background-color: black;
+}
+";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ExtendingNestedRulesFromReferenceImportsWorks()
+        {
+            var input = @"
+@import (reference) ""nested-rules.less"";
+
+.test:extend(.rule all) { }
+";
+
+            var expected = @"
+.parent-selector .rule,
+.parent-selector .test {
+  background-color: black;
+}
+";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ImportsFromReferenceImportsAreTreatedAsReferences()
+        {
+            var input = @"
+@import (reference) ""imports-simple-rule.less"";
+
+.test {
+  .rule2;
+}
+";
+
+            var expected = @"
+.test {
+  background-color: blue;
+}
+";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void RecursiveImportsFromReferenceImportsAreTreatedAsReferences()
+        {
+            var input = @"
+@import (reference) ""two-level-import.less"";
+
+.test {
+  background-color: blue;
+}
+";
+
+            var expected = @"
+.test {
+  background-color: blue;
 }
 ";
             var parser = GetParser();

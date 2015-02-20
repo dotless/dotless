@@ -6,6 +6,10 @@ namespace dotless.Core.Parser.Infrastructure.Nodes
 
     public abstract class Node
     {
+        // Should this node be treated as a reference node
+        // i.e. has this been added to the parse tree via 
+        // @import (reference)
+        public bool IsReference { get; set; }
         public NodeLocation Location { get; set; }
 
         public NodeList PreComments { get; set; }
@@ -85,6 +89,8 @@ namespace dotless.Core.Parser.Infrastructure.Nodes
                         PostComments = node.PostComments;
                     }
                 }
+
+                IsReference = node.IsReference;
             }
             
             return (T)this;

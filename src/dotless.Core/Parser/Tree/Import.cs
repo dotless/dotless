@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using dotless.Core.Plugins;
 
 namespace dotless.Core.Parser.Tree
 {
@@ -152,17 +153,32 @@ namespace dotless.Core.Parser.Tree
                 return importCss;
             }
 
+            if (IsOptionSet(ImportOptions, ImportOptions.Reference))
+            {
+                // Walk the parse tree and mark all nodes as references.
+                IsReference = true;
+
+                IVisitor referenceImporter = null;
+                referenceImporter = DelegateVisitor.For<Node>(node => {
+                    var ruleset = node as Ruleset;
+                    if (ruleset != null && ruleset.Rules != null)
+                    {
+                        ruleset.Rules.Accept(referenceImporter);
+                    }
+
+                    var nodeList = node as NodeList;
+                    if (nodeList != null)
+                    {
+                        nodeList.Accept(referenceImporter);
+                    }
+                    return node.Do(i => i.IsReference = true);
+                });
+                Accept(referenceImporter);
+            }
+
             NodeHelper.ExpandNodes<Import>(env, InnerRoot.Rules);
 
             var rulesList = new NodeList(InnerRoot.Rules).ReducedFrom<NodeList>(this);
-            if (IsOptionSet(ImportOptions, ImportOptions.Reference))
-            {
-                foreach (var ruleSet in rulesList.OfType<Ruleset>())
-                {
-                    ruleSet.IsReference = true;
-                }
-            }
-
             if (features)
             {
                 return new Media(features, rulesList);

@@ -136,7 +136,10 @@ namespace dotless.Core.Importers
                 return false;
             }
 
-            if (IsOptionSet(import.ImportOptions, ImportOptions.Reference))
+            // The import option Reference is set at parse time,
+            // but the IsReference bit is set at evaluation time (inherited from parent)
+            // so we check both.
+            if (import.IsReference || IsOptionSet(import.ImportOptions, ImportOptions.Reference))
             {
                 return CheckIgnoreImport(_referenceImports, path);
             }

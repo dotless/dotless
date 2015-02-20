@@ -14,7 +14,6 @@ namespace dotless.Core.Parser.Tree
         public NodeList Rules { get; set; }
         public bool Evaluated { get; protected set; }
         public bool IsRoot { get; set; }
-        public bool IsReference { get; set; }
         public bool MultiMedia { get; set; }
 
         /// <summary>
@@ -258,7 +257,7 @@ namespace dotless.Core.Parser.Tree
             int nonCommentRules = 0;
             var paths = new Context(); // Current selectors
 
-            if (!IsRoot && !IsReference)
+            if (!IsRoot)
             {
                 if (!env.Compress && env.Debug && Location != null)
                 {
@@ -315,67 +314,60 @@ namespace dotless.Core.Parser.Tree
 
             var rulesetOutput = env.Output.Pop();
 
+            var hasExtenders = AddExtenders(env, context, paths);
+
+            if (IsReference && !hasExtenders) {
+                return;
+            }
+
             // If this is the root node, we don't render
             // a selector, or {}.
             // Otherwise, only output if this ruleset has rules.
-            if (IsRoot)
-            {
+            if (IsRoot) {
                 env.Output.AppendMany(rules, env.Compress ? "" : "\n");
-            }
-            else
-            {
-                if (nonCommentRules > 0)
-                {
+            } else {
+                if (nonCommentRules > 0) {
+                    paths.AppendCSS(env);
 
-                    foreach (var s in Selectors.Where(s => s.Elements.First().Value != null))
-                    {
-                        var local = context.Clone();
-                        local.AppendSelectors(context, new[] { s });
-                        var finalString = local.ToCss(env);
-                        var extensions = env.FindExactExtension(finalString);
-                        if (extensions != null)
-                        {
-                            paths.AppendSelectors(context.Clone(), extensions.ExtendedBy);
-                        }
+                    env.Output.Append(env.Compress ? "{" : " {\n  ");
 
-                        var partials = env.FindPartialExtensions(finalString);
-                        if (partials != null)
-                        {
-                            paths.AppendSelectors(context.Clone(), partials.SelectMany(p => p.Replacements(finalString)));
-                        }
+                    env.Output.AppendMany(rules.ConvertAll(stringBuilder => stringBuilder.ToString()).Distinct(),
+                        env.Compress ? "" : "\n  ");
 
-                        // We don't add paths for the selectors of reference nodes
-                        // but if there's an extender, we add that so that mixing 
-                        // reference imported rules and extenders works the way it should
-                        if (IsReference && paths.Any())
-                        {
-                            IsReference = false;
-                        }
+                    if (env.Compress) {
+                        env.Output.TrimRight(';');
                     }
 
-
-                    if (!IsReference)
-                    {
-                        paths.AppendCSS(env);
-
-                        env.Output.Append(env.Compress ? "{" : " {\n  ");
-
-                        env.Output.AppendMany(rules.ConvertAll(stringBuilder => stringBuilder.ToString()).Distinct(), env.Compress ? "" : "\n  ");
-
-                        if (env.Compress)
-                        {
-                            env.Output.TrimRight(';');
-                        }
-
-                        env.Output.Append(env.Compress ? "}" : "\n}\n");
-                    }
+                    env.Output.Append(env.Compress ? "}" : "\n}\n");
                 }
             }
 
-            if (!IsReference)
-            {
-                env.Output.Append(rulesetOutput);
+            env.Output.Append(rulesetOutput);
+        }
+
+        private bool AddExtenders(Env env, Context context, Context paths) {
+            bool hasExtenders = false;
+            foreach (var s in Selectors.Where(s => s.Elements.First().Value != null)) {
+                var local = context.Clone();
+                local.AppendSelectors(context, new[] {s});
+                var finalString = local.ToCss(env);
+                var extensions = env.FindExactExtension(finalString);
+                if (extensions != null) {
+                    paths.AppendSelectors(context.Clone(), extensions.ExtendedBy);
+                }
+
+                var partials = env.FindPartialExtensions(finalString);
+                if (partials != null) {
+                    paths.AppendSelectors(context.Clone(), partials.SelectMany(p => p.Replacements(finalString)));
+                }
+
+                bool newExactExtenders = extensions != null;
+                bool newPartialExtenders = partials != null && partials.Any();
+
+
+                hasExtenders = hasExtenders || newExactExtenders || newPartialExtenders;
             }
+            return hasExtenders;
         }
 
         public override string ToString()
