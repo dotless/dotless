@@ -269,6 +269,11 @@ body { margin-right: @a; }";
   &:extend(.test);
 }
 ";
+
+            imports["comments.less"] = @"
+/* This is a comment */
+";
+
             return new Parser { 
                 Importer = new Importer(new DictionaryReader(imports)) { 
                     IsUrlRewritingDisabled = isUrlRewritingDisabled,
@@ -1034,10 +1039,17 @@ body { background-color: foo; invalid ""; }
 @import (reference) ""reference/main.less"";
 ";
 
-            var expected = @"";
-            var parser = GetParser();
+            AssertLess(input, @"", GetParser());
+        }
 
-            AssertLess(input, expected, parser);
+        [Test]
+        public void ImportReferenceDoesNotOutputComments()
+        {
+            var input = @"
+@import (reference) ""comments.less"";
+";
+
+            AssertLess(input, @"", GetParser());
         }
 
         [Test]
