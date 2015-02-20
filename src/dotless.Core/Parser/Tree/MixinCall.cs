@@ -90,6 +90,11 @@ namespace dotless.Core.Parser.Tree
                 throw new ParsingException(message, Location);
             }
 
+            rules.IsReference = IsReference;
+            foreach (var rule in rules) {
+                rule.IsReference = IsReference;
+            }
+
             if (Important)
             {
                 var importantRules = new NodeList();

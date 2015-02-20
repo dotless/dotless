@@ -207,7 +207,7 @@
 
             Ruleset.IsRoot = ctx.Count == 0;
 
-			//Track the last media block being appended for extender filters
+            //Track the last media block being appended for extender filters
             env.ExtendMediaScope.Push(this);
 
             // Set the current feeatures to filter extenders
@@ -219,6 +219,13 @@
                 env.Output.Trim().Indent(2);
 
             var contents = env.Output.Pop();
+
+            // If we're the result of a reference import and none of the rulesets
+            // have been unmarked as references, skip the whole block.
+            if (IsReference && Ruleset.Rules.All(r => r.IsReference))
+            {
+                return;
+            }
 
             // if we have no contents, skip
             if (env.Compress && contents.Length == 0)
@@ -245,7 +252,7 @@
                 env.Output.Append('}');
             else
                 env.Output.Append("\n}\n");
-}
+        }
 
         public void AddExtension(Selector selector, Extend extends, Env env)
         {

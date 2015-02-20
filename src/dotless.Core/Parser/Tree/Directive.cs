@@ -49,6 +49,8 @@
                 evaldDirective = new Directive(Name, Value.Evaluate(env));
             }
 
+            evaldDirective.IsReference = IsReference;
+
             env.Frames.Pop();
 
             return evaldDirective;
@@ -56,6 +58,11 @@
 
         public override void AppendCSS(Env env, Context context)
         {
+            if (IsReference)
+            {
+                return;
+            }
+
             if (env.Compress && Rules != null && !Rules.Any())
                 return;
 

@@ -29,6 +29,7 @@
 //
 
 
+using System;
 using System.Net.NetworkInformation;
 
 #pragma warning disable 665
@@ -1130,30 +1131,94 @@ namespace dotless.Core.Parser
         //
         public Import Import(Parser parser)
         {
-            Node path = null;
 
             var index = parser.Tokenizer.Location.Index;
 
             var importMatch = parser.Tokenizer.Match(@"@import(-(once))?\s+");
-
-            if (importMatch && (path = Quoted(parser) || Url(parser)))
-            {
-                const bool isOnce = true;
-                
-                var features = MediaFeatures(parser);
-
-                Expect(parser, ';', "Expected ';' (possibly unrecognised media sequence)");
-
-                if (path is Quoted)
-                    return NodeProvider.Import(path as Quoted, parser.Importer, features, isOnce, parser.Tokenizer.GetNodeLocation(index));
-
-                if (path is Url)
-                    return NodeProvider.Import(path as Url, parser.Importer, features, isOnce, parser.Tokenizer.GetNodeLocation(index));
-
-                throw new ParsingException("unrecognised @import format", parser.Tokenizer.GetNodeLocation(index));
+            if (!importMatch) {
+                return null;
             }
 
-            return null;
+            ImportOptions option = ParseOptions(parser);
+
+            Node path = Quoted(parser) || Url(parser);
+            if (!path) {
+                return null;
+            }
+
+            var features = MediaFeatures(parser);
+
+            Expect(parser, ';', "Expected ';' (possibly unrecognised media sequence)");
+
+            if (path is Quoted)
+                return NodeProvider.Import(path as Quoted, parser.Importer, features, option, parser.Tokenizer.GetNodeLocation(index));
+
+            if (path is Url)
+                return NodeProvider.Import(path as Url, parser.Importer, features, option, parser.Tokenizer.GetNodeLocation(index));
+
+            throw new ParsingException("unrecognised @import format", parser.Tokenizer.GetNodeLocation(index));
+        }
+
+        private static ImportOptions ParseOptions(Parser parser)
+        {
+            var index = parser.Tokenizer.Location.Index;
+            var optionsMatch = parser.Tokenizer.Match(@"\((?<keywords>.*)\)");
+            if (!optionsMatch) {
+                return ImportOptions.Once;
+            }
+
+            var allKeywords = optionsMatch.Match.Groups["keywords"].Value;
+            var keywords = allKeywords.Split(',').Select(kw => kw.Trim());
+
+            ImportOptions options = 0;
+            foreach (var keyword in keywords)
+            {
+                try
+                {
+                    ImportOptions value = (ImportOptions) Enum.Parse(typeof (ImportOptions), keyword, true);
+                    options |= value;
+                }
+                catch (ArgumentException)
+                {
+                    throw new ParsingException(string.Format("unrecognized @import option '{0}'", keyword), parser.Tokenizer.GetNodeLocation(index));
+                }
+            }
+
+            CheckForConflictingOptions(parser, options, allKeywords, index);
+            
+            return options;
+        }
+
+        private static readonly ImportOptions[][] illegalOptionCombinations =
+            {
+                new[] {ImportOptions.Css, ImportOptions.Less},
+                new[] {ImportOptions.Inline, ImportOptions.Css},
+                new[] {ImportOptions.Inline, ImportOptions.Less},
+                new[] {ImportOptions.Inline, ImportOptions.Reference},
+                new[] {ImportOptions.Once, ImportOptions.Multiple},
+                new[] {ImportOptions.Reference, ImportOptions.Css},
+            };
+        private static void CheckForConflictingOptions(Parser parser, ImportOptions options, string allKeywords, int index)
+        {
+            foreach (var illegalCombination in illegalOptionCombinations)
+            {
+                if (IsOptionSet(options, illegalCombination[0]) && IsOptionSet(options, illegalCombination[1]))
+                {
+                    throw new ParsingException(
+                        string.Format(
+                            "invalid combination of @import options ({0}) -- specify either {1} or {2}, but not both",
+                            allKeywords,
+                            illegalCombination[0].ToString().ToLowerInvariant(),
+                            illegalCombination[1].ToString().ToLowerInvariant()
+                            ),
+                        parser.Tokenizer.GetNodeLocation(index));
+                }
+            }
+        }
+
+        private static bool IsOptionSet(ImportOptions options, ImportOptions test)
+        {
+            return (options & test) == test;
         }
 
         //
