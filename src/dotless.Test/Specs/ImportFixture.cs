@@ -906,6 +906,27 @@ body { background-color: foo; invalid ""; }
         }
 
         [Test]
+        public void ImportReferenceOutputsExtendedRulesFromMediaBlocks()
+        {
+            var input = @"
+@import (reference) ""media-scoped-rules.less"";
+
+.test:extend(.rule all) { }
+";
+
+            var expected = @"
+@media (screen) {
+  .rule,
+  .test {
+    background-color: black;
+  }
+}
+";
+
+            AssertLess(input, expected, GetParser());
+        }
+
+        [Test]
         public void ImportReferenceDoesNotOutputMixinCalls()
         {
             var input = @"

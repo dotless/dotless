@@ -279,7 +279,10 @@
         {
             if (ExtendMediaScope.Any())
             {
-                return ExtendMediaScope.Select(media => media.FindExactExtension(selection)).FirstOrDefault(result => result != null);
+                var mediaScopedExtensions = ExtendMediaScope.Select(media => media.FindExactExtension(selection)).FirstOrDefault(result => result != null);
+                if (mediaScopedExtensions != null) {
+                    return mediaScopedExtensions;
+                }
             }
 
             return _extensions.OfType<ExactExtender>().FirstOrDefault(e => e.BaseSelector.ToString().Trim() == selection);
@@ -289,7 +292,10 @@
         {
             if (ExtendMediaScope.Any())
             {
-                return ExtendMediaScope.Select(media => media.FindPartialExtensions(selection)).FirstOrDefault(result => result.Any());
+                var mediaScopedExtensions = ExtendMediaScope.Select(media => media.FindPartialExtensions(selection)).FirstOrDefault(result => result.Any());
+                if (mediaScopedExtensions != null) {
+                    return mediaScopedExtensions;
+                }
             }
 
             return _extensions.OfType<PartialExtender>().Where(e => selection.Contains(e.BaseSelector.ToString().Trim())).ToArray();

@@ -166,6 +166,12 @@ namespace dotless.Core.Parser.Tree
                         ruleset.Rules.Accept(referenceImporter);
                     }
 
+                    var media = node as Media;
+                    if (media != null)
+                    {
+                        media.Ruleset.Accept(referenceImporter);
+                    }
+
                     var nodeList = node as NodeList;
                     if (nodeList != null)
                     {

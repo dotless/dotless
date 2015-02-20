@@ -245,5 +245,55 @@ pre:hover,
             AssertLess(input, expected);
         }
 
+        [Test]
+        public void ExactExtendWithRuleDefinedInMediaBlock()
+        {
+            var input = @"
+@media print {
+  .selector {
+    color: black;
+  }
+}
+
+.test:extend(.selector) { }
+";
+
+            var expected = @"
+@media print {
+  .selector,
+  .test {
+    color: black;
+  }
+} ";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void PartialExtendWithRuleDefinedInMediaBlock()
+        {
+            var input = @"
+@media print {
+  .parent {
+    .selector {
+      color: black;
+    }
+  }
+}
+
+.test:extend(.selector all) { }
+";
+
+            var expected = @"
+@media print {
+  .parent .selector,
+  .parent .test {
+    color: black;
+  }
+} ";
+
+            AssertLess(input, expected);
+        }
+
     }
 }
