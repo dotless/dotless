@@ -161,13 +161,19 @@ namespace dotless.Core.Parser.Tree
                 IVisitor referenceImporter = null;
                 referenceImporter = DelegateVisitor.For<Node>(node => {
                     var ruleset = node as Ruleset;
-                    if (ruleset != null && ruleset.Rules != null)
+                    if (ruleset != null)
                     {
-                        ruleset.Selectors.Accept(referenceImporter);
-                        ruleset.Selectors.IsReference = true;
+                        if (ruleset.Selectors != null)
+                        {
+                            ruleset.Selectors.Accept(referenceImporter);
+                            ruleset.Selectors.IsReference = true;
+                        }
 
-                        ruleset.Rules.Accept(referenceImporter);
-                        ruleset.Rules.IsReference = true;
+                        if (ruleset.Rules != null)
+                        {
+                            ruleset.Rules.Accept(referenceImporter);
+                            ruleset.Rules.IsReference = true;
+                        }
                     }
 
                     var media = node as Media;
