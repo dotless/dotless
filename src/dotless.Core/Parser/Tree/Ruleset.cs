@@ -356,7 +356,7 @@ namespace dotless.Core.Parser.Tree
         }
 
         private bool AddExtenders(Env env, Context context, Context paths) {
-            bool hasExtenders = false;
+            bool hasNonReferenceExtenders = false;
             foreach (var s in Selectors.Where(s => s.Elements.First().Value != null)) {
                 var local = context.Clone();
                 local.AppendSelectors(context, new[] {s});
@@ -371,13 +371,12 @@ namespace dotless.Core.Parser.Tree
                     paths.AppendSelectors(context.Clone(), partials.SelectMany(p => p.Replacements(finalString)));
                 }
 
-                bool newExactExtenders = extensions != null;
-                bool newPartialExtenders = partials != null && partials.Any();
+                bool newExactExtenders = extensions != null && extensions.ExtendedBy.Any(e => !e.IsReference);
+                bool newPartialExtenders = partials != null && partials.Any(p => p.ExtendedBy.Any(e => !e.IsReference));
 
-
-                hasExtenders = hasExtenders || newExactExtenders || newPartialExtenders;
+                hasNonReferenceExtenders = hasNonReferenceExtenders || newExactExtenders || newPartialExtenders;
             }
-            return hasExtenders;
+            return hasNonReferenceExtenders;
         }
 
         public override string ToString()

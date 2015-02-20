@@ -36,11 +36,13 @@ namespace dotless.Core.Parser.Infrastructure
     {
         public Selector BaseSelector { get; private set; }
         public List<Selector> ExtendedBy { get; private set; }
+        public bool IsReference { get; set; }
 
         public Extender(Selector baseSelector)
         {
             BaseSelector = baseSelector;
             ExtendedBy = new List<Selector>();
+            IsReference = baseSelector.IsReference;
         }
 
         public static string FullPathSelector()
@@ -60,7 +62,10 @@ namespace dotless.Core.Parser.Infrastructure
                     path.Add(partialSelector);
                 }
             }
-            ExtendedBy.Add(new Selector(new[] { new Element(null, path.Select(p => p.ToCSS(env)).Reverse().JoinStrings("").Trim()) }));
+            var newSelector = new Selector(new[] { new Element(null, path.Select(p => p.ToCSS(env)).Reverse().JoinStrings("").Trim()) });
+            newSelector.IsReference = IsReference;
+
+            ExtendedBy.Add(newSelector);
         }
     }
 }

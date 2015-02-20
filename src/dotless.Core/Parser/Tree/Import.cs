@@ -163,6 +163,9 @@ namespace dotless.Core.Parser.Tree
                     var ruleset = node as Ruleset;
                     if (ruleset != null && ruleset.Rules != null)
                     {
+                        ruleset.Selectors.Accept(referenceImporter);
+                        ruleset.Selectors.IsReference = true;
+
                         ruleset.Rules.Accept(referenceImporter);
                         ruleset.Rules.IsReference = true;
                     }

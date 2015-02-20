@@ -248,6 +248,27 @@ body { margin-right: @a; }";
 }
 ";
 
+            imports["partial-reference-extends-another-reference.less"] = @"
+.parent {
+  .test {
+    color: black;
+  }
+}
+
+.ext {
+  &:extend(.test all);
+}
+";
+
+            imports["exact-reference-extends-another-reference.less"] = @"
+.test {
+  color: black;
+}
+
+.ext {
+  &:extend(.test);
+}
+";
             return new Parser { 
                 Importer = new Importer(new DictionaryReader(imports)) { 
                     IsUrlRewritingDisabled = isUrlRewritingDisabled,
@@ -953,6 +974,26 @@ body { background-color: foo; invalid ""; }
             var parser = GetParser();
 
             AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void PartialReferenceExtenderDoesNotCauseReferenceRulesetToBeOutput()
+        {
+            var input = @"
+@import (reference) ""partial-reference-extends-another-reference.less"";
+";
+
+            AssertLess(input, @"", GetParser());
+        }
+
+        [Test]
+        public void ExactReferenceExtenderDoesNotCauseReferenceRulesetToBeOutput()
+        {
+            var input = @"
+@import (reference) ""exact-reference-extends-another-reference.less"";
+";
+
+            AssertLess(input, @"", GetParser());
         }
 
         [Test]

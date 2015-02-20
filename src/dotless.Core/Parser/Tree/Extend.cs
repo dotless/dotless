@@ -26,7 +26,9 @@ namespace dotless.Core.Parser.Tree
             {
                 var childContext = env.CreateChildEnv(new Stack<Ruleset>(env.Frames.Reverse()));
                 e.AppendCSS(childContext);
-                newExact.Add(new Selector(new []{new Element(e.Elements.First().Combinator,childContext.Output.ToString().Trim())}));
+                var selector = new Selector(new []{new Element(e.Elements.First().Combinator,childContext.Output.ToString().Trim())});
+                selector.IsReference = IsReference;
+                newExact.Add(selector);
             }
 
             var newPartial = new List<Selector>();
@@ -34,10 +36,12 @@ namespace dotless.Core.Parser.Tree
             {
                 var childContext = env.CreateChildEnv(new Stack<Ruleset>(env.Frames.Reverse()));
                 e.AppendCSS(childContext);
-                newPartial.Add(new Selector(new[] { new Element(e.Elements.First().Combinator, childContext.Output.ToString().Trim()) }));
+                var selector = new Selector(new[] { new Element(e.Elements.First().Combinator, childContext.Output.ToString().Trim()) });
+                selector.IsReference = IsReference;
+                newPartial.Add(selector);
             }
 
-            return new Extend(newExact,newPartial);
+            return new Extend(newExact,newPartial) { IsReference = IsReference };
         }
 
         public override void AppendCSS(Env env)
