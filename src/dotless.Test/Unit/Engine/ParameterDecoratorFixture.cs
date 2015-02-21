@@ -80,7 +80,7 @@ namespace dotless.Test.Unit.Engine
 @b: 1px;
 ";
 
-            Engine.Verify(p => p.TransformToCss(expectedResult, "myfile"));
+            Engine.Verify(p => p.TransformToCss(It.Is<string>(s => s == expectedResult), "myfile"));
         }
     }
 }
