@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-
 namespace dotless.Core.Parser.Tree
 {
     using Exceptions;
@@ -32,7 +29,7 @@ namespace dotless.Core.Parser.Tree
             var variable = env.FindVariable(name);
 
             if (variable) {
-                return variable.Value.Evaluate(env.CreateVariableEvaluationEnv(name, new Stack<Ruleset>(env.Frames.Reverse())));
+                return variable.Value.Evaluate(env.CreateVariableEvaluationEnv(name));
             }
 
             throw new ParsingException("variable " + name + " is undefined", Location);

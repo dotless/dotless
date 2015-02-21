@@ -102,7 +102,7 @@ namespace dotless.Core.Parser.Tree
               argumentNodes.Add(i < args.Count ? args[i].Value : Params[i].Value);
             }
 
-            var frame = new Ruleset(null, new NodeList());
+            var frame = new Ruleset(new NodeList<Selector>(), new NodeList());
 
             frame.Rules.Insert(0, new Rule("@arguments", new Expression(argumentNodes.Where(a => a != null)).Evaluate(env)));
 
@@ -114,12 +114,12 @@ namespace dotless.Core.Parser.Tree
             return frame;
         }
 
-        public Ruleset Evaluate(List<NamedArgument> args, Env env, List<Ruleset> closureContext)
+        public Ruleset Evaluate(List<NamedArgument> args, Env env)
         {
             var frame = EvaluateParams(env, args);
 
-            var frames = new[] { this, frame }.Concat(env.Frames).Concat(closureContext).Reverse();
-            var context = env.CreateChildEnv(new Stack<Ruleset>(frames));
+            var context = env.CreateChildEnv();
+            context.Frames.Push(frame);
 
             var newRules = new NodeList();
 
@@ -152,11 +152,7 @@ namespace dotless.Core.Parser.Tree
                 {
                     var ruleset = (rule as Ruleset);
 
-                    context.Frames.Push(ruleset);
-
                     newRules.Add(ruleset.Evaluate(context));
-
-                    context.Frames.Pop();
                 }
                 else if (rule is MixinCall)
                 {

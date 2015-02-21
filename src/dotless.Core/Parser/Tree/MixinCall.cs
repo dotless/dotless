@@ -66,7 +66,8 @@ namespace dotless.Core.Parser.Tree
 
                 try
                 {
-                    rules.AddRange(ruleset.Evaluate(Arguments, env, closure.Context).Rules);
+                    var closureEnvironment = env.CreateChildEnvWithClosure(closure);
+                    rules.AddRange(ruleset.Evaluate(Arguments, closureEnvironment).Rules);
                 }
                 catch (ParsingException e)
                 {
