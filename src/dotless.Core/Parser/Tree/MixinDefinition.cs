@@ -102,7 +102,7 @@ namespace dotless.Core.Parser.Tree
               argumentNodes.Add(i < args.Count ? args[i].Value : Params[i].Value);
             }
 
-            var frame = new Ruleset(null, new NodeList());
+            var frame = new Ruleset(new NodeList<Selector>(), new NodeList());
 
             frame.Rules.Insert(0, new Rule("@arguments", new Expression(argumentNodes.Where(a => a != null)).Evaluate(env)));
 
@@ -118,10 +118,8 @@ namespace dotless.Core.Parser.Tree
         {
             var frame = EvaluateParams(env, args);
 
-            env.Frames.Push(this);
-            env.Frames.Push(frame);
-
             var context = env.CreateChildEnv();
+            context.Frames.Push(frame);
 
             var newRules = new NodeList();
 
@@ -165,9 +163,6 @@ namespace dotless.Core.Parser.Tree
                     newRules.Add(rule.Evaluate(context));
                 }
             }
-
-            env.Frames.Pop();
-            env.Frames.Pop();
 
             return new Ruleset(null, newRules);
         }
