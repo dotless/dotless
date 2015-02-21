@@ -14,18 +14,22 @@
         protected override void RegisterServices(FluentRegistration pandora, DotlessConfiguration configuration)
         {
             base.RegisterServices(pandora, configuration);
+
+            RegisterParameterSource(pandora, configuration);
+
             RegisterWebServices(pandora, configuration);
+        }
+
+        protected virtual void RegisterParameterSource(FluentRegistration pandora, DotlessConfiguration configuration)
+        {
+            pandora.Service<IParameterSource>().Implementor<NullParameterSource>().Lifestyle.Transient();
         }
 
         private void RegisterWebServices(FluentRegistration pandora, DotlessConfiguration configuration)
         {
+
             pandora.Service<IHttp>().Implementor<Http>().Lifestyle.Transient();
             pandora.Service<HandlerImpl>().Implementor<HandlerImpl>().Lifestyle.Transient();
-
-            if (!configuration.DisableParameters)
-            {
-                pandora.Service<IParameterSource>().Implementor<QueryStringParameterSource>().Lifestyle.Transient();
-            }
 
             var responseService = configuration.CacheEnabled ?
                 pandora.Service<IResponse>().Implementor<CachedCssResponse>() :

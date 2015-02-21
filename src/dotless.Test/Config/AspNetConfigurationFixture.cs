@@ -4,6 +4,7 @@ using dotless.Core.Abstractions;
 using dotless.Core.Cache;
 using dotless.Core.Response;
 using dotless.Core.configuration;
+using dotless.Core.Parameters;
 
 namespace dotless.Test.Config
 {
@@ -137,6 +138,18 @@ namespace dotless.Test.Config
             var cache = serviceLocator.GetInstance<ICache>();
 
             Assert.That(cache, Is.TypeOf<HttpCache>());
+        }
+
+        [Test]
+        public void AspNetHttpContainerFactoryHasQueryStringParameterSource()
+        {
+            var config = new DotlessConfiguration { Web = true, CacheEnabled = true };
+
+            var serviceLocator = new AspNetHttpHandlerContainerFactory().GetContainer(config);
+
+            var cache = serviceLocator.GetInstance<IParameterSource>();
+
+            Assert.That(cache, Is.TypeOf<QueryStringParameterSource>());
         }
     }
 }

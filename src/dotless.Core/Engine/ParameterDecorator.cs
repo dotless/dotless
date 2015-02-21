@@ -1,4 +1,8 @@
-﻿namespace dotless.Core
+﻿using System;
+using dotless.Core.Exceptions;
+using dotless.Core.Parser.Infrastructure;
+
+namespace dotless.Core
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -21,9 +25,25 @@
             var sb = new StringBuilder();
             var parameters = parameterSource.GetParameters()
                 .Where(ValueIsNotNullOrEmpty);
+
+            var parser = new Parser.Parser();
             foreach (var parameter in parameters)
             {
-                sb.AppendFormat("@{0}: {1};\n", parameter.Key, parameter.Value);
+                var variableDeclaration = string.Format("@{0}: {1};", parameter.Key, parameter.Value);
+
+                try
+                {
+                    // Attempt to evaluate the generated variable to see if it's OK
+                    parser.Parse(variableDeclaration, "").ToCSS(new Env());
+                    sb.AppendLine(variableDeclaration);
+                }
+                catch (ParserException)
+                {
+                    // Result wasn't valid LESS, output a comment instead
+                    sb.AppendFormat("/* Omitting variable '{0}'. The expression '{1}' is not valid. */", parameter.Key,
+                        parameter.Value);
+                    sb.AppendLine();
+                }
             }
             sb.Append(source);
             return Underlying.TransformToCss(sb.ToString(), fileName);

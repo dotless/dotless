@@ -79,6 +79,7 @@
     <Compile Include="Engine\ParameterDecorator.cs" />
     <Compile Include="Parameters\ConsoleArgumentParameterSource.cs" />
     <Compile Include="Parameters\IParameterSource.cs" />
+    <Compile Include="Parameters\NullParameterSource.cs" />
     <Compile Include="Parser\Functions\ArgbFunction.cs" />
     <Compile Include="Parser\Functions\ColorFunction.cs" />
     <Compile Include="Parser\Functions\DataUriFunction.cs" />
