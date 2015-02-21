@@ -58,11 +58,37 @@
         {
             return new Env(frames, _functionTypes)
             {
+                Parent = this,
                 Debug = Debug,
                 Compress = Compress,
                 DisableColorCompression = DisableColorCompression,
                 DisableVariableRedefines = DisableVariableRedefines
             };
+        }
+
+        private Env Parent { get; set; }
+
+        /// <summary>
+        ///  Creates a new Env variable for the purposes of scope
+        /// </summary>
+        public virtual Env CreateVariableEvaluationEnv(string variableName, Stack<Ruleset> frames) {
+            var env = CreateChildEnv(frames);
+            env.EvaluatingVariable = variableName;
+            return env;
+        }
+
+        private string EvaluatingVariable { get; set; }
+
+        public bool IsEvaluatingVariable(string variableName) {
+            if (string.Equals(variableName, EvaluatingVariable, StringComparison.InvariantCulture)) {
+                return true;
+            }
+
+            if (Parent != null) {
+                return Parent.IsEvaluatingVariable(variableName);
+            }
+
+            return false;
         }
 
         /// <summary>
