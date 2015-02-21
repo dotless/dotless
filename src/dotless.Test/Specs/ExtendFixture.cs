@@ -245,5 +245,65 @@ pre:hover,
             AssertLess(input, expected);
         }
 
+        [Test]
+        public void ParentSelector() {
+            var input = @"
+.btn-primary {
+  color: white;
+}
+
+a:link {
+  color: blue;
+}
+
+a:link {
+    &.btn-primary:extend(.btn-primary){}
+}
+";
+
+            var expected = @"
+.btn-primary,
+a:link.btn-primary {
+  color: white;
+}
+a:link {
+  color: blue;
+}
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void ParentSelectorWithMultipleOuterSelectors() {
+            var input = @"
+.btn-primary {
+  color: white;
+}
+
+a:active,a:visited
+{
+  color: blue;
+}
+
+a:active, a:visited {
+    &.btn-primary:extend(.btn-primary){}
+}
+";
+
+            var expected = @"
+.btn-primary,
+a:active.btn-primary,
+a:visited.btn-primary {
+  color: white;
+}
+a:active,
+a:visited {
+  color: blue;
+}
+";
+
+            AssertLess(input, expected);
+        }
     }
 }

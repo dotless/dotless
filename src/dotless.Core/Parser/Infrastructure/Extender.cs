@@ -50,17 +50,27 @@ namespace dotless.Core.Parser.Infrastructure
 
         public void AddExtension(Selector selector, Env env)
         {
-            var path = new List<Selector>();
-            path.Add(selector);
-            foreach (var f in env.Frames.Skip(1))
-            {
-                var partialSelector = f.Selectors.FirstOrDefault();
-                if (partialSelector != null)
-                {
-                    path.Add(partialSelector);
-                }
+            var selectorPath = new List<IEnumerable<Selector>> {new [] {selector} };
+            selectorPath.AddRange(env.Frames.Skip(1).Select(f => f.Selectors.Where(partialSelector => partialSelector != null)));
+
+            ExtendedBy.Add(GenerateExtenderSelector(env, selectorPath));
+        }
+
+        private Selector GenerateExtenderSelector(Env env, List<IEnumerable<Selector>> selectorPath) {
+            var context = GenerateExtenderSelector(selectorPath);
+            return new Selector(new[] {new Element(null, context.ToCss(env)) });
+        }
+
+        private Context GenerateExtenderSelector(List<IEnumerable<Selector>> selectorStack) {
+            if (!selectorStack.Any()) {
+                return null;
             }
-            ExtendedBy.Add(new Selector(new[] { new Element(null, path.Select(p => p.ToCSS(env)).Reverse().JoinStrings("").Trim()) }));
+
+            var parentContext = GenerateExtenderSelector(selectorStack.Skip(1).ToList());
+
+            var childContext = new Context();
+            childContext.AppendSelectors(parentContext, selectorStack.First());
+            return childContext;
         }
     }
 }
