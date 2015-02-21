@@ -373,6 +373,7 @@ namespace dotless.Test.Specs
 
             var expected = @"
 .test {
+  width: 15px;
   width: 20px;
 }
 ";

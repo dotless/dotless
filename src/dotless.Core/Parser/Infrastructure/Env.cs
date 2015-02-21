@@ -71,6 +71,7 @@ namespace dotless.Core.Parser.Infrastructure
 
         public virtual Env CreateChildEnvWithClosure(Closure closure) {
             var env = CreateChildEnv();
+            env.Rule = Rule;
             env.ClosureEnvironment = CreateChildEnv();
             env.ClosureEnvironment.Frames = new Stack<Ruleset>(closure.Context);
             return env;
@@ -167,7 +168,7 @@ namespace dotless.Core.Parser.Infrastructure
 
             Rule result = null;
             if (Parent != null) {
-                result = Parent.FindVariable(name, null);
+                result = Parent.FindVariable(name, rule);
             }
 
             if (result != null) {
@@ -175,7 +176,7 @@ namespace dotless.Core.Parser.Infrastructure
             }
 
             if (ClosureEnvironment != null) {
-                return ClosureEnvironment.FindVariable(name, null);
+                return ClosureEnvironment.FindVariable(name, rule);
             }
 
             return null;
