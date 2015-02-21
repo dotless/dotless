@@ -29,8 +29,6 @@
 //
 
 
-using System.Net.NetworkInformation;
-
 #pragma warning disable 665
 // ReSharper disable RedundantNameQualifier
 
@@ -73,7 +71,6 @@ namespace dotless.Core.Parser
             var root = new NodeList();
 
             GatherComments(parser);
-
             while (node = MixinDefinition(parser) || ExtendRule(parser) || Rule(parser) || PullComments() || Ruleset(parser) ||
                           MixinCall(parser) || Directive(parser))
             {
@@ -879,8 +876,15 @@ namespace dotless.Core.Parser
 
             PushComments();
             GatherComments(parser); // to collect, combinator must have picked up something which would require memory anyway
-            Node e = ExtendRule(parser) || parser.Tokenizer.Match(@"[.#:]?(\\.|[a-zA-Z0-9_-])+") || parser.Tokenizer.Match('*') || parser.Tokenizer.Match('&') ||
-                Attribute(parser) || parser.Tokenizer.MatchAny(@"\([^)@]+\)") || parser.Tokenizer.Match(@"[\.#](?=@\{)") || VariableCurly(parser);
+            Node e = ExtendRule(parser) 
+                || NonPseudoClassSelector(parser)
+                || PseudoClassSelector(parser)
+                || parser.Tokenizer.Match('*') 
+                || parser.Tokenizer.Match('&') 
+                || Attribute(parser) 
+                || parser.Tokenizer.MatchAny(@"\([^)@]+\)") 
+                || parser.Tokenizer.Match(@"[\.#](?=@\{)") 
+                || VariableCurly(parser);
 
             if (!e)
             {
@@ -905,6 +909,27 @@ namespace dotless.Core.Parser
 
             PopComments();
             return null;
+        }
+
+        private static RegexMatchResult PseudoClassSelector(Parser parser) {
+            return parser.Tokenizer.Match(@":(\\.|[a-zA-Z0-9_-])+");
+        }
+
+        private Node NonPseudoClassSelector(Parser parser) {
+            var memo = Remember(parser);
+            var match = parser.Tokenizer.Match(@"[.#]?(\\.|[a-zA-Z0-9_-])+");
+            if (!match) {
+                return null;
+            }
+
+            if (parser.Tokenizer.Match('(')) {
+                // Argument list implies that we actually matched a mixin call
+                // Rewind back to where we started and return a null match
+                Recall(parser, memo);
+                return null;
+            }
+
+            return match;
         }
 
         //
