@@ -587,5 +587,15 @@ Recursive variable definition for @var on line 2 in file 'test.less':
 
             AssertError(expectedError, input);
         }
+		
+        [Test]
+        public void VariableDeclarationWithMissingSemicolon() {
+            var input = @"
+@v1:Normal;
+@v2:
+";
+
+            AssertError("missing semicolon in expression", "@v2:", 2, 3, input);
+        }		
     }
 }
