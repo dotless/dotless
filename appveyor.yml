@@ -1,0 +1,7 @@
+version: '{build}'
+build_script:
+- ps: .\psake.ps1 .\default.ps1 release
+test:
+  assemblies: '**\dotless.Test.dll'
+# artifacts:
+# - path: release\*.nupkg

@@ -10,6 +10,7 @@ properties {
     $release_dir = "$base_dir\release\"
     $source_dir = "$base_dir\src"
     $version = Get-Git-Version
+    $assemblyVersion = $version.Split('-')[0]
 }
 
 task default -depends Release
@@ -57,7 +58,7 @@ For the client only dll on its own, see the DotlessClientOnly package.";
         -description $description `
         -company $company `
         -product $product `
-        -version $version `
+        -version $assemblyVersion `
         -copyright $copyright `
         -partial $True
     Generate-Assembly-Info `
@@ -66,7 +67,7 @@ For the client only dll on its own, see the DotlessClientOnly package.";
         -description $description `
         -company $company `
         -product $product `
-        -version $version `
+        -version $assemblyVersion `
         -copyright $copyright
     Generate-Assembly-Info `
         -file "$source_dir\dotless.Compiler\Properties\AssemblyInfo.cs" `
@@ -74,7 +75,7 @@ For the client only dll on its own, see the DotlessClientOnly package.";
         -description $description `
         -company $company `
         -product $product `
-        -version $version `
+        -version $assemblyVersion `
         -copyright $copyright
     Generate-Assembly-Info `
         -file "$source_dir\dotless.AspNet\Properties\AssemblyInfo.cs" `
@@ -82,7 +83,7 @@ For the client only dll on its own, see the DotlessClientOnly package.";
         -description $description `
         -company $company `
         -product $product `
-        -version $version `
+        -version $assemblyVersion `
         -copyright $copyright
 
     new-item $release_dir -itemType directory    
@@ -161,7 +162,7 @@ task Merge -depends Build {
     }
     
     $compilerfilename = "dotless.ClientOnly.dll"
-    write-host "Executing ILMerge - Creating Client Only Dll"
+    write-host "Executing ILMerge - Creating Client Only Dll" 
     & $lib_dir\ilmerge\ILMerge.exe $filename-partial.dll `
         Pandora.dll `
         Microsoft.Practices.ServiceLocation.dll `
