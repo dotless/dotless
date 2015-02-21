@@ -1,4 +1,6 @@
 version: '{build}'
+init:
+  - git config --global core.autocrlf true
 build_script:
 - ps: .\psake.ps1 .\default.ps1 release
 test:
