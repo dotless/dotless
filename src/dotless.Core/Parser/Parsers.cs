@@ -466,14 +466,14 @@ namespace dotless.Core.Parser
         //     0.5em 95%
         //
         public Number Dimension(Parser parser)
-        {
+        { 
             var c = parser.Tokenizer.CurrentChar;
-            if ((c > 57 || c < 45) || c == 47)
+            if (!(char.IsNumber(c) || c == '.' || c == '-' || c == '+'))
                 return null;
 
             var index = parser.Tokenizer.Location.Index;
 
-            var value = parser.Tokenizer.Match(@"(-?[0-9]*\.?[0-9]+)(px|%|em|pc|ex|in|deg|s|ms|pt|cm|mm|ch|rem|vw|vh|vmin|vm|grad|rad|fr|gr|Hz|kHz|dpi|dpcm|dppx)?");
+            var value = parser.Tokenizer.Match(@"([+-]?[0-9]*\.?[0-9]+)(px|%|em|pc|ex|in|deg|s|ms|pt|cm|mm|ch|rem|vw|vh|vmin|vm|grad|rad|fr|gr|Hz|kHz|dpi|dpcm|dppx)?");
 
             if (value)
                 return NodeProvider.Number(value[1], value[2], parser.Tokenizer.GetNodeLocation(index));
