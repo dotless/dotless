@@ -1670,5 +1670,39 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
             
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void ImplicitMixinWithSameNameAsExplicitUnaryMixinWorks() {
+            var input = @"
+.link-reset {
+  text-decoration: none !important;
+}
+
+.link-reset (@border) when (@border = noborder) {
+  border: 0 none;
+}
+
+.foo {
+    .link-reset;
+}
+
+.bar {
+    .link-reset(noborder);
+}
+";
+            var expected = @"
+.link-reset {
+  text-decoration: none !important;
+}
+.foo {
+  text-decoration: none !important;
+}
+.bar {
+  border: 0 none;
+}
+";
+
+            AssertLess(input, expected);
+        }
     }
 }

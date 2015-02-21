@@ -183,10 +183,10 @@
         ///  Finds the first Ruleset matching the selector argument that inherits from or is of type TRuleset (pass this as Ruleset if
         ///  you are trying to find ANY Ruleset that matches the selector)
         /// </summary>
-        public IEnumerable<Closure> FindRulesets<TRuleset>(Selector selector) where TRuleset : Ruleset
+        public IEnumerable<Closure> FindRulesets(Selector selector)
         {
             return Frames
-                .Select(frame => frame.Find<TRuleset>(this, selector, null))
+                .Select(frame => frame.Find<Ruleset>(this, selector, null))
                 .Select(
                     matchedClosuresList => matchedClosuresList.Where(
                             matchedClosure => {
