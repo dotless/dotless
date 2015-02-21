@@ -841,7 +841,8 @@ namespace dotless.Core.Parser
 
             var index = parser.Tokenizer.Location.Index;
 
-            if (!parser.Tokenizer.Match(@"opacity=", true))
+            // Allow for whitespace on both sides of the equals sign since IE seems to allow it too
+            if (!parser.Tokenizer.Match(@"opacity\s*=\s*", true))
                 return null;
 
             if (value = parser.Tokenizer.Match(@"[0-9]+") || Variable(parser))
