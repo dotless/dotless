@@ -251,8 +251,17 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <CsharpTargetsInMsBuildToolsPath>$(MSBuildToolsPath)\Microsoft.CSharp.targets</CsharpTargetsInMsBuildToolsPath>
+    <CsharpTargetsInMsBuildBinPath>$(MSBuildBinPath)\Microsoft.CSharp.targets</CsharpTargetsInMsBuildBinPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="Exists($(CsharpTargetsInMsBuildToolsPath))">
+    <CsharpTargets>$(CsharpTargetsInMsBuildToolsPath)</CsharpTargets>  
+  </PropertyGroup>
+  <PropertyGroup Condition="Exists($(CsharpTargetsInMsBuildBinPath))">
+    <CsharpTargets>$(CsharpTargetsInMsBuildBinPath)</CsharpTargets>  
+  </PropertyGroup>  
+  <Import Project="$(CsharpTargets)" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
