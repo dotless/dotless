@@ -90,15 +90,27 @@ For the client only dll on its own, see the DotlessClientOnly package.";
 }
 
 task Build -depends Init {
-	$buildSettings = (
-		($source_dir + '\dotless.Compiler\dotless.Compiler.csproj'),
-		('/p:Configuration=' + $config),
-		('/p:OutDir=' + $build_dir + '\')
-	)
-    msbuild $buildSettings
+    $compilerBuildSettings = (
+        ($source_dir + '\dotless.Compiler\dotless.Compiler.csproj'),
+        ('/p:Configuration=' + $config),
+        ('/p:OutDir=' + $build_dir + '\')
+    )
+    
+    msbuild $compilerBuildSettings
     if ($lastExitCode -ne 0) {
-        throw "Error: compile failed"
+        throw "Error: dotless.Compiler.csproj compile failed"
     }
+    
+    $aspnetBuildSettings = (
+        ($source_dir + '\dotless.AspNet\dotless.AspNet.csproj'),
+        ('/p:Configuration=' + $config),
+        ('/p:OutDir=' + $build_dir + '\')
+    )
+    
+    msbuild $aspnetBuildSettings
+    if ($lastExitCode -ne 0) {
+        throw "Error: dotless.AspNet.csproj compile failed"
+    }    
 }
 
 task Test -depends Build {
