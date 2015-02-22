@@ -16,7 +16,6 @@ namespace dotless.Test.Unit.Engine
         protected Dictionary<string, string> Parameters { get; set; }
         protected ParameterDecorator ParameterDecorator { get; set; }
 
-        private bool lastTransformationSuccessful;
         [SetUp]
         public void SetupDecoratorForTest()
         {
