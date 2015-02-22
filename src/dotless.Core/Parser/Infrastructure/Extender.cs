@@ -31,6 +31,48 @@ namespace dotless.Core.Parser.Infrastructure
             }
         }
     }
+    internal static class ExtenderMatcherExtensions {
+        internal static IEnumerable<PartialExtender> WhereExtenderMatches(this IEnumerable<PartialExtender> extenders, Context selection) {
+            var selectionElements = selection.SelectMany(selectors => selectors.SelectMany(s => s.Elements)).ToList();
+
+            return extenders.Where(e => e.ElementListMatches(selectionElements));
+        }
+
+        /// <summary>
+        /// Tests whether or not this extender matches the selector elements in <paramref name="list"/>
+        /// by checking if the elements in <see cref="Extender.BaseSelector"/> are a subsequence of the ones in 
+        /// <paramref name="list"/>.
+        /// 
+        /// The special case in the comparison is that if the subsequence element we are comparing is the last one in its 
+        /// sequence, we don't compare combinators.
+        /// 
+        /// A practical example of why we do that is an extendee with the selector:
+        /// 
+        /// .test .a
+        /// 
+        /// and an extender with the selector
+        /// 
+        /// .test
+        /// 
+        /// The extender should match, even though the .test element in the extendee will have the descendant combinator " "
+        /// and the .test element in the extender won't.
+        /// </summary>
+        private static bool ElementListMatches(this PartialExtender extender, IList<Element> list) {
+            int count = extender.BaseSelector.Elements.Count;
+
+            return extender.BaseSelector.Elements.IsSubsequenceOf(list, (subIndex, subElement, index, seqelement) => {
+                if (subIndex < count - 1) {
+                    return Equals(subElement.Combinator, seqelement.Combinator) &&
+                           string.Equals(subElement.Value, seqelement.Value) &&
+                           Equals(subElement.NodeValue, seqelement.NodeValue);
+                }
+
+                return string.Equals(subElement.Value, seqelement.Value) &&
+                       Equals(subElement.NodeValue, seqelement.NodeValue);
+            });
+        }
+    }
+
 
     public class Extender
     {

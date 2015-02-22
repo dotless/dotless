@@ -223,6 +223,7 @@
     <Compile Include="Stylizers\HtmlStylizer.cs" />
     <Compile Include="Stylizers\IStylizer.cs" />
     <Compile Include="Stylizers\PlainStylizer.cs" />
+    <Compile Include="Utils\EnumerableExtensions.cs" />
     <Compile Include="Utils\Guard.cs" />
     <Compile Include="Utils\HslColor.cs" />
     <Compile Include="Utils\NodeHelper.cs" />
@@ -256,11 +257,11 @@
     <CsharpTargetsInMsBuildBinPath>$(MSBuildBinPath)\Microsoft.CSharp.targets</CsharpTargetsInMsBuildBinPath>
   </PropertyGroup>
   <PropertyGroup Condition="Exists($(CsharpTargetsInMsBuildToolsPath))">
-    <CsharpTargets>$(CsharpTargetsInMsBuildToolsPath)</CsharpTargets>  
+    <CsharpTargets>$(CsharpTargetsInMsBuildToolsPath)</CsharpTargets>
   </PropertyGroup>
   <PropertyGroup Condition="Exists($(CsharpTargetsInMsBuildBinPath))">
-    <CsharpTargets>$(CsharpTargetsInMsBuildBinPath)</CsharpTargets>  
-  </PropertyGroup>  
+    <CsharpTargets>$(CsharpTargetsInMsBuildBinPath)</CsharpTargets>
+  </PropertyGroup>
   <Import Project="$(CsharpTargets)" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -391,5 +391,46 @@ a:visited {
 ";
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void PartialExtendMatchesExactSelectorElementsOnly() {
+            var input = @"
+.btn-test {
+  border-radius: 5px;
+}
+
+.no-match:extend(.btn all) { }
+";
+
+            var expected = @"
+.btn-test {
+  border-radius: 5px;
+}";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void MediaScopedPartialExtendMatchesExactSelectorElementsOnly() {
+            var input = @"
+@media (screen) {
+  .btn-test {
+    border-radius: 5px;
+  }
+
+  .no-match:extend(.btn all) { }
+}
+
+";
+
+            var expected = @"
+@media (screen) {
+  .btn-test {
+    border-radius: 5px;
+  }
+}";
+
+            AssertLess(input, expected);
+        }
     }
 }

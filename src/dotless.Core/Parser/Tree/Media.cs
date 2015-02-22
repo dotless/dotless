@@ -279,9 +279,11 @@
             return Extensions.OfType<ExactExtender>().FirstOrDefault(e => e.BaseSelector.ToString().Trim() == selection);
         }
 
-        public PartialExtender[] FindPartialExtensions(string selection)
+        public PartialExtender[] FindPartialExtensions(Context selection)
         {
-            return Extensions.OfType<PartialExtender>().Where(e => selection.Contains(e.BaseSelector.ToString().Trim())).ToArray();
+            return Extensions.OfType<PartialExtender>()
+                .WhereExtenderMatches(selection)
+                .ToArray();
         }
     }
 }
