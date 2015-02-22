@@ -7,5 +7,5 @@ test:
   assemblies: '**\dotless.Test.dll'
 after_test:
 - ps: .\psake.ps1 .\default.ps1 release-notest
-# artifacts:
-# - path: release\*.nupkg
+artifacts:
+- path: release\*.nupkg
