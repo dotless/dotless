@@ -29,8 +29,6 @@
 //
 
 
-using System.Net.NetworkInformation;
-
 #pragma warning disable 665
 // ReSharper disable RedundantNameQualifier
 
@@ -73,7 +71,6 @@ namespace dotless.Core.Parser
             var root = new NodeList();
 
             GatherComments(parser);
-
             while (node = MixinDefinition(parser) || ExtendRule(parser) || Rule(parser) || PullComments() || Ruleset(parser) ||
                           MixinCall(parser) || Directive(parser))
             {
@@ -469,14 +466,14 @@ namespace dotless.Core.Parser
         //     0.5em 95%
         //
         public Number Dimension(Parser parser)
-        {
+        { 
             var c = parser.Tokenizer.CurrentChar;
-            if ((c > 57 || c < 45) || c == 47)
+            if (!(char.IsNumber(c) || c == '.' || c == '-' || c == '+'))
                 return null;
 
             var index = parser.Tokenizer.Location.Index;
 
-            var value = parser.Tokenizer.Match(@"(-?[0-9]*\.?[0-9]+)(px|%|em|pc|ex|in|deg|s|ms|pt|cm|mm|ch|rem|vw|vh|vmin|vm|grad|rad|fr|gr|Hz|kHz|dpi|dpcm|dppx)?");
+            var value = parser.Tokenizer.Match(@"([+-]?[0-9]*\.?[0-9]+)(px|%|em|pc|ex|in|deg|s|ms|pt|cm|mm|ch|rem|vw|vh|vmin|vm|grad|rad|fr|gr|Hz|kHz|dpi|dpcm|dppx)?");
 
             if (value)
                 return NodeProvider.Number(value[1], value[2], parser.Tokenizer.GetNodeLocation(index));
@@ -844,7 +841,8 @@ namespace dotless.Core.Parser
 
             var index = parser.Tokenizer.Location.Index;
 
-            if (!parser.Tokenizer.Match(@"opacity=", true))
+            // Allow for whitespace on both sides of the equals sign since IE seems to allow it too
+            if (!parser.Tokenizer.Match(@"opacity\s*=\s*", true))
                 return null;
 
             if (value = parser.Tokenizer.Match(@"[0-9]+") || Variable(parser))
@@ -879,8 +877,15 @@ namespace dotless.Core.Parser
 
             PushComments();
             GatherComments(parser); // to collect, combinator must have picked up something which would require memory anyway
-            Node e = ExtendRule(parser) || parser.Tokenizer.Match(@"[.#:]?(\\.|[a-zA-Z0-9_-])+") || parser.Tokenizer.Match('*') || parser.Tokenizer.Match('&') ||
-                Attribute(parser) || parser.Tokenizer.MatchAny(@"\([^)@]+\)") || parser.Tokenizer.Match(@"[\.#](?=@\{)") || VariableCurly(parser);
+            Node e = ExtendRule(parser) 
+                || NonPseudoClassSelector(parser)
+                || PseudoClassSelector(parser)
+                || parser.Tokenizer.Match('*') 
+                || parser.Tokenizer.Match('&') 
+                || Attribute(parser) 
+                || parser.Tokenizer.MatchAny(@"\([^)@]+\)") 
+                || parser.Tokenizer.Match(@"[\.#](?=@\{)") 
+                || VariableCurly(parser);
 
             if (!e)
             {
@@ -905,6 +910,27 @@ namespace dotless.Core.Parser
 
             PopComments();
             return null;
+        }
+
+        private static RegexMatchResult PseudoClassSelector(Parser parser) {
+            return parser.Tokenizer.Match(@":(\\.|[a-zA-Z0-9_-])+");
+        }
+
+        private Node NonPseudoClassSelector(Parser parser) {
+            var memo = Remember(parser);
+            var match = parser.Tokenizer.Match(@"[.#]?(\\.|[a-zA-Z0-9_-])+");
+            if (!match) {
+                return null;
+            }
+
+            if (parser.Tokenizer.Match('(')) {
+                // Argument list implies that we actually matched a mixin call
+                // Rewind back to where we started and return a null match
+                Recall(parser, memo);
+                return null;
+            }
+
+            return match;
         }
 
         //
@@ -1179,6 +1205,10 @@ namespace dotless.Core.Parser
             var index = parser.Tokenizer.Location.Index;
 
             var name = parser.Tokenizer.MatchString(@"@[-a-z]+");
+            if (string.IsNullOrEmpty(name))
+            {
+                return null;
+            }
             bool hasIdentifier = false, hasBlock = false, isKeyFrame = false;
             NodeList rules, preRulesComments = null, preComments = null;
             string identifierRegEx = @"[^{]+";
@@ -1263,11 +1293,12 @@ namespace dotless.Core.Parser
                 if (value = Expression(parser)) {
                     value.PreComments = preRulesComments;
                     value.PostComments = GatherAndPullComments(parser);
-                    if (parser.Tokenizer.Match(';')) {
-                        var directive = NodeProvider.Directive(name, value, parser.Tokenizer.GetNodeLocation(index));
-                        directive.PreComments = preComments;
-                        return directive;
-                    }
+
+                    Expect(parser, ';', "missing semicolon in expression");
+
+                    var directive = NodeProvider.Directive(name, value, parser.Tokenizer.GetNodeLocation(index));
+                    directive.PreComments = preComments;
+                    return directive;
                 }
             }
 

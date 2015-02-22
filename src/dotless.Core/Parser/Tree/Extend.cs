@@ -24,7 +24,7 @@ namespace dotless.Core.Parser.Tree
             var newExact = new List<Selector>();
             foreach (var e in Exact)
             {
-                var childContext = env.CreateChildEnv(new Stack<Ruleset>(env.Frames.Reverse()));
+                var childContext = env.CreateChildEnv();
                 e.AppendCSS(childContext);
                 newExact.Add(new Selector(new []{new Element(e.Elements.First().Combinator,childContext.Output.ToString().Trim())}));
             }
@@ -32,7 +32,7 @@ namespace dotless.Core.Parser.Tree
             var newPartial = new List<Selector>();
             foreach (var e in Partial)
             {
-                var childContext = env.CreateChildEnv(new Stack<Ruleset>(env.Frames.Reverse()));
+                var childContext = env.CreateChildEnv();
                 e.AppendCSS(childContext);
                 newPartial.Add(new Selector(new[] { new Element(e.Elements.First().Combinator, childContext.Output.ToString().Trim()) }));
             }

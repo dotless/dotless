@@ -20,6 +20,12 @@ namespace dotless.Test.Specs.Functions
         }
 
         [Test]
+        public void WhiteSpaceInAlphaExpressionIsIgnored()
+        {
+            AssertExpression("alpha(opacity=75)", "alpha( Opacity = 75 )");
+        }
+
+        [Test]
         public void TestAlphaOpacityHackWithVariable()
         {
             var variables = new Dictionary<string, string> {{"opacity", "88"}};

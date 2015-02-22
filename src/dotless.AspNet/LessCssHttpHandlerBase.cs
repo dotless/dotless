@@ -33,7 +33,7 @@ namespace dotless.Core
 
         protected virtual ContainerFactory GetContainerFactory()
         {
-            return new AspNetContainerFactory();
+            return new AspNetHttpHandlerContainerFactory();
         }
     }
 }

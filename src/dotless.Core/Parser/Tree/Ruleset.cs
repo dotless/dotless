@@ -331,7 +331,7 @@ namespace dotless.Core.Parser.Tree
                             paths.AppendSelectors(context.Clone(), extensions.ExtendedBy);
                         }
 
-                        var partials = env.FindPartialExtensions(finalString);
+                        var partials = env.FindPartialExtensions(local);
                         if (partials != null)
                         {
                             paths.AppendSelectors(context.Clone(), partials.SelectMany(p => p.Replacements(finalString)));

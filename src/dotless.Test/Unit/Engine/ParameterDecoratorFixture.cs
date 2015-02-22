@@ -1,3 +1,5 @@
+using dotless.Core.Parser;
+
 namespace dotless.Test.Unit.Engine
 {
     using System.Collections.Generic;
@@ -33,7 +35,7 @@ namespace dotless.Test.Unit.Engine
 
             ParameterDecorator.TransformToCss("width: @a;", "myfile");
 
-            Engine.Verify(p => p.TransformToCss("@a: 15px;\nwidth: @a;", "myfile"));
+            Engine.Verify(p => p.TransformToCss("@a: 15px;\r\nwidth: @a;", "myfile"));
         }
 
         [Test]
@@ -63,6 +65,21 @@ namespace dotless.Test.Unit.Engine
             ParameterDecorator.TransformToCss("", "myfile");
 
             Engine.Verify(p => p.TransformToCss(It.Is<string>(s => s == ""), "myfile"));
+        }
+
+        [Test]
+        public void IgnoresParameterWithInvalidValue()
+        {
+            Parameters["a"] = "1-x";
+            Parameters["b"] = "1px";
+
+            ParameterDecorator.TransformToCss("", "myfile");
+
+            var expectedResult = @"/* Omitting variable 'a'. The expression '1-x' is not valid. */
+@b: 1px;
+";
+
+            Engine.Verify(p => p.TransformToCss(It.Is<string>(s => s == expectedResult), "myfile"));
         }
     }
 }

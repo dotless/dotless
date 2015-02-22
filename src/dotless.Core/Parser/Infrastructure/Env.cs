@@ -1,4 +1,9 @@
-﻿namespace dotless.Core.Parser.Infrastructure
+﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Runtime.Remoting.Messaging;
+using dotless.Core.Utils;
+
+namespace dotless.Core.Parser.Infrastructure
 {
     using System;
     using System.Collections.Generic;
@@ -54,16 +59,52 @@
         /// <summary>
         ///  Creates a new Env variable for the purposes of scope
         /// </summary>
-        public virtual Env CreateChildEnv(Stack<Ruleset> frames)
+        public virtual Env CreateChildEnv()
         {
-            return new Env(frames, _functionTypes)
+            return new Env(null, _functionTypes)
             {
+                Parent = this,
                 Debug = Debug,
                 Compress = Compress,
                 DisableColorCompression = DisableColorCompression,
                 DisableVariableRedefines = DisableVariableRedefines
             };
         }
+
+        private Env Parent { get; set; }
+
+        /// <summary>
+        ///  Creates a new Env variable for the purposes of scope
+        /// </summary>
+        public virtual Env CreateVariableEvaluationEnv(string variableName) {
+            var env = CreateChildEnv();
+            env.EvaluatingVariable = variableName;
+            return env;
+        }
+
+        private string EvaluatingVariable { get; set; }
+
+        public bool IsEvaluatingVariable(string variableName) {
+            if (string.Equals(variableName, EvaluatingVariable, StringComparison.InvariantCulture)) {
+                return true;
+            }
+
+            if (Parent != null) {
+                return Parent.IsEvaluatingVariable(variableName);
+            }
+
+            return false;
+        }
+
+        public virtual Env CreateChildEnvWithClosure(Closure closure) {
+            var env = CreateChildEnv();
+            env.Rule = Rule;
+            env.ClosureEnvironment = CreateChildEnv();
+            env.ClosureEnvironment.Frames = new Stack<Ruleset>(closure.Context);
+            return env;
+        }
+
+        private Env ClosureEnvironment { get; set; }
 
         /// <summary>
         ///  Adds a plugin to this Env
@@ -150,6 +191,20 @@
                     return v;
                 previousNode = frame;
             }
+
+            Rule result = null;
+            if (Parent != null) {
+                result = Parent.FindVariable(name, rule);
+            }
+
+            if (result != null) {
+                return result;
+            }
+
+            if (ClosureEnvironment != null) {
+                return ClosureEnvironment.FindVariable(name, rule);
+            }
+
             return null;
         }
 
@@ -157,10 +212,10 @@
         ///  Finds the first Ruleset matching the selector argument that inherits from or is of type TRuleset (pass this as Ruleset if
         ///  you are trying to find ANY Ruleset that matches the selector)
         /// </summary>
-        public IEnumerable<Closure> FindRulesets<TRuleset>(Selector selector) where TRuleset : Ruleset
+        public IEnumerable<Closure> FindRulesets(Selector selector)
         {
-            return Frames
-                .Select(frame => frame.Find<TRuleset>(this, selector, null))
+            var matchingRuleSets = Frames
+                .Select(frame => frame.Find<Ruleset>(this, selector, null))
                 .Select(
                     matchedClosuresList => matchedClosuresList.Where(
                             matchedClosure => {
@@ -176,6 +231,24 @@
                     )
                 )
                 .FirstOrDefault(matchedClosuresList => matchedClosuresList.Count() != 0);
+
+            if (matchingRuleSets != null) {
+                return matchingRuleSets;
+            }
+
+            if (Parent != null) {
+                matchingRuleSets = Parent.FindRulesets(selector);
+            }
+
+            if (matchingRuleSets != null) {
+                return matchingRuleSets;
+            }
+
+            if (ClosureEnvironment != null) {
+                return ClosureEnvironment.FindRulesets(selector);
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -273,6 +346,14 @@
 
                 match.AddExtension(selector,env);
             }
+
+            if (Parent != null) {
+                Parent.AddExtension(selector, extends, env);
+            }
+        }
+
+        public void RegisterExtensionsFrom(Env child) {
+            _extensions.AddRange(child._extensions);
         }
 
         public ExactExtender FindExactExtension(string selection)
@@ -285,14 +366,21 @@
             return _extensions.OfType<ExactExtender>().FirstOrDefault(e => e.BaseSelector.ToString().Trim() == selection);
         }
 
-        public PartialExtender[] FindPartialExtensions(string selection)
+        public PartialExtender[] FindPartialExtensions(Context selection)
         {
             if (ExtendMediaScope.Any())
             {
                 return ExtendMediaScope.Select(media => media.FindPartialExtensions(selection)).FirstOrDefault(result => result.Any());
             }
 
-            return _extensions.OfType<PartialExtender>().Where(e => selection.Contains(e.BaseSelector.ToString().Trim())).ToArray();
+            return _extensions.OfType<PartialExtender>()
+                .WhereExtenderMatches(selection)
+                .ToArray();
+        }
+
+        public override string ToString()
+        {
+            return Frames.Select(f => f.ToString()).JoinStrings(" <- ");
         }
     }
 }

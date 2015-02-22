@@ -1,0 +1,11 @@
+version: '{build}'
+init:
+  - git config --global core.autocrlf true
+build_script:
+- ps: .\psake.ps1 .\default.ps1 build
+test:
+  assemblies: '**\dotless.Test.dll'
+after_test:
+- ps: .\psake.ps1 .\default.ps1 release-notest
+# artifacts:
+# - path: release\*.nupkg

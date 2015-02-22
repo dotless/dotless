@@ -245,5 +245,192 @@ pre:hover,
             AssertLess(input, expected);
         }
 
+        [Test]
+        public void ParentSelector() {
+            var input = @"
+.btn-primary {
+  color: white;
+}
+
+a:link {
+  color: blue;
+}
+
+a:link {
+    &.btn-primary:extend(.btn-primary){}
+}
+";
+
+            var expected = @"
+.btn-primary,
+a:link.btn-primary {
+  color: white;
+}
+a:link {
+  color: blue;
+}
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void ParentSelectorWithMultipleOuterSelectors() {
+            var input = @"
+.btn-primary {
+  color: white;
+}
+
+a:active,a:visited
+{
+  color: blue;
+}
+
+a:active, a:visited {
+    &.btn-primary:extend(.btn-primary){}
+}
+";
+
+            var expected = @"
+.btn-primary,
+a:active.btn-primary,
+a:visited.btn-primary {
+  color: white;
+}
+a:active,
+a:visited {
+  color: blue;
+}
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void ExtendInMixinDoesNotCauseError() {
+            var input = @"
+.extension {
+  color: red;
+}
+
+.mixin() {
+    .rule {
+        &:extend(.extension all);
+    }
+}
+
+.mixin();
+";
+            var expected = @"
+.extension,
+.rule {
+  color: red;
+}
+";
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void ExtendInLoop() {
+            var input = @"
+.clearfix() {
+  &:before,
+  &:after {
+    content: "" ""; // 1
+    display: table; // 2
+  }
+  &:after {
+    clear: both;
+  }
+}
+
+.make-row() {
+  &:extend(.clearfix all);
+}
+
+.make-rows() {
+  .row(@index) when (@index < 3) {
+    .row@{index} {
+      height: 10 * @index;
+      .make-row();
+    }
+    .row(@index + 1);
+  }
+  .row(1);
+}
+
+.clearfix
+{
+  .clearfix();
+}
+
+.make-rows();
+";
+
+            var expected = @"
+.clearfix:before,
+.clearfix:after,
+.row1:before,
+.row2:before,
+.row1:after,
+.row2:after {
+  content: "" "";
+  display: table;
+}
+.clearfix:after,
+.row1:after,
+.row2:after {
+  clear: both;
+}
+.row1 {
+  height: 10;
+}
+.row2 {
+  height: 20;
+}
+";
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void PartialExtendMatchesExactSelectorElementsOnly() {
+            var input = @"
+.btn-test {
+  border-radius: 5px;
+}
+
+.no-match:extend(.btn all) { }
+";
+
+            var expected = @"
+.btn-test {
+  border-radius: 5px;
+}";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void MediaScopedPartialExtendMatchesExactSelectorElementsOnly() {
+            var input = @"
+@media (screen) {
+  .btn-test {
+    border-radius: 5px;
+  }
+
+  .no-match:extend(.btn all) { }
+}
+
+";
+
+            var expected = @"
+@media (screen) {
+  .btn-test {
+    border-radius: 5px;
+  }
+}";
+
+            AssertLess(input, expected);
+        }
     }
 }

@@ -9,7 +9,10 @@ properties {
     $build_dir = "$base_dir\build\" 
     $release_dir = "$base_dir\release\"
     $source_dir = "$base_dir\src"
+    # Default to 0 if $env:build is not set
+    $build_number = ($env:build, 0 -ne $null)[0]
     $version = Get-Git-Version
+    $assemblyVersion = $version.Split('-')[0] + "." + $build_number
 }
 
 task default -depends Release
@@ -19,7 +22,12 @@ task Clean {
     remove-item -force -recurse $release_dir -ErrorAction SilentlyContinue 
 }
 
-task Init -depends Clean {
+task Restore-NugetPackages {
+    & "$base_dir\.nuget\nuget.exe" update -self
+    & "$base_dir\.nuget\nuget.exe" restore "$base_dir\src\dotless-vs2012.sln"
+}
+
+task Init -depends Restore-NugetPackages, Clean {
     $product = "dotless"
     $title = "$product $version"
     $description = "Dynamic CSS for .net"
@@ -57,7 +65,7 @@ For the client only dll on its own, see the DotlessClientOnly package.";
         -description $description `
         -company $company `
         -product $product `
-        -version $version `
+        -version $assemblyVersion `
         -copyright $copyright `
         -partial $True
     Generate-Assembly-Info `
@@ -66,7 +74,7 @@ For the client only dll on its own, see the DotlessClientOnly package.";
         -description $description `
         -company $company `
         -product $product `
-        -version $version `
+        -version $assemblyVersion `
         -copyright $copyright
     Generate-Assembly-Info `
         -file "$source_dir\dotless.Compiler\Properties\AssemblyInfo.cs" `
@@ -74,7 +82,7 @@ For the client only dll on its own, see the DotlessClientOnly package.";
         -description $description `
         -company $company `
         -product $product `
-        -version $version `
+        -version $assemblyVersion `
         -copyright $copyright
     Generate-Assembly-Info `
         -file "$source_dir\dotless.AspNet\Properties\AssemblyInfo.cs" `
@@ -82,34 +90,47 @@ For the client only dll on its own, see the DotlessClientOnly package.";
         -description $description `
         -company $company `
         -product $product `
-        -version $version `
+        -version $assemblyVersion `
         -copyright $copyright
 
     new-item $release_dir -itemType directory    
 }
 
 task Build -depends Init {
-	$buildSettings = (
-		($source_dir + '\dotless.Compiler\dotless.Compiler.csproj'),
-		('/p:Configuration=' + $config),
-		('/p:OutDir=' + $build_dir + '\')
-	)
-    msbuild $buildSettings
+    $compilerBuildSettings = (
+        ($source_dir + '\dotless.Compiler\dotless.Compiler.csproj'),
+        ('/p:Configuration=' + $config),
+        ('/p:OutDir=' + $build_dir + '\')
+    )
+    
+    msbuild $compilerBuildSettings
     if ($lastExitCode -ne 0) {
-        throw "Error: compile failed"
+        throw "Error: dotless.Compiler.csproj compile failed"
     }
+    
+    $aspnetBuildSettings = (
+        ($source_dir + '\dotless.AspNet\dotless.AspNet.csproj'),
+        ('/p:Configuration=' + $config),
+        ('/p:OutDir=' + $build_dir + '\')
+    )
+    
+    msbuild $aspnetBuildSettings
+    if ($lastExitCode -ne 0) {
+        throw "Error: dotless.AspNet.csproj compile failed"
+    }
+    
+    $testBuildSettings = (
+        ($source_dir + '\dotless.Test\dotless.Test.csproj'),
+        ('/p:Configuration=' + $config),
+        ('/p:OutDir=' + $build_dir + '\')
+    )
+    msbuild $testBuildSettings
+    if ($lastExitCode -ne 0) {
+        throw "Error: dotless.Test.csproj compile failed"
+    }    
 }
 
 task Test -depends Build {
-	$buildSettings = (
-		($source_dir + '\dotless.Test\dotless.Test.csproj'),
-		('/p:Configuration=' + $config),
-		('/p:OutDir=' + $build_dir + '\')
-	)
-    msbuild $buildSettings
-    if ($lastExitCode -ne 0) {
-        throw "Error: Test compile failed"
-    }
     $old = pwd
     cd $build_dir
     & $lib_dir\NUnit\nunit-console-x86.exe $build_dir\dotless.Test.dll 
@@ -131,7 +152,7 @@ task Merge -depends Build {
     Remove-Item $filename-partial.exe -ErrorAction SilentlyContinue
     Rename-Item $filename $filename-partial.exe
     write-host "Executing ILMerge - Creating Exe"
-    & $lib_dir\ilmerge\ILMerge.exe $filename-partial.exe `
+    & "$base_dir\src\packages\ILMerge.2.14.1208\tools\ILMerge.exe" $filename-partial.exe `
         Pandora.dll `
         dotless.Core.dll `
         Microsoft.Practices.ServiceLocation.dll `
@@ -148,7 +169,7 @@ task Merge -depends Build {
     Remove-Item $filename-partial.dll -ErrorAction SilentlyContinue
     Rename-Item $filename $filename-partial.dll
     write-host "Executing ILMerge - Creating Core including AspNet"
-    & $lib_dir\ilmerge\ILMerge.exe $filename-partial.dll `
+    & "$base_dir\src\packages\ILMerge.2.14.1208\tools\ILMerge.exe" $filename-partial.dll `
         Pandora.dll `
         Microsoft.Practices.ServiceLocation.dll `
         dotless.AspNet.dll `
@@ -161,8 +182,8 @@ task Merge -depends Build {
     }
     
     $compilerfilename = "dotless.ClientOnly.dll"
-    write-host "Executing ILMerge - Creating Client Only Dll"
-    & $lib_dir\ilmerge\ILMerge.exe $filename-partial.dll `
+    write-host "Executing ILMerge - Creating Client Only Dll" 
+    & "$base_dir\src\packages\ILMerge.2.14.1208\tools\ILMerge.exe" $filename-partial.dll `
         Pandora.dll `
         Microsoft.Practices.ServiceLocation.dll `
         /out:$compilerfilename `
@@ -176,10 +197,10 @@ task Merge -depends Build {
     cd $old
 }
 
-task Release-NoTest -depends Merge {
+task Release-NoTest -depends Merge, NuGetPackage, NuGetClientOnlyPackage, t4css {
     $commit = Get-Git-Commit
     $filename = "dotless.core"
-    & $lib_dir\7zip\7za.exe a $release_dir\dotless-$commit.zip `
+    & $base_dir\src\packages\7-Zip.CommandLine.9.20.0\tools\7za.exe a $release_dir\dotless-$commit.zip `
     $build_dir\$filename.dll `
     $build_dir\$filename.pdb `
     $build_dir\dotless.compiler.exe `
@@ -212,7 +233,7 @@ task t4css -depends Merge {
     cp $dir\t4less\T4CssWeb\Css\*.log $target\T4CssWeb\Css\
     
     
-    & $lib_dir\7zip\7za.exe a $release_dir\t4css-$commit.zip `
+    & $base_dir\src\packages\7-Zip.CommandLine.9.20.0\tools\7za.exe a $release_dir\t4css-$commit.zip `
     $build_dir\t4css\    
 }
 
@@ -238,7 +259,7 @@ exit 1 unless result"
 task Release -depends Test, Merge, NuGetPackage, NuGetClientOnlyPackage, t4css {
     $commit = Get-Git-Commit
     $filename = "dotless.core"
-    & $lib_dir\7zip\7za.exe a $release_dir\dotless-$commit.zip `
+    & $base_dir\src\packages\7-Zip.CommandLine.9.20.0\tools\7za.exe a $release_dir\dotless-$commit.zip `
     $build_dir\$filename.dll `
     $build_dir\$filename.pdb `
     $build_dir\Testresult.xml `
@@ -271,7 +292,7 @@ task NuGetPackage -depends Merge {
     Copy-Item acknowledgements.txt $target
     Copy-Item license.txt $target
         
-    .\lib\NuGet.exe pack $target\Dotless.nuspec -o $build_dir
+    .\.nuget\NuGet.exe pack $target\Dotless.nuspec -o $build_dir
 }
 
 task NuGetClientOnlyPackage -depends Merge {
@@ -285,5 +306,5 @@ task NuGetClientOnlyPackage -depends Merge {
     Copy-Item acknowledgements.txt $target
     Copy-Item license.txt $target
         
-    .\lib\NuGet.exe pack $target\DotlessClientOnly.nuspec -o $build_dir
+    .\.nuget\NuGet.exe pack $target\DotlessClientOnly.nuspec -o $build_dir
 }

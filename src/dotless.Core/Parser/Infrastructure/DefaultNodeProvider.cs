@@ -139,7 +139,7 @@ namespace dotless.Core.Parser.Infrastructure
 
         public Assignment Assignment(string key, Node value, NodeLocation location)
         {
-            return new Assignment(key, value);
+            return new Assignment(key, value) {Location = location};
         }
 
         public Comment Comment(string value, NodeLocation location)
