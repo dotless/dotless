@@ -110,19 +110,20 @@ task Build -depends Init {
     msbuild $aspnetBuildSettings
     if ($lastExitCode -ne 0) {
         throw "Error: dotless.AspNet.csproj compile failed"
+    }
+    
+    $testBuildSettings = (
+        ($source_dir + '\dotless.Test\dotless.Test.csproj'),
+        ('/p:Configuration=' + $config),
+        ('/p:OutDir=' + $build_dir + '\')
+    )
+    msbuild $testBuildSettings
+    if ($lastExitCode -ne 0) {
+        throw "Error: dotless.Test.csproj compile failed"
     }    
 }
 
 task Test -depends Build {
-	$buildSettings = (
-		($source_dir + '\dotless.Test\dotless.Test.csproj'),
-		('/p:Configuration=' + $config),
-		('/p:OutDir=' + $build_dir + '\')
-	)
-    msbuild $buildSettings
-    if ($lastExitCode -ne 0) {
-        throw "Error: Test compile failed"
-    }
     $old = pwd
     cd $build_dir
     & $lib_dir\NUnit\nunit-console-x86.exe $build_dir\dotless.Test.dll 
