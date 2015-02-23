@@ -208,7 +208,8 @@ task Release-NoTest -depends Merge, NuGetPackage, NuGetClientOnlyPackage, t4css 
     license.txt `
     #$build_dir\Testresult.xml `
     
-    
+    Move-Item $build_dir\*.nupkg $release_dir\   
+
     Write-Host -ForegroundColor Yellow "Please note that no tests where run during release process!"
     Write-host "-----------------------------"
     Write-Host "dotless $version was successfully compiled and packaged."
@@ -220,7 +221,6 @@ task t4css -depends Merge {
     $commit = Get-Git-Commit
     $dir = pwd
     $target = "$build_dir\t4css"
-    echo "bla"
     mkdir $build_dir\t4css -ErrorAction silentlycontinue
     mkdir $build_dir\t4css\T4CssWeb -ErrorAction silentlycontinue
     mkdir $build_dir\t4css\T4CssWeb\Css -ErrorAction silentlycontinue
