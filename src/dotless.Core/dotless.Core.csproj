@@ -234,6 +234,7 @@
     <None Include="..\dotless-open-source.snk">
       <Link>dotless-open-source.snk</Link>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

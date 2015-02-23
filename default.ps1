@@ -23,8 +23,8 @@ task Clean {
 }
 
 task Restore-NugetPackages {
-    & "$base_dir\.nuget\nuget.exe" update -self
-    & "$base_dir\.nuget\nuget.exe" restore "$base_dir\src\dotless-vs2012.sln"
+    & "$source_dir\.nuget\nuget.exe" update -self
+    & "$source_dir\.nuget\nuget.exe" restore "$source_dir\dotless-vs2012.sln"
 }
 
 task Init -depends Restore-NugetPackages, Clean {
@@ -133,7 +133,7 @@ task Build -depends Init {
 task Test -depends Build {
     $old = pwd
     cd $build_dir
-    & $lib_dir\NUnit\nunit-console-x86.exe $build_dir\dotless.Test.dll 
+    & $source_dir\packages\NUnit.Runners.2.6.4\tools\nunit-console-x86.exe $build_dir\dotless.Test.dll 
     if ($lastExitCode -ne 0) {
         throw "Error: Failed to execute tests"
         if ($showtestresult)
@@ -292,7 +292,7 @@ task NuGetPackage -depends Merge {
     Copy-Item acknowledgements.txt $target
     Copy-Item license.txt $target
         
-    .\.nuget\NuGet.exe pack $target\Dotless.nuspec -o $build_dir
+    & "$source_dir\.nuget\NuGet.exe" pack $target\Dotless.nuspec -o $build_dir
 }
 
 task NuGetClientOnlyPackage -depends Merge {
@@ -306,5 +306,5 @@ task NuGetClientOnlyPackage -depends Merge {
     Copy-Item acknowledgements.txt $target
     Copy-Item license.txt $target
         
-    .\.nuget\NuGet.exe pack $target\DotlessClientOnly.nuspec -o $build_dir
+    & "$source_dir\.nuget\NuGet.exe" pack $target\DotlessClientOnly.nuspec -o $build_dir
 }
