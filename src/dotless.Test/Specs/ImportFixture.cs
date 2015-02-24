@@ -788,5 +788,15 @@ body {
 
             AssertLess(input, expected, GetParser());
         }
+		
+        [Test]
+        public void UnsupportedImportOptionReturnsReadableErrorMessage()
+        {
+            var input = @"
+@import (inline) ""import/twice/with/different/paths.less"";
+";
+
+            AssertError("Unsupported @import option", @"@import (inline) ""import/twice/with/different/paths.less"";", 1, 8, input);
+        }		
     }
 }

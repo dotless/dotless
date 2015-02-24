@@ -1163,8 +1163,18 @@ namespace dotless.Core.Parser
             var index = parser.Tokenizer.Location.Index;
 
             var importMatch = parser.Tokenizer.Match(@"@import(-(once))?\s+");
+            if (!importMatch) {
+                return null;
+            }
 
-            if (importMatch && (path = Quoted(parser) || Url(parser)))
+            var optionIndex = parser.Tokenizer.Location.Index;
+            var optionsMatch = parser.Tokenizer.Match(@"\((?<keywords>.*)\)");
+            if (optionsMatch) {
+                throw new ParsingException("Unsupported @import option", parser.Tokenizer.GetNodeLocation(optionIndex));
+            }
+
+
+            if (path = Quoted(parser) || Url(parser))
             {
                 const bool isOnce = true;
                 
