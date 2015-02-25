@@ -119,6 +119,7 @@ namespace dotless.Core.Parser.Tree
             var frame = EvaluateParams(env, args);
 
             var context = env.CreateChildEnv();
+            context.Frames.Push(this);
             context.Frames.Push(frame);
 
             var newRules = new NodeList();
