@@ -1,4 +1,6 @@
-﻿namespace dotless.Core.Parser.Tree
+﻿using dotless.Core.Utils;
+
+namespace dotless.Core.Parser.Tree
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -40,6 +42,10 @@
             int blockIndex = env.MediaBlocks.Count;
             env.MediaBlocks.Add(this);
             env.MediaPath.Push(this);
+
+            env.Frames.Push(Ruleset);
+            NodeHelper.ExpandNodes<Import>(env, Ruleset.Rules);
+            env.Frames.Pop();
 
             var features = Features.Evaluate(env);
             var ruleset = Ruleset.Evaluate(env) as Ruleset;

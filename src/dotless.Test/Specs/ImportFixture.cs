@@ -134,6 +134,10 @@ body { background-color: foo; }
 ";
 
             imports["/import/absolute.less"] = @"body { background-color: black; }";
+
+            imports["import/define-variables.less"] = @"@color: 'blue';";
+            imports["import/use-variables.less"] = @".test { background-color: @color; }";
+
             imports["../import/relative-with-parent-dir.less"] = @"body { background-color: foo; }";
 
             imports["foo.less"] = @"@import ""foo/bar.less"";";
@@ -734,6 +738,28 @@ body {
             var parser = GetParser();
 
             AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void VariablesFromImportedFileAreAvailableToAnotherImportedFileWithinMediaBlock()
+        {
+            var input = @"
+@import ""import/define-variables.less"";
+
+@media only screen and (max-width: 700px)
+{
+    @import ""import/use-variables.less"";
+}
+";
+
+            var expected = @"
+@media only screen and (max-width: 700px) {
+  .test {
+    background-color: 'blue';
+  }
+}";
+
+            AssertLess(input, expected, GetParser());
         }
     }
 }
