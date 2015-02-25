@@ -875,6 +875,8 @@ namespace dotless.Core.Parser
 
             Combinator c = Combinator(parser);
 
+            const string parenthesizedTokenRegex = @"\(((?<N>\()|(?<-N>\))|[^()@]*)+\)";
+
             PushComments();
             GatherComments(parser); // to collect, combinator must have picked up something which would require memory anyway
             Node e = ExtendRule(parser) 
@@ -883,7 +885,7 @@ namespace dotless.Core.Parser
                 || parser.Tokenizer.Match('*') 
                 || parser.Tokenizer.Match('&') 
                 || Attribute(parser) 
-                || parser.Tokenizer.MatchAny(@"\([^)@]+\)") 
+                || parser.Tokenizer.MatchAny(parenthesizedTokenRegex)
                 || parser.Tokenizer.Match(@"[\.#](?=@\{)") 
                 || VariableCurly(parser);
 
