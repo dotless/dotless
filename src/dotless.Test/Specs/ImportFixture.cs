@@ -138,6 +138,9 @@ body { background-color: foo; }
             imports["import/define-variables.less"] = @"@color: 'blue';";
             imports["import/use-variables.less"] = @".test { background-color: @color; }";
 
+            imports["empty.less"] = @"";
+            imports["rule.less"] = @".rule { color: black; }";
+
             imports["../import/relative-with-parent-dir.less"] = @"body { background-color: foo; }";
 
             imports["foo.less"] = @"@import ""foo/bar.less"";";
@@ -758,6 +761,30 @@ body {
     background-color: 'blue';
   }
 }";
+
+            AssertLess(input, expected, GetParser());
+        }
+
+        [Test]
+        public void EmptyImportDoesNotBreakSubsequentImports()
+        {
+            var input = @"
+@import ""empty.less"";
+@import ""rule.less"";
+
+.test {
+  .rule;
+}
+";
+
+            var expected = @"
+.rule {
+  color: black;
+}
+.test {
+  color: black;
+}
+";
 
             AssertLess(input, expected, GetParser());
         }
