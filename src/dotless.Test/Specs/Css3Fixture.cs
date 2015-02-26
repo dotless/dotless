@@ -454,6 +454,34 @@ a ~ p {
             AssertLess(input, expected);
         }
 
+        [Test]
+        public void NestedPseudoclassSelectorsWork()
+        {
+            var input = @"
+:not(:nth-child(1)) {
+  margin-top: 5px;
+}";
+
+            AssertLessUnchanged(input);
+        }
+
+        [Test]
+        public void PseudoclassParenMatchingWorks()
+        {
+            var input = @"
+audio:not([controls]) {
+  // this comment has parens ()
+  margin-top: 5px;
+}";
+
+            var expected = @"
+audio:not([controls]) {
+  margin-top: 5px;
+}";
+
+            AssertLess(input, expected);
+        }
+
 #if CSS3EXPERIMENTAL
         [Test]
         public void GridRepeatingPatternSupported()

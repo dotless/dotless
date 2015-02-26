@@ -59,6 +59,15 @@ namespace dotless.Core.Parser.Infrastructure
         /// <summary>
         ///  Creates a new Env variable for the purposes of scope
         /// </summary>
+        [Obsolete("Argument is ignored as of version 1.4.3.0. Use the parameterless overload of CreateChildEnv instead.", false)]
+        public virtual Env CreateChildEnv(Stack<Ruleset> ruleset)
+        {
+            return CreateChildEnv();
+        }
+
+        /// <summary>
+        ///  Creates a new Env variable for the purposes of scope
+        /// </summary>
         public virtual Env CreateChildEnv()
         {
             return new Env(null, _functionTypes)
@@ -206,6 +215,12 @@ namespace dotless.Core.Parser.Infrastructure
             }
 
             return null;
+        }
+
+        [Obsolete("This method will be removed in a future release.", false)]
+        public IEnumerable<Closure> FindRulesets<TRuleset>(Selector selector) where TRuleset : Ruleset
+        {
+            return FindRulesets(selector).Where(c => c.Ruleset is TRuleset);
         }
 
         /// <summary>
@@ -376,6 +391,17 @@ namespace dotless.Core.Parser.Infrastructure
             return _extensions.OfType<PartialExtender>()
                 .WhereExtenderMatches(selection)
                 .ToArray();
+        }
+
+        [Obsolete("This method doesn't return the correct results. Use FindPartialExtensions(Context) instead.", false)]
+        public PartialExtender[] FindPartialExtensions(string selection)
+        {
+            if (ExtendMediaScope.Any())
+            {
+                return ExtendMediaScope.Select(media => media.FindPartialExtensions(selection)).FirstOrDefault(result => result.Any());
+            }
+
+            return _extensions.OfType<PartialExtender>().Where(e => selection.Contains(e.BaseSelector.ToString().Trim())).ToArray();
         }
 
         public override string ToString()

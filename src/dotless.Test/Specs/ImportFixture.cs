@@ -134,6 +134,13 @@ body { background-color: foo; }
 ";
 
             imports["/import/absolute.less"] = @"body { background-color: black; }";
+
+            imports["import/define-variables.less"] = @"@color: 'blue';";
+            imports["import/use-variables.less"] = @".test { background-color: @color; }";
+
+            imports["empty.less"] = @"";
+            imports["rule.less"] = @".rule { color: black; }";
+
             imports["../import/relative-with-parent-dir.less"] = @"body { background-color: foo; }";
 
             imports["foo.less"] = @"@import ""foo/bar.less"";";
@@ -735,5 +742,61 @@ body {
 
             AssertLess(input, expected, parser);
         }
+
+        [Test]
+        public void VariablesFromImportedFileAreAvailableToAnotherImportedFileWithinMediaBlock()
+        {
+            var input = @"
+@import ""import/define-variables.less"";
+
+@media only screen and (max-width: 700px)
+{
+    @import ""import/use-variables.less"";
+}
+";
+
+            var expected = @"
+@media only screen and (max-width: 700px) {
+  .test {
+    background-color: 'blue';
+  }
+}";
+
+            AssertLess(input, expected, GetParser());
+        }
+
+        [Test]
+        public void EmptyImportDoesNotBreakSubsequentImports()
+        {
+            var input = @"
+@import ""empty.less"";
+@import ""rule.less"";
+
+.test {
+  .rule;
+}
+";
+
+            var expected = @"
+.rule {
+  color: black;
+}
+.test {
+  color: black;
+}
+";
+
+            AssertLess(input, expected, GetParser());
+        }
+		
+        [Test]
+        public void UnsupportedImportOptionReturnsReadableErrorMessage()
+        {
+            var input = @"
+@import (inline) ""import/twice/with/different/paths.less"";
+";
+
+            AssertError("Unsupported @import option", @"@import (inline) ""import/twice/with/different/paths.less"";", 1, 8, input);
+        }		
     }
 }

@@ -16,10 +16,12 @@ namespace dotless.Core.Utils
                 if (node is TNode)
                 {
                     var evaluated = node.Evaluate(env);
-                    if (evaluated is IEnumerable<Node>)
+                    var nodes = evaluated as IEnumerable<Node>;
+                    if (nodes != null)
                     {
-                        rules.InsertRange(i + 1, (IEnumerable<Node>)evaluated);
+                        rules.InsertRange(i + 1, nodes);
                         rules.RemoveAt(i);
+                        i--;
                     }
                     else
                     {

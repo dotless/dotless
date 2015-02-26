@@ -1,4 +1,7 @@
-﻿namespace dotless.Core.Parser.Tree
+﻿using System;
+using dotless.Core.Utils;
+
+namespace dotless.Core.Parser.Tree
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -40,6 +43,10 @@
             int blockIndex = env.MediaBlocks.Count;
             env.MediaBlocks.Add(this);
             env.MediaPath.Push(this);
+
+            env.Frames.Push(Ruleset);
+            NodeHelper.ExpandNodes<Import>(env, Ruleset.Rules);
+            env.Frames.Pop();
 
             var features = Features.Evaluate(env);
             var ruleset = Ruleset.Evaluate(env) as Ruleset;
@@ -284,6 +291,12 @@
             return Extensions.OfType<PartialExtender>()
                 .WhereExtenderMatches(selection)
                 .ToArray();
+        }
+
+        [Obsolete("This method doesn't return the correct results. Use FindPartialExtensions(Context) instead.", false)]
+        public PartialExtender[] FindPartialExtensions(string selection)
+        {
+            return Extensions.OfType<PartialExtender>().Where(e => selection.Contains(e.BaseSelector.ToString().Trim())).ToArray();
         }
     }
 }

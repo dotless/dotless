@@ -1704,5 +1704,35 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
 
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void MixinCallsInNestedRulesetsHaveCorrectVariableScope() {
+            var input = @"
+.opacity(@opacity) {
+  opacity: @opacity;
+  // IE8 filter
+  @opacity-ie: (@opacity * 100);
+  filter: ~""alpha(opacity=@{opacity-ie})"";
+}
+
+.test {
+  .opacity(.2);
+  .nested {
+    .opacity(.5);
+  }
+}";
+
+            var expected = @"
+.test {
+  opacity: 0.2;
+  filter: alpha(opacity=20);
+}
+.test .nested {
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+}";
+
+            AssertLess(input, expected);
+        }
     }
 }

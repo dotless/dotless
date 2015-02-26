@@ -875,6 +875,8 @@ namespace dotless.Core.Parser
 
             Combinator c = Combinator(parser);
 
+            const string parenthesizedTokenRegex = @"\(((?<N>\()|(?<-N>\))|[^()@]*)+\)";
+
             PushComments();
             GatherComments(parser); // to collect, combinator must have picked up something which would require memory anyway
             Node e = ExtendRule(parser) 
@@ -883,7 +885,7 @@ namespace dotless.Core.Parser
                 || parser.Tokenizer.Match('*') 
                 || parser.Tokenizer.Match('&') 
                 || Attribute(parser) 
-                || parser.Tokenizer.MatchAny(@"\([^)@]+\)") 
+                || parser.Tokenizer.MatchAny(parenthesizedTokenRegex)
                 || parser.Tokenizer.Match(@"[\.#](?=@\{)") 
                 || VariableCurly(parser);
 
@@ -1161,8 +1163,18 @@ namespace dotless.Core.Parser
             var index = parser.Tokenizer.Location.Index;
 
             var importMatch = parser.Tokenizer.Match(@"@import(-(once))?\s+");
+            if (!importMatch) {
+                return null;
+            }
 
-            if (importMatch && (path = Quoted(parser) || Url(parser)))
+            var optionIndex = parser.Tokenizer.Location.Index;
+            var optionsMatch = parser.Tokenizer.Match(@"\((?<keywords>.*)\)");
+            if (optionsMatch) {
+                throw new ParsingException("Unsupported @import option", parser.Tokenizer.GetNodeLocation(optionIndex));
+            }
+
+
+            if (path = Quoted(parser) || Url(parser))
             {
                 const bool isOnce = true;
                 
