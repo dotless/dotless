@@ -1,4 +1,5 @@
-﻿using dotless.Core.Utils;
+﻿using System;
+using dotless.Core.Utils;
 
 namespace dotless.Core.Parser.Tree
 {
@@ -290,6 +291,12 @@ namespace dotless.Core.Parser.Tree
             return Extensions.OfType<PartialExtender>()
                 .WhereExtenderMatches(selection)
                 .ToArray();
+        }
+
+        [Obsolete("This method doesn't return the correct results. Use FindPartialExtensions(Context) instead.", false)]
+        public PartialExtender[] FindPartialExtensions(string selection)
+        {
+            return Extensions.OfType<PartialExtender>().Where(e => selection.Contains(e.BaseSelector.ToString().Trim())).ToArray();
         }
     }
 }

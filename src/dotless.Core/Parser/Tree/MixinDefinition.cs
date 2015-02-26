@@ -114,6 +114,13 @@ namespace dotless.Core.Parser.Tree
             return frame;
         }
 
+        [Obsolete("This method will be removed in a future release. Use Evaluate(List<NamedArgument>, Env) instead.", false)]
+        public Ruleset Evaluate(List<NamedArgument> args, Env env, List<Ruleset> closureFrames)
+        {
+            var childEnv = env.CreateChildEnvWithClosure(new Closure() {Context = closureFrames, Ruleset = this});
+            return Evaluate(args, childEnv);
+        }
+
         public Ruleset Evaluate(List<NamedArgument> args, Env env)
         {
             var frame = EvaluateParams(env, args);
