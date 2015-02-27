@@ -1,3 +1,6 @@
+using dotless.Core.Parser.Infrastructure;
+using dotless.Test.Plugins;
+
 namespace dotless.Test.Specs
 {
     using NUnit.Framework;
@@ -692,6 +695,23 @@ body/* COMMENT */,
             var expected = @"/*A*/12px/*B*/ !important";
 
             AssertExpressionWithAndWithoutComments(expected, input);
+        }
+
+        [Test]
+        public void ImportantCommentIsLeftInOutputWithMinificationEnabled()
+        {
+            var input = @"/*! don't remove me */";
+
+            DefaultEnv = () => {
+                var env = new Env();
+                env.AddPlugin(new PassThroughAfterPlugin());
+                env.AddPlugin(new PassThroughBeforePlugin());
+                env.KeepFirstSpecialComment = true;
+                env.Compress = true;
+                return env;
+            };
+
+            AssertLessUnchanged(input, DefaultParser());
         }
     }
 }

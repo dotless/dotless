@@ -15,7 +15,7 @@
         {
             Value = value;
             IsValidCss = !value.StartsWith("//");
-            IsSpecialCss = value.StartsWith("/**");
+            IsSpecialCss = value.StartsWith("/**") || value.StartsWith("/*!");
             IsCSSHack = value == "/**/" || value == "/*\\*/";
         }
 
