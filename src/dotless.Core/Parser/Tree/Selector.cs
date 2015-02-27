@@ -8,7 +8,6 @@
 
     public class Selector : Node
     {
-        private string _css;
         public NodeList<Element> Elements { get; set; }
 
         public Selector(IEnumerable<Element> elements)
@@ -53,22 +52,13 @@
 
         public override void AppendCSS(Env env)
         {
-            if (_css != null)
-            {
-                env.Output.Append(_css);
-                return;
-            }
-
             env.Output.Push();
 
             if (Elements[0].Combinator.Value == "")
                 env.Output.Append(' ');
 
             env.Output.Append(Elements);
-
-            _css = env.Output.Pop().ToString();
-
-            env.Output.Append(_css);
+            env.Output.Append(env.Output.Pop().ToString());
         }
 
         public override void Accept(IVisitor visitor)

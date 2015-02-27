@@ -1,3 +1,6 @@
+using dotless.Core.Parser.Infrastructure;
+using dotless.Test.Plugins;
+
 namespace dotless.Test.Specs
 {
     using System;
@@ -1731,6 +1734,35 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
   opacity: 0.5;
   filter: alpha(opacity=50);
 }";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void OutputMinificationDoesNotBreakMixinCalls() {
+            var input = @"
+.pull-right > .dropdown-menu {
+  right: 0;
+  left: auto;
+}
+
+@media (min-width: 768px) {
+  .navbar-right {
+    .dropdown-menu {
+      .pull-right > .dropdown-menu();
+    }
+  }
+}";
+
+            var expected = @"
+.pull-right>.dropdown-menu{right:0;left:auto}@media (min-width:768px){.navbar-right .dropdown-menu{right:0;left:auto}}";
+
+            DefaultEnv = () =>
+            {
+                var env = new Env();
+                env.Compress = true;
+                return env;
+            };
 
             AssertLess(input, expected);
         }
