@@ -2,7 +2,7 @@
 include .\psake_ext.ps1
 
 properties {
-    $config = 'debug'
+    $config = 'release'
     $showtestresult = $FALSE
     $base_dir = resolve-path .
     $lib_dir = "$base_dir\lib\"
@@ -288,7 +288,8 @@ task NuGetPackage -depends Merge {
     Copy-Item $build_dir\Dotless.nuspec $target
     Copy-Item $source_dir\web.config.transform $target\content\
     Copy-Item $build_dir\dotless.Core.dll $target\lib\
-    Copy-Item $build_dir\dotless.compiler.exe $target\tool\
+    Copy-Item $build_dir\dotless.Core.pdb $target\lib\
+    Copy-Item $build_dir\dotless.compiler.pdb $target\tool\
     Copy-Item acknowledgements.txt $target
     Copy-Item license.txt $target
         
@@ -303,6 +304,7 @@ task NuGetClientOnlyPackage -depends Merge {
     
     Copy-Item $build_dir\DotlessClientOnly.nuspec $target
     Copy-Item $build_dir\dotless.ClientOnly.dll $target\lib\
+    Copy-Item $build_dir\dotless.ClientOnly.pdb $target\lib\
     Copy-Item acknowledgements.txt $target
     Copy-Item license.txt $target
         
