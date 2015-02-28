@@ -29,6 +29,8 @@
 //
 
 
+using System.Text.RegularExpressions;
+
 #pragma warning disable 665
 // ReSharper disable RedundantNameQualifier
 
@@ -1123,7 +1125,7 @@ namespace dotless.Core.Parser
                 {
                     value = Font(parser);
                 }
-                else if (name == "filter")
+                else if (MatchesProperty("filter", name))
                 {
                     value = FilterExpressionList(parser) || Value(parser);
                 }
@@ -1154,6 +1156,16 @@ namespace dotless.Core.Parser
             Recall(parser, memo);
 
             return null;
+        }
+
+        private bool MatchesProperty(string expectedPropertyName, string actualPropertyName)
+        {
+            if (string.Equals(expectedPropertyName, actualPropertyName))
+            {
+                return true;
+            }
+
+            return Regex.IsMatch(actualPropertyName, string.Format(@"-(\w+)-{0}", expectedPropertyName));
         }
 
         private CssFunctionList FilterExpressionList(Parser parser)

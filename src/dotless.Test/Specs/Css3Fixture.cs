@@ -499,6 +499,13 @@ audio:not([controls]) {
         }
 
         [Test]
+        public void Css3FilterVendorPrefixes()
+        {
+            AssertLessUnchanged("-webkit-filter: saturate(200%);");
+            AssertLessUnchanged("-moz-filter: saturate(200%);");
+        }
+
+        [Test]
         public void Css3FilterMultipleFunctions()
         {
             AssertLessUnchanged("filter: invert(100%) opacity(50%) saturate(200%);");
