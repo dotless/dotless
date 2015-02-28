@@ -508,7 +508,7 @@ audio:not([controls]) {
         [Test]
         public void Css3FilterWithEvaluatedValues()
         {
-            AssertLess("filter: saturate(10px + 5);", "filter: blur(15px);");
+            AssertLess("filter: blur(10px + 5);", "filter: blur(15px);");
         }
 
 #if CSS3EXPERIMENTAL
