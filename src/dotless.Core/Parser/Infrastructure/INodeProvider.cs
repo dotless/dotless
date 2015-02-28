@@ -14,6 +14,8 @@ namespace dotless.Core.Parser.Infrastructure
         Rule Rule(string name, Node value, bool variadic, NodeLocation location);
         Ruleset Ruleset(NodeList<Selector> selectors, NodeList rules, NodeLocation location);
 
+        CssFunction CssFunction(string name, Node value, NodeLocation location);
+
         //entities
         Alpha Alpha(Node value, NodeLocation location);
         Call Call(string name, NodeList<Node> arguments, NodeLocation location);

@@ -37,6 +37,11 @@ namespace dotless.Core.Parser.Infrastructure
             return new Ruleset(selectors, rules) { Location = location };
         }
 
+        public CssFunction CssFunction(string name, Node value, NodeLocation location)
+        {
+            return new CssFunction() { Name = name, Value = value, Location = location };
+        }
+
         public Alpha Alpha(Node value, NodeLocation location)
         {
             return new Alpha(value) { Location = location };
