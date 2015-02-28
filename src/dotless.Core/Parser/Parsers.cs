@@ -1116,11 +1116,21 @@ namespace dotless.Core.Parser
                 var preValueComments = GatherAndPullComments(parser);
 
                 if ((name[0] != '@') && (parser.Tokenizer.Peek(@"([^#@+\/*`(;{}'""-]*);")))
+                {
                     value = parser.Tokenizer.Match(@"[^#@+\/*`(;{}'""-]*");
+                } 
                 else if (name == "font")
+                {
                     value = Font(parser);
+                }
+                else if (name == "filter")
+                {
+                    value = FilterExpressionList(parser) || Value(parser);
+                }
                 else
+                {
                     value = Value(parser);
+                }
 
                 var postValueComments = GatherAndPullComments(parser);
 
@@ -1144,6 +1154,58 @@ namespace dotless.Core.Parser
             Recall(parser, memo);
 
             return null;
+        }
+
+        private CssFunctionList FilterExpressionList(Parser parser)
+        {
+            var list = new CssFunctionList();
+            Node expression;
+            while (expression = FilterExpression(parser))
+            {
+                list.Add(expression);
+            }
+
+            if (!list.Any())
+            {
+                return null;
+            }
+
+            return list;
+        }
+
+        private Node FilterExpression(Parser parser)
+        {
+            const string functionNameRegex =
+                @"\s*(blur|brightness|contrast|drop-shadow|grayscale|hue-rotate|invert|opacity|saturate|sepia|url)\s*\(";
+
+            var index = parser.Tokenizer.Location.Index;
+
+            GatherComments(parser);
+
+            var url = Url(parser);
+            if (url)
+            {
+                return url;
+            }
+
+            var nameToken = parser.Tokenizer.Match(functionNameRegex);
+            if (nameToken == null)
+            {
+                return null;
+            }
+
+            var value = Value(parser);
+            if (value == null)
+            {
+                return null;
+            }
+
+            Expect(parser, ')');
+
+            var result = NodeProvider.CssFunction(nameToken.Match.Groups[1].Value.Trim(), value, parser.Tokenizer.GetNodeLocation(index));
+            result.PreComments = PullComments();
+            result.PostComments = GatherAndPullComments(parser);
+            return result;
         }
 
         //

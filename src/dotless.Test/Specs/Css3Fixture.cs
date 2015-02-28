@@ -482,6 +482,35 @@ audio:not([controls]) {
             AssertLess(input, expected);
         }
 
+        [Test]
+        public void Css3FilterFunctionsPassThrough()
+        {
+            AssertLessUnchanged("filter: url(resources.svg#c1);");
+            AssertLessUnchanged("filter: blur(5px);");
+            AssertLessUnchanged("filter: brightness(0.5);");
+            AssertLessUnchanged("filter: contrast(200%);");
+            AssertLessUnchanged("filter: drop-shadow(16px 16px 10px black);");
+            AssertLessUnchanged("filter: grayscale(100%);");
+            AssertLessUnchanged("filter: hue-rotate(90deg);");
+            AssertLessUnchanged("filter: invert(100%);");
+            AssertLessUnchanged("filter: opacity(50%);");
+            AssertLessUnchanged("filter: saturate(200%);");
+            AssertLessUnchanged("filter: sepia(100%);");
+        }
+
+        [Test]
+        public void Css3FilterMultipleFunctions()
+        {
+            AssertLessUnchanged("filter: invert(100%) opacity(50%) saturate(200%);");
+            AssertLess("filter: /* test */ invert(100%) /* test */ opacity(50%) /* test */ saturate(200%);","filter: /* test */invert(100%)/* test */ opacity(50%)/* test */ saturate(200%);");
+        }
+
+        [Test]
+        public void Css3FilterWithEvaluatedValues()
+        {
+            AssertLess("filter: saturate(10px + 5);", "filter: blur(15px);");
+        }
+
 #if CSS3EXPERIMENTAL
         [Test]
         public void GridRepeatingPatternSupported()
