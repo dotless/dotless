@@ -590,8 +590,8 @@ namespace dotless.Test.Specs
 }
 
 .light1 { .light(transparent) }
-.light2 { .light(alpha(black, -0.1)) }
-.light3 { .light(alpha(black, -0.9)) }
+.light2 { .light(alpha(black, -10)) }
+.light3 { .light(alpha(black, -90)) }
 
 ";
 

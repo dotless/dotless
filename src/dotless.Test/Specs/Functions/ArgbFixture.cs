@@ -10,7 +10,7 @@
         {
             AssertExpression("#ff123456", "argb(#123456)");
             AssertExpression("#00000000", "argb(transparent)");
-            AssertExpression("#80ffffff", "argb(alpha(#ffffff, -0.5))");
+            AssertExpression("#80ffffff", "argb(alpha(#ffffff, -50))");
         }
     }
 }

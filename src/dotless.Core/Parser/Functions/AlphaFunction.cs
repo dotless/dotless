@@ -12,10 +12,7 @@
 
         protected override Node EditColor(Color color, Number number)
         {
-            var alpha = number.Value;
-
-            if (number.Unit == "%")
-                alpha = alpha/100d;
+            var alpha = number.Value/100d;
 
             return new Color(color.R, color.G, color.B, ProcessAlpha( color.Alpha, alpha));
         }
