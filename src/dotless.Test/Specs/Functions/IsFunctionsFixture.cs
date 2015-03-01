@@ -75,7 +75,7 @@ namespace dotless.Test.Specs.Functions
             AssertExpression("true", "isem(0em)");
             AssertExpression("true", "isem(3em + 2em)");
             AssertExpression("true", "isem(3em / 2)");
-            AssertExpression("false", "isem(3em / 2em)");
+            AssertExpression("true", "isem(3em / 2em)");
             AssertExpression("false", "isem(0)");
             AssertExpression("false", "isem(1rem)");
             AssertExpression("false", "isem(red)");
