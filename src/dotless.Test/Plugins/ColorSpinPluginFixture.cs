@@ -16,7 +16,7 @@ namespace dotless.Test.Plugins
         public void Setup()
         {
             DefaultEnv = () => {
-                Env env = new Env();
+                Env env = new Env(null);
                 env.AddPlugin(new ColorSpinPlugin(60));
                 return env;
             };

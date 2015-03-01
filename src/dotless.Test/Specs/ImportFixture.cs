@@ -797,6 +797,44 @@ body {
 ";
 
             AssertError("Unsupported @import option", @"@import (inline) ""import/twice/with/different/paths.less"";", 1, 8, input);
+        }
+		
+
+        [Test]
+        public void VariableInterpolationInQuotedCssImport()
+        {
+            var input =
+                @"
+@var: ""foo"";
+
+@import ""@{var}/bar.css"";
+";
+
+            var expected =
+                @"
+@import ""foo/bar.css"";
+";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void VariableInterpolationInQuotedLessImport()
+        {
+            var input =
+                @"
+@component: ""color"";
+
+@import ""lib/@{component}.less"";
+";
+
+            var expected =
+                @"
+body {
+  background-color: foo;
+}";
+
+            AssertLess(input, expected, GetParser());
         }		
     }
 }

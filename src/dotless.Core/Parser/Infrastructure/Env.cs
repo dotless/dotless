@@ -34,13 +34,21 @@ namespace dotless.Core.Parser.Infrastructure
         public bool DisableColorCompression { get; set; }
         public bool KeepFirstSpecialComment { get; set; }
         public bool IsFirstSpecialCommentOutput { get; set; }
+        public Parser Parser { get; set; }
 
-        public Env() : this(null, null)
+        public Env() : this(new Parser())
         {
         }
 
-        protected Env(Stack<Ruleset> frames, Dictionary<string, Type> functions)
+        public Env(Parser parser) : this(parser, null, null)
         {
+        }
+
+        protected Env(Parser parser, Stack<Ruleset> frames, Dictionary<string, Type> functions) : this(frames, functions) {
+            Parser = parser;
+        }
+
+        protected Env(Stack<Ruleset> frames, Dictionary<string, Type> functions) {
             Frames = frames ?? new Stack<Ruleset>();
             Output = new Output(this);
             MediaPath = new Stack<Media>();
@@ -72,6 +80,7 @@ namespace dotless.Core.Parser.Infrastructure
         {
             return new Env(null, _functionTypes)
             {
+                Parser = Parser,
                 Parent = this,
                 Debug = Debug,
                 Compress = Compress,

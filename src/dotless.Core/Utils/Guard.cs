@@ -35,7 +35,7 @@ namespace dotless.Core.Utils
 
             var expected = typeof (TExpected).Name.ToLowerInvariant();
 
-            var message = string.Format("Expected {0} in {1}, found {2}", expected, @in, actual.ToCSS(new Env()));
+            var message = string.Format("Expected {0} in {1}, found {2}", expected, @in, actual.ToCSS(new Env(null)));
 
             throw new ParsingException(message, location);
         }
@@ -48,7 +48,7 @@ namespace dotless.Core.Utils
             var expected1 = typeof(TExpected1).Name.ToLowerInvariant();
             var expected2 = typeof(TExpected2).Name.ToLowerInvariant();
 
-            var message = string.Format("Expected {0} or {1} in {2}, found {3}", expected1, expected2, @in, actual.ToCSS(new Env()));
+            var message = string.Format("Expected {0} or {1} in {2}, found {3}", expected1, expected2, @in, actual.ToCSS(new Env(null)));
 
             throw new ParsingException(message, location);
         }

@@ -1071,7 +1071,7 @@ namespace dotless.Core.Parser
                     (val = Quoted(parser) || parser.Tokenizer.Match(@"[\w-]+")))
                     // Would be nice if this wasn't one block - we could make Attribute node
                     // see CommentsInSelectorAttributes in CommentsFixture.cs
-                    attr = string.Format("{0}{1}{2}", key, op, val.ToCSS(new Env())); 
+                    attr = string.Format("{0}{1}{2}", key, op, val.ToCSS(new Env(null))); 
                 else
                     attr = key.ToString();
             }

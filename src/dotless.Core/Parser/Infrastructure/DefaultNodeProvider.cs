@@ -99,12 +99,12 @@ namespace dotless.Core.Parser.Infrastructure
 
         public Import Import(Url path, IImporter importer, Value features, bool isOnce, NodeLocation location)
         {
-            return new Import(path, importer, features, isOnce) { Location = location };
+            return new Import(path, features, isOnce) { Location = location };
         }
 
         public Import Import(Quoted path, IImporter importer, Value features, bool isOnce, NodeLocation location)
         {
-            return new Import(path, importer, features, isOnce) { Location = location };
+            return new Import(path, features, isOnce) { Location = location };
         }
 
         public Directive Directive(string name, string identifier, NodeList rules, NodeLocation location)

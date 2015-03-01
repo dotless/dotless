@@ -24,7 +24,7 @@ namespace dotless.Core.Importers
         public List<string> Imports { get; set; }
         
         public Func<Parser> Parser { get; set; }
-        protected readonly List<string> _paths = new List<string>();
+        private readonly List<string> _paths = new List<string>();
 
         /// <summary>
         ///  The raw imports of every @import node, for use with @import
@@ -197,10 +197,14 @@ namespace dotless.Core.Importers
             return ImportAction.ImportLess;
         }
 
+        public IDisposable BeginScope(Import parentScope) {
+            return new ImportScope(this, Path.GetDirectoryName(parentScope.Path));
+        }
+
         /// <summary>
         ///  Uses the paths to adjust the file path
         /// </summary>
-        protected string GetAdjustedFilePath(string path, List<string> pathList)
+        protected string GetAdjustedFilePath(string path, IEnumerable<string> pathList)
         {
             return pathList.Concat(new[] { path }).AggregatePaths(CurrentDirectory);
         }
@@ -300,6 +304,19 @@ namespace dotless.Core.Importers
                 return RootPath + url;
             }
             return url;
+        }
+
+        private class ImportScope : IDisposable {
+            private readonly Importer importer;
+
+            public ImportScope(Importer importer, string path) {
+                this.importer = importer;
+                this.importer._paths.Add(path);
+            }
+
+            public void Dispose() {
+                this.importer._paths.RemoveAt(this.importer._paths.Count - 1);
+            }
         }
     }
 
