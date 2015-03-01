@@ -72,10 +72,7 @@
             var unit = Unit;
             var otherUnit = dim.Unit;
 
-            if (unit == otherUnit && op.Operator == "/")
-                unit = "";
-
-            else if (string.IsNullOrEmpty(unit))
+            if (string.IsNullOrEmpty(unit))
                 unit = otherUnit;
 
             else if (!string.IsNullOrEmpty(otherUnit))

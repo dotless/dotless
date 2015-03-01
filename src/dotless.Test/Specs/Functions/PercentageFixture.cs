@@ -11,7 +11,7 @@ namespace dotless.Test.Specs.Functions
             AssertExpression("2500%", "percentage(25)");
             AssertExpression("50%", "percentage(.5)");
             AssertExpression("100%", "percentage(1)");
-            AssertExpression("25%", "percentage(25px / 100px)");
+            AssertExpression("25%", "percentage(25 / 100)");
         }
 
         [Test]
