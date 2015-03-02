@@ -167,6 +167,11 @@ namespace dotless.Core.Parser.Infrastructure
             return new Extend(exact,partial) { Location = location };
         }
 
+        public Node Attribute(Node key, Node op, Node val, NodeLocation location)
+        {
+            return new Attribute(key, op, val) { Location = location };
+        }
+
         public Paren Paren(Node value, NodeLocation location)
         {
             return new Paren(value) { Location = location };

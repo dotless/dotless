@@ -596,6 +596,61 @@ Recursive variable definition for @var on line 2 in file 'test.less':
 ";
 
             AssertError("missing semicolon in expression", "@v2:", 2, 3, input);
+        }
+		
+
+        [Test]
+        public void VariablesInAttributeSelectorValue() {
+            var input = @"
+@breakpoint-alias: ""desktop"";
+[class*=""@{breakpoint-alias}-rule""] {
+    margin-top: 0;
+    zoom: 1; 
+}";
+
+            var expected = @"
+[class*=""desktop-rule""] {
+  margin-top: 0;
+  zoom: 1;
+}";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void VariablesAsAttributeName() {
+            var input = @"
+@key: ""desktop"";
+[@{key}=""value""] {
+    margin-top: 0;
+    zoom: 1; 
+}";
+
+            var expected = @"
+[""desktop""=""value""] {
+  margin-top: 0;
+  zoom: 1;
+}";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void VariablesAsPartOfAttributeNameNotAllowed() {
+            var input = @"
+@key: ""desktop"";
+[@{key}-something=""value""] {
+    margin-top: 0;
+    zoom: 1; 
+}";
+
+            var expected = @"
+[""desktop""=""value""] {
+  margin-top: 0;
+  zoom: 1;
+}";
+
+            AssertError("Expected ']' but found '\"'", "[@{key}-something=\"value\"] {", 2, 17, input);
         }		
     }
 }
