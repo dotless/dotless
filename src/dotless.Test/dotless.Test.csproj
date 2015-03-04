@@ -98,6 +98,7 @@
     <Compile Include="Specs\Functions\LengthFixture.cs" />
     <Compile Include="Specs\Functions\ExtractFixture.cs" />
     <Compile Include="Specs\Functions\UnitFixture.cs" />
+    <Compile Include="Specs\GuardedRulesetsFixture.cs" />
     <Compile Include="Specs\LineNumbersFixture.cs" />
     <Compile Include="Specs\MediaFixture.cs" />
     <Compile Include="Specs\Functions\ColorFixture.cs" />

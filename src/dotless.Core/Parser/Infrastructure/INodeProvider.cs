@@ -28,6 +28,8 @@ namespace dotless.Core.Parser.Infrastructure
         Script Script(string script, NodeLocation location);
         Paren Paren(Node node, NodeLocation location);
 
+        GuardedRuleset GuardedRuleset(NodeList<Selector> selectors, NodeList rules, Condition condition, NodeLocation location);
+
         //mixins
         MixinCall MixinCall(NodeList<Element> elements, List<NamedArgument> arguments, bool important, NodeLocation location);
         MixinDefinition MixinDefinition(string name, NodeList<Rule> parameters, NodeList rules, Condition condition, bool variadic, NodeLocation location);
