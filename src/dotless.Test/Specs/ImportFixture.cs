@@ -579,7 +579,7 @@ from line 3 in file 'test.less':
 
             var parser = GetParser();
 
-            AssertError("You are importing a file ending in .less that cannot be found.", input, parser);
+            AssertError("You are importing a file ending in .less that cannot be found (\"external1.less\").", input, parser);
         }
 
         [Test]
