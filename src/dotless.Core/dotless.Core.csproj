@@ -124,6 +124,7 @@
     <Compile Include="Parser\Tree\Root.cs" />
     <Compile Include="Parser\Zone.cs" />
     <Compile Include="Plugins\ColorSpinPlugin.cs" />
+    <Compile Include="Plugins\DelegateVisitor.cs" />
     <Compile Include="Plugins\GenericPluginConfigurator.cs" />
     <Compile Include="Plugins\IFunctionPlugin.cs" />
     <Compile Include="Plugins\IPlugin.cs" />
@@ -230,6 +231,7 @@
     <Compile Include="Utils\HslColor.cs" />
     <Compile Include="Utils\NodeHelper.cs" />
     <Compile Include="Utils\NumberExtensions.cs" />
+    <Compile Include="Utils\ObjectExtensions.cs" />
     <Compile Include="Utils\StringExtensions.cs" />
   </ItemGroup>
   <ItemGroup>

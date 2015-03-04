@@ -1,3 +1,7 @@
+using System;
+using System.Linq;
+using dotless.Core.Plugins;
+
 namespace dotless.Core.Parser.Tree
 {
     using System.IO;
@@ -32,23 +36,23 @@ namespace dotless.Core.Parser.Tree
         public Node Features { get; set; }
 
         /// <summary>
-        ///  Whether it is a "once" import
+        ///  The type of import: reference, inline, less, css, once, multiple or optional
         /// </summary>
-        public bool IsOnce { get; set; }
+        public ImportOptions ImportOptions { get; set; }
 
         /// <summary>
         /// The action to perform with this node
         /// </summary>
         private ImportAction? _importAction;
 
-        public Import(Quoted path, Value features, bool isOnce)
-            : this((Node)path, features, isOnce)
+        public Import(Quoted path, Value features, ImportOptions option)
+            : this((Node)path, features, option)
         {
             OriginalPath = path;
         }
 
-        public Import(Url path, Value features, bool isOnce)
-            : this((Node)path, features, isOnce)
+        public Import(Url path, Value features, ImportOptions option)
+            : this((Node)path, features, option)
         {
             OriginalPath = path;
             Path = path.GetUnadjustedUrl();
@@ -66,14 +70,14 @@ namespace dotless.Core.Parser.Tree
             _importAction = ImportAction.LeaveImport;
         }
 
-        private Import(Node path, Value features, bool isOnce)
+        private Import(Node path, Value features, ImportOptions option)
         {
             if (path == null)
                 throw new ParserException("Imports do not allow expressions");
 
             OriginalPath = path;
             Features = features;
-            IsOnce = isOnce;
+            ImportOptions = option;
         }
 
         private ImportAction GetImportAction(IImporter importer)
@@ -160,11 +164,50 @@ namespace dotless.Core.Parser.Tree
 
             using (env.Parser.Importer.BeginScope(this))
             {
+	            if (IsReference || IsOptionSet(ImportOptions, ImportOptions.Reference))
+	            {
+	                // Walk the parse tree and mark all nodes as references.
+	                IsReference = true;
+
+	                IVisitor referenceImporter = null;
+	                referenceImporter = DelegateVisitor.For<Node>(node => {
+	                    var ruleset = node as Ruleset;
+	                    if (ruleset != null)
+	                    {
+	                        if (ruleset.Selectors != null)
+	                        {
+	                            ruleset.Selectors.Accept(referenceImporter);
+	                            ruleset.Selectors.IsReference = true;
+	                        }
+
+	                        if (ruleset.Rules != null)
+	                        {
+	                            ruleset.Rules.Accept(referenceImporter);
+	                            ruleset.Rules.IsReference = true;
+	                        }
+	                    }
+
+	                    var media = node as Media;
+	                    if (media != null)
+	                    {
+	                        media.Ruleset.Accept(referenceImporter);
+	                    }
+
+	                    var nodeList = node as NodeList;
+	                    if (nodeList != null)
+	                    {
+	                        nodeList.Accept(referenceImporter);
+	                    }
+	                    node.IsReference = true;
+
+	                    return node;
+	                });
+	                Accept(referenceImporter);
+	            }
                 NodeHelper.ExpandNodes<Import>(env, InnerRoot.Rules);
             }
 
             var rulesList = new NodeList(InnerRoot.Rules).ReducedFrom<NodeList>(this);
-
             if (features)
             {
                 return new Media(features, rulesList);
@@ -172,5 +215,20 @@ namespace dotless.Core.Parser.Tree
 
             return rulesList;
         }
+        private bool IsOptionSet(ImportOptions options, ImportOptions test)
+        {
+            return (options & test) == test;
+        }
+    }
+
+    [Flags]
+    public enum ImportOptions {
+        Once = 1,
+        Multiple = 2,
+        Optional = 4,
+        Css = 8,
+        Less = 16,
+        Inline = 32,
+        Reference = 64 
     }
 }
