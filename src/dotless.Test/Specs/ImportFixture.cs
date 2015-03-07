@@ -569,7 +569,7 @@ from line 3 in file 'test.less':
 
             var parser = GetParser();
 
-            AssertError(".less cannot import non local less files.", input, parser);
+            AssertError(".less cannot import non local less files [http://www.someone.com/external1.less].", input, parser);
         }
 
         [Test]
@@ -579,7 +579,7 @@ from line 3 in file 'test.less':
 
             var parser = GetParser();
 
-            AssertError("You are importing a file ending in .less that cannot be found (\"external1.less\").", input, parser);
+            AssertError("You are importing a file ending in .less that cannot be found [external1.less].", input, parser);
         }
 
         [Test]
@@ -589,7 +589,7 @@ from line 3 in file 'test.less':
 
             var parser = GetParser();
 
-            AssertError(".less cannot import non local less files.", input, parser);
+            AssertError(".less cannot import non local less files [http://www.someone.com/external1.less].", input, parser);
         }
 
         [Test]

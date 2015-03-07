@@ -168,7 +168,7 @@ namespace dotless.Core.Importers
             {
                 if (import.Path.EndsWith(".less"))
                 {
-                    throw new FileNotFoundException(".less cannot import non local less files.", import.Path);
+                    throw new FileNotFoundException(string.Format(".less cannot import non local less files [{0}].", import.Path), import.Path);
                 }
 
                 if (CheckIgnoreImport(import))
@@ -223,7 +223,7 @@ namespace dotless.Core.Importers
 
                 if (import.Path.EndsWith(".less", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    throw new FileNotFoundException(string.Format("You are importing a file ending in .less that cannot be found (\"{0}\").", import.Path), import.Path);
+                    throw new FileNotFoundException(string.Format("You are importing a file ending in .less that cannot be found [{0}].", file), file);
                 }
                 return ImportAction.LeaveImport;
             }
@@ -371,7 +371,7 @@ namespace dotless.Core.Importers
         /// <summary>
         /// Gets the text content of an embedded resource.
         /// </summary>
-        /// <param name="file">The path in the form: dll://AssemblyName/ResourceName</param>
+        /// <param name="file">The path in the form: dll://AssemblyName#ResourceName</param>
         /// <returns>The content of the resource</returns>
         public static string GetResource(string file, IFileReader fileReader, out string fileDependency)
         {
@@ -387,18 +387,11 @@ namespace dotless.Core.Importers
             {
                 fileDependency = match.Groups["Assembly"].Value;
 
-                if (!fileReader.DoesFileExist(fileDependency))
-                {
-                    throw new FileNotFoundException("Unable to locate assembly file [" + fileDependency + "]");
-                }
+                LoadFromCurrentAppDomain(loader, fileDependency);
 
-                loader._fileContents = fileReader.GetBinaryFileContents(fileDependency);
-
-                var domainSetup = new AppDomainSetup();
-                domainSetup.ApplicationBase = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                var domain = AppDomain.CreateDomain("LoaderDomain", null, domainSetup);
-                domain.DoCallBack(loader.LoadResource);
-                AppDomain.Unload(domain);
+                if (String.IsNullOrEmpty(loader._resourceContent))
+                    LoadFromNewAppDomain(loader, fileReader, fileDependency);
+                
             }
             catch (Exception)
             {
@@ -412,13 +405,50 @@ namespace dotless.Core.Importers
             return loader._resourceContent;
         }
 
+        private static void LoadFromCurrentAppDomain(ResourceLoader loader, String assemblyName)
+        {
+            foreach (var assembly in AppDomain.CurrentDomain
+                .GetAssemblies()
+                .Where(x => x.Location.EndsWith(assemblyName, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                if (assembly.GetManifestResourceNames().Contains(loader._resourceName))
+                {
+                    using (var stream = assembly.GetManifestResourceStream(loader._resourceName))
+                    using (var reader = new StreamReader(stream))
+                    {
+                        loader._resourceContent = reader.ReadToEnd();
+
+                        if (!String.IsNullOrEmpty(loader._resourceContent))
+                            return;
+                    }
+                }
+            }
+        }
+
+        private static void LoadFromNewAppDomain(ResourceLoader loader, IFileReader fileReader, String assemblyName)
+        {
+            if (!fileReader.DoesFileExist(assemblyName))
+            {
+                throw new FileNotFoundException("Unable to locate assembly file [" + assemblyName + "]");
+            }
+
+            loader._fileContents = fileReader.GetBinaryFileContents(assemblyName);
+
+            var domainSetup = new AppDomainSetup();
+            domainSetup.ApplicationBase = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var domain = AppDomain.CreateDomain("LoaderDomain", null, domainSetup);
+            domain.DoCallBack(loader.LoadResource);
+            AppDomain.Unload(domain);
+        }
+
         // Runs in the separate app domain
         private void LoadResource()
         {
             var assembly = Assembly.Load(_fileContents);
             using (var stream = assembly.GetManifestResourceStream(_resourceName))
+            using (var reader = new StreamReader(stream))
             {
-                _resourceContent = new StreamReader(stream).ReadToEnd();
+                _resourceContent = reader.ReadToEnd();
             }
         }
     }
