@@ -427,9 +427,9 @@ namespace dotless.Test.Specs
 }";
 
             AssertError(
-                "Positional arguments must appear before all named arguments.", 
-                "  .mixin(@c: 100, 3px);", 
-                8, 
+                "Positional arguments must appear before all named arguments.",
+                "  .mixin(@c: 100, 3px);",
+                8,
                 18,
                 "  .mixin(@c: 100, 3px);",
                 8,
@@ -446,12 +446,12 @@ namespace dotless.Test.Specs
 .cla {
   .clb(@a:23px, @b:12px);
 }";
-            
+
             var expected = @"
 .cla {
   background-position: 23px 12px;
 }";
-            
+
             AssertLess(input, expected);
         }
 
@@ -470,7 +470,7 @@ namespace dotless.Test.Specs
 .cla {
   background-position: 23px 12px;
 }";
-              AssertLess(input, expected);
+            AssertLess(input, expected);
         }
 
         [Test, Ignore("Unsupported")]
@@ -953,7 +953,7 @@ namespace dotless.Test.Specs
         public void CallSiteCorrectWhenMixinThrowsAnError()
         {
             var divideByZeroException = new DivideByZeroException();
-            
+
             var input = @"
 .mixin(@a: 5px) {
   width: 10px / @a;
@@ -1670,12 +1670,13 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
 .navbar-right .dropdown-menu {
   right: 0;
 }";
-            
+
             AssertLess(input, expected);
         }
 
         [Test]
-        public void ImplicitMixinWithSameNameAsExplicitUnaryMixinWorks() {
+        public void ImplicitMixinWithSameNameAsExplicitUnaryMixinWorks()
+        {
             var input = @"
 .link-reset {
   text-decoration: none !important;
@@ -1709,7 +1710,8 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
         }
 
         [Test]
-        public void MixinCallsInNestedRulesetsHaveCorrectVariableScope() {
+        public void MixinCallsInNestedRulesetsHaveCorrectVariableScope()
+        {
             var input = @"
 .opacity(@opacity) {
   opacity: @opacity;
@@ -1739,7 +1741,8 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
         }
 
         [Test]
-        public void OutputMinificationDoesNotBreakMixinCalls() {
+        public void OutputMinificationDoesNotBreakMixinCalls()
+        {
             var input = @"
 .pull-right > .dropdown-menu {
   right: 0;
@@ -1812,7 +1815,8 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
         }
 
         [Test]
-        public void SemicolonAsArgumentSeparator() {
+        public void SemicolonAsArgumentSeparator()
+        {
             var input = @"
 .mix(@p1, @p2) {
     test: @p1;
@@ -1831,6 +1835,6 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
 }";
 
             AssertLess(input, expected);
-        }		
+        }
     }
 }
