@@ -1,3 +1,5 @@
+using dotless.Core.Exceptions;
+
 namespace dotless.Core.Parser.Tree
 {
     using System.Collections.Generic;
@@ -82,23 +84,54 @@ namespace dotless.Core.Parser.Tree
 
         public List<Ruleset> Rulesets()
         {
-            return Rules.OfType<Ruleset>().ToList();
+            return (Rules ?? Enumerable.Empty<Node>()).OfType<Ruleset>().ToList();
         }
 
         public List<Closure> Find<TRuleset>(Env env, Selector selector, Ruleset self) where TRuleset : Ruleset
         {
-            self = self ?? this;
-            var rules = new List<Closure>();
+            var context = new Context();
+            context.AppendSelectors(new Context(), Selectors ?? new NodeList<Selector>());
 
-            var key = typeof(TRuleset).ToString() + ":" + selector.ToCSS(env);
+            var namespacedSelectorContext = new Context();
+            namespacedSelectorContext.AppendSelectors(context, new NodeList<Selector>(selector));
+
+            var namespacedSelector =
+                namespacedSelectorContext
+                    .Select(selectors => new Selector(selectors.SelectMany(s => s.Elements)))
+                    .First();
+
+            return FindInternal<TRuleset>(env, namespacedSelector, self, context).ToList();
+        }
+
+        private IEnumerable<Closure> FindInternal<TRuleset>(Env env, Selector selector, Ruleset self, Context context) where TRuleset : Ruleset
+        {
+            if (!selector.Elements.Any())
+            {
+                return Enumerable.Empty<Closure>();
+            }
+
+            string selectorCss = selector.ToCSS(env);
+            var key = typeof(TRuleset) + ":" + selectorCss;
             if (_lookups.ContainsKey(key))
                 return _lookups[key];
 
-            var validRulesets = Rulesets().Where(rule =>
-                {
-                    if (!typeof(TRuleset).IsAssignableFrom(rule.GetType()))
-                        return false;
+            self = self ?? this;
+            var rules = new List<Closure>();
 
+            var bestMatch = context.Select(selectors => new Selector(selectors.SelectMany(s => s.Elements)))
+                .Where(m => m.Elements.IsSubsequenceOf(selector.Elements, ElementValuesEqual))
+                .OrderByDescending(m => m.Elements.Count)
+                .FirstOrDefault();
+
+            if (bestMatch != null && bestMatch.Elements.Count == selector.Elements.Count)
+            {
+                // exact match, good to go
+                rules.Add(new Closure { Context = new List<Ruleset> { this }, Ruleset = this });
+            }
+
+
+            var validRulesets = Rulesets().OfType<TRuleset>().Where(rule =>
+                {
                     if (rule != self)
                         return true;
 
@@ -114,25 +147,38 @@ namespace dotless.Core.Parser.Tree
 
             foreach (var rule in validRulesets)
             {
-                if (rule.Selectors && rule.Selectors.Any(selector.Match))
+                if (rule.Selectors == null)
                 {
-                    if ((selector.Elements.Count == 1) || rule.Selectors.Any(s => s.ToCSS(new Env(null)) == selector.ToCSS(new Env(null))))
-                        rules.Add(new Closure { Ruleset = rule, Context = new List<Ruleset> { rule } });
-                    else if (selector.Elements.Count > 1)
-                    {
-                        var remainingSelectors = new Selector(new NodeList<Element>(selector.Elements.Skip(1)));
-                        var closures = rule.Find<Ruleset>(env, remainingSelectors, self);
-
-                        foreach (var closure in closures)
-                        {
-                            closure.Context.Insert(0, rule);
-                        }
-
-                        rules.AddRange(closures);
-                    }
+                    continue;
                 }
+
+                var childContext = new Context();
+                childContext.AppendSelectors(context, rule.Selectors);
+
+                var closures = rule.FindInternal<TRuleset>(env, selector, self, childContext);
+                foreach (var closure in closures)
+                {
+                    closure.Context.Insert(0, this);
+                    rules.Add(closure);
+                }
+
             }
             return _lookups[key] = rules;
+        }
+
+        private static bool ElementValuesEqual(Element e1, Element e2)
+        {
+            if (e1.Value == null && e2.Value == null)
+            {
+                return true;
+            }
+
+            if (e1.Value == null || e2.Value == null)
+            {
+                return false;
+            }
+
+            return string.Equals(e1.Value.Trim(), e2.Value.Trim());
         }
 
         public virtual MixinMatch MatchArguments(List<NamedArgument> arguments, Env env)

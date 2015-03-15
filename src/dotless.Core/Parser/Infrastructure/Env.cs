@@ -239,36 +239,35 @@ namespace dotless.Core.Parser.Infrastructure
         public IEnumerable<Closure> FindRulesets(Selector selector)
         {
             var matchingRuleSets = Frames
-                .Select(frame => frame.Find<Ruleset>(this, selector, null))
-                .Select(
-                    matchedClosuresList => matchedClosuresList.Where(
-                            matchedClosure => {
-                                if (!Frames.Any(frame => frame.IsEqualOrClonedFrom(matchedClosure.Ruleset)))
-                                    return true;
+                .Reverse()
+                .SelectMany(frame => frame.Find<Ruleset>(this, selector, null))
+                .Where(matchedClosure => {
+                        if (!Frames.Any(frame => frame.IsEqualOrClonedFrom(matchedClosure.Ruleset)))
+                            return true;
 
-                                var mixinDef = matchedClosure.Ruleset as MixinDefinition;
-                                if (mixinDef != null)
-                                    return mixinDef.Condition != null;
+                        var mixinDef = matchedClosure.Ruleset as MixinDefinition;
+                        if (mixinDef != null)
+                            return mixinDef.Condition != null;
 
-                                return false;
-                        }
-                    )
-                )
-                .FirstOrDefault(matchedClosuresList => matchedClosuresList.Count() != 0);
+                        return false;
+                    }).ToList();
 
-            if (matchingRuleSets != null) {
+            if (matchingRuleSets.Any())
+            {
                 return matchingRuleSets;
             }
 
-            if (Parent != null) {
-                matchingRuleSets = Parent.FindRulesets(selector);
+            if (Parent != null)
+            {
+                var parentRulesets = Parent.FindRulesets(selector);
+                if (parentRulesets != null)
+                {
+                    return parentRulesets;
+                }
             }
 
-            if (matchingRuleSets != null) {
-                return matchingRuleSets;
-            }
-
-            if (ClosureEnvironment != null) {
+            if (ClosureEnvironment != null)
+            {
                 return ClosureEnvironment.FindRulesets(selector);
             }
 
