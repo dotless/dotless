@@ -1836,5 +1836,31 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
 
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void RulesetDefinedWithParentSelectorIsCallableAsMixin()
+        {
+            var input = @"
+.foo {
+  &-bar {
+    color: blue;
+  }
+}
+
+.test {
+  .foo-bar;
+}
+";
+
+            var expected = @"
+.foo-bar {
+  color: blue;
+}
+.test {
+  color: blue;
+}";
+
+            AssertLess(input, expected);
+        }
     }
 }
