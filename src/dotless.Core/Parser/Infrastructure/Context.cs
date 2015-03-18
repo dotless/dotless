@@ -175,6 +175,10 @@
                 MergeElementsOnToSelectors(currentElements, newSelectors);
             }
 
+            foreach (var s in newSelectors.SelectMany(sel => sel)) {
+                MergeJoinedElements(s);
+            }
+
             Paths.AddRange(newSelectors);
         }
 
@@ -191,12 +195,38 @@
                 // if the previous thing in sel is a parent this needs to join on to it?
                 if (sel.Count > 0)
                 {
-                    sel[sel.Count - 1] = new Selector(sel[sel.Count - 1].Elements.Concat(elements));
+                    var previousSelector = sel[sel.Count - 1];
+                    var newSelector = sel[sel.Count - 1] = new Selector(previousSelector.Elements.Concat(elements));
                 }
                 else
                 {
                     sel.Add(new Selector(elements));
                 }
+            }
+        }
+
+        private static readonly char[] LeaveUnmerged = {'.', '#', ':'};
+
+        private void MergeJoinedElements(Selector selector) {
+            for (int i = 1; i < selector.Elements.Count; i++) {
+                var preivousElement = selector.Elements[i - 1];
+                var currentElement = selector.Elements[i];
+
+                if (string.IsNullOrEmpty(currentElement.Value)) {
+                    continue;
+                }
+
+                if (LeaveUnmerged.Contains(currentElement.Value[0])) {
+                    continue;
+                }
+
+                if (currentElement.Combinator.Value != "") {
+                    continue;
+                }
+
+                preivousElement.Value += currentElement.Value;
+                selector.Elements.RemoveAt(i);
+                i--;
             }
         }
 
