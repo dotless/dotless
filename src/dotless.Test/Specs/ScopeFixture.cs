@@ -114,7 +114,6 @@ namespace dotless.Test.Specs
             var expected =
                 @"
 .tiny-scope {
-  color: none;
   color: #998899;
 }
 ";

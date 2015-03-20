@@ -204,7 +204,7 @@ namespace dotless.Core.Parser.Infrastructure
             var previousNode = rule;
             foreach (var frame in Frames)
             {
-                var v = frame.Variable(name, DisableVariableRedefines ? null : previousNode);
+                var v = frame.Variable(name, null);
                 if (v)
                     return v;
                 previousNode = frame;
