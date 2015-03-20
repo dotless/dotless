@@ -87,6 +87,11 @@ namespace dotless.Core.Parser.Infrastructure
             return new Script(script) { Location = location };
         }
 
+        public GuardedRuleset GuardedRuleset(NodeList<Selector> selectors, NodeList rules, Condition condition, NodeLocation location)
+        {
+            return new GuardedRuleset(selectors, rules, condition) { Location = location };
+        }
+
         public MixinCall MixinCall(NodeList<Element> elements, List<NamedArgument> arguments, bool important, NodeLocation location)
         {
             return new MixinCall(elements, arguments, important) { Location = location };
@@ -97,14 +102,14 @@ namespace dotless.Core.Parser.Infrastructure
             return new MixinDefinition(name, parameters, rules, condition, variadic) { Location = location };
         }
 
-        public Import Import(Url path, IImporter importer, Value features, bool isOnce, NodeLocation location)
+        public Import Import(Url path, Value features, ImportOptions option, NodeLocation location)
         {
-            return new Import(path, importer, features, isOnce) { Location = location };
+            return new Import(path, features, option) { Location = location };
         }
 
-        public Import Import(Quoted path, IImporter importer, Value features, bool isOnce, NodeLocation location)
+        public Import Import(Quoted path, Value features, ImportOptions option, NodeLocation location)
         {
-            return new Import(path, importer, features, isOnce) { Location = location };
+            return new Import(path, features, option) { Location = location };
         }
 
         public Directive Directive(string name, string identifier, NodeList rules, NodeLocation location)
@@ -165,6 +170,11 @@ namespace dotless.Core.Parser.Infrastructure
         public Extend Extend(List<Selector> exact, List<Selector> partial, NodeLocation location)
         {
             return new Extend(exact,partial) { Location = location };
+        }
+
+        public Node Attribute(Node key, Node op, Node val, NodeLocation location)
+        {
+            return new Attribute(key, op, val) { Location = location };
         }
 
         public Paren Paren(Node value, NodeLocation location)

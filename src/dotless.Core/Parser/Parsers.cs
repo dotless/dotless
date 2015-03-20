@@ -29,6 +29,7 @@
 //
 
 
+using System;
 using System.Text.RegularExpressions;
 
 #pragma warning disable 665
@@ -73,7 +74,7 @@ namespace dotless.Core.Parser
             var root = new NodeList();
 
             GatherComments(parser);
-            while (node = MixinDefinition(parser) || ExtendRule(parser) || Rule(parser) || PullComments() || Ruleset(parser) ||
+            while (node = MixinDefinition(parser) || ExtendRule(parser) || Rule(parser) || PullComments() || GuardedRuleset(parser) || Ruleset(parser) ||
                           MixinCall(parser) || Directive(parser))
             {
                 NodeList comments;
@@ -367,6 +368,21 @@ namespace dotless.Core.Parser
         }
 
         //
+        // An interpolated Variable entity, such as `@{foo}`, in
+        //
+        //     [@{foo}="value"]
+        //
+        public Variable InterpolatedVariable(Parser parser) {
+            RegexMatchResult name;
+            var index = parser.Tokenizer.Location.Index;
+
+            if (parser.Tokenizer.CurrentChar == '@' && (name = parser.Tokenizer.Match(@"@\{(?<name>@?[a-zA-Z0-9_-]+)\}")))
+                return NodeProvider.Variable("@" + name.Match.Groups["name"].Value, parser.Tokenizer.GetNodeLocation(index));
+
+            return null;
+        }
+
+        //
         // A Variable entity as like in a selector e.g.
         //
         //     @{var} {
@@ -379,6 +395,44 @@ namespace dotless.Core.Parser
 
             if (parser.Tokenizer.CurrentChar == '@' && (name = parser.Tokenizer.Match(@"@\{([a-zA-Z0-9_-]+)\}")))
                 return NodeProvider.Variable("@" + name.Match.Groups[1].Value, parser.Tokenizer.GetNodeLocation(index));
+
+            return null;
+        }
+
+        /// 
+        /// A guarded ruleset placed inside another e.g.
+        /// 
+        ///    & when (@x = true) {
+        ///    }
+        /// 
+        public GuardedRuleset GuardedRuleset(Parser parser)
+        {
+            var selectors = new NodeList<Selector>();
+
+            var memo = Remember(parser);
+            var index = memo.TokenizerLocation.Index;
+
+            Selector s;
+            while (s = Selector(parser))
+            {
+                selectors.Add(s);
+                if (!parser.Tokenizer.Match(','))
+                    break;
+
+                GatherComments(parser);
+            }
+
+            if (parser.Tokenizer.Match(@"when"))
+            {
+                GatherAndPullComments(parser);
+
+                var condition = Expect(Conditions(parser), "Expected conditions after when (guard)", parser);
+                var rules = Block(parser);
+                
+                return NodeProvider.GuardedRuleset(selectors, rules, condition, parser.Tokenizer.GetNodeLocation(index));
+            }
+
+            Recall(parser, memo);
 
             return null;
         }
@@ -587,8 +641,11 @@ namespace dotless.Core.Parser
             var args = new List<NamedArgument>();
             if (parser.Tokenizer.Match('('))
             {
+                bool argumentListIsSemicolonSeparated = parser.Tokenizer.Peek(@".*;.*\)");
+                char expectedSeparator = argumentListIsSemicolonSeparated ? ';' : ',';
+
                 Expression arg;
-                while (arg = Expression(parser))
+                while (arg = Expression(parser, argumentListIsSemicolonSeparated))
                 {
                     var value = arg;
                     string name = null;
@@ -604,7 +661,7 @@ namespace dotless.Core.Parser
 
                     args.Add(new NamedArgument { Name = name, Value = value });
 
-                    if (!parser.Tokenizer.Match(',') && !parser.Tokenizer.Match(';'))
+                    if (!parser.Tokenizer.Match(expectedSeparator))
                         break;
                 }
                 Expect(parser, ')');
@@ -630,6 +687,11 @@ namespace dotless.Core.Parser
 
             PopComments();
             return null;
+        }
+
+        private Expression Expression(Parser parser, bool allowList)
+        {
+            return allowList ? ExpressionOrExpressionList(parser) : Expression(parser);
         }
 
         //
@@ -818,6 +880,37 @@ namespace dotless.Core.Parser
                    Call(parser) || Keyword(parser) || Script(parser);
         }
 
+        private Expression ExpressionOrExpressionList(Parser parser)
+        {
+            var memo = Remember(parser);
+
+            List<Expression> entities = new List<Expression>();
+
+            Expression entity;
+            while (entity = Expression(parser))
+            {
+                entities.Add(entity);
+
+                if (!parser.Tokenizer.Match(','))
+                {
+                    break;
+                }
+            }
+
+            if (entities.Count == 0)
+            {
+                Recall(parser, memo);
+                return null;
+            }
+
+            if (entities.Count == 1)
+            {
+                return entities[0];
+            }
+
+            return new Expression(entities.Cast<Node>(), true);
+        }
+
         //
         // A Rule terminator. Note that we use `Peek()` to check for '}',
         // because the `block` rule will be expecting it, but we still need to make sure
@@ -881,6 +974,12 @@ namespace dotless.Core.Parser
 
             PushComments();
             GatherComments(parser); // to collect, combinator must have picked up something which would require memory anyway
+
+            if (parser.Tokenizer.Peek("when"))
+            {
+                return null;
+            }
+
             Node e = ExtendRule(parser) 
                 || NonPseudoClassSelector(parser)
                 || PseudoClassSelector(parser)
@@ -1014,35 +1113,26 @@ namespace dotless.Core.Parser
             return parser.Tokenizer.Match(@"[a-zA-Z][a-zA-Z-]*[0-9]?") || parser.Tokenizer.Match('*');
         }
 
-        public TextNode Attribute(Parser parser)
+        public Node Attribute(Parser parser)
         {
-            var attr = "";
-            Node key;
-            Node val = null;
-
             var index = parser.Tokenizer.Location.Index;
 
             if (!parser.Tokenizer.Match('['))
                 return null;
 
-            if (key = parser.Tokenizer.Match(@"(\\.|[a-z0-9_-])+", true) || Quoted(parser))
+            Node key = InterpolatedVariable(parser) || parser.Tokenizer.Match(@"(\\.|[a-z0-9_-])+", true) || Quoted(parser);
+
+            if (!key)
             {
-                Node op;
-                if ((op = parser.Tokenizer.Match(@"[|~*$^]?=")) &&
-                    (val = Quoted(parser) || parser.Tokenizer.Match(@"[\w-]+")))
-                    // Would be nice if this wasn't one block - we could make Attribute node
-                    // see CommentsInSelectorAttributes in CommentsFixture.cs
-                    attr = string.Format("{0}{1}{2}", key, op, val.ToCSS(new Env())); 
-                else
-                    attr = key.ToString();
+                return null;
             }
+
+            Node op = parser.Tokenizer.Match(@"[|~*$^]?=");
+            Node val = Quoted(parser) || parser.Tokenizer.Match(@"[\w-]+");
 
             Expect(parser, ']');
 
-            if (!string.IsNullOrEmpty(attr))
-                return NodeProvider.TextNode("[" + attr + "]", parser.Tokenizer.GetNodeLocation(index));
-
-            return null;
+            return NodeProvider.Attribute(key, op, val, parser.Tokenizer.GetNodeLocation(index));
         }
 
         //
@@ -1232,7 +1322,6 @@ namespace dotless.Core.Parser
         //
         public Import Import(Parser parser)
         {
-            Node path = null;
 
             var index = parser.Tokenizer.Location.Index;
 
@@ -1241,31 +1330,86 @@ namespace dotless.Core.Parser
                 return null;
             }
 
-            var optionIndex = parser.Tokenizer.Location.Index;
+            ImportOptions option = ParseOptions(parser);
+
+            Node path = Quoted(parser) || Url(parser);
+            if (!path) {
+                return null;
+            }
+
+            var features = MediaFeatures(parser);
+
+            Expect(parser, ';', "Expected ';' (possibly unrecognised media sequence)");
+
+            if (path is Quoted)
+                return NodeProvider.Import(path as Quoted, features, option, parser.Tokenizer.GetNodeLocation(index));
+
+            if (path is Url)
+                return NodeProvider.Import(path as Url, features, option, parser.Tokenizer.GetNodeLocation(index));
+
+            throw new ParsingException("unrecognised @import format", parser.Tokenizer.GetNodeLocation(index));
+        }
+
+        private static ImportOptions ParseOptions(Parser parser)
+        {
+            var index = parser.Tokenizer.Location.Index;
             var optionsMatch = parser.Tokenizer.Match(@"\((?<keywords>.*)\)");
-            if (optionsMatch) {
-                throw new ParsingException("Unsupported @import option", parser.Tokenizer.GetNodeLocation(optionIndex));
+            if (!optionsMatch) {
+                return ImportOptions.Once;
             }
 
+            var allKeywords = optionsMatch.Match.Groups["keywords"].Value;
+            var keywords = allKeywords.Split(',').Select(kw => kw.Trim());
 
-            if (path = Quoted(parser) || Url(parser))
+            ImportOptions options = 0;
+            foreach (var keyword in keywords)
             {
-                const bool isOnce = true;
-                
-                var features = MediaFeatures(parser);
-
-                Expect(parser, ';', "Expected ';' (possibly unrecognised media sequence)");
-
-                if (path is Quoted)
-                    return NodeProvider.Import(path as Quoted, parser.Importer, features, isOnce, parser.Tokenizer.GetNodeLocation(index));
-
-                if (path is Url)
-                    return NodeProvider.Import(path as Url, parser.Importer, features, isOnce, parser.Tokenizer.GetNodeLocation(index));
-
-                throw new ParsingException("unrecognised @import format", parser.Tokenizer.GetNodeLocation(index));
+                try
+                {
+                    ImportOptions value = (ImportOptions) Enum.Parse(typeof (ImportOptions), keyword, true);
+                    options |= value;
+                }
+                catch (ArgumentException)
+                {
+                    throw new ParsingException(string.Format("unrecognized @import option '{0}'", keyword), parser.Tokenizer.GetNodeLocation(index));
+                }
             }
 
-            return null;
+            CheckForConflictingOptions(parser, options, allKeywords, index);
+            
+            return options;
+        }
+
+        private static readonly ImportOptions[][] illegalOptionCombinations =
+            {
+                new[] {ImportOptions.Css, ImportOptions.Less},
+                new[] {ImportOptions.Inline, ImportOptions.Css},
+                new[] {ImportOptions.Inline, ImportOptions.Less},
+                new[] {ImportOptions.Inline, ImportOptions.Reference},
+                new[] {ImportOptions.Once, ImportOptions.Multiple},
+                new[] {ImportOptions.Reference, ImportOptions.Css},
+            };
+        private static void CheckForConflictingOptions(Parser parser, ImportOptions options, string allKeywords, int index)
+        {
+            foreach (var illegalCombination in illegalOptionCombinations)
+            {
+                if (IsOptionSet(options, illegalCombination[0]) && IsOptionSet(options, illegalCombination[1]))
+                {
+                    throw new ParsingException(
+                        string.Format(
+                            "invalid combination of @import options ({0}) -- specify either {1} or {2}, but not both",
+                            allKeywords,
+                            illegalCombination[0].ToString().ToLowerInvariant(),
+                            illegalCombination[1].ToString().ToLowerInvariant()
+                            ),
+                        parser.Tokenizer.GetNodeLocation(index));
+                }
+            }
+        }
+
+        private static bool IsOptionSet(ImportOptions options, ImportOptions test)
+        {
+            return (options & test) == test;
         }
 
         //

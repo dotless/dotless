@@ -112,8 +112,10 @@
     <Compile Include="Parser\Infrastructure\Output.cs" />
     <Compile Include="Parser\ParserLocation.cs" />
     <Compile Include="Parser\Tree\Assignment.cs" />
+    <Compile Include="Parser\Tree\Attribute.cs" />
     <Compile Include="Parser\Tree\Condition.cs" />
     <Compile Include="Parser\Tree\CssFunction.cs" />
+    <Compile Include="Parser\Tree\GuardedRuleset.cs" />
     <Compile Include="Parser\Tree\Media.cs" />
     <Compile Include="Parser\Tree\RepeatEntity.cs" />
     <Compile Include="Parser\Tree\Paren.cs" />
@@ -123,6 +125,7 @@
     <Compile Include="Parser\Tree\Root.cs" />
     <Compile Include="Parser\Zone.cs" />
     <Compile Include="Plugins\ColorSpinPlugin.cs" />
+    <Compile Include="Plugins\DelegateVisitor.cs" />
     <Compile Include="Plugins\GenericPluginConfigurator.cs" />
     <Compile Include="Plugins\IFunctionPlugin.cs" />
     <Compile Include="Plugins\IPlugin.cs" />
@@ -229,6 +232,7 @@
     <Compile Include="Utils\HslColor.cs" />
     <Compile Include="Utils\NodeHelper.cs" />
     <Compile Include="Utils\NumberExtensions.cs" />
+    <Compile Include="Utils\ObjectExtensions.cs" />
     <Compile Include="Utils\StringExtensions.cs" />
   </ItemGroup>
   <ItemGroup>

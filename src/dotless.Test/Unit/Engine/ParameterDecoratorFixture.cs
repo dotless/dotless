@@ -29,13 +29,13 @@ namespace dotless.Test.Unit.Engine
         }
 
         [Test]
-        public void PrependsParametersAsVariableDeclarationToInput()
+        public void AppendsParametersAsVariableDeclarationToInput()
         {
             Parameters["a"] = "15px";
 
             ParameterDecorator.TransformToCss("width: @a;", "myfile");
 
-            Engine.Verify(p => p.TransformToCss("@a: 15px;\r\nwidth: @a;", "myfile"));
+            Engine.Verify(p => p.TransformToCss("width: @a;\r\n@a: 15px;", "myfile"));
         }
 
         [Test]
@@ -75,9 +75,9 @@ namespace dotless.Test.Unit.Engine
 
             ParameterDecorator.TransformToCss("", "myfile");
 
-            var expectedResult = @"/* Omitting variable 'a'. The expression '1-x' is not valid. */
-@b: 1px;
-";
+            var expectedResult = @"
+/* Omitting variable 'a'. The expression '1-x' is not valid. */
+@b: 1px;";
 
             Engine.Verify(p => p.TransformToCss(It.Is<string>(s => s == expectedResult), "myfile"));
         }

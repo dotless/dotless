@@ -21,14 +21,15 @@
 
         public override void AppendCSS(Env env)
         {
-            if (!env.IsCommentSilent(IsValidCss, IsCSSHack, IsSpecialCss))
-            {
-                env.Output.Append(Value);
+            if (IsReference || env.IsCommentSilent(IsValidCss, IsCSSHack, IsSpecialCss)) {
+                return;
+            }
 
-                if (!IsCSSHack && IsPreSelectorComment)
-                {
-                    env.Output.Append("\n");
-                }
+            env.Output.Append(Value);
+
+            if (!IsCSSHack && IsPreSelectorComment)
+            {
+                env.Output.Append("\n");
             }
         }
     }

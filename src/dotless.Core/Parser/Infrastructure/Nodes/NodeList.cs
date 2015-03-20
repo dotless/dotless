@@ -22,6 +22,7 @@
 
         public NodeList(NodeList nodes) : this((IEnumerable<Node>)nodes)
         {
+            IsReference = nodes.IsReference;
         }
     }
 

@@ -266,7 +266,6 @@ namespace dotless.Compiler
             Console.WriteLine("\t\t--root-path=PATH - Prepends every generated import and url in your output css with PATH");
             Console.WriteLine("\t\t-a --import-all-less - treats every import as less even if ending in .css");
             Console.WriteLine("\t\t-c --inline-css - Inlines CSS file imports into the output");
-            Console.WriteLine("\t\t-v --disable-variable-redefines - Makes variables behave more like less.js, so the last variable definition is used");
             Console.WriteLine("\t\t-x --disable-color-compression - Disable hexadecimal color compression");            
             Console.WriteLine("\t\t-DKey=Value - prefixes variable to the less");
             Console.WriteLine("\t\t-l --listplugins - Lists the plugins available and options");

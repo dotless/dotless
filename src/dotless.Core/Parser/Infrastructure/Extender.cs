@@ -78,11 +78,13 @@ namespace dotless.Core.Parser.Infrastructure
     {
         public Selector BaseSelector { get; private set; }
         public List<Selector> ExtendedBy { get; private set; }
+        public bool IsReference { get; set; }
 
         public Extender(Selector baseSelector)
         {
             BaseSelector = baseSelector;
             ExtendedBy = new List<Selector>();
+            IsReference = baseSelector.IsReference;
         }
 
         public static string FullPathSelector()
@@ -100,7 +102,7 @@ namespace dotless.Core.Parser.Infrastructure
 
         private Selector GenerateExtenderSelector(Env env, List<IEnumerable<Selector>> selectorPath) {
             var context = GenerateExtenderSelector(selectorPath);
-            return new Selector(new[] {new Element(null, context.ToCss(env)) });
+            return new Selector(new[] {new Element(null, context.ToCss(env)) }) { IsReference = IsReference };
         }
 
         private Context GenerateExtenderSelector(List<IEnumerable<Selector>> selectorStack) {

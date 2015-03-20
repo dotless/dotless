@@ -34,13 +34,21 @@ namespace dotless.Core.Parser.Infrastructure
         public bool DisableColorCompression { get; set; }
         public bool KeepFirstSpecialComment { get; set; }
         public bool IsFirstSpecialCommentOutput { get; set; }
+        public Parser Parser { get; set; }
 
-        public Env() : this(null, null)
+        public Env() : this(new Parser())
         {
         }
 
-        protected Env(Stack<Ruleset> frames, Dictionary<string, Type> functions)
+        public Env(Parser parser) : this(parser, null, null)
         {
+        }
+
+        protected Env(Parser parser, Stack<Ruleset> frames, Dictionary<string, Type> functions) : this(frames, functions) {
+            Parser = parser;
+        }
+
+        protected Env(Stack<Ruleset> frames, Dictionary<string, Type> functions) {
             Frames = frames ?? new Stack<Ruleset>();
             Output = new Output(this);
             MediaPath = new Stack<Media>();
@@ -72,6 +80,7 @@ namespace dotless.Core.Parser.Infrastructure
         {
             return new Env(null, _functionTypes)
             {
+                Parser = Parser,
                 Parent = this,
                 Debug = Debug,
                 Compress = Compress,
@@ -195,7 +204,7 @@ namespace dotless.Core.Parser.Infrastructure
             var previousNode = rule;
             foreach (var frame in Frames)
             {
-                var v = frame.Variable(name, DisableVariableRedefines ? null : previousNode);
+                var v = frame.Variable(name, null);
                 if (v)
                     return v;
                 previousNode = frame;
@@ -230,36 +239,35 @@ namespace dotless.Core.Parser.Infrastructure
         public IEnumerable<Closure> FindRulesets(Selector selector)
         {
             var matchingRuleSets = Frames
-                .Select(frame => frame.Find<Ruleset>(this, selector, null))
-                .Select(
-                    matchedClosuresList => matchedClosuresList.Where(
-                            matchedClosure => {
-                                if (!Frames.Any(frame => frame.IsEqualOrClonedFrom(matchedClosure.Ruleset)))
-                                    return true;
+                .Reverse()
+                .SelectMany(frame => frame.Find<Ruleset>(this, selector, null))
+                .Where(matchedClosure => {
+                        if (!Frames.Any(frame => frame.IsEqualOrClonedFrom(matchedClosure.Ruleset)))
+                            return true;
 
-                                var mixinDef = matchedClosure.Ruleset as MixinDefinition;
-                                if (mixinDef != null)
-                                    return mixinDef.Condition != null;
+                        var mixinDef = matchedClosure.Ruleset as MixinDefinition;
+                        if (mixinDef != null)
+                            return mixinDef.Condition != null;
 
-                                return false;
-                        }
-                    )
-                )
-                .FirstOrDefault(matchedClosuresList => matchedClosuresList.Count() != 0);
+                        return false;
+                    }).ToList();
 
-            if (matchingRuleSets != null) {
+            if (matchingRuleSets.Any())
+            {
                 return matchingRuleSets;
             }
 
-            if (Parent != null) {
-                matchingRuleSets = Parent.FindRulesets(selector);
+            if (Parent != null)
+            {
+                var parentRulesets = Parent.FindRulesets(selector);
+                if (parentRulesets != null)
+                {
+                    return parentRulesets;
+                }
             }
 
-            if (matchingRuleSets != null) {
-                return matchingRuleSets;
-            }
-
-            if (ClosureEnvironment != null) {
+            if (ClosureEnvironment != null)
+            {
                 return ClosureEnvironment.FindRulesets(selector);
             }
 
@@ -375,7 +383,10 @@ namespace dotless.Core.Parser.Infrastructure
         {
             if (ExtendMediaScope.Any())
             {
-                return ExtendMediaScope.Select(media => media.FindExactExtension(selection)).FirstOrDefault(result => result != null);
+                var mediaScopedExtensions = ExtendMediaScope.Select(media => media.FindExactExtension(selection)).FirstOrDefault(result => result != null);
+                if (mediaScopedExtensions != null) {
+                    return mediaScopedExtensions;
+                }
             }
 
             return _extensions.OfType<ExactExtender>().FirstOrDefault(e => e.BaseSelector.ToString().Trim() == selection);
@@ -385,7 +396,10 @@ namespace dotless.Core.Parser.Infrastructure
         {
             if (ExtendMediaScope.Any())
             {
-                return ExtendMediaScope.Select(media => media.FindPartialExtensions(selection)).FirstOrDefault(result => result.Any());
+                var mediaScopedExtensions = ExtendMediaScope.Select(media => media.FindPartialExtensions(selection)).FirstOrDefault(result => result.Any());
+                if (mediaScopedExtensions != null) {
+                    return mediaScopedExtensions;
+                }
             }
 
             return _extensions.OfType<PartialExtender>()
@@ -398,7 +412,10 @@ namespace dotless.Core.Parser.Infrastructure
         {
             if (ExtendMediaScope.Any())
             {
-                return ExtendMediaScope.Select(media => media.FindPartialExtensions(selection)).FirstOrDefault(result => result.Any());
+                var mediaScopedExtensions = ExtendMediaScope.Select(media => media.FindPartialExtensions(selection)).FirstOrDefault(result => result.Any());
+                if (mediaScopedExtensions != null) {
+                    return mediaScopedExtensions;
+                }
             }
 
             return _extensions.OfType<PartialExtender>().Where(e => selection.Contains(e.BaseSelector.ToString().Trim())).ToArray();

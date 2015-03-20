@@ -35,7 +35,7 @@
         public void Setup()
         {
             DefaultEnv = () => {
-                Env env = new Env();
+                Env env = new Env(null);
                 env.AddPlugin(new RtlPlugin() { OnlyReversePrefixedRules = OnlyReversePrefixedRules});
                 return env;
             };

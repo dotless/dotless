@@ -74,8 +74,9 @@ namespace dotless.Core.Utils
                     return false;
                 }
 
-                if (areEqual(subsequenceIndex, subsequence[subsequenceIndex], sequenceIndex, sequence[sequenceIndex]))
+                if (!areEqual(subsequenceIndex, subsequence[subsequenceIndex], sequenceIndex, sequence[sequenceIndex]))
                 {
+                    // Current elements differ, so it's not a match
                     return false;
                 }
             }

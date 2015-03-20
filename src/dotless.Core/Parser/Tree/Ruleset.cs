@@ -1,3 +1,5 @@
+using dotless.Core.Exceptions;
+
 namespace dotless.Core.Parser.Tree
 {
     using System.Collections.Generic;
@@ -82,23 +84,54 @@ namespace dotless.Core.Parser.Tree
 
         public List<Ruleset> Rulesets()
         {
-            return Rules.OfType<Ruleset>().ToList();
+            return (Rules ?? Enumerable.Empty<Node>()).OfType<Ruleset>().ToList();
         }
 
         public List<Closure> Find<TRuleset>(Env env, Selector selector, Ruleset self) where TRuleset : Ruleset
         {
-            self = self ?? this;
-            var rules = new List<Closure>();
+            var context = new Context();
+            context.AppendSelectors(new Context(), Selectors ?? new NodeList<Selector>());
 
-            var key = typeof(TRuleset).ToString() + ":" + selector.ToCSS(env);
+            var namespacedSelectorContext = new Context();
+            namespacedSelectorContext.AppendSelectors(context, new NodeList<Selector>(selector));
+
+            var namespacedSelector =
+                namespacedSelectorContext
+                    .Select(selectors => new Selector(selectors.SelectMany(s => s.Elements)))
+                    .First();
+
+            return FindInternal<TRuleset>(env, namespacedSelector, self, context).ToList();
+        }
+
+        private IEnumerable<Closure> FindInternal<TRuleset>(Env env, Selector selector, Ruleset self, Context context) where TRuleset : Ruleset
+        {
+            if (!selector.Elements.Any())
+            {
+                return Enumerable.Empty<Closure>();
+            }
+
+            string selectorCss = selector.ToCSS(env);
+            var key = typeof(TRuleset) + ":" + selectorCss;
             if (_lookups.ContainsKey(key))
                 return _lookups[key];
 
-            var validRulesets = Rulesets().Where(rule =>
-                {
-                    if (!typeof(TRuleset).IsAssignableFrom(rule.GetType()))
-                        return false;
+            self = self ?? this;
+            var rules = new List<Closure>();
 
+            var bestMatch = context.Select(selectors => new Selector(selectors.SelectMany(s => s.Elements)))
+                .Where(m => m.Elements.IsSubsequenceOf(selector.Elements, ElementValuesEqual))
+                .OrderByDescending(m => m.Elements.Count)
+                .FirstOrDefault();
+
+            if (bestMatch != null && bestMatch.Elements.Count == selector.Elements.Count)
+            {
+                // exact match, good to go
+                rules.Add(new Closure { Context = new List<Ruleset> { this }, Ruleset = this });
+            }
+
+
+            var validRulesets = Rulesets().OfType<TRuleset>().Where(rule =>
+                {
                     if (rule != self)
                         return true;
 
@@ -114,25 +147,38 @@ namespace dotless.Core.Parser.Tree
 
             foreach (var rule in validRulesets)
             {
-                if (rule.Selectors && rule.Selectors.Any(selector.Match))
+                if (rule.Selectors == null)
                 {
-                    if ((selector.Elements.Count == 1) || rule.Selectors.Any(s => s.ToCSS(new Env()) == selector.ToCSS(new Env())))
-                        rules.Add(new Closure { Ruleset = rule, Context = new List<Ruleset> { rule } });
-                    else if (selector.Elements.Count > 1)
-                    {
-                        var remainingSelectors = new Selector(new NodeList<Element>(selector.Elements.Skip(1)));
-                        var closures = rule.Find<Ruleset>(env, remainingSelectors, self);
-
-                        foreach (var closure in closures)
-                        {
-                            closure.Context.Insert(0, rule);
-                        }
-
-                        rules.AddRange(closures);
-                    }
+                    continue;
                 }
+
+                var childContext = new Context();
+                childContext.AppendSelectors(context, rule.Selectors);
+
+                var closures = rule.FindInternal<TRuleset>(env, selector, self, childContext);
+                foreach (var closure in closures)
+                {
+                    closure.Context.Insert(0, this);
+                    rules.Add(closure);
+                }
+
             }
             return _lookups[key] = rules;
+        }
+
+        private static bool ElementValuesEqual(Element e1, Element e2)
+        {
+            if (e1.Value == null && e2.Value == null)
+            {
+                return true;
+            }
+
+            if (e1.Value == null || e2.Value == null)
+            {
+                return false;
+            }
+
+            return string.Equals(e1.Value.Trim(), e2.Value.Trim());
         }
 
         public virtual MixinMatch MatchArguments(List<NamedArgument> arguments, Env env)
@@ -145,12 +191,18 @@ namespace dotless.Core.Parser.Tree
             if (Evaluated) return this;
 
             // create a clone so it is non destructive
-            var clone = new Ruleset(new NodeList<Selector>(Selectors), new NodeList(Rules), OriginalRuleset).ReducedFrom<Ruleset>(this);
+            var clone = Clone().ReducedFrom<Ruleset>(this);
 
             clone.EvaluateRules(env);
             clone.Evaluated = true;
 
             return clone;
+        }
+
+        private Ruleset Clone() {
+            return new Ruleset(new NodeList<Selector>(Selectors), new NodeList(Rules), OriginalRuleset) {
+                IsReference = IsReference
+            };
         }
 
         public override void Accept(IVisitor visitor)
@@ -210,6 +262,54 @@ namespace dotless.Core.Parser.Tree
             env.Frames.Pop();
         }
 
+        protected Ruleset EvaluateRulesForFrame(Ruleset frame, Env context)
+        {
+            var newRules = new NodeList();
+
+            foreach (var rule in Rules)
+            {
+                if (rule is MixinDefinition)
+                {
+                    var mixin = rule as MixinDefinition;
+                    var parameters = Enumerable.Concat(mixin.Params, frame.Rules.Cast<Rule>());
+                    newRules.Add(new MixinDefinition(mixin.Name, new NodeList<Rule>(parameters), mixin.Rules, mixin.Condition, mixin.Variadic));
+                }
+                else if (rule is Import)
+                {
+                    var potentiolNodeList = rule.Evaluate(context);
+                    var nodeList = potentiolNodeList as NodeList;
+                    if (nodeList != null)
+                    {
+                        newRules.AddRange(nodeList);
+                    }
+                    else
+                    {
+                        newRules.Add(potentiolNodeList);
+                    }
+                }
+                else if (rule is Directive || rule is Media)
+                {
+                    newRules.Add(rule.Evaluate(context));
+                }
+                else if (rule is Ruleset)
+                {
+                    var ruleset = (rule as Ruleset);
+
+                    newRules.Add(ruleset.Evaluate(context));
+                }
+                else if (rule is MixinCall)
+                {
+                    newRules.AddRange((NodeList)rule.Evaluate(context));
+                }
+                else
+                {
+                    newRules.Add(rule.Evaluate(context));
+                }
+            }
+
+            return new Ruleset(Selectors, newRules);
+        }
+
         public override void AppendCSS(Env env)
         {
             if (Rules == null || !Rules.Any())
@@ -262,6 +362,7 @@ namespace dotless.Core.Parser.Tree
 
             env.Output.Push();
 
+            bool hasNonReferenceChildRulesets = false;
             foreach (var node in Rules)
             {
                 if (node.IgnoreOutput())
@@ -275,6 +376,10 @@ namespace dotless.Core.Parser.Tree
                 if (ruleset != null)
                 {
                     ruleset.AppendCSS(env, paths);
+                    if (!ruleset.IsReference)
+                    {
+                        hasNonReferenceChildRulesets = true;
+                    }
                 }
                 else
                 {
@@ -308,60 +413,71 @@ namespace dotless.Core.Parser.Tree
 
             var rulesetOutput = env.Output.Pop();
 
+            var hasExtenders = AddExtenders(env, context, paths);
+            if (hasExtenders)
+            {
+                IsReference = false;
+            }
+
             // If this is the root node, we don't render
             // a selector, or {}.
             // Otherwise, only output if this ruleset has rules.
-            if (IsRoot)
-            {
-                env.Output.AppendMany(rules, env.Compress ? "" : "\n");
-            }
-            else
-            {
-                if (nonCommentRules > 0)
-                {
+            if (!IsReference) {
+                if (IsRoot) {
+                    env.Output.AppendMany(rules, env.Compress ? "" : "\n");
+                } else {
+                    if (nonCommentRules > 0) {
+                        paths.AppendCSS(env);
 
-                    foreach (var s in Selectors.Where(s => s.Elements.First().Value != null))
-                    {
-                        var local = context.Clone();
-                        local.AppendSelectors(context, new[] { s });
-                        var finalString = local.ToCss(env);
-                        var extensions = env.FindExactExtension(finalString);
-                        if (extensions != null)
-                        {
-                            paths.AppendSelectors(context.Clone(), extensions.ExtendedBy);
+                        env.Output.Append(env.Compress ? "{" : " {\n  ");
+
+                        env.Output.AppendMany(rules.ConvertAll(stringBuilder => stringBuilder.ToString()).Distinct(),
+                            env.Compress ? "" : "\n  ");
+
+                        if (env.Compress) {
+                            env.Output.TrimRight(';');
                         }
 
-                        var partials = env.FindPartialExtensions(local);
-                        if (partials != null)
-                        {
-                            paths.AppendSelectors(context.Clone(), partials.SelectMany(p => p.Replacements(finalString)));
-                        }
+                        env.Output.Append(env.Compress ? "}" : "\n}\n");
                     }
-
-
-                    paths.AppendCSS(env);
-
-                    env.Output.Append(env.Compress ? "{" : " {\n  ");
-
-                    env.Output.AppendMany(rules.ConvertAll(stringBuilder => stringBuilder.ToString()).Distinct(), env.Compress ? "" : "\n  ");
-
-                    if (env.Compress)
-                    {
-                        env.Output.TrimRight(';');
-                    }
-
-                    env.Output.Append(env.Compress ? "}" : "\n}\n");
                 }
             }
 
-            env.Output.Append(rulesetOutput);
+            if (!IsReference || hasNonReferenceChildRulesets)
+            {
+                env.Output.Append(rulesetOutput);
+            }
+        }
+
+        private bool AddExtenders(Env env, Context context, Context paths) {
+            bool hasNonReferenceExtenders = false;
+            foreach (var s in Selectors.Where(s => s.Elements.First().Value != null)) {
+                var local = context.Clone();
+                local.AppendSelectors(context, new[] {s});
+                var finalString = local.ToCss(env);
+                var extensions = env.FindExactExtension(finalString);
+                if (extensions != null) {
+                    paths.AppendSelectors(context.Clone(), extensions.ExtendedBy);
+                }
+
+                var partials = env.FindPartialExtensions(local);
+                if (partials != null) {
+                    paths.AppendSelectors(context.Clone(), partials.SelectMany(p => p.Replacements(finalString)));
+                }
+
+                bool newExactExtenders = extensions != null && extensions.ExtendedBy.Any(e => !e.IsReference);
+                bool newPartialExtenders = partials != null && partials.Any(p => p.ExtendedBy.Any(e => !e.IsReference));
+
+                hasNonReferenceExtenders = hasNonReferenceExtenders || newExactExtenders || newPartialExtenders;
+            }
+            return hasNonReferenceExtenders;
         }
 
         public override string ToString()
         {
             var format = "{0}{{{1}}}";
             return Selectors != null && Selectors.Count > 0
-                       ? string.Format(format, Selectors.Select(s => s.ToCSS(new Env())).JoinStrings(""), Rules.Count)
+                       ? string.Format(format, Selectors.Select(s => s.ToCSS(new Env(null))).JoinStrings(""), Rules.Count)
                        : string.Format(format, "*", Rules.Count);
         }
     }

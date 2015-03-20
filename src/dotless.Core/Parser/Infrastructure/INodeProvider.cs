@@ -28,14 +28,16 @@ namespace dotless.Core.Parser.Infrastructure
         Script Script(string script, NodeLocation location);
         Paren Paren(Node node, NodeLocation location);
 
+        GuardedRuleset GuardedRuleset(NodeList<Selector> selectors, NodeList rules, Condition condition, NodeLocation location);
+
         //mixins
         MixinCall MixinCall(NodeList<Element> elements, List<NamedArgument> arguments, bool important, NodeLocation location);
         MixinDefinition MixinDefinition(string name, NodeList<Rule> parameters, NodeList rules, Condition condition, bool variadic, NodeLocation location);
         Condition Condition(Node left, string operation, Node right, bool negate, NodeLocation location);
 
         //directives
-        Import Import(Url path, IImporter importer, Value features, bool isOnce, NodeLocation location);
-        Import Import(Quoted path, IImporter importer, Value features, bool isOnce, NodeLocation location);
+        Import Import(Url path, Value features, ImportOptions option, NodeLocation location);
+        Import Import(Quoted path, Value features, ImportOptions option, NodeLocation location);
         Directive Directive(string name, string identifier, NodeList rules, NodeLocation location);
         Directive Directive(string name, Node value, NodeLocation location);
         Media Media(NodeList rules, Value features, NodeLocation location);
@@ -57,5 +59,6 @@ namespace dotless.Core.Parser.Infrastructure
 
         //extenders
         Extend Extend(List<Selector> exact, List<Selector> partial, NodeLocation location);
+        Node Attribute(Node key, Node op, Node val, NodeLocation location);
     }
 }

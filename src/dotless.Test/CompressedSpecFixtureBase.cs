@@ -8,7 +8,7 @@ namespace dotless.Test.Specs.Compression
         [SetUp]
         public void Setup()
         {
-            DefaultEnv = () => new Env { Compress = true };
+            DefaultEnv = () => new Env(DefaultParser()) { Compress = true };
         }
     }
 }

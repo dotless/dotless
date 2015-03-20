@@ -24,12 +24,18 @@ namespace dotless.Core.Importers
         public List<string> Imports { get; set; }
         
         public Func<Parser> Parser { get; set; }
-        protected readonly List<string> _paths = new List<string>();
+        private readonly List<string> _paths = new List<string>();
 
         /// <summary>
         ///  The raw imports of every @import node, for use with @import
         /// </summary>
         protected readonly List<string> _rawImports = new List<string>();
+
+        /// <summary>
+        /// Duplicates of reference imports should be ignored just like normal imports
+        /// but a reference import must not interfere with a regular import, hence a different list
+        /// </summary>
+        private readonly List<string> _referenceImports = new List<string>();
 
         protected virtual string CurrentDirectory
         {
@@ -125,12 +131,28 @@ namespace dotless.Core.Importers
         /// <returns></returns>
         protected bool CheckIgnoreImport(Import import, string path)
         {
-            if (_rawImports.Contains(path, StringComparer.InvariantCultureIgnoreCase))
+            if (IsOptionSet(import.ImportOptions, ImportOptions.Multiple))
             {
-                return import.IsOnce;
+                return false;
             }
-            _rawImports.Add(path);
 
+            // The import option Reference is set at parse time,
+            // but the IsReference bit is set at evaluation time (inherited from parent)
+            // so we check both.
+            if (import.IsReference || IsOptionSet(import.ImportOptions, ImportOptions.Reference))
+            {
+                return CheckIgnoreImport(_referenceImports, path);
+            }
+            
+            return CheckIgnoreImport(_rawImports, path);
+        }
+
+        private bool CheckIgnoreImport(List<string> importList, string path) {
+            if (importList.Contains(path, StringComparer.InvariantCultureIgnoreCase))
+            {
+                return true;
+            }
+            importList.Add(path);
             return false;
         }
 
@@ -146,7 +168,7 @@ namespace dotless.Core.Importers
             {
                 if (import.Path.EndsWith(".less"))
                 {
-                    throw new FileNotFoundException(".less cannot import non local less files.", import.Path);
+                    throw new FileNotFoundException(string.Format(".less cannot import non local less files [{0}].", import.Path), import.Path);
                 }
 
                 if (CheckIgnoreImport(import))
@@ -169,9 +191,11 @@ namespace dotless.Core.Importers
                 return ImportAction.ImportNothing;
             }
 
-            if (!ImportAllFilesAsLess && import.Path.EndsWith(".css") && !import.Path.EndsWith(".less.css"))
+            bool importAsless = ImportAllFilesAsLess || IsOptionSet(import.ImportOptions, ImportOptions.Less);
+
+            if (!importAsless && import.Path.EndsWith(".css") && !import.Path.EndsWith(".less.css"))
             {
-                if (InlineCssFiles)
+                if (InlineCssFiles || IsOptionSet(import.ImportOptions, ImportOptions.Inline))
                 {
                     if (IsEmbeddedResource(import.Path) && ImportEmbeddedCssContents(file, import))                         
                         return ImportAction.ImportCss;
@@ -187,9 +211,19 @@ namespace dotless.Core.Importers
 
             if (!ImportLessFile(file, import))
             {
+                if (IsOptionSet(import.ImportOptions, ImportOptions.Optional))
+                {
+                    return ImportAction.ImportNothing;
+                }
+
+                if (IsOptionSet(import.ImportOptions, ImportOptions.Css))
+                {
+                    return ImportAction.LeaveImport;
+                }
+
                 if (import.Path.EndsWith(".less", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    throw new FileNotFoundException("You are importing a file ending in .less that cannot be found.", import.Path);
+                    throw new FileNotFoundException(string.Format("You are importing a file ending in .less that cannot be found [{0}].", file), file);
                 }
                 return ImportAction.LeaveImport;
             }
@@ -197,10 +231,14 @@ namespace dotless.Core.Importers
             return ImportAction.ImportLess;
         }
 
+        public IDisposable BeginScope(Import parentScope) {
+            return new ImportScope(this, Path.GetDirectoryName(parentScope.Path));
+        }
+
         /// <summary>
         ///  Uses the paths to adjust the file path
         /// </summary>
-        protected string GetAdjustedFilePath(string path, List<string> pathList)
+        protected string GetAdjustedFilePath(string path, IEnumerable<string> pathList)
         {
             return pathList.Concat(new[] { path }).AggregatePaths(CurrentDirectory);
         }
@@ -301,6 +339,24 @@ namespace dotless.Core.Importers
             }
             return url;
         }
+
+        private class ImportScope : IDisposable {
+            private readonly Importer importer;
+
+            public ImportScope(Importer importer, string path) {
+                this.importer = importer;
+                this.importer._paths.Add(path);
+            }
+
+            public void Dispose() {
+                this.importer._paths.RemoveAt(this.importer._paths.Count - 1);
+            }
+        }
+		
+        private bool IsOptionSet(ImportOptions options, ImportOptions test)
+        {
+            return (options & test) == test;
+        }		
     }
 
     /// <summary>
@@ -315,7 +371,7 @@ namespace dotless.Core.Importers
         /// <summary>
         /// Gets the text content of an embedded resource.
         /// </summary>
-        /// <param name="file">The path in the form: dll://AssemblyName/ResourceName</param>
+        /// <param name="file">The path in the form: dll://AssemblyName#ResourceName</param>
         /// <returns>The content of the resource</returns>
         public static string GetResource(string file, IFileReader fileReader, out string fileDependency)
         {
@@ -331,18 +387,11 @@ namespace dotless.Core.Importers
             {
                 fileDependency = match.Groups["Assembly"].Value;
 
-                if (!fileReader.DoesFileExist(fileDependency))
-                {
-                    throw new FileNotFoundException("Unable to locate assembly file [" + fileDependency + "]");
-                }
+                LoadFromCurrentAppDomain(loader, fileDependency);
 
-                loader._fileContents = fileReader.GetBinaryFileContents(fileDependency);
-
-                var domainSetup = new AppDomainSetup();
-                domainSetup.ApplicationBase = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                var domain = AppDomain.CreateDomain("LoaderDomain", null, domainSetup);
-                domain.DoCallBack(loader.LoadResource);
-                AppDomain.Unload(domain);
+                if (String.IsNullOrEmpty(loader._resourceContent))
+                    LoadFromNewAppDomain(loader, fileReader, fileDependency);
+                
             }
             catch (Exception)
             {
@@ -356,13 +405,50 @@ namespace dotless.Core.Importers
             return loader._resourceContent;
         }
 
+        private static void LoadFromCurrentAppDomain(ResourceLoader loader, String assemblyName)
+        {
+            foreach (var assembly in AppDomain.CurrentDomain
+                .GetAssemblies()
+                .Where(x => x.Location.EndsWith(assemblyName, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                if (assembly.GetManifestResourceNames().Contains(loader._resourceName))
+                {
+                    using (var stream = assembly.GetManifestResourceStream(loader._resourceName))
+                    using (var reader = new StreamReader(stream))
+                    {
+                        loader._resourceContent = reader.ReadToEnd();
+
+                        if (!String.IsNullOrEmpty(loader._resourceContent))
+                            return;
+                    }
+                }
+            }
+        }
+
+        private static void LoadFromNewAppDomain(ResourceLoader loader, IFileReader fileReader, String assemblyName)
+        {
+            if (!fileReader.DoesFileExist(assemblyName))
+            {
+                throw new FileNotFoundException("Unable to locate assembly file [" + assemblyName + "]");
+            }
+
+            loader._fileContents = fileReader.GetBinaryFileContents(assemblyName);
+
+            var domainSetup = new AppDomainSetup();
+            domainSetup.ApplicationBase = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var domain = AppDomain.CreateDomain("LoaderDomain", null, domainSetup);
+            domain.DoCallBack(loader.LoadResource);
+            AppDomain.Unload(domain);
+        }
+
         // Runs in the separate app domain
         private void LoadResource()
         {
             var assembly = Assembly.Load(_fileContents);
             using (var stream = assembly.GetManifestResourceStream(_resourceName))
+            using (var reader = new StreamReader(stream))
             {
-                _resourceContent = new StreamReader(stream).ReadToEnd();
+                _resourceContent = reader.ReadToEnd();
             }
         }
     }

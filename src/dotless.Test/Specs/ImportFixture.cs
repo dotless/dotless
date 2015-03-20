@@ -168,6 +168,119 @@ text {
 @a: 9px;
 body { margin-right: @a; }";
 
+            imports["vardef.less"] = @"@var: 9px;";
+
+            imports["css-as-less.css"] = @"@var1: 10px;";
+            imports["arbitrary-extension-as-less.ext"] = @"@var2: 11px;";
+
+            imports["simple-rule.less"] = ".rule { background-color: black; }";
+            imports["simple-rule.css"] = ".rule { background-color: black; }";
+
+            imports["media-scoped-rules.less"] = @"@media (screen) { 
+    .rule { background-color: black; }
+    .another-rule { color: white; }
+}";
+
+            imports["nested-rules.less"] = @"
+.parent-selector {
+    .rule { background-color: black; }
+    .another-rule { color: white; }
+}";
+
+            imports["imports-simple-rule.less"] = @"
+@import ""simple-rule.less"";
+.rule2 { background-color: blue; }";
+
+            imports["two-level-import.less"] = @"
+@import ""simple-rule.less"";
+.rule3 { background-color: red; }";
+
+            imports["reference/main.less"] = @"
+@import ""mixins/test.less"";
+
+.mixin(red);
+";
+
+            imports["reference/mixins/test.less"] = @"
+.mixin(@arg) {
+    .test-ruleset {
+        background-color: @arg;
+    }
+}
+";
+
+            imports["reference/ruleset-with-child-ruleset-and-rules.less"] = @"
+.parent {
+    .child {
+        background-color: black;
+    }
+
+    background-color: blue;
+}
+";
+
+            imports["two-level-import.less"] = @"
+@import ""simple-rule.less"";
+.rule3 { background-color: red; }";
+
+            imports["directives.less"] = @"
+@font-face {
+  font-family: 'Glyphicons Halflings';
+}
+";
+
+            imports["mixin-loop.less"] = @"
+@grid-columns: 12;
+.float-grid-columns(@class) {
+  .col(@index) { // initial    
+    .col((@index + 1), """");
+  }
+  .col(@index, @list) when (@index =< @grid-columns) { // general
+    .col((@index + 1), """");
+  }
+  .col(@index, @list) when (@index > @grid-columns) { // terminal
+
+  }
+  .col(1); // kickstart it
+}
+
+// Create grid for specific class
+.make-grid(@class) {
+  .float-grid-columns(@class);
+}
+
+
+@media (screen) {
+  .make-grid(sm);
+}
+";
+
+            imports["partial-reference-extends-another-reference.less"] = @"
+.parent {
+  .test {
+    color: black;
+  }
+}
+
+.ext {
+  &:extend(.test all);
+}
+";
+
+            imports["exact-reference-extends-another-reference.less"] = @"
+.test {
+  color: black;
+}
+
+.ext {
+  &:extend(.test);
+}
+";
+
+            imports["comments.less"] = @"
+/* This is a comment */
+";
+
             return new Parser { 
                 Importer = new Importer(new DictionaryReader(imports)) { 
                     IsUrlRewritingDisabled = isUrlRewritingDisabled,
@@ -456,7 +569,7 @@ from line 3 in file 'test.less':
 
             var parser = GetParser();
 
-            AssertError(".less cannot import non local less files.", input, parser);
+            AssertError(".less cannot import non local less files [http://www.someone.com/external1.less].", input, parser);
         }
 
         [Test]
@@ -466,7 +579,7 @@ from line 3 in file 'test.less':
 
             var parser = GetParser();
 
-            AssertError("You are importing a file ending in .less that cannot be found.", input, parser);
+            AssertError("You are importing a file ending in .less that cannot be found [external1.less].", input, parser);
         }
 
         [Test]
@@ -476,7 +589,7 @@ from line 3 in file 'test.less':
 
             var parser = GetParser();
 
-            AssertError(".less cannot import non local less files.", input, parser);
+            AssertError(".less cannot import non local less files [http://www.someone.com/external1.less].", input, parser);
         }
 
         [Test]
@@ -785,18 +898,570 @@ body {
   color: black;
 }
 ";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ExtendingNestedRulesFromReferenceImportsWorks()
+        {
+            var input = @"
+@import (reference) ""nested-rules.less"";
+
+.test:extend(.rule all) { }
+";
+
+            var expected = @"
+.parent-selector .rule,
+.parent-selector .test {
+  background-color: black;
+}
+";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ExtendingNestedReferenceRulesIgnoresRulesFromParentRuleset() {
+            var input = @"
+@import (reference) ""reference/ruleset-with-child-ruleset-and-rules.less"";
+
+.test:extend(.child all) { }
+";
+
+            var expected = @"
+.parent .child,
+.parent .test {
+  background-color: black;
+}
+";
+
+            AssertLess(input, expected, GetParser());
+        }
+
+        [Test]
+        public void VariableInterpolationInQuotedCssImport()
+        {
+            var input =
+                @"
+@var: ""foo"";
+
+@import ""@{var}/bar.css"";
+";
+
+            var expected =
+                @"
+@import ""foo/bar.css"";
+";
+
+        }
+
+        [Test]
+        public void VariableInterpolationInQuotedLessImport()
+        {
+            var input =
+                @"
+@component: ""color"";
+
+@import ""lib/@{component}.less"";
+";
+
+            var expected =
+                @"
+body {
+  background-color: foo;
+}";
 
             AssertLess(input, expected, GetParser());
         }
 		
+
         [Test]
-        public void UnsupportedImportOptionReturnsReadableErrorMessage()
+        public void ImportMultipleImportsMoreThanOnce()
         {
             var input = @"
-@import (inline) ""import/twice/with/different/paths.less"";
+@import ""vardef.less"";
+@var: 10px;
+@import (multiple) ""vardef.less"";
+.rule { width: @var; }
 ";
 
-            AssertError("Unsupported @import option", @"@import (inline) ""import/twice/with/different/paths.less"";", 1, 8, input);
+            var expected = @"
+.rule {
+  width: 9px;
+}
+";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ImportOptionalIgnoresFilesThatAreNotFound()
+        {
+            var input = @"
+@var: 10px;
+@import (optional) ""this-file-does-not-exist.less"";
+.rule { width: @var; }
+";
+
+            var expected = @"
+.rule {
+  width: 10px;
+}
+";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ImportCssGeneratesImportDirective()
+        {
+            var input = @"
+@import (css) ""this-file-does-not-exist.less"";
+";
+
+            var expected = @"
+@import ""this-file-does-not-exist.less"";
+";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ImportLessParsesAnyExtensionAsLess()
+        {
+            var input = @"
+@import (less) ""css-as-less.css"";
+@import (less) ""arbitrary-extension-as-less.ext"";
+
+.rule {
+  width: @var1;
+  height: @var2;
+}
+";
+
+            var expected = @"
+.rule {
+  width: 10px;
+  height: 11px;
+}";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ImportInlineIncludesContentsOfCssFile()
+        {
+            var input = @"
+@import (inline) ""something.css"";
+";
+
+            var expected = @"
+body { background-color: foo; invalid ""; }
+";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ImportReferenceAloneDoesNotProduceOutput()
+        {
+            var input = @"
+@import (reference) ""simple-rule.less"";
+";
+
+            var expected = @"";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ImportReferenceDoesNotOutputMediaBlocks()
+        {
+            var input = @"
+@import (reference) ""media-scoped-rules.less"";
+";
+
+            var expected = @"";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+
+        [Test]
+        public void ImportReferenceDoesNotOutputRulesetsThatCallLoopingMixins()
+        {
+            var input = @"
+@import (reference) ""mixin-loop.less"";
+";
+
+            var expected = @"";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void PartialReferenceExtenderDoesNotCauseReferenceRulesetToBeOutput()
+        {
+            var input = @"
+@import (reference) ""partial-reference-extends-another-reference.less"";
+";
+
+            AssertLess(input, @"", GetParser());
+        }
+
+        [Test]
+        public void ExactReferenceExtenderDoesNotCauseReferenceRulesetToBeOutput()
+        {
+            var input = @"
+@import (reference) ""exact-reference-extends-another-reference.less"";
+";
+
+            AssertLess(input, @"", GetParser());
+        }
+
+        [Test]
+        public void ImportReferenceDoesNotOutputDirectives()
+        {
+            var input = @"
+@import (reference) ""directives.less"";
+";
+
+            AssertLess(input, @"", GetParser());
+        }
+
+        [Test]
+        public void ImportReferenceOutputsExtendedRulesFromMediaBlocks()
+        {
+            var input = @"
+@import (reference) ""media-scoped-rules.less"";
+
+.test:extend(.rule all) { }
+";
+
+            var expected = @"
+@media (screen) {
+  .rule,
+  .test {
+    background-color: black;
+  }
+}
+";
+
+            AssertLess(input, expected, GetParser());
+        }
+
+        [Test]
+        public void ImportReferenceDoesNotOutputMixinCalls()
+        {
+            var input = @"
+@import (reference) ""reference/main.less"";
+";
+
+            AssertLess(input, @"", GetParser());
+        }
+
+        [Test]
+        public void ImportReferenceDoesNotOutputComments()
+        {
+            var input = @"
+@import (reference) ""comments.less"";
+";
+
+            AssertLess(input, @"", GetParser());
+        }
+
+        [Test]
+        public void ImportReferenceWithMixinCallProducesOutput()
+        {
+            var input = @"
+@import (reference) ""simple-rule.less"";
+
+.caller {
+  .rule
+}
+";
+
+            var expected = @"
+.caller {
+  background-color: black;
+}
+";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ImportReferenceDoesNotPreventNonReferenceImport()
+        {
+            var input = @"
+@import (reference) ""simple-rule.less"";
+@import  ""simple-rule.less"";
+";
+
+            var expected = @"
+.rule {
+  background-color: black;
+}
+";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ExtendingReferenceImportsWorks()
+        {
+            var input = @"
+@import (reference) ""simple-rule.less"";
+.test:extend(.rule all) { }
+";
+
+            var expected = @"
+.rule,
+.test {
+  background-color: black;
+}
+";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ImportsFromReferenceImportsAreTreatedAsReferences()
+        {
+            var input = @"
+@import (reference) ""imports-simple-rule.less"";
+
+.test {
+  .rule2;
+}
+";
+
+            var expected = @"
+.test {
+  background-color: blue;
+}
+";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void RecursiveImportsFromReferenceImportsAreTreatedAsReferences()
+        {
+            var input = @"
+@import (reference) ""two-level-import.less"";
+
+.test {
+  background-color: blue;
+}
+";
+
+            var expected = @"
+.test {
+  background-color: blue;
+}
+";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ImportingReferenceAsLessWorks()
+        {
+            var input = @"
+@import (reference, less) ""simple-rule.css"";
+.test {
+  .rule
+}
+";
+
+            var expected = @"
+.test {
+  background-color: black;
+}
+";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ImportingReferenceAsCssFails()
+        {
+            var input = @"
+@import (reference, css) ""simple-rule.css"";
+";
+
+            var expectedError = @"
+invalid combination of @import options (reference, css) -- specify either reference or css, but not both on line 1 in file 'test.less':
+   []: /beginning of file
+  [1]: @import (reference, css) ""simple-rule.css"";
+       --------^
+  [2]: /end of file";
+            AssertError(expectedError, input);
+        }
+
+        [Test]
+        public void ImportingAsBothCssAndLessFails()
+        {
+            var input = @"
+@import (css, less) ""simple-rule.css"";
+";
+
+            var expectedError = @"
+invalid combination of @import options (css, less) -- specify either css or less, but not both on line 1 in file 'test.less':
+   []: /beginning of file
+  [1]: @import (css, less) ""simple-rule.css"";
+       --------^
+  [2]: /end of file";
+            AssertError(expectedError, input);
+        }
+
+        [Test]
+        public void ImportingAsBothInlineAndReferenceFails()
+        {
+            var input = @"
+@import (inline, reference) ""simple-rule.css"";
+";
+
+            var expectedError = @"
+invalid combination of @import options (inline, reference) -- specify either inline or reference, but not both on line 1 in file 'test.less':
+   []: /beginning of file
+  [1]: @import (inline, reference) ""simple-rule.css"";
+       --------^
+  [2]: /end of file";
+            AssertError(expectedError, input);
+        }
+
+        [Test]
+        public void ImportingAsBothInlineAndCssFails()
+        {
+            var input = @"
+@import (inline, css) ""simple-rule.css"";
+";
+
+            var expectedError = @"
+invalid combination of @import options (inline, css) -- specify either inline or css, but not both on line 1 in file 'test.less':
+   []: /beginning of file
+  [1]: @import (inline, css) ""simple-rule.css"";
+       --------^
+  [2]: /end of file";
+            AssertError(expectedError, input);
+        }
+
+        [Test]
+        public void ImportingAsBothInlineAndLessFails()
+        {
+            var input = @"
+@import (inline, less) ""simple-rule.css"";
+";
+
+            var expectedError = @"
+invalid combination of @import options (inline, less) -- specify either inline or less, but not both on line 1 in file 'test.less':
+   []: /beginning of file
+  [1]: @import (inline, less) ""simple-rule.css"";
+       --------^
+  [2]: /end of file";
+            AssertError(expectedError, input);
+        }
+
+        [Test]
+        public void ImportingAsBothOnceAndMultipleFails()
+        {
+            var input = @"
+@import (once, multiple) ""simple-rule.css"";
+";
+
+            var expectedError = @"
+invalid combination of @import options (once, multiple) -- specify either once or multiple, but not both on line 1 in file 'test.less':
+   []: /beginning of file
+  [1]: @import (once, multiple) ""simple-rule.css"";
+       --------^
+  [2]: /end of file";
+            AssertError(expectedError, input);
+        }
+
+        [Test]
+        public void UnrecognizedImportOptionFails()
+        {
+            var input = @"
+@import (invalid-option) ""simple-rule.css"";
+";
+
+            var expectedError = @"
+unrecognized @import option 'invalid-option' on line 1 in file 'test.less':
+   []: /beginning of file
+  [1]: @import (invalid-option) ""simple-rule.css"";
+       --------^
+  [2]: /end of file";
+            AssertError(expectedError, input);
+        }
+		
+
+        [Test]
+        public void ImportProtocolCssInsideMixinsWithNestedGuards()
+        {
+            var input = @"
+.generateImports(@fontFamily) {
+  & when (@fontFamily = Lato) {
+    @import url(https://fonts.googleapis.com/css?family=Lato);
+  }
+  & when (@fontFamily = Cabin) {
+    @import url(https://fonts.googleapis.com/css?family=Cabin);
+  }
+}
+.generateImports(Lato);
+.generateImports(Cabin);
+";
+            
+            var expected = @"
+@import url(https://fonts.googleapis.com/css?family=Lato);
+
+
+@import url(https://fonts.googleapis.com/css?family=Cabin);
+";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ImportProtocolCssInsideMixinsWithGuards()
+        {
+            var input = @"
+.generateImports(@fontFamily) when (@fontFamily = Lato) {
+  @import url(https://fonts.googleapis.com/css?family=Lato);
+}
+.generateImports(@fontFamily) when (@fontFamily = Cabin) {
+  @import url(https://fonts.googleapis.com/css?family=Cabin);
+}
+.generateImports(Lato);
+.generateImports(Cabin);
+";
+
+            var expected = @"
+@import url(https://fonts.googleapis.com/css?family=Lato);
+@import url(https://fonts.googleapis.com/css?family=Cabin);
+";
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
         }		
     }
 }

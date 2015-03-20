@@ -27,25 +27,25 @@ namespace dotless.Core
                 .Where(ValueIsNotNullOrEmpty);
 
             var parser = new Parser.Parser();
+            sb.Append(source);
             foreach (var parameter in parameters)
             {
+                sb.AppendLine();
                 var variableDeclaration = string.Format("@{0}: {1};", parameter.Key, parameter.Value);
 
                 try
                 {
                     // Attempt to evaluate the generated variable to see if it's OK
                     parser.Parse(variableDeclaration, "").ToCSS(new Env());
-                    sb.AppendLine(variableDeclaration);
+                    sb.Append(variableDeclaration);
                 }
                 catch (ParserException)
                 {
                     // Result wasn't valid LESS, output a comment instead
                     sb.AppendFormat("/* Omitting variable '{0}'. The expression '{1}' is not valid. */", parameter.Key,
                         parameter.Value);
-                    sb.AppendLine();
                 }
             }
-            sb.Append(source);
             return Underlying.TransformToCss(sb.ToString(), fileName);
         }
 
