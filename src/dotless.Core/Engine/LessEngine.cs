@@ -17,6 +17,7 @@ namespace dotless.Core
         public bool DisableVariableRedefines { get; set; }
         public bool DisableColorCompression { get; set; }
         public bool KeepFirstSpecialComment { get; set; }
+        public bool StrictMath { get; set; }
         public Env Env { get; set; }
         public IEnumerable<IPluginConfigurator> Plugins { get; set; }
         public bool LastTransformationSuccessful { get; private set; }
@@ -27,7 +28,7 @@ namespace dotless.Core
             set { Parser.CurrentDirectory = value; }
         }
 
-        public LessEngine(Parser.Parser parser, ILogger logger, bool compress, bool debug, bool disableVariableRedefines, bool disableColorCompression, bool keepFirstSpecialComment, IEnumerable<IPluginConfigurator> plugins)
+        public LessEngine(Parser.Parser parser, ILogger logger, bool compress, bool debug, bool disableVariableRedefines, bool disableColorCompression, bool keepFirstSpecialComment, bool strictMath, IEnumerable<IPluginConfigurator> plugins)
         {
             Parser = parser;
             Logger = logger;
@@ -37,6 +38,12 @@ namespace dotless.Core
             Plugins = plugins;
             KeepFirstSpecialComment = keepFirstSpecialComment;
             DisableColorCompression = disableColorCompression;
+            StrictMath = strictMath;
+        }
+
+        public LessEngine(Parser.Parser parser, ILogger logger, bool compress, bool debug, bool disableVariableRedefines, bool disableColorCompression, bool keepFirstSpecialComment, IEnumerable<IPluginConfigurator> plugins)
+            :this(parser, logger, compress, debug, disableVariableRedefines, disableColorCompression, keepFirstSpecialComment, false, plugins)
+        {
         }
 
         public LessEngine(Parser.Parser parser, ILogger logger, bool compress, bool debug)
@@ -63,6 +70,7 @@ namespace dotless.Core
         {
             try
             {
+                Parser.StrictMath = StrictMath;
                 var tree = Parser.Parse(source, fileName);
 
                 var env = Env ??

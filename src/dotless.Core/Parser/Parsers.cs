@@ -845,13 +845,13 @@ namespace dotless.Core.Parser
 
             Expect(parser, '(');
 
-            Node left = Expect(Addition(parser) || Keyword(parser) || Quoted(parser), "unrecognised condition", parser);
+            Node left = Expect(Operation(parser) || Keyword(parser) || Quoted(parser), "unrecognised condition", parser);
 
             var op = parser.Tokenizer.Match("(>=|=<|[<=>])");
 
             if (op)
             {
-                Node right = Expect(Addition(parser) || Keyword(parser) || Quoted(parser), "unrecognised right hand side condition expression", parser);
+                Node right = Expect(Operation(parser) || Keyword(parser) || Quoted(parser), "unrecognised right hand side condition expression", parser);
 
                 condition = NodeProvider.Condition(left, op.Value, right, negate, parser.Tokenizer.GetNodeLocation(index));
             }
@@ -1847,8 +1847,15 @@ namespace dotless.Core.Parser
             return operation;
         }
 
-        public Node Addition(Parser parser)
+        public Node Operation(Parser parser)
         {
+            if (parser.StrictMath) {
+                var beginParen = parser.Tokenizer.Match('(');
+                if (beginParen == null) {
+                    return null;
+                }
+            }
+
             var m = Multiplication(parser);
             if (!m)
                 return null;
@@ -1869,6 +1876,11 @@ namespace dotless.Core.Parser
                 else
                     break;
             }
+
+            if (parser.StrictMath) {
+                Expect(parser, ')', "Missing closing paren.");
+            }
+
             return operation ?? m;
         }
 
@@ -1919,9 +1931,9 @@ namespace dotless.Core.Parser
             var index = parser.Tokenizer.Location.Index;
 
 #if CSS3EXPERIMENTAL
-            while (e = RepeatPattern(parser) || Addition(parser) || Entity(parser))
+            while (e = RepeatPattern(parser) || Operation(parser) || Entity(parser))
 #else 
-            while (e = Addition(parser) || Entity(parser))
+            while (e = Operation(parser) || parser.Tokenizer.Match(@"[-+*/]") || Entity(parser))
 #endif
             {
                 e.PostComments = PullComments();

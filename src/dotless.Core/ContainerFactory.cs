@@ -82,11 +82,13 @@ namespace dotless.Core
                 .Parameters("debug").Set("debug")
                 .Parameters("disableVariableRedefines").Set("disableVariableRedefines")
                 .Parameters("disableColorCompression").Set("disableColorCompression")
+                .Parameters("strictMath").Set("strictMath")
                 .Lifestyle.Transient();
             pandora.Service<bool>("minify-output").Instance(configuration.MinifyOutput);
             pandora.Service<bool>("debug").Instance(configuration.Debug);
             pandora.Service<bool>("disableVariableRedefines").Instance(configuration.DisableVariableRedefines);
             pandora.Service<bool>("disableColorCompression").Instance(configuration.DisableColorCompression);
+            pandora.Service<bool>("strictMath").Instance(configuration.StrictMath);
             pandora.Service<bool>("keepFirstSpecialComment").Instance(configuration.KeepFirstSpecialComment);
 
             pandora.Service<ILessEngine>().Implementor<LessEngine>().Parameters("plugins").Set("default-plugins").Lifestyle.Transient();

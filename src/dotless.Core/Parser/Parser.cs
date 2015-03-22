@@ -74,10 +74,13 @@ namespace dotless.Core.Parser
                                              {
                                                  NodeProvider = NodeProvider,
                                                  Debug = Debug,
-                                                 CurrentDirectory = CurrentDirectory
+                                                 CurrentDirectory = CurrentDirectory,
+                                                 StrictMath = StrictMath
                                              };
             }
         }
+
+        public bool StrictMath { get; set; }
 
         private const int defaultOptimization = 1;
         private const bool defaultDebug = false;
