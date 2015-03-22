@@ -142,14 +142,14 @@ namespace dotless.Compiler
         private static IEnumerable<string> CompileImpl(ILessEngine engine, string inputFilePath, string outputFilePath)
         {
             engine = new FixImportPathDecorator(engine);
-            var currentDir = Directory.GetCurrentDirectory();
             try
             {
                 Console.WriteLine("{0} -> {1}", inputFilePath, outputFilePath);
                 var directoryPath = Path.GetDirectoryName(inputFilePath);
                 var fileReader = new dotless.Core.Input.FileReader();
                 var source = fileReader.GetFileContents(inputFilePath);
-                Directory.SetCurrentDirectory(directoryPath);
+                engine.CurrentDirectory = directoryPath;
+
                 var css = engine.TransformToCss(source, inputFilePath);
 
                 File.WriteAllText(outputFilePath, css);
@@ -187,10 +187,6 @@ namespace dotless.Compiler
                 Console.WriteLine(ex.StackTrace);
                 returnCode = -3;
                 return null;
-            }
-            finally
-            {
-                Directory.SetCurrentDirectory(currentDir);
             }
         }
 

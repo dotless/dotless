@@ -37,13 +37,7 @@ namespace dotless.Core.Importers
         /// </summary>
         private readonly List<string> _referenceImports = new List<string>();
 
-        protected virtual string CurrentDirectory
-        {
-            get
-            {
-                return System.Environment.CurrentDirectory;
-            }
-        }
+        public virtual string CurrentDirectory { get; set; }
 
         /// <summary>
         ///  Whether or not the importer should alter urls
@@ -79,6 +73,7 @@ namespace dotless.Core.Importers
             InlineCssFiles = inlineCssFiles;
             ImportAllFilesAsLess = importAllFilesAsLess;
             Imports = new List<string>();
+            CurrentDirectory = "";
         }
 
         /// <summary>

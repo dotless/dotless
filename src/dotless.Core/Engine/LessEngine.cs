@@ -21,6 +21,12 @@ namespace dotless.Core
         public IEnumerable<IPluginConfigurator> Plugins { get; set; }
         public bool LastTransformationSuccessful { get; private set; }
 
+        public string CurrentDirectory
+        {
+            get { return Parser.CurrentDirectory; }
+            set { Parser.CurrentDirectory = value; }
+        }
+
         public LessEngine(Parser.Parser parser, ILogger logger, bool compress, bool debug, bool disableVariableRedefines, bool disableColorCompression, bool keepFirstSpecialComment, IEnumerable<IPluginConfigurator> plugins)
         {
             Parser = parser;

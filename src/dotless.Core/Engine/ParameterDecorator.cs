@@ -71,5 +71,11 @@ namespace dotless.Core
         {
             return !string.IsNullOrEmpty(kvp.Value);
         }
+
+        public string CurrentDirectory
+        {
+            get { return Underlying.CurrentDirectory; }
+            set { Underlying.CurrentDirectory = value; }
+        }
     }
 }

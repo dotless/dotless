@@ -50,6 +50,12 @@ namespace dotless.Core.Parser
         public string FileName { get; set; }
         public bool Debug { get; set; }
 
+        public string CurrentDirectory
+        {
+            get { return Importer.CurrentDirectory; }
+            set { Importer.CurrentDirectory = value; }
+        }
+
         private INodeProvider _nodeProvider;
         public INodeProvider NodeProvider
         {
@@ -67,7 +73,8 @@ namespace dotless.Core.Parser
                 _importer.Parser = () => new Parser(Tokenizer.Optimization, Stylizer, _importer)
                                              {
                                                  NodeProvider = NodeProvider,
-                                                 Debug = Debug
+                                                 Debug = Debug,
+                                                 CurrentDirectory = CurrentDirectory
                                              };
             }
         }

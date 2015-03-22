@@ -35,5 +35,11 @@
                 return underlying.LastTransformationSuccessful;
             }
         }
+
+        public string CurrentDirectory
+        {
+            get { return underlying.CurrentDirectory; }
+            set { underlying.CurrentDirectory = value; }
+        }
     }
 }
