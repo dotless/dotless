@@ -1849,6 +1849,13 @@ namespace dotless.Core.Parser
 
         public Node Operation(Parser parser)
         {
+            if (parser.StrictMath) {
+                var beginParen = parser.Tokenizer.Match('(');
+                if (beginParen == null) {
+                    return null;
+                }
+            }
+
             var m = Multiplication(parser);
             if (!m)
                 return null;
@@ -1869,6 +1876,11 @@ namespace dotless.Core.Parser
                 else
                     break;
             }
+
+            if (parser.StrictMath) {
+                Expect(parser, ')', "Missing closing paren.");
+            }
+
             return operation ?? m;
         }
 
@@ -1919,9 +1931,9 @@ namespace dotless.Core.Parser
             var index = parser.Tokenizer.Location.Index;
 
 #if CSS3EXPERIMENTAL
-            while (e = RepeatPattern(parser) || Addition(parser) || Entity(parser))
+            while (e = RepeatPattern(parser) || Operation(parser) || Entity(parser))
 #else 
-            while (e = Operation(parser) || Entity(parser))
+            while (e = Operation(parser) || parser.Tokenizer.Match(@"[-+*/]") || Entity(parser))
 #endif
             {
                 e.PostComments = PullComments();

@@ -79,6 +79,8 @@ namespace dotless.Core.Parser
             }
         }
 
+        public bool StrictMath { get; set; }
+
         private const int defaultOptimization = 1;
         private const bool defaultDebug = false;
 
