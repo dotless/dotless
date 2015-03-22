@@ -3,7 +3,7 @@
   <configSections>
     <section name="dotless" type="dotless.Core.configuration.DotlessConfigurationSectionHandler, dotless.Core" />
   </configSections>
-  <dotless minifyCss="false" cache="true" web="false" />
+  <dotless minifyCss="false" cache="true" web="false" strictMath="false" />
   <system.webServer>
     <handlers>
       <add name="dotless" path="*.less" verb="GET" type="dotless.Core.LessCssHttpHandler,dotless.Core" resourceType="File" preCondition="" />
