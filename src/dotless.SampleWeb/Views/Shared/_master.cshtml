@@ -1,0 +1,27 @@
+@using System.Web.Optimization
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>@ViewBag.Title</title>
+
+	@Styles.Render("~/Content/Site.less")
+	@Styles.Render("~/Content/subfolder/test.less")
+</head>
+<body>
+	<div id="header" class="container">
+		<div id="title">
+			<h1>APPLICATION NAME</h1>
+		</div>
+		<div id="logindisplay">
+			LOGIN AND DISPLAY
+		</div>
+		<div id="menucontainer">
+			MENU CONTAINER
+		</div>
+	</div>
+
+	@RenderBody()
+
+	<div id="footer"></div>
+</body>
+</html>

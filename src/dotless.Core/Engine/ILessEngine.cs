@@ -9,5 +9,7 @@ namespace dotless.Core
         void ResetImports();
         IEnumerable<string> GetImports();
         bool LastTransformationSuccessful { get; }
+
+        string CurrentDirectory { get; set; }
     }
 }

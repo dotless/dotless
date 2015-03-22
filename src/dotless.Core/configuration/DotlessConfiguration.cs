@@ -63,6 +63,7 @@ namespace dotless.Core.configuration
             DisableColorCompression = false;
             KeepFirstSpecialComment = false;
             RootPath = "";
+            StrictMath = false;
         }
 
         public DotlessConfiguration(DotlessConfiguration config)
@@ -89,6 +90,7 @@ namespace dotless.Core.configuration
             DisableColorCompression = config.DisableColorCompression;
             KeepFirstSpecialComment = config.KeepFirstSpecialComment;
             RootPath = config.RootPath;
+            StrictMath = config.StrictMath;
         }
 
         public static IConfigurationManager ConfigurationManager
@@ -221,5 +223,10 @@ namespace dotless.Core.configuration
         /// Plugins to use
         /// </summary>
         public List<IPluginConfigurator> Plugins { get; private set; }
+
+        /// <summary>
+        /// Whether to only evaluate mathematical expressions when they are wrapped in an extra set of parentheses.
+        /// </summary>
+        public bool StrictMath { get; set; }
     }
 }

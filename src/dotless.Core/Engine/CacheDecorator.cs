@@ -68,5 +68,11 @@ namespace dotless.Core
                 return Underlying.LastTransformationSuccessful;
             }
         }
+
+        public string CurrentDirectory
+        {
+            get { return Underlying.CurrentDirectory; }
+            set { Underlying.CurrentDirectory = value; }
+        }
     }
 }

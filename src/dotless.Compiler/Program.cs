@@ -142,14 +142,14 @@ namespace dotless.Compiler
         private static IEnumerable<string> CompileImpl(ILessEngine engine, string inputFilePath, string outputFilePath)
         {
             engine = new FixImportPathDecorator(engine);
-            var currentDir = Directory.GetCurrentDirectory();
             try
             {
                 Console.WriteLine("{0} -> {1}", inputFilePath, outputFilePath);
                 var directoryPath = Path.GetDirectoryName(inputFilePath);
                 var fileReader = new dotless.Core.Input.FileReader();
                 var source = fileReader.GetFileContents(inputFilePath);
-                Directory.SetCurrentDirectory(directoryPath);
+                engine.CurrentDirectory = directoryPath;
+
                 var css = engine.TransformToCss(source, inputFilePath);
 
                 File.WriteAllText(outputFilePath, css);
@@ -187,10 +187,6 @@ namespace dotless.Compiler
                 Console.WriteLine(ex.StackTrace);
                 returnCode = -3;
                 return null;
-            }
-            finally
-            {
-                Directory.SetCurrentDirectory(currentDir);
             }
         }
 
@@ -267,6 +263,7 @@ namespace dotless.Compiler
             Console.WriteLine("\t\t-a --import-all-less - treats every import as less even if ending in .css");
             Console.WriteLine("\t\t-c --inline-css - Inlines CSS file imports into the output");
             Console.WriteLine("\t\t-x --disable-color-compression - Disable hexadecimal color compression");            
+            Console.WriteLine("\t\t-s --strict-math - Enable strict math mode");            
             Console.WriteLine("\t\t-DKey=Value - prefixes variable to the less");
             Console.WriteLine("\t\t-l --listplugins - Lists the plugins available and options");
             Console.WriteLine("\t\t-p: --plugin:pluginName[:option=value[,option=value...]] - adds the named plugin to dotless with the supplied options");
@@ -345,6 +342,10 @@ namespace dotless.Compiler
                     else if (arg.StartsWith("-x") || arg.StartsWith("--disable-color-compression"))
                     {
                         configuration.DisableColorCompression = true;
+                    }
+                    else if (arg.StartsWith("-s") || arg.StartsWith("--strict-math"))
+                    {
+                        configuration.StrictMath = true;
                     }
                     else if (arg.StartsWith("-p:") || arg.StartsWith("--plugin:"))
                     {

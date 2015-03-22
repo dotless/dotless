@@ -24,7 +24,7 @@ task Clean {
 
 task Restore-NugetPackages {
     & "$source_dir\.nuget\nuget.exe" update -self
-    & "$source_dir\.nuget\nuget.exe" restore "$source_dir\dotless-vs2012.sln"
+    & "$source_dir\.nuget\nuget.exe" restore "$source_dir\dotless.sln"
 }
 
 task Init -depends Restore-NugetPackages, Clean {
@@ -286,7 +286,8 @@ task NuGetPackage -depends Merge {
     New-Item $target\content -ItemType directory
     
     Copy-Item $build_dir\Dotless.nuspec $target
-    Copy-Item $source_dir\web.config.transform $target\content\
+    Copy-Item $source_dir\web.config.install.xdt $target\content\
+    Copy-Item $source_dir\web.config.uninstall.xdt $target\content\
     Copy-Item $build_dir\dotless.Core.dll $target\lib\
     Copy-Item $build_dir\dotless.Core.pdb $target\lib\
     Copy-Item $build_dir\dotless.compiler.exe $target\tool\

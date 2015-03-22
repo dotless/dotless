@@ -281,6 +281,12 @@ body { margin-right: @a; }";
 /* This is a comment */
 ";
 
+            imports["math.less"] = @"
+.rule {
+    width: calc(10px + 2px);
+}
+";
+
             return new Parser { 
                 Importer = new Importer(new DictionaryReader(imports)) { 
                     IsUrlRewritingDisabled = isUrlRewritingDisabled,
@@ -1462,6 +1468,24 @@ unrecognized @import option 'invalid-option' on line 1 in file 'test.less':
             var parser = GetParser();
 
             AssertLess(input, expected, parser);
-        }		
+        }
+
+        [Test]
+        public void StrictMathIsHonoredInImports()
+        {
+            var input = @"
+@import ""math.less"";
+";
+
+            var expected = @"
+.rule {
+  width: calc(10px + 2px);
+}
+";
+            var parser = GetParser();
+            parser.StrictMath = true;
+
+            AssertLess(input, expected, parser);
+        }
     }
 }

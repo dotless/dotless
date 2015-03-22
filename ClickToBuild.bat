@@ -1,1 +1,1 @@
-Powershell .\psake.ps1
+Powershell .\src\packages\psake.4.4.1\tools\psake.ps1

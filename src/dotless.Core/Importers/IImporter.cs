@@ -36,6 +36,8 @@
         /// </summary>
         string AlterUrl(string url, List<string> pathList);
 
+        string CurrentDirectory { get; set; }
+
         IDisposable BeginScope(Import parent);
     }
 
