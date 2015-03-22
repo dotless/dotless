@@ -24,7 +24,7 @@ task Clean {
 
 task Restore-NugetPackages {
     & "$source_dir\.nuget\nuget.exe" update -self
-    & "$source_dir\.nuget\nuget.exe" restore "$source_dir\dotless-vs2012.sln"
+    & "$source_dir\.nuget\nuget.exe" restore "$source_dir\dotless.sln"
 }
 
 task Init -depends Restore-NugetPackages, Clean {
