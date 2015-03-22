@@ -74,7 +74,8 @@ namespace dotless.Core.Parser
                                              {
                                                  NodeProvider = NodeProvider,
                                                  Debug = Debug,
-                                                 CurrentDirectory = CurrentDirectory
+                                                 CurrentDirectory = CurrentDirectory,
+                                                 StrictMath = StrictMath
                                              };
             }
         }
