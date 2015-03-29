@@ -106,7 +106,7 @@ div#id {
   color: purple;
 }
 .one.two.three {
-  color: grey;
+  color: gray;
 }
 ";
 
@@ -226,7 +226,20 @@ p {
 }
 ";
 
-            AssertLessUnchanged(input);
+            var expected =
+                @"
+.misc {
+  -moz-border-radius: 2px;
+  display: -moz-inline-stack;
+  width: 0.1em;
+  background-color: #009998;
+  background-image: url(images/image.jpg);
+  background: -webkit-gradient(linear, left top, left bottom, from(red), to(blue));
+  margin: ;
+}
+";
+
+            AssertLess(input, expected);
         }
 
         [Test]
@@ -237,7 +250,7 @@ p {
 .misc {
   -Moz-Border-Radius: 2Px;
   dISplay: NONE;
-  WIDTH: .1EM;
+  WIDTH: 0.1EM;
 }
 ";
 
@@ -257,7 +270,16 @@ p {
 }
 ";
 
-            AssertLessUnchanged(input);
+            var expected =
+                @"
+#important {
+  color: red !important;
+  width: 100% !important;
+  height: 20px ! important;
+}
+";
+
+            AssertLess(input, expected);
         }
 
         [Test]

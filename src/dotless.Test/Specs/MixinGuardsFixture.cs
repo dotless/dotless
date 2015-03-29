@@ -562,7 +562,7 @@ namespace dotless.Test.Specs
   color: white;
 }
 .light3 {
-  color: grey;
+  color: gray;
 }";
 
             AssertLess(input, expected);
@@ -638,7 +638,7 @@ namespace dotless.Test.Specs
 .light1 {
   color: red;
   color: white;
-  color: grey;
+  color: gray;
   color: black;
 }
 ";

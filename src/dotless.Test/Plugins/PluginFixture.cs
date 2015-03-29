@@ -274,10 +274,10 @@
 
             // Some rules are preference parsed into quoted text rather than expressions and values
             Assert.AreEqual(1, PassThroughBeforePlugin.Nodes[typeof(Color).ToString()]);
-            Assert.AreEqual(2, PassThroughAfterPlugin.Nodes[typeof(Color).ToString()]);
+            Assert.AreEqual(4, PassThroughAfterPlugin.Nodes[typeof(Color).ToString()]);
 
-            Assert.AreEqual(7, PassThroughBeforePlugin.Nodes[typeof(Number).ToString()]);
-            Assert.AreEqual(6, PassThroughAfterPlugin.Nodes[typeof(Number).ToString()]);
+            Assert.AreEqual(11, PassThroughBeforePlugin.Nodes[typeof(Number).ToString()]);
+            Assert.AreEqual(10, PassThroughAfterPlugin.Nodes[typeof(Number).ToString()]);
         }
     }
 }
