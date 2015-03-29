@@ -1487,5 +1487,22 @@ unrecognized @import option 'invalid-option' on line 1 in file 'test.less':
 
             AssertLess(input, expected, parser);
         }
+
+        [Test]
+        public void ImportsWithinRulesets()
+        {
+            var input = @"
+.test {
+  @import ""math.less"";
+}
+";
+
+            var expected = @"
+.test .rule {
+  width: calc(12px);
+}
+";
+            AssertLess(input, expected, GetParser());
+        }
     }
 }

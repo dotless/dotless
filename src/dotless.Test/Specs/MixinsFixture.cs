@@ -33,7 +33,7 @@ namespace dotless.Test.Specs
 }
 #theme {
   > .mixin {
-    background-color: grey;
+    background-color: gray;
   }
 }
 #container {
@@ -87,18 +87,18 @@ namespace dotless.Test.Specs
   color: transparent;
 }
 #theme > .mixin {
-  background-color: grey;
+  background-color: gray;
 }
 #container {
   color: black;
   border: 1px solid black;
   border-color: orange;
-  background-color: grey;
+  background-color: gray;
 }
 #header .milk {
   color: white;
   border: 1px solid black;
-  background-color: grey;
+  background-color: gray;
 }
 #header #cookie {
   border-style: dashed;
@@ -110,7 +110,7 @@ namespace dotless.Test.Specs
   color: black;
   border: 1px solid black;
   border-color: orange;
-  background-color: grey;
+  background-color: gray;
 }
 .secure-zone {
   color: transparent;

@@ -529,7 +529,7 @@ namespace dotless.Core.Parser
 
             var index = parser.Tokenizer.Location.Index;
 
-            var value = parser.Tokenizer.Match(@"([+-]?[0-9]*\.?[0-9]+)(px|%|em|pc|ex|in|deg|s|ms|pt|cm|mm|ch|rem|vw|vh|vmin|vm|grad|rad|fr|gr|Hz|kHz|dpi|dpcm|dppx)?");
+            var value = parser.Tokenizer.Match(@"([+-]?[0-9]*\.?[0-9]+)(px|%|em|pc|ex|in|deg|s|ms|pt|cm|mm|ch|rem|vw|vh|vmin|vm|grad|rad|fr|gr|Hz|kHz|dpi|dpcm|dppx)?", true);
 
             if (value)
                 return NodeProvider.Number(value[1], value[2], parser.Tokenizer.GetNodeLocation(index));
@@ -1207,11 +1207,7 @@ namespace dotless.Core.Parser
 
                 var preValueComments = GatherAndPullComments(parser);
 
-                if ((name[0] != '@') && (parser.Tokenizer.Peek(@"([^#@+\/*`(;{}'""-]*);")))
-                {
-                    value = parser.Tokenizer.Match(@"[^#@+\/*`(;{}'""-]*");
-                } 
-                else if (name == "font")
+                if (name == "font")
                 {
                     value = Font(parser);
                 }
@@ -1775,7 +1771,7 @@ namespace dotless.Core.Parser
                 }.Where(x => x != "").ToArray()
             );
 
-            if (expressions.Count > 0)
+            if (expressions.Count > 0 || parser.Tokenizer.Match(';'))
             {
                 var value = NodeProvider.Value(expressions, important, parser.Tokenizer.GetNodeLocation(index));
 

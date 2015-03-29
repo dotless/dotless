@@ -228,6 +228,7 @@ namespace dotless.Core.Parser.Tree
             int mediaBlocks = env.MediaBlocks.Count;
 
             NodeHelper.ExpandNodes<MixinCall>(env, Rules);
+            NodeHelper.ExpandNodes<Import>(env, Rules);
 
             foreach (var r in Rules.OfType<Extend>().ToArray())
             {

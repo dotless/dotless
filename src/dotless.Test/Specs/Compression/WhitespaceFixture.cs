@@ -23,7 +23,7 @@ white;
 .whitespace { color : white; }
 ";
 
-            var expected = ".whitespace{color:white}.whitespace{color:white}.whitespace{color:white}.whitespace{color:white}.whitespace{color:white}";
+            var expected = ".whitespace{color:#fff}.whitespace{color:#fff}.whitespace{color:#fff}.whitespace{color:#fff}.whitespace{color:#fff}";
 
             AssertLess(input, expected);
         }
@@ -41,7 +41,7 @@ white;
         white;
 }";
 
-            var expected = ".white,.space,.mania{color:white}";
+            var expected = ".white,.space,.mania{color:#fff}";
 
             AssertLess(input, expected);
         }
@@ -65,7 +65,7 @@ white;
   white-space: pre
 }";
 
-            var expected = ".no-semi-colon{color:white;white-space:pre}";
+            var expected = ".no-semi-colon{color:#fff;white-space:pre}";
 
             AssertLess(input, expected);
         }
@@ -95,7 +95,7 @@ great,
           black;
 }";
 
-            var expected = ".newlines{background:the,great,wall;border:2px solid black}";
+            var expected = ".newlines{background:the,great,wall;border:2px solid #000}";
 
             AssertLess(input, expected);
         }

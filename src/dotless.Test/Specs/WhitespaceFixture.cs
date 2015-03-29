@@ -32,7 +32,7 @@ white;
   color: white;
 }
 .whitespace {
-  color: white ;
+  color: white;
 }
 .whitespace {
   color: white;
@@ -127,12 +127,8 @@ white;
             var expected =
                 @"
 .newlines {
-  background: the,
-              great,
-              wall;
-  border: 2px
-          solid
-          black;
+  background: the, great, wall;
+  border: 2px solid black;
 }";
 
             AssertLess(input, expected);
@@ -152,8 +148,7 @@ line;
             var expected =
                 @"
 .new .lines {
-  background: new
-line;
+  background: new line;
 }";
 
             AssertLess(input, expected);
