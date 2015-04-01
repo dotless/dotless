@@ -532,6 +532,14 @@ Recursive variable definition for @var on line 2 in file 'test.less':
 }";
 
             AssertError("Expected ']' but found '\"'", "[@{key}-something=\"value\"] {", 2, 17, input);
-        }		
+        }
+
+        [Test]
+        public void SelectorIsLegalVariableValue() {
+            var input = @"
+@test: .foo;
+";
+            AssertLess(input, "");
+        }
     }
 }
