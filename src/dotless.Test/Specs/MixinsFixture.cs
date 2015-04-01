@@ -1862,5 +1862,29 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
 
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void SimpleGeneratedSelectorIsCallableAsMixin() {
+            var input = @"
+@selector: .col;
+@{selector} {
+  width: 120px;
+}
+
+.test {
+  .col;
+}
+";
+
+            var expected = @"
+.col {
+  width: 120px;
+}
+.test {
+  width: 120px;
+}";
+
+            AssertLess(input, expected);
+        }
     }
 }
