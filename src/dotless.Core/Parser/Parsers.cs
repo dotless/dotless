@@ -1197,7 +1197,15 @@ namespace dotless.Core.Parser
             var memo = Remember(parser);
             PushComments();
 
-            var name = Property(parser) ?? VariableName(parser);
+            Variable variable = null;
+            string name = Property(parser);
+
+            if (string.IsNullOrEmpty(name)) {
+                variable = Variable(parser);
+                if (variable != null) {
+                    name = variable.Name;
+                }
+            }
 
             var postNameComments = GatherAndPullComments(parser);
 
@@ -1218,6 +1226,14 @@ namespace dotless.Core.Parser
                 else
                 {
                     value = Value(parser);
+                }
+
+
+                // It's definitely a variable, but we couldn't parse the value to anything meaningful.
+                // However, the value might still be useful in another context, e.g. as part of a selector
+                // so let's catch the whole shebang:
+                if (variable != null && value == null) {
+                    value = parser.Tokenizer.Match("[^;]*");
                 }
 
                 var postValueComments = GatherAndPullComments(parser);

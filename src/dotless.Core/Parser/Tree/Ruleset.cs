@@ -248,7 +248,7 @@ namespace dotless.Core.Parser.Tree
                 Rules.Remove(r);
             }
 
-            for (var i = Rules.Count - 1; i >= 0; i--)
+            for (var i = 0; i < Rules.Count; i++)
             {
                 Rules[i] = Rules[i].Evaluate(env);
             }

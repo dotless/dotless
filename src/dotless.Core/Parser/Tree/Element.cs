@@ -75,5 +75,13 @@
 
             NodeValue = VisitAndReplace(NodeValue, visitor, true);
         }
+
+        internal Element Clone() {
+            if (!string.IsNullOrEmpty(Value)) {
+                return new Element(Combinator, Value);
+            }
+
+            return new Element(Combinator, NodeValue);
+        }
     }
 }

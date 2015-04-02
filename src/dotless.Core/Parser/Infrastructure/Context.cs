@@ -175,11 +175,7 @@
                 MergeElementsOnToSelectors(currentElements, newSelectors);
             }
 
-            foreach (var s in newSelectors.SelectMany(sel => sel)) {
-                MergeJoinedElements(s);
-            }
-
-            Paths.AddRange(newSelectors);
+            Paths.AddRange(newSelectors.Select(sel => sel.Select(MergeJoinedElements).ToList()));
         }
 
         private void MergeElementsOnToSelectors(NodeList<Element> elements, List<List<Selector>> selectors)
@@ -195,8 +191,7 @@
                 // if the previous thing in sel is a parent this needs to join on to it?
                 if (sel.Count > 0)
                 {
-                    var previousSelector = sel[sel.Count - 1];
-                    var newSelector = sel[sel.Count - 1] = new Selector(previousSelector.Elements.Concat(elements));
+                    sel[sel.Count - 1] = new Selector(sel[sel.Count - 1].Elements.Concat(elements));
                 }
                 else
                 {
@@ -207,10 +202,14 @@
 
         private static readonly char[] LeaveUnmerged = {'.', '#', ':'};
 
-        private void MergeJoinedElements(Selector selector) {
-            for (int i = 1; i < selector.Elements.Count; i++) {
-                var preivousElement = selector.Elements[i - 1];
-                var currentElement = selector.Elements[i];
+        private Selector MergeJoinedElements(Selector selector) {
+            var elements = selector.Elements
+                .Select(e => e.Clone())
+                .ToList();
+
+            for (int i = 1; i < elements.Count; i++) {
+                var previousElement = elements[i - 1];
+                var currentElement = elements[i];
 
                 if (string.IsNullOrEmpty(currentElement.Value)) {
                     continue;
@@ -224,10 +223,12 @@
                     continue;
                 }
 
-                preivousElement.Value += currentElement.Value;
-                selector.Elements.RemoveAt(i);
+                elements[i - 1] = new Element(previousElement.Combinator, previousElement.Value += currentElement.Value);
+                elements.RemoveAt(i);
                 i--;
             }
+
+            return new Selector(elements);
         }
 
         public void AppendCSS(Env env)
