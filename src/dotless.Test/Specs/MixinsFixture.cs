@@ -1886,5 +1886,30 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
 
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void MixinCallDoesNotMultiplyAttributeSelectorElements() {
+            var input = @"
+.form-control {
+  fieldset[disabled] & {
+    cursor: not-allowed;
+  }
+}
+
+.test {
+  .form-control;
+}
+";
+
+            var expected = @"
+fieldset[disabled] .form-control {
+  cursor: not-allowed;
+}
+fieldset[disabled] .test {
+  cursor: not-allowed;
+}";
+
+            AssertLess(input, expected);
+        }
     }
 }
