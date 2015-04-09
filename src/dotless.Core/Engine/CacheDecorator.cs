@@ -28,7 +28,7 @@ namespace dotless.Core
         {
             //Compute Cache Key
             var hash = ComputeContentHash(source);
-            var cacheKey = fileName + hash;
+            var cacheKey = fileName != null ? fileName + hash : hash;
             if (!Cache.Exists(cacheKey))
             {
                 Logger.Debug(String.Format("Inserting cache entry for {0}", cacheKey));
