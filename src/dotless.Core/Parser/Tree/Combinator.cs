@@ -20,16 +20,20 @@
 
         public override void AppendCSS(Env env)
         {
-            env.Output.Append(
-                new Dictionary<string, string> { 
-                  { "", "" }, 
-                  { " ", " " },
-                  { ":", " :" },
-                  { "::", "::" },
-                  { "+", env.Compress ? "+" : " + " },
-                  { "~", env.Compress ? "~" : " ~ " },
-                  { ">", env.Compress ? ">" : " > " } 
-              }[Value]);
+            env.Output.Append(GetValue(env));
+        }
+
+        private string GetValue(Env env) {
+            switch (Value) {
+                case "+":
+                    return env.Compress ? "+" : " + ";
+                case "~":
+                    return env.Compress ? "~" : " ~ ";
+                case ">":
+                    return env.Compress ? ">" : " > ";
+                default:
+                    return Value;
+            }
         }
     }
 }

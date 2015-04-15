@@ -77,11 +77,7 @@
         }
 
         internal Element Clone() {
-            if (!string.IsNullOrEmpty(Value)) {
-                return new Element(Combinator, Value);
-            }
-
-            return new Element(Combinator, NodeValue);
+            return new Element(Combinator) { Value = Value, NodeValue = NodeValue};
         }
     }
 }
