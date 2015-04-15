@@ -287,6 +287,13 @@ body { margin-right: @a; }";
 }
 ";
 
+            imports["generated-selector.less"] = @"
+@selector: ~"".rule"";
+@{selector} {
+  color: black;
+}
+";
+
             return new Parser { 
                 Importer = new Importer(new DictionaryReader(imports)) { 
                     IsUrlRewritingDisabled = isUrlRewritingDisabled,
@@ -1502,6 +1509,79 @@ unrecognized @import option 'invalid-option' on line 1 in file 'test.less':
   width: calc(12px);
 }
 ";
+            AssertLess(input, expected, GetParser());
+        }
+
+        [Test]
+        public void ImportsWithGeneratedSelectorsWithinRulesets()
+        {
+            var input = @"
+.namespace {
+  @import ""generated-selector.less"";
+}
+";
+
+            var expected = @"
+.namespace .rule {
+  color: black;
+}
+";
+            AssertLess(input, expected, GetParser());
+        }
+
+        [Test]
+        public void NestedImportsWithinRulesets()
+        {
+            var input =
+                @"
+.namespace {
+  @import url(""import/import-test-a.less"");
+
+  #import-test {
+    .mixin;
+    width: 10px;
+    height: @a + 10%;
+  }
+}
+";
+
+            var expected =
+                @"
+@import ""import-test-d.css"";
+.namespace #import {
+  color: red;
+}
+.namespace .mixin {
+  height: 10px;
+  color: red;
+}
+.namespace #import-test {
+  height: 10px;
+  color: red;
+  width: 10px;
+  height: 30%;
+}
+";
+
+            var parser = GetParser();
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void ImportsWithinRulesetsGenerateCallableMixins() {
+
+            var input = @"
+.namespace {
+  @import ""reference/mixins/test.less"";
+  .mixin(red);
+}";
+
+            var expected = @"
+.namespace .test-ruleset {
+  background-color: red;
+}";
+
             AssertLess(input, expected, GetParser());
         }
     }
