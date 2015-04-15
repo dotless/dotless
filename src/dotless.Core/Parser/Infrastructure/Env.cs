@@ -18,7 +18,7 @@ namespace dotless.Core.Parser.Infrastructure
 
     public class Env
     {
-        private readonly Dictionary<string, Type> _functionTypes;
+        private Dictionary<string, Type> _functionTypes;
         private readonly List<IPlugin> _plugins;
         private readonly List<Extender> _extensions;
 
@@ -292,22 +292,38 @@ namespace dotless.Core.Parser.Infrastructure
         {
             if (assembly == null) throw new ArgumentNullException("assembly");
 
-            var functionType = typeof (Function);
+            var functions = GetFunctionsFromAssembly(assembly);
 
-            foreach (var func in assembly
-                .GetTypes()
-                .Where(t => functionType.IsAssignableFrom(t) && t != functionType)
-                .Where(t => !t.IsAbstract)
-                .SelectMany<Type, KeyValuePair<string, Type>>(GetFunctionNames))
-            {
+            AddFunctionsToRegistry(functions);
+        }
+
+        private void AddFunctionsToRegistry(IEnumerable<KeyValuePair<string, Type>> functions) {
+            foreach (var func in functions) {
                 AddFunction(func.Key, func.Value);
             }
         }
 
-        private void AddCoreFunctions()
-        {
-            AddFunctionsFromAssembly(Assembly.GetExecutingAssembly());
-            AddFunction("%", typeof (CFormatString));
+        private static Dictionary<string, Type> GetFunctionsFromAssembly(Assembly assembly) {
+            var functionType = typeof (Function);
+
+            return assembly
+                .GetTypes()
+                .Where(t => functionType.IsAssignableFrom(t) && t != functionType)
+                .Where(t => !t.IsAbstract)
+                .SelectMany(GetFunctionNames)
+                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+        }
+
+        private static Dictionary<string, Type> GetCoreFunctions() {
+            var functions = GetFunctionsFromAssembly(Assembly.GetExecutingAssembly());
+            functions["%"] = typeof (CFormatString);
+            return functions;
+        }
+
+        private static readonly Dictionary<string, Type> CoreFunctions = GetCoreFunctions();
+
+        private void AddCoreFunctions() {
+            _functionTypes = CoreFunctions;
         }
 
         /// <summary>

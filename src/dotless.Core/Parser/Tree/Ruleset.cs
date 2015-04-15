@@ -100,10 +100,10 @@ namespace dotless.Core.Parser.Tree
                     .Select(selectors => new Selector(selectors.SelectMany(s => s.Elements)))
                     .First();
 
-            return FindInternal<TRuleset>(env, namespacedSelector, self, context).ToList();
+            return FindInternal(env, namespacedSelector, self, context).ToList();
         }
 
-        private IEnumerable<Closure> FindInternal<TRuleset>(Env env, Selector selector, Ruleset self, Context context) where TRuleset : Ruleset
+        private IEnumerable<Closure> FindInternal(Env env, Selector selector, Ruleset self, Context context)
         {
             if (!selector.Elements.Any())
             {
@@ -111,7 +111,7 @@ namespace dotless.Core.Parser.Tree
             }
 
             string selectorCss = selector.ToCSS(env);
-            var key = typeof(TRuleset) + ":" + selectorCss;
+            var key = selectorCss;
             if (_lookups.ContainsKey(key))
                 return _lookups[key];
 
@@ -130,7 +130,7 @@ namespace dotless.Core.Parser.Tree
             }
 
 
-            var validRulesets = Rulesets().OfType<TRuleset>().Where(rule =>
+            var validRulesets = Rulesets().Where(rule =>
                 {
                     if (rule != self)
                         return true;
@@ -155,7 +155,7 @@ namespace dotless.Core.Parser.Tree
                 var childContext = new Context();
                 childContext.AppendSelectors(context, rule.Selectors);
 
-                var closures = rule.FindInternal<TRuleset>(env, selector, self, childContext);
+                var closures = rule.FindInternal(env, selector, self, childContext);
                 foreach (var closure in closures)
                 {
                     closure.Context.Insert(0, this);
@@ -227,8 +227,8 @@ namespace dotless.Core.Parser.Tree
 
             int mediaBlocks = env.MediaBlocks.Count;
 
-            NodeHelper.ExpandNodes<MixinCall>(env, Rules);
             NodeHelper.ExpandNodes<Import>(env, Rules);
+            NodeHelper.ExpandNodes<MixinCall>(env, Rules);
 
             foreach (var r in Rules.OfType<Extend>().ToArray())
             {
