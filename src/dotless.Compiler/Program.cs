@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace dotless.Compiler
 {
     using System;
@@ -150,7 +152,10 @@ namespace dotless.Compiler
                 var source = fileReader.GetFileContents(inputFilePath);
                 engine.CurrentDirectory = directoryPath;
 
+                var watch = new Stopwatch();
+                watch.Start();
                 var css = engine.TransformToCss(source, inputFilePath);
+                watch.Stop();
 
                 File.WriteAllText(outputFilePath, css);
 
@@ -162,7 +167,7 @@ namespace dotless.Compiler
                 }
                 else
                 {
-                    Console.WriteLine("[Done]");
+                    Console.WriteLine("[Done in {0}]", watch.Elapsed);
                 }
 
                 var files = new List<string>();
