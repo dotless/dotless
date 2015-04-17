@@ -277,6 +277,13 @@ body { margin-right: @a; }";
 }
 ";
 
+            imports["reference-with-multiple-selectors.less"] = @"
+.test,
+.test2 {
+  color: black;
+}
+";
+
             imports["comments.less"] = @"
 /* This is a comment */
 ";
@@ -1182,6 +1189,24 @@ body { background-color: foo; invalid ""; }
 ";
 
             AssertLess(input, @"", GetParser());
+        }
+
+        [Test]
+        public void ExtendingReferencedImportOnlyOutputsExtendedSelector()
+        {
+            var input = @"
+@import (reference) ""reference-with-multiple-selectors.less"";
+
+.ext:extend(.test all) { }
+";
+
+            var expected = @"
+.test,
+.ext {
+  color: black;
+}";
+
+            AssertLess(input, expected, GetParser());
         }
 
         [Test]

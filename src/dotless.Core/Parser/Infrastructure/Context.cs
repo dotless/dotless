@@ -234,7 +234,7 @@
         public void AppendCSS(Env env)
         {
             env.Output.AppendMany(
-                Paths,
+                Paths.Where(p => p.Any(s => !s.IsReference)),
                 path => path.Select(p => p.ToCSS(env)).JoinStrings("").Trim(),
                 env.Compress ? "," : ",\n");
         }
