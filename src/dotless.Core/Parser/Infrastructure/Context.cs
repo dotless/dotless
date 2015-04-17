@@ -231,12 +231,13 @@
             return new Selector(elements);
         }
 
-        public void AppendCSS(Env env)
-        {
-            env.Output.AppendMany(
-                Paths.Where(p => p.Any(s => !s.IsReference)),
-                path => path.Select(p => p.ToCSS(env)).JoinStrings("").Trim(),
-                env.Compress ? "," : ",\n");
+        public void AppendCSS(Env env) {
+            var selectors = Paths
+                .Where(p => p.Any(s => !s.IsReference))
+                .Select(path => path.Select(p => p.ToCSS(env)).JoinStrings("").Trim())
+                .Distinct();
+
+            env.Output.AppendMany(selectors, env.Compress ? "," : ",\n");
         }
 
         public string ToCss(Env env)
