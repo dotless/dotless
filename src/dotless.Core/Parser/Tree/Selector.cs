@@ -60,6 +60,7 @@
             var result = new NodeList<Selector>();
             Selector selector;
             while (selector = parsers.Selector(parser)) {
+                selector.IsReference = IsReference;
                 result.Add(selector.Evaluate(env) as Selector);
 
                 if (!parser.Tokenizer.Match(',')) {
