@@ -367,7 +367,7 @@ namespace dotless.Core.Parser.Infrastructure
                 Extender match = null;
                 if ((match = _extensions.OfType<ExactExtender>().FirstOrDefault(e => e.BaseSelector.ToString().Trim() == extending.ToString().Trim())) == null)
                 {
-                    match = new ExactExtender(extending);
+                    match = new ExactExtender(extending, extends);
                     _extensions.Add(match);
                 }
 
@@ -379,7 +379,7 @@ namespace dotless.Core.Parser.Infrastructure
                 Extender match = null;
                 if ((match = _extensions.OfType<PartialExtender>().FirstOrDefault(e => e.BaseSelector.ToString().Trim() == extending.ToString().Trim())) == null)
                 {
-                    match = new PartialExtender(extending);
+                    match = new PartialExtender(extending, extends);
                     _extensions.Add(match);
                 }
 
@@ -393,6 +393,10 @@ namespace dotless.Core.Parser.Infrastructure
 
         public void RegisterExtensionsFrom(Env child) {
             _extensions.AddRange(child._extensions);
+        }
+
+        public IEnumerable<Extender> FindUnmatchedExtensions() {
+            return _extensions.Where(e => !e.IsMatched);
         }
 
         public ExactExtender FindExactExtension(string selection)

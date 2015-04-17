@@ -1,3 +1,4 @@
+using System;
 using dotless.Core.Exceptions;
 
 namespace dotless.Core.Parser.Tree
@@ -462,17 +463,21 @@ namespace dotless.Core.Parser.Tree
                 var local = context.Clone();
                 local.AppendSelectors(context, new[] {s});
                 var finalString = local.ToCss(env);
-                var extensions = env.FindExactExtension(finalString);
-                if (extensions != null) {
-                    paths.AppendSelectors(context.Clone(), extensions.ExtendedBy);
+                var exactExtension = env.FindExactExtension(finalString);
+                if (exactExtension != null) {
+                    exactExtension.IsMatched = true;
+                    paths.AppendSelectors(context.Clone(), exactExtension.ExtendedBy);
                 }
 
                 var partials = env.FindPartialExtensions(local);
                 if (partials != null) {
+                    foreach (var partialExtension in partials) {
+                        partialExtension.IsMatched = true;
+                    }
                     paths.AppendSelectors(context.Clone(), partials.SelectMany(p => p.Replacements(finalString)));
                 }
 
-                bool newExactExtenders = extensions != null && extensions.ExtendedBy.Any(e => !e.IsReference);
+                bool newExactExtenders = exactExtension != null && exactExtension.ExtendedBy.Any(e => !e.IsReference);
                 bool newPartialExtenders = partials != null && partials.Any(p => p.ExtendedBy.Any(e => !e.IsReference));
 
                 if (newExactExtenders || newPartialExtenders) {

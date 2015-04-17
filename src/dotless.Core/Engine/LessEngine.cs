@@ -1,4 +1,7 @@
+using dotless.Core.Parser;
+using dotless.Core.Parser.Tree;
 using dotless.Core.Plugins;
+using dotless.Core.Stylizers;
 
 namespace dotless.Core
 {
@@ -92,6 +95,22 @@ namespace dotless.Core
                 }
 
                 var css = tree.ToCSS(env);
+
+                var stylizer = new PlainStylizer();
+
+                foreach (var unmatchedExtension in env.FindUnmatchedExtensions()) {
+                    Logger.Warn("Warning: extend '{0}' has no matches {1}\n",
+                        unmatchedExtension.BaseSelector.ToCSS(env).Trim(),
+                        stylizer.Stylize(new Zone(unmatchedExtension.Extend.Location)).Trim());
+                }
+
+                tree.Accept(DelegateVisitor.For<Media>(m => {
+                    foreach (var unmatchedExtension in m.FindUnmatchedExtensions()) {
+                        Logger.Warn("Warning: extend '{0}' has no matches {1}\n",
+                            unmatchedExtension.BaseSelector.ToCSS(env).Trim(),
+                            stylizer.Stylize(new Zone(unmatchedExtension.Extend.Location)).Trim());
+                    }
+                }));
 
                 LastTransformationSuccessful = true;
                 return css;
