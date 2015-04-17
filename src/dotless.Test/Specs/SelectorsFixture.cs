@@ -715,5 +715,26 @@ img[imgType=""sort""] {
 }";
             AssertLessUnchanged(input);
         }
+
+        [Test]
+        public void MultipleIdenticalSelectorsAreOutputOnlyOnce()
+        {
+            var input = @"
+.sel1, .sel2 {
+  float: left;
+}
+
+.test:extend(.sel1 all, .sel2 all) { }
+";
+
+            var expected = @"
+.sel1,
+.sel2,
+.test {
+  float: left;
+}";
+
+            AssertLess(input, expected);
+        }
     }
 }

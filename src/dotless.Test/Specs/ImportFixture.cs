@@ -277,6 +277,13 @@ body { margin-right: @a; }";
 }
 ";
 
+            imports["reference-with-multiple-selectors.less"] = @"
+.test,
+.test2 {
+  color: black;
+}
+";
+
             imports["comments.less"] = @"
 /* This is a comment */
 ";
@@ -292,6 +299,29 @@ body { margin-right: @a; }";
 @{selector} {
   color: black;
 }
+";
+
+            imports["multiple-generated-selectors.less"] = @"
+@grid-columns: 12;
+
+.float-grid-columns(@class) {
+  .col(@index) { // initial
+    @item: ~"".col-@{class}-@{index}"";
+    .col((@index + 1), @item);
+  }
+  .col(@index, @list) when (@index =< @grid-columns) { // general
+    @item: ~"".col-@{class}-@{index}"";
+    .col((@index + 1), ~""@{list}, @{item}"");
+  }
+  .col(@index, @list) when (@index > @grid-columns) { // terminal
+    @{list} {
+      float: left;
+    }
+  }
+  .col(1); // kickstart it
+}
+
+.float-grid-columns(xs);
 ";
 
             return new Parser { 
@@ -1185,6 +1215,24 @@ body { background-color: foo; invalid ""; }
         }
 
         [Test]
+        public void ExtendingReferencedImportOnlyOutputsExtendedSelector()
+        {
+            var input = @"
+@import (reference) ""reference-with-multiple-selectors.less"";
+
+.ext:extend(.test all) { }
+";
+
+            var expected = @"
+.test,
+.ext {
+  color: black;
+}";
+
+            AssertLess(input, expected, GetParser());
+        }
+
+        [Test]
         public void ImportReferenceDoesNotOutputComments()
         {
             var input = @"
@@ -1580,6 +1628,24 @@ unrecognized @import option 'invalid-option' on line 1 in file 'test.less':
             var expected = @"
 .namespace .test-ruleset {
   background-color: red;
+}";
+
+            AssertLess(input, expected, GetParser());
+        }
+
+        [Test]
+        public void ExtendedReferenceImportWithMultipleGeneratedSelectorsOnlyOutputsExtendedSelectors() {
+
+            var input = @"
+@import (reference) ""multiple-generated-selectors.less"";
+
+.test:extend(.col-xs-12 all) { }
+";
+
+            var expected = @"
+.col-xs-12,
+.test {
+  float: left;
 }";
 
             AssertLess(input, expected, GetParser());

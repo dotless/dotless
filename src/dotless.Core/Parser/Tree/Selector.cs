@@ -25,6 +25,10 @@
                 Elements[0].Value == other.Elements[0].Value;
         }
 
+        private static readonly Parser parser = new Parser();
+        private static readonly Parsers parsers = new Parsers(parser.NodeProvider);
+
+
         public override Node Evaluate(Env env)
         {
             NodeList<Element> evaldElements = new NodeList<Element>();
@@ -46,8 +50,25 @@
                     evaldElements.Add(element.Evaluate(env) as Element);
                 }
             }
+            var evaluatedSelector = new Selector(evaldElements).ReducedFrom<Selector>(this);
+            if (evaluatedSelector.Elements.All(e => e.NodeValue == null)) {
+                return evaluatedSelector;
+            }
 
-            return new Selector(evaldElements).ReducedFrom<Selector>(this);
+            parser.Tokenizer.SetupInput(evaluatedSelector.ToCSS(env), "");
+
+            var result = new NodeList<Selector>();
+            Selector selector;
+            while (selector = parsers.Selector(parser)) {
+                selector.IsReference = IsReference;
+                result.Add(selector.Evaluate(env) as Selector);
+
+                if (!parser.Tokenizer.Match(',')) {
+                    break;
+                }
+            }
+
+            return result;
         }
 
         public override void AppendCSS(Env env)
