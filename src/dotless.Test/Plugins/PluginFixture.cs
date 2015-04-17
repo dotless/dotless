@@ -277,7 +277,7 @@
             Assert.AreEqual(4, PassThroughAfterPlugin.Nodes[typeof(Color).ToString()]);
 
             Assert.AreEqual(11, PassThroughBeforePlugin.Nodes[typeof(Number).ToString()]);
-            Assert.AreEqual(10, PassThroughAfterPlugin.Nodes[typeof(Number).ToString()]);
+            Assert.AreEqual(9, PassThroughAfterPlugin.Nodes[typeof(Number).ToString()]);
         }
     }
 }

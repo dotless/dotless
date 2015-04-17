@@ -1,18 +1,15 @@
 using dotless.Core.Parser.Infrastructure;
 using dotless.Test.Plugins;
 
-namespace dotless.Test.Specs
-{
+namespace dotless.Test.Specs {
     using System;
     using System.Globalization;
     using System.Threading;
     using NUnit.Framework;
 
-    public class MixinsFixture : SpecFixtureBase
-    {
+    public class MixinsFixture : SpecFixtureBase {
         [Test]
-        public void Mixins()
-        {
+        public void Mixins() {
             // Todo: split into separate atomic tests.
             var input =
                 @"
@@ -124,8 +121,7 @@ namespace dotless.Test.Specs
         }
 
         [Test, Ignore("Unsupported")]
-        public void CommaSeparatedMixins()
-        {
+        public void CommaSeparatedMixins() {
             // Note: http://github.com/cloudhead/less.js/issues/issue/8
 
             var input =
@@ -153,8 +149,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void ChildSelector()
-        {
+        public void ChildSelector() {
             var input =
                 @"
 #bundle {
@@ -185,8 +180,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void MixinNestedRules()
-        {
+        public void MixinNestedRules() {
             var input =
                 @"
 .bundle() {
@@ -216,8 +210,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void MultipleMixins()
-        {
+        public void MultipleMixins() {
             var input = @"
 .mixin{
     border:solid 1px red;
@@ -249,8 +242,7 @@ namespace dotless.Test.Specs
 
 
         [Test]
-        public void MixinWithArgs()
-        {
+        public void MixinWithArgs() {
             var input =
                 @".mixin (@a: 1px, @b: 50%) {
   width: @a * 5;
@@ -271,8 +263,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void CanPassNamedArguments()
-        {
+        public void CanPassNamedArguments() {
             var input =
                 @".mixin (@a: 1px, @b: 50%) {
   width: @a * 5;
@@ -295,8 +286,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void CanPassNamedArgumentsInDifferentOrder()
-        {
+        public void CanPassNamedArgumentsInDifferentOrder() {
             var input =
                 @".mixin (@a: 1px, @b: 50%) {
   width: @a * 5;
@@ -319,8 +309,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void CanPassNamedArgumentsWithoutDefaults()
-        {
+        public void CanPassNamedArgumentsWithoutDefaults() {
             var input =
                 @".mixin (@a, @b) {
   width: @a * 5;
@@ -343,8 +332,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void CanPassVariablesAsPositionalArgs()
-        {
+        public void CanPassVariablesAsPositionalArgs() {
             var input =
                 @".mixin (@a: 1px, @b: 50%) {
   width: @a * 5;
@@ -366,8 +354,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void CanPassVariablesAsNamedArgs()
-        {
+        public void CanPassVariablesAsNamedArgs() {
             var input =
                 @".mixin (@a: 1px, @b: 50%) {
   width: @a * 5;
@@ -389,8 +376,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void MixedPositionalAndNamedArguments()
-        {
+        public void MixedPositionalAndNamedArguments() {
             var input =
                 @".mixin (@a: 1px, @b: 50%, @c: 50) {
   width: @a * 5;
@@ -413,8 +399,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void PositionalArgumentsMustAppearBeforeAllNamedArguments()
-        {
+        public void PositionalArgumentsMustAppearBeforeAllNamedArguments() {
             var input =
                 @".mixin (@a: 1px, @b: 50%, @c: 50) {
   width: @a * 5;
@@ -437,8 +422,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void PassAllVariablesAsNamedArgumentsWhereNoDefaultValues()
-        {
+        public void PassAllVariablesAsNamedArgumentsWhereNoDefaultValues() {
             var input = @"
 .clb (@a, @b) {
   background-position: @a @b;
@@ -456,8 +440,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void SupportOnePositionArgumentOneDefaultVariableAndOneNamed()
-        {
+        public void SupportOnePositionArgumentOneDefaultVariableAndOneNamed() {
             var input = @"
 .clb (@a, @b: 12px, @c) {
   background-position: @a @c;
@@ -474,8 +457,7 @@ namespace dotless.Test.Specs
         }
 
         [Test, Ignore("Unsupported")]
-        public void ThrowsIfArumentNotFound()
-        {
+        public void ThrowsIfArumentNotFound() {
             var input =
                 @".mixin (@a: 1px, @b: 50%) {
   width: @a * 3;
@@ -490,8 +472,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void OverrideMixinToAddNonSimpleDefaultArguments()
-        {
+        public void OverrideMixinToAddNonSimpleDefaultArguments() {
             // see https://github.com/dotless/dotless/issues/79
 
             var input = @"
@@ -518,8 +499,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void MixinWithArgsInsideNamespace()
-        {
+        public void MixinWithArgsInsideNamespace() {
             var input =
                 @"#namespace {
   .mixin (@a: 1px, @b: 50%) {
@@ -542,8 +522,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void NestedParameterizedMixins1()
-        {
+        public void NestedParameterizedMixins1() {
             var input =
                 @"
 .outer(@a: 5) {
@@ -563,8 +542,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void NestedParameterizedMixins2()
-        {
+        public void NestedParameterizedMixins2() {
             var input =
                 @"
 .outer(@a: 5) {
@@ -589,8 +567,7 @@ namespace dotless.Test.Specs
         }
 
         [Test, Ignore("Unsupported")]
-        public void NestedParameterizedMixins3()
-        {
+        public void NestedParameterizedMixins3() {
             var input =
                 @"
 .outer(@a: 5) {
@@ -614,8 +591,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void NestedParameterizedMixins4()
-        {
+        public void NestedParameterizedMixins4() {
             var input =
                 @"
 .outer(@a: 5) {
@@ -640,8 +616,7 @@ namespace dotless.Test.Specs
         }
 
         [Test, Ignore("Unsupported")]
-        public void NestedParameterizedMixins5()
-        {
+        public void NestedParameterizedMixins5() {
             var input =
                 @"
 .outer(@a: 5) {
@@ -665,8 +640,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void NestedRulesInMixinsShouldRespectArguments()
-        {
+        public void NestedRulesInMixinsShouldRespectArguments() {
             var input =
                 @"
 .mixin(@a: 5) {
@@ -692,8 +666,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void MultipleCallsToMixinsContainingMixinCalls()
-        {
+        public void MultipleCallsToMixinsContainingMixinCalls() {
             var input =
                 @"
 .mixintest(@a :5px){
@@ -735,8 +708,7 @@ namespace dotless.Test.Specs
 
 
         [Test]
-        public void CanUseVariablesAsDefaultArgumentValues()
-        {
+        public void CanUseVariablesAsDefaultArgumentValues() {
             var input =
                 @"@var: 5px;
 
@@ -760,8 +732,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void ArgumentsOverridesVariableInSameScope()
-        {
+        public void ArgumentsOverridesVariableInSameScope() {
             var input =
                 @"@a: 10px;
 
@@ -785,8 +756,7 @@ namespace dotless.Test.Specs
         }
 
         [Test, Ignore("Infinite Loop - breaks tester")]
-        public void CanUseArgumentsWithSameNameAsVariable()
-        {
+        public void CanUseArgumentsWithSameNameAsVariable() {
             var input =
                 @"@a: 5px;
 
@@ -810,8 +780,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void CanNestParameterizedMixins()
-        {
+        public void CanNestParameterizedMixins() {
             var input =
                 @"
 .inner(@size: 12px) {
@@ -837,8 +806,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void CanNestParameterizedMixinsWithDefaults()
-        {
+        public void CanNestParameterizedMixinsWithDefaults() {
             var input =
                 @"
 .inner(@size: 12px) {
@@ -865,8 +833,7 @@ namespace dotless.Test.Specs
 
 
         [Test]
-        public void CanNestParameterizedMixinsWithSameParameterNames()
-        {
+        public void CanNestParameterizedMixinsWithSameParameterNames() {
             var input =
                 @"
 .inner(@size: 12px) {
@@ -892,8 +859,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void IncludesAllMatchedMixins2()
-        {
+        public void IncludesAllMatchedMixins2() {
             var input =
                 @"
 .mixout ('left') { left: 1; }
@@ -917,8 +883,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void ThrowsIfNoMatchFound()
-        {
+        public void ThrowsIfNoMatchFound() {
             var input =
                 @"
 .mixout ('left') { left: 1; }
@@ -937,8 +902,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void ThrowsIfNotDefined()
-        {
+        public void ThrowsIfNotDefined() {
             var input = ".none { .mixin(); }";
 
             AssertError(
@@ -950,8 +914,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void CallSiteCorrectWhenMixinThrowsAnError()
-        {
+        public void CallSiteCorrectWhenMixinThrowsAnError() {
             var divideByZeroException = new DivideByZeroException();
 
             var input = @"
@@ -973,8 +936,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void IncludesAllMatchedMixins3()
-        {
+        public void IncludesAllMatchedMixins3() {
             var input =
                 @"
 .border (@side, @width) {
@@ -1011,8 +973,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void InnerMixinEvaluatedCorrectly()
-        {
+        public void InnerMixinEvaluatedCorrectly() {
             var input =
                 @"
 .inner-mixin(@width) {
@@ -1039,8 +1000,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void InnerMixinsFindInnerVariables()
-        {
+        public void InnerMixinsFindInnerVariables() {
             var input =
                 @"
 .inner-mixin(@width) {
@@ -1066,8 +1026,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void ThrowsIfMixinNotFound()
-        {
+        public void ThrowsIfMixinNotFound() {
             var input =
                 @"
 .class {
@@ -1078,8 +1037,7 @@ namespace dotless.Test.Specs
         }
 
         [Test]
-        public void DontCacheFunctions()
-        {
+        public void DontCacheFunctions() {
             var input =
                 @"
 .margin(@t, @r) {
@@ -1104,8 +1062,7 @@ ul.bla2 {
         }
 
         [Test]
-        public void MixinsKeepImportantKeyword()
-        {
+        public void MixinsKeepImportantKeyword() {
             var input =
                 @"
 .important-mixin(@colour: #FFFFFF) {
@@ -1127,8 +1084,7 @@ important-rule {
         }
 
         [Test]
-        public void ShortMixinDoesntMatchLongerSelectors()
-        {
+        public void ShortMixinDoesntMatchLongerSelectors() {
             var input =
             @"
 #test {
@@ -1162,8 +1118,7 @@ important-rule {
         }
 
         [Test]
-        public void CanCallMixinFromWithinInnerRuleset()
-        {
+        public void CanCallMixinFromWithinInnerRuleset() {
             var input =
             @"
 #mybox {
@@ -1194,8 +1149,7 @@ important-rule {
         }
 
         [Test]
-        public void CanResolveMixinsInSameScopeAsMixinDefinition()
-        {
+        public void CanResolveMixinsInSameScopeAsMixinDefinition() {
             var input =
             @"
 #ns {
@@ -1225,8 +1179,7 @@ important-rule {
         }
 
         [Test]
-        public void CanResolveVariablesInSameScopeAsMixinDefinition()
-        {
+        public void CanResolveVariablesInSameScopeAsMixinDefinition() {
             var input =
             @"
 #ns {
@@ -1252,8 +1205,7 @@ important-rule {
         }
 
         [Test]
-        public void IncludeAllMixinsInSameScope()
-        {
+        public void IncludeAllMixinsInSameScope() {
             var input =
             @"
 #ns {
@@ -1279,8 +1231,7 @@ important-rule {
         }
 
         [Test]
-        public void StringMixinArgument()
-        {
+        public void StringMixinArgument() {
 
             var input = @"
 .mixin(@val) {
@@ -1299,8 +1250,7 @@ important-rule {
         }
 
         [Test]
-        public void MultipleCallsToMixinsUsingAndHoisting()
-        {
+        public void MultipleCallsToMixinsUsingAndHoisting() {
             // bug https://github.com/dotless/dotless/issues/78
             var input =
                 @"
@@ -1348,8 +1298,7 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
         }
 
         [Test]
-        public void MultipleCallsToMixinsUsingAndHoistingSimple()
-        {
+        public void MultipleCallsToMixinsUsingAndHoistingSimple() {
             // bug https://github.com/dotless/dotless/issues/78
             var input =
                 @"
@@ -1382,8 +1331,7 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
         }
 
         [Test]
-        public void MixinMatchingAllowsMultiples()
-        {
+        public void MixinMatchingAllowsMultiples() {
             var input = @"
 .bo,
 .bar {
@@ -1419,8 +1367,7 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
         }
 
         [Test]
-        public void MixinImportant()
-        {
+        public void MixinImportant() {
             var input = @"
 .mixin (9) {
   border: 9 !important;  
@@ -1461,8 +1408,7 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
         }
 
         [Test]
-        public void MixinImportantRecursive()
-        {
+        public void MixinImportantRecursive() {
             var input = @"
 .x
 {
@@ -1526,8 +1472,7 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
         }
 
         [Test]
-        public void MixinCallingSameName()
-        {
+        public void MixinCallingSameName() {
             // attempt to reproduce bug #136
             var input = @"
 .clearfix() {
@@ -1569,8 +1514,7 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
         }
 
         [Test]
-        public void DuplicatesRemovedFromMixinCall()
-        {
+        public void DuplicatesRemovedFromMixinCall() {
             var input = @"
 .test() {
   background: none;
@@ -1592,8 +1536,7 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
         }
 
         [Test]
-        public void TestMixinCallIncorrectlyRecognisedLessJsBug901()
-        {
+        public void TestMixinCallIncorrectlyRecognisedLessJsBug901() {
             var input = @"
 .mixin_def(@url, @position){
     background-image: @url;
@@ -1614,8 +1557,7 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
         }
 
         [Test]
-        public void MixinUsedInsideSelectorWithInsideSameNameAndInsideSiblingSelector()
-        {
+        public void MixinUsedInsideSelectorWithInsideSameNameAndInsideSiblingSelector() {
             // This relates to https://github.com/dotless/dotless/issues/136, the bare minimum reproduce case appears to be a mixin (eg. ".clearfix()"),
             // followed by a selector (eg. ".panel-body") that imports that mixin follow by a selector whose name matches the mixin's name (".clearfix")
             // that also imports that mixin. Previously this would lead to a stack overflow when the ".panel-body" selector was evaluated. Note that if
@@ -1648,8 +1590,7 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
         }
 
         [Test]
-        public void MultipleElementSelectorMixin()
-        {
+        public void MultipleElementSelectorMixin() {
             // Previously, dotLess would require that mixins be selectors with single elements (eg. ".dropdown-menu") since the matching algorithm
             // would try to match only a single element and then drill down into the selector's rules for any additional elements.. Bootstrap uses
             // multi-element mixin selectors (eg. ".pull-right > .dropdown"), the drilling down should only be done if the selector does not already
@@ -1675,8 +1616,7 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
         }
 
         [Test]
-        public void ImplicitMixinWithSameNameAsExplicitUnaryMixinWorks()
-        {
+        public void ImplicitMixinWithSameNameAsExplicitUnaryMixinWorks() {
             var input = @"
 .link-reset {
   text-decoration: none !important;
@@ -1710,8 +1650,7 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
         }
 
         [Test]
-        public void MixinCallsInNestedRulesetsHaveCorrectVariableScope()
-        {
+        public void MixinCallsInNestedRulesetsHaveCorrectVariableScope() {
             var input = @"
 .opacity(@opacity) {
   opacity: @opacity;
@@ -1741,8 +1680,7 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
         }
 
         [Test]
-        public void OutputMinificationDoesNotBreakMixinCalls()
-        {
+        public void OutputMinificationDoesNotBreakMixinCalls() {
             var input = @"
 .pull-right > .dropdown-menu {
   right: 0;
@@ -1760,8 +1698,7 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
             var expected = @"
 .pull-right>.dropdown-menu{right:0;left:auto}@media (min-width:768px){.navbar-right .dropdown-menu{right:0;left:auto}}";
 
-            DefaultEnv = () =>
-            {
+            DefaultEnv = () => {
                 var env = new Env();
                 env.Compress = true;
                 return env;
@@ -1771,8 +1708,7 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
         }
 
         [Test]
-        public void SemicolonAsSeparatorAllowsListArguments()
-        {
+        public void SemicolonAsSeparatorAllowsListArguments() {
             var input = @"
 .mix(@list1, @list2) {
     test: @list1;
@@ -1794,8 +1730,7 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
         }
 
         [Test]
-        public void DummySemicolonInArgumentListAllowsUnaryCallWithListArgument()
-        {
+        public void DummySemicolonInArgumentListAllowsUnaryCallWithListArgument() {
             var input = @"
 .mix(@list) {
     test: @list;
@@ -1815,8 +1750,7 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
         }
 
         [Test]
-        public void SemicolonAsArgumentSeparator()
-        {
+        public void SemicolonAsArgumentSeparator() {
             var input = @"
 .mix(@p1, @p2) {
     test: @p1;
@@ -1838,8 +1772,7 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
         }
 
         [Test]
-        public void RulesetDefinedWithParentSelectorIsCallableAsMixin()
-        {
+        public void RulesetDefinedWithParentSelectorIsCallableAsMixin() {
             var input = @"
 .foo {
   &-bar {
@@ -1907,6 +1840,37 @@ fieldset[disabled] .form-control {
 }
 fieldset[disabled] .test {
   cursor: not-allowed;
+}";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void MultipleCommaseparatedGeneratedSelectorsAreCallableAsMixins() {
+            var input = @"
+@selector: ~"".col, .col2"";
+@{selector} {
+  width: 120px;
+}
+
+.test {
+  .col;
+}
+.test2 {
+  .col2;
+}
+";
+
+            var expected = @"
+.col,
+.col2 {
+  width: 120px;
+}
+.test {
+  width: 120px;
+}
+.test2 {
+  width: 120px;
 }";
 
             AssertLess(input, expected);

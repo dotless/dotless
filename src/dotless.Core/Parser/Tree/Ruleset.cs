@@ -220,9 +220,15 @@ namespace dotless.Core.Parser.Tree
         {
             env.Frames.Push(this);
 
-            for (var i = 0; i < Selectors.Count; i++)
-            {
-                Selectors[i] = Selectors[i].Evaluate(env) as Selector;
+            for (var i = 0; i < Selectors.Count; i++) {
+                var evaluatedSelector = Selectors[i].Evaluate(env);
+                var expandedSelectors = evaluatedSelector as IEnumerable<Selector>;
+                if (expandedSelectors != null) {
+                    Selectors.RemoveAt(i);
+                    Selectors.InsertRange(i, expandedSelectors);
+                } else {
+                    Selectors[i] = evaluatedSelector as Selector;
+                }
             }
 
             int mediaBlocks = env.MediaBlocks.Count;
