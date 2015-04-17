@@ -164,46 +164,46 @@ namespace dotless.Core.Parser.Tree
 
             using (env.Parser.Importer.BeginScope(this))
             {
-	            if (IsReference || IsOptionSet(ImportOptions, ImportOptions.Reference))
-	            {
-	                // Walk the parse tree and mark all nodes as references.
-	                IsReference = true;
+                if (IsReference || IsOptionSet(ImportOptions, ImportOptions.Reference))
+                {
+                    // Walk the parse tree and mark all nodes as references.
+                    IsReference = true;
 
-	                IVisitor referenceImporter = null;
-	                referenceImporter = DelegateVisitor.For<Node>(node => {
-	                    var ruleset = node as Ruleset;
-	                    if (ruleset != null)
-	                    {
-	                        if (ruleset.Selectors != null)
-	                        {
-	                            ruleset.Selectors.Accept(referenceImporter);
-	                            ruleset.Selectors.IsReference = true;
-	                        }
+                    IVisitor referenceImporter = null;
+                    referenceImporter = DelegateVisitor.For<Node>(node => {
+                        var ruleset = node as Ruleset;
+                        if (ruleset != null)
+                        {
+                            if (ruleset.Selectors != null)
+                            {
+                                ruleset.Selectors.Accept(referenceImporter);
+                                ruleset.Selectors.IsReference = true;
+                            }
 
-	                        if (ruleset.Rules != null)
-	                        {
-	                            ruleset.Rules.Accept(referenceImporter);
-	                            ruleset.Rules.IsReference = true;
-	                        }
-	                    }
+                            if (ruleset.Rules != null)
+                            {
+                                ruleset.Rules.Accept(referenceImporter);
+                                ruleset.Rules.IsReference = true;
+                            }
+                        }
 
-	                    var media = node as Media;
-	                    if (media != null)
-	                    {
-	                        media.Ruleset.Accept(referenceImporter);
-	                    }
+                        var media = node as Media;
+                        if (media != null)
+                        {
+                            media.Ruleset.Accept(referenceImporter);
+                        }
 
-	                    var nodeList = node as NodeList;
-	                    if (nodeList != null)
-	                    {
-	                        nodeList.Accept(referenceImporter);
-	                    }
-	                    node.IsReference = true;
+                        var nodeList = node as NodeList;
+                        if (nodeList != null)
+                        {
+                            nodeList.Accept(referenceImporter);
+                        }
+                        node.IsReference = true;
 
-	                    return node;
-	                });
-	                Accept(referenceImporter);
-	            }
+                        return node;
+                    });
+                    Accept(referenceImporter);
+                }
                 NodeHelper.ExpandNodes<Import>(env, InnerRoot.Rules);
             }
 
