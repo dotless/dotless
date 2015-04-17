@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using dotless.Core.Parser.Infrastructure.Nodes;
 
 namespace dotless.Core.Plugins
@@ -12,8 +13,13 @@ namespace dotless.Core.Plugins
             this.visitor = visitor;
         }
 
-        public Node Visit(Node node)
-        {
+        public Node Visit(Node node) {
+            var list = node as IList<Node>;
+            if (list != null) {
+                for (var i = 0; i < list.Count; i++) {
+                    list[i] = Visit(list[i]);
+                }
+            }
             return visitor(node);
         }
 
