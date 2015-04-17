@@ -35,5 +35,17 @@ namespace dotless.Core.Plugins
                 return projection(typed);
             });
         }
+        public static IVisitor For<TNode>(Action<TNode> action) where TNode : Node
+        {
+            return new DelegateVisitor(node =>
+            {
+                var typed = node as TNode;
+                if (typed != null)
+                {
+                    action(typed);
+                }
+                return node;
+            });
+        }
     }
 }
