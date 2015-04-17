@@ -41,7 +41,7 @@ namespace dotless.Core.Parser.Tree
                 newPartial.Add(selector);
             }
 
-            return new Extend(newExact,newPartial) { IsReference = IsReference };
+            return new Extend(newExact,newPartial) { IsReference = IsReference, Location = Location };
         }
 
         public override void AppendCSS(Env env)

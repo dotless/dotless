@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -10,7 +11,12 @@ namespace dotless.Core.Parser.Infrastructure
 {
     public class ExactExtender : Extender
     {
-        public ExactExtender(Selector baseSelector):base(baseSelector)
+        [Obsolete("Use the overload that accepts the Extend node")]
+        public ExactExtender(Selector baseSelector) : this(baseSelector, null)
+        {
+
+        }
+        public ExactExtender(Selector baseSelector, Extend extend) : base(baseSelector, extend)
         {
 
         }
@@ -18,7 +24,12 @@ namespace dotless.Core.Parser.Infrastructure
 
     public class PartialExtender : Extender
     {
-        public PartialExtender(Selector baseSelector):base(baseSelector)
+        [Obsolete("Use the overload that accepts the Extend node")]
+        public PartialExtender(Selector baseSelector) : this(baseSelector, null)
+        {
+
+        }
+        public PartialExtender(Selector baseSelector, Extend extend) : base(baseSelector, extend)
         {
 
         }
@@ -79,12 +90,20 @@ namespace dotless.Core.Parser.Infrastructure
         public Selector BaseSelector { get; private set; }
         public List<Selector> ExtendedBy { get; private set; }
         public bool IsReference { get; set; }
+        public bool IsMatched { get; set; }
+        public Extend Extend { get; private set; }
 
+        [Obsolete("Use the overload that accepts the Extend node")]
         public Extender(Selector baseSelector)
         {
             BaseSelector = baseSelector;
             ExtendedBy = new List<Selector>();
             IsReference = baseSelector.IsReference;
+        }
+
+        public Extender(Selector baseSelector, Extend extend) : this(baseSelector)
+        {
+            Extend = extend;
         }
 
         public static string FullPathSelector()

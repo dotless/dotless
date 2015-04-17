@@ -983,6 +983,7 @@ namespace dotless.Core.Parser
             Node e = ExtendRule(parser) 
                 || NonPseudoClassSelector(parser)
                 || PseudoClassSelector(parser)
+                || PseudoElementSelector(parser)
                 || parser.Tokenizer.Match('*') 
                 || parser.Tokenizer.Match('&') 
                 || Attribute(parser) 
@@ -1019,6 +1020,10 @@ namespace dotless.Core.Parser
             return parser.Tokenizer.Match(@":(\\.|[a-zA-Z0-9_-])+");
         }
 
+        private static RegexMatchResult PseudoElementSelector(Parser parser) {
+            return parser.Tokenizer.Match(@"::(\\.|[a-zA-Z0-9_-])+");
+        }
+
         private Node NonPseudoClassSelector(Parser parser) {
             var memo = Remember(parser);
             var match = parser.Tokenizer.Match(@"[.#]?(\\.|[a-zA-Z0-9_-])+");
@@ -1050,7 +1055,7 @@ namespace dotless.Core.Parser
             var index = parser.Tokenizer.Location.Index;
 
             Node match;
-            if (match = parser.Tokenizer.Match(@"[+>~]") || parser.Tokenizer.Match(@"::"))
+            if (match = parser.Tokenizer.Match(@"[+>~]"))
                 return NodeProvider.Combinator(match.ToString(), parser.Tokenizer.GetNodeLocation(index));
 
             return NodeProvider.Combinator(char.IsWhiteSpace(parser.Tokenizer.GetPreviousCharIgnoringComments()) ? " " : null, parser.Tokenizer.GetNodeLocation(index));
@@ -1161,23 +1166,14 @@ namespace dotless.Core.Parser
             var memo = Remember(parser);
             var index = memo.TokenizerLocation.Index;
 
-            if (parser.Tokenizer.Peek(@"([a-z.#: _-]+)[\s\n]*\{")) //simple case with no comments
+            Selector s;
+            while (s = Selector(parser))
             {
-                var match = parser.Tokenizer.Match(@"[a-z.#: _-]+");
-                var s = NodeProvider.Selector(new NodeList<Element>(NodeProvider.Element(null, match, parser.Tokenizer.GetNodeLocation(index))), parser.Tokenizer.GetNodeLocation(index));
-                selectors = new NodeList<Selector>(s);
-            }
-            else
-            {
-                Selector s;
-                while (s = Selector(parser))
-                {
-                    selectors.Add(s);
-                    if (!parser.Tokenizer.Match(','))
-                        break;
+                selectors.Add(s);
+                if (!parser.Tokenizer.Match(','))
+                    break;
 
-                    GatherComments(parser);
-                }
+                GatherComments(parser);
             }
 
             NodeList rules;

@@ -268,7 +268,7 @@ namespace dotless.Core.Parser.Tree
                 Extender match = null;
                 if ((match = Extensions.OfType<ExactExtender>().FirstOrDefault(e => e.BaseSelector.ToString().Trim() == extending.ToString().Trim())) == null)
                 {
-                    match = new ExactExtender(extending);
+                    match = new ExactExtender(extending, extends);
                     Extensions.Add(match);
                 }
 
@@ -280,12 +280,15 @@ namespace dotless.Core.Parser.Tree
                 Extender match = null;
                 if ((match = Extensions.OfType<PartialExtender>().FirstOrDefault(e => e.BaseSelector.ToString().Trim() == extending.ToString().Trim())) == null)
                 {
-                    match = new PartialExtender(extending);
+                    match = new PartialExtender(extending, extends);
                     Extensions.Add(match);
                 }
 
                 match.AddExtension(selector, env);
             }
+        }
+        public IEnumerable<Extender> FindUnmatchedExtensions() {
+            return Extensions.Where(e => !e.IsMatched);
         }
 
         public ExactExtender FindExactExtension(string selection)

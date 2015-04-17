@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using dotless.Core.Loggers;
 
 namespace dotless.Compiler
 {
@@ -22,6 +23,7 @@ namespace dotless.Compiler
             arguments.AddRange(args);
 
             var configuration = GetConfigurationFromArguments(arguments);
+            configuration.LogLevel = LogLevel.Warn;
 
             if(configuration.Help)
                 return -1;

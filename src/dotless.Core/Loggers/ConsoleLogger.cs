@@ -8,7 +8,7 @@ namespace dotless.Core.Loggers
 
         protected override void Log(string message)
         {
-            Console.Write(message);
+            Console.WriteLine(message);
         }
     }
 }

@@ -482,6 +482,25 @@ a:visited {
 } ";
 
             AssertLess(input, expected);
-        }		
+        }
+
+
+        [Test]
+        public void PartialExtendWithElementSelector() {
+            var input = @"
+ul li {
+  list-style-type: none; 
+}
+
+.foo:extend(li all) { }
+";
+            var expected = @"
+ul li,
+ul .foo {
+  list-style-type: none;
+}";
+
+            AssertLess(input, expected);
+        }
     }
 }
