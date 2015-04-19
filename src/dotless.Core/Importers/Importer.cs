@@ -136,6 +136,12 @@ namespace dotless.Core.Importers
             // so we check both.
             if (import.IsReference || IsOptionSet(import.ImportOptions, ImportOptions.Reference))
             {
+                if (_rawImports.Contains(path, StringComparer.InvariantCultureIgnoreCase))
+                {
+                    // Already imported as a regular import, so the reference import is redundant
+                    return true;
+                }
+
                 return CheckIgnoreImport(_referenceImports, path);
             }
             
