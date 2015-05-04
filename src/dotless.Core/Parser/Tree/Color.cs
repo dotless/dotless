@@ -287,7 +287,15 @@ namespace dotless.Core.Parser.Tree
         {
             get
             {
-                return (0.2126 * R / 255d) + (0.7152 * G / 255d) + (0.0722 * B / 255d);
+                var red = R / 255;
+                var green = G / 255;
+                var blue = B / 255;
+
+                red = (red <= 0.03928) ? red / 12.92 : Math.Pow(((red + 0.055) / 1.055), 2.4);
+                green = (green <= 0.03928) ? green / 12.92 : Math.Pow(((green + 0.055) / 1.055), 2.4);
+                blue = (blue <= 0.03928) ? blue / 12.92 : Math.Pow(((blue + 0.055) / 1.055), 2.4);
+                
+                return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
             }
         }
 
