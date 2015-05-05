@@ -283,6 +283,12 @@ namespace dotless.Core.Parser.Tree
             set { RGB[2] = value; }
         }
 
+        /// <summary>
+        /// Calculates the luma value based on the <a href="http://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef">W3 Standard</a>
+        /// </summary>
+        /// <value>
+        /// The luma value for the current color
+        /// </value>
         public double Luma
         {
             get
