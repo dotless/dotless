@@ -289,6 +289,7 @@ task NuGetPackage -depends Merge {
     Copy-Item $source_dir\web.config.install.xdt $target\content\
     Copy-Item $build_dir\dotless.Core.dll $target\lib\
     Copy-Item $build_dir\dotless.Core.pdb $target\lib\
+    Copy-Item $build_dir\dotless.compiler.exe $target\tool\
     Copy-Item $build_dir\dotless.compiler.pdb $target\tool\
     Copy-Item acknowledgements.txt $target
     Copy-Item license.txt $target

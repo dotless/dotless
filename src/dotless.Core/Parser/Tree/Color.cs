@@ -12,6 +12,11 @@ namespace dotless.Core.Parser.Tree
 
     public class Color : Node, IOperable, IComparable
     {
+        private const double DecodingGamma = 2.4;
+        private const double Phi = 2.4;
+        private const double Alpha = .055;
+
+
         private static readonly Dictionary<int, string> Html4ColorsReverse;
 
         private static readonly Dictionary<string, int> Html4Colors =
@@ -283,11 +288,30 @@ namespace dotless.Core.Parser.Tree
             set { RGB[2] = value; }
         }
 
+        private double TransformLinearToSrbg(double linearChannel)
+        {
+            return (linearChannel <= 0.03928) ? linearChannel / 12.92 : Math.Pow(((linearChannel + 0.055) / 1.055), 2.4);
+        }
+
+        /// <summary>
+        /// Calculates the luma value based on the <a href="http://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef">W3 Standard</a>
+        /// </summary>
+        /// <value>
+        /// The luma value for the current color
+        /// </value>
         public double Luma
         {
             get
             {
-                return (0.2126 * R / 255d) + (0.7152 * G / 255d) + (0.0722 * B / 255d);
+                var linearR = R / 255; 
+                var linearG = G / 255;
+                var linearB = B / 255;
+
+                var red = TransformLinearToSrbg(linearR);
+                var green = TransformLinearToSrbg(linearG);
+                var blue = TransformLinearToSrbg(linearB);
+                
+                return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
             }
         }
 
