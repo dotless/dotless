@@ -12,11 +12,6 @@ namespace dotless.Core.Parser.Tree
 
     public class Color : Node, IOperable, IComparable
     {
-        private const double DecodingGamma = 2.4;
-        private const double Phi = 2.4;
-        private const double Alpha = .055;
-
-
         private static readonly Dictionary<int, string> Html4ColorsReverse;
 
         private static readonly Dictionary<string, int> Html4Colors =
