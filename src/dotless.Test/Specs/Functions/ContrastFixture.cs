@@ -9,7 +9,7 @@
     {
       AssertExpression("white", "contrast(#000000)");
       AssertExpression("white", "contrast(#6D6D6D)");
-      AssertExpression("black", "contrast(#6E6E6E)");
+      AssertExpression("white", "contrast(#6E6E6E)");
       AssertExpression("black", "contrast(#FFFFFF)");
     }
 
@@ -22,10 +22,10 @@
     [Test]
     public void OverrideLightColor()
     {
-      AssertExpression("blue", "contrast(#000000, blue)");
-      AssertExpression("blue", "contrast(#6D6D6D, blue)");
-      AssertExpression("black", "contrast(#6E6E6E, blue)");
-      AssertExpression("black", "contrast(#FFFFFF, blue)");
+      AssertExpression("yellow", "contrast(#000000, yellow)");
+      AssertExpression("yellow", "contrast(#6D6D6D, yellow)");
+      AssertExpression("yellow", "contrast(#6E6E6E, yellow)");
+      AssertExpression("black", "contrast(#FFFFFF, yellow)");
     }
 
     [Test]
@@ -33,7 +33,7 @@
     {
       AssertExpression("white", "contrast(#6D6D6D, white, green)");
       AssertExpression("white", "contrast(#000000, white, green)");
-      AssertExpression("green", "contrast(#6E6E6E, white, green)");
+      AssertExpression("white", "contrast(#6E6E6E, white, green)");
       AssertExpression("green", "contrast(#FFFFFF, white, green)");
     }
 
@@ -41,11 +41,13 @@
     public void OverrideThreshold()
     {
       AssertExpression("white", "contrast(hsl(120, 50%, 0%), white, black, 1%)");
-      AssertExpression("black", "contrast(hsl(120, 50%, 24%), white, black, 25%)");
-      AssertExpression("black", "contrast(hsl(120, 50%, 25%), white, black, 25%)");
-      AssertExpression("black", "contrast(hsl(120, 50%, 74%), white, black, 75%)");
-      AssertExpression("black", "contrast(hsl(120, 50%, 75%), white, black, 75%)");
-      AssertExpression("black", "contrast(hsl(120, 50%, 100%), white, black, 99%)");
+      AssertExpression("white", "contrast(hsl(120, 50%, 24%), white, black, 25%)");
+      AssertExpression("white", "contrast(hsl(120, 50%, 25%), white, black, 25%)");
+      AssertExpression("white", "contrast(#84C447, white, black, 60%)");
+      AssertExpression("black", "contrast(hsl(120, 50%, 74%), white, black, 25%)");
+      AssertExpression("black", "contrast(hsl(120, 50%, 75%), white, black, 25%)");
+      AssertExpression("black", "contrast(hsl(120, 50%, 100%), white, black, 25%)");
+      
     }
   }
 }
