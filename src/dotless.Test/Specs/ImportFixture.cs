@@ -1650,5 +1650,28 @@ unrecognized @import option 'invalid-option' on line 1 in file 'test.less':
 
             AssertLess(input, expected, GetParser());
         }
+
+        [Test]
+        public void RelativeImportsHonorCurrentDirectory() {
+            var input = @"
+@import ""import-test-a.less"";
+";
+
+
+            var expected =
+                @"
+@import ""import-test-d.css"";
+#import {
+  color: red;
+}
+.mixin {
+  height: 10px;
+  color: red;
+}";
+
+            var parser = GetParser();
+            parser.CurrentDirectory = "import";
+            AssertLess(input, expected, parser);
+        }
     }
 }

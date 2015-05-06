@@ -257,18 +257,23 @@ namespace dotless.Core.Importers
             }
             else
             {
-                bool fileExists = FileReader.DoesFileExist(lessPath);
-                if (!fileExists && !lessPath.EndsWith(".less"))
+                string fullName = lessPath;
+                if (!string.IsNullOrEmpty(CurrentDirectory)) {
+                    fullName = CurrentDirectory.Replace(@"\", "/").TrimEnd('/') + '/' + lessPath;
+                }
+
+                bool fileExists = FileReader.DoesFileExist(fullName);
+                if (!fileExists && !fullName.EndsWith(".less"))
                 {
-                    lessPath += ".less";
-                    fileExists = FileReader.DoesFileExist(lessPath);
+                    fullName += ".less";
+                    fileExists = FileReader.DoesFileExist(fullName);
                 }
 
                 if (!fileExists) return false;
 
-                contents = FileReader.GetFileContents(lessPath);
+                contents = FileReader.GetFileContents(fullName);
 
-                file = lessPath;
+                file = fullName;
             }
 
             _paths.Add(Path.GetDirectoryName(import.Path));

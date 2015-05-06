@@ -21,8 +21,6 @@ namespace dotless.Core
 
         public void Execute()
         {
-            Engine.CurrentDirectory = Http.Context.Server.MapPath("~");
-
             var localPath = Http.Context.Request.Url.LocalPath;
 
             var source = FileReader.GetFileContents(localPath);
