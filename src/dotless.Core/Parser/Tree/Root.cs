@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace dotless.Core.Parser.Tree
 {
     using System;
@@ -28,12 +30,30 @@ namespace dotless.Core.Parser.Tree
         {
             try
             {
-                base.AppendCSS(env);
+                if (Rules == null || !Rules.Any())
+                    return;
+
+                var evaluated = (Root) Evaluate(env);
+                evaluated.Rules.InsertRange(0, evaluated.CollectImports().Cast<Node>());
+                evaluated.AppendCSS(env, new Context());
             }
             catch (ParsingException e)
             {
                 throw Error(e);
             }
+        }
+
+
+        /// <summary>
+        /// Gather the import statements from this instance, remove them from the list of rules and return them.
+        /// Used for hoisting imports to the top of the file.
+        /// </summary>
+        private IList<Import> CollectImports() {
+            var imports = Rules.OfType<Import>().ToList();
+            foreach (var import in imports) {
+                Rules.Remove(import);
+            }
+            return imports;
         }
 
         private Root DoVisiting(Root node, Env env, VisitorPluginType pluginType)

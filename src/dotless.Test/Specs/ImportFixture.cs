@@ -1673,5 +1673,27 @@ unrecognized @import option 'invalid-option' on line 1 in file 'test.less':
             parser.CurrentDirectory = "import";
             AssertLess(input, expected, parser);
         }
+
+        [Test]
+        public void CssImportsAreHoistedToBeginningOfFile() {
+            var input = @"
+@font-face {
+  font-family: ""Epsilon"";
+  src: url('data:font/x-woff;base64,...')
+}
+@import url(//fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700&subset=latin,cyrillic);
+";
+
+
+            var expected =
+                @"
+@import url(//fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700&subset=latin,cyrillic);
+@font-face {
+  font-family: ""Epsilon"";
+  src: url('data:font/x-woff;base64,...');
+}";
+
+            AssertLess(input, expected);
+        }
     }
 }
