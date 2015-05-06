@@ -12,10 +12,6 @@ namespace dotless.Core.Parser.Tree
 
     public class Color : Node, IOperable, IComparable
     {
-        private const double DecodingGamma = 2.4;
-        private const double Phi = 12.92;
-        private const double TransformAlpha = .055;
-
         private static readonly Dictionary<int, string> Html4ColorsReverse;
 
         private static readonly Dictionary<string, int> Html4Colors =
@@ -294,7 +290,10 @@ namespace dotless.Core.Parser.Tree
         /// <returns>The sRBG value for the given channel</returns>
         private double TransformLinearToSrbg(double linearChannel)
         {
-            return (linearChannel <= 0.03928) ? linearChannel / Phi : Math.Pow(((linearChannel + TransformAlpha) / (1 + TransformAlpha)), DecodingGamma);
+            const double DecodingGamma = 2.4;
+            const double Phi = 12.92;
+            const double Alpha = .055;
+            return (linearChannel <= 0.03928) ? linearChannel / Phi : Math.Pow(((linearChannel + Alpha) / (1 + Alpha)), DecodingGamma);
         }
 
         /// <summary>
