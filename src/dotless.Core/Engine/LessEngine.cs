@@ -118,11 +118,14 @@ namespace dotless.Core
             catch (ParserException e)
             {
                 LastTransformationSuccessful = false;
+                LastTransformationError = e;
                 Logger.Error(e.Message);
             }
 
             return "";
         }
+
+        public ParserException LastTransformationError { get; set; }
 
         public IEnumerable<string> GetImports()
         {

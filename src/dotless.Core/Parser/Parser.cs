@@ -161,7 +161,7 @@ namespace dotless.Core.Parser
 
             var message = Stylizer.Stylize(zone);
 
-            return new ParserException(message, parsingException);
+            return new ParserException(message, parsingException, zone);
         }
     }
 }

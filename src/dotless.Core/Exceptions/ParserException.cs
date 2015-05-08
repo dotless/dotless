@@ -1,3 +1,5 @@
+using dotless.Core.Parser;
+
 namespace dotless.Core.Exceptions
 {
     using System;
@@ -13,5 +15,12 @@ namespace dotless.Core.Exceptions
             : base(message, innerException)
         {
         }
+
+        public ParserException(string message, Exception innerException, Zone errorLocation)
+            : base(message, innerException) {
+            ErrorLocation = errorLocation;
+        }
+
+        public Zone ErrorLocation { get; set; }
     }
 }
