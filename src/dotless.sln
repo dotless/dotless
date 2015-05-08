@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.22609.0
+VisualStudioVersion = 14.0.22823.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotless.Core", "dotless.Core\dotless.Core.csproj", "{D7A24E58-68D0-4B10-A324-EA33C822FA56}"
 EndProject
@@ -19,6 +19,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{C91800
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotless.SampleWeb", "dotless.SampleWeb\dotless.SampleWeb.csproj", "{7953A7E7-81C3-4D0A-B5CE-F82C4EFA8038}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotless.Test.EmbeddedResource", "dotless.Test.EmbeddedResource\dotless.Test.EmbeddedResource.csproj", "{EE1C5FC5-60DF-4127-82D7-72C3C25664E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,6 +52,10 @@ Global
 		{7953A7E7-81C3-4D0A-B5CE-F82C4EFA8038}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7953A7E7-81C3-4D0A-B5CE-F82C4EFA8038}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7953A7E7-81C3-4D0A-B5CE-F82C4EFA8038}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE1C5FC5-60DF-4127-82D7-72C3C25664E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE1C5FC5-60DF-4127-82D7-72C3C25664E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE1C5FC5-60DF-4127-82D7-72C3C25664E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE1C5FC5-60DF-4127-82D7-72C3C25664E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
