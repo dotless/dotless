@@ -283,9 +283,17 @@ namespace dotless.Core.Parser.Tree
             set { RGB[2] = value; }
         }
 
+        /// <summary>
+        /// Transforms the linear to SRBG. Formula derivation decscribed <a href="http://en.wikipedia.org/wiki/SRGB#Theory_of_the_transformation">here</a>
+        /// </summary>
+        /// <param name="linearChannel">The linear channel, for example R/255</param>
+        /// <returns>The sRBG value for the given channel</returns>
         private double TransformLinearToSrbg(double linearChannel)
         {
-            return (linearChannel <= 0.03928) ? linearChannel / 12.92 : Math.Pow(((linearChannel + 0.055) / 1.055), 2.4);
+            const double DecodingGamma = 2.4;
+            const double Phi = 12.92;
+            const double Alpha = .055;
+            return (linearChannel <= 0.03928) ? linearChannel / Phi : Math.Pow(((linearChannel + Alpha) / (1 + Alpha)), DecodingGamma);
         }
 
         /// <summary>
