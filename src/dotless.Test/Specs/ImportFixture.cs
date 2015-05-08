@@ -1,3 +1,8 @@
+using System;
+using System.Reflection.Emit;
+using System.Security.Policy;
+using System.Web.UI.WebControls.WebParts;
+
 namespace dotless.Test.Specs
 {
     using System.Collections.Generic;
@@ -832,6 +837,23 @@ body {
             var parser = GetEmbeddedParser(false, false, false);
 
             AssertLess(input, expected, parser);
+        }
+
+        [Test]
+        public void LessImportFromEmbeddedResourceWithDynamicAssembliesInAppDomain() {
+            Assembly assembly =  AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName("dotless.dynamic.dll"),
+                AssemblyBuilderAccess.RunAndSave);
+
+            Assembly.Load(new AssemblyName("dotless.Test.EmbeddedResource"));
+
+            try {
+                Evaluate(@"@import ""dll://dotless.Test.EmbeddedResource.dll#dotless.Test.EmbeddedResource.Embedded.less"";",
+                    GetEmbeddedParser(false, false, false));
+            } catch (FileNotFoundException ex) {
+                // If the import fails for the wrong reason (i.e., having the dynamic assembly loaded),
+                // the failure will have a different exception message
+                Assert.That(ex.Message, Is.EqualTo("You are importing a file ending in .less that cannot be found [nosuch.resource.less]."));
+            }
         }
 
         [Test]

@@ -415,7 +415,7 @@ namespace dotless.Core.Importers
         {
             foreach (var assembly in AppDomain.CurrentDomain
                 .GetAssemblies()
-                .Where(x => x.Location.EndsWith(assemblyName, StringComparison.InvariantCultureIgnoreCase)))
+                .Where(x => !IsDynamicAssembly(x) && x.Location.EndsWith(assemblyName, StringComparison.InvariantCultureIgnoreCase)))
             {
                 if (assembly.GetManifestResourceNames().Contains(loader._resourceName))
                 {
@@ -429,6 +429,10 @@ namespace dotless.Core.Importers
                     }
                 }
             }
+        }
+
+        private static bool IsDynamicAssembly(Assembly assembly) {
+            return assembly.ManifestModule is System.Reflection.Emit.ModuleBuilder;
         }
 
         private static void LoadFromNewAppDomain(ResourceLoader loader, IFileReader fileReader, String assemblyName)

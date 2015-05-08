@@ -16,6 +16,8 @@
             AssertExpression("#f600f6", "exclusion(#f60000, #0000f6)");
             AssertExpression("#7b007b", "average(#f60000, #0000f6)");
             AssertExpression("#d73131", "negation(#f60000, #313131)");
+
+            AssertExpression("#efefef", "multiply(white, rgba(96, 96, 96, .1))");
         }
     }
 }
