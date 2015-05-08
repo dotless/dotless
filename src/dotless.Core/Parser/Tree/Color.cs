@@ -290,10 +290,10 @@ namespace dotless.Core.Parser.Tree
         /// <returns>The sRBG value for the given channel</returns>
         private double TransformLinearToSrbg(double linearChannel)
         {
-            const double DecodingGamma = 2.4;
-            const double Phi = 12.92;
-            const double Alpha = .055;
-            return (linearChannel <= 0.03928) ? linearChannel / Phi : Math.Pow(((linearChannel + Alpha) / (1 + Alpha)), DecodingGamma);
+            const double decodingGamma = 2.4;
+            const double phi = 12.92;
+            const double alpha = .055;
+            return (linearChannel <= 0.03928) ? linearChannel / phi : Math.Pow(((linearChannel + alpha) / (1 + alpha)), decodingGamma);
         }
 
         /// <summary>
