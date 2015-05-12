@@ -480,10 +480,6 @@ namespace dotless.Core.Parser.Tree
                 bool newExactExtenders = exactExtension != null && exactExtension.ExtendedBy.Any(e => !e.IsReference);
                 bool newPartialExtenders = partials != null && partials.Any(p => p.ExtendedBy.Any(e => !e.IsReference));
 
-                if (newExactExtenders || newPartialExtenders) {
-                    s.IsReference = false;
-                }
-
                 hasNonReferenceExtenders = hasNonReferenceExtenders || newExactExtenders || newPartialExtenders;
             }
             return hasNonReferenceExtenders;
