@@ -48,5 +48,9 @@ namespace dotless.Core.Parser.Tree
         {
             
         }
+
+        public override bool IgnoreOutput() {
+            return true;
+        }
     }
 }

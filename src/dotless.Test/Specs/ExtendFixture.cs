@@ -502,5 +502,29 @@ ul .foo {
 
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void MixinCallWithExtend() {
+            var input = @"
+.test {
+  color: orange;
+}
+
+.replacement {
+    &:extend(.test);
+}
+
+.foo {
+    .replacement();
+}";
+            var expected = @"
+.test,
+.replacement,
+.foo {
+  color: orange;
+}";
+
+            AssertLess(input, expected);
+        }
     }
 }

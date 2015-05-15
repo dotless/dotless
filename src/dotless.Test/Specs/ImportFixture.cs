@@ -978,7 +978,6 @@ body {
 ";
 
             var expected = @"
-.parent-selector .rule,
 .parent-selector .test {
   background-color: black;
 }
@@ -997,7 +996,6 @@ body {
 ";
 
             var expected = @"
-.parent .child,
 .parent .test {
   background-color: black;
 }
@@ -1216,7 +1214,6 @@ body { background-color: foo; invalid ""; }
 
             var expected = @"
 @media (screen) {
-  .rule,
   .test {
     background-color: black;
   }
@@ -1246,7 +1243,6 @@ body { background-color: foo; invalid ""; }
 ";
 
             var expected = @"
-.test,
 .ext {
   color: black;
 }";
@@ -1312,7 +1308,6 @@ body { background-color: foo; invalid ""; }
 ";
 
             var expected = @"
-.rule,
 .test {
   background-color: black;
 }
@@ -1665,7 +1660,6 @@ unrecognized @import option 'invalid-option' on line 1 in file 'test.less':
 ";
 
             var expected = @"
-.col-xs-12,
 .test {
   float: left;
 }";
