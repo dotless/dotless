@@ -251,8 +251,6 @@ namespace dotless.Core.Parser.Tree
                         env.AddExtension(s, (Extend) r.Evaluate(env), env);
                     }
                 }
-                
-                Rules.Remove(r);
             }
 
             for (var i = 0; i < Rules.Count; i++)
