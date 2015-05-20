@@ -113,6 +113,7 @@
     <Compile Include="Specs\StrictMathFixture.cs" />
     <Compile Include="TestLogger.cs" />
     <Compile Include="TestStylizer.cs" />
+    <Compile Include="Unit\EnvFixture.cs" />
     <Compile Include="Unit\HttpHandlerFixture.cs" />
     <Compile Include="Unit\Parser\ParserFixture.cs" />
     <Compile Include="Unit\Tokenizer\TokenizerFixture.cs" />

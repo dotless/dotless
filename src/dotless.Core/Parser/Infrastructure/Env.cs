@@ -323,7 +323,7 @@ namespace dotless.Core.Parser.Infrastructure
         private static readonly Dictionary<string, Type> CoreFunctions = GetCoreFunctions();
 
         private void AddCoreFunctions() {
-            _functionTypes = CoreFunctions;
+            _functionTypes = new Dictionary<string, Type>(CoreFunctions);
         }
 
         /// <summary>
