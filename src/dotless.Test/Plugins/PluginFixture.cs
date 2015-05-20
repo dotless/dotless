@@ -1,4 +1,6 @@
-﻿namespace dotless.Test.Plugins
+﻿using dotless.Core.Parser.Functions;
+
+namespace dotless.Test.Plugins
 {
     using System;
     using System.Collections.Generic;
@@ -19,9 +21,14 @@
     [DisplayName("Plugin A"), System.ComponentModel.Description("Plugs into A")]
     public class TestPlugin1 : IFunctionPlugin
     {
-        public Dictionary<string, Type> GetFunctions()
-        {
-            return new Dictionary<string,Type>();
+        public Dictionary<string, Type> GetFunctions() {
+            return new Dictionary<string, Type>() {{"test", typeof (TestFunction)}};
+        }
+    }
+
+    public class TestFunction : Function {
+        protected override Node Evaluate(Env env) {
+            return new Quoted("test", true);
         }
     }
 

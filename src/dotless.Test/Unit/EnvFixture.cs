@@ -7,6 +7,7 @@ using dotless.Core.Parser.Infrastructure;
 using dotless.Core.Parser.Infrastructure.Nodes;
 using dotless.Core.Parser.Tree;
 using dotless.Core.Plugins;
+using dotless.Test.Plugins;
 using NUnit.Framework;
 
 namespace dotless.Test.Unit
@@ -17,26 +18,12 @@ namespace dotless.Test.Unit
         [Test]
         public void RegisteringSingleFunctionInDifferentEnvironmentsWorks() {
             var env = new Env();
-            env.AddPlugin(new TestPlugin());
+            env.AddPlugin(new TestPlugin1());
 
             Assert.DoesNotThrow(() => {
                 var newEnv = new Env();
-                newEnv.AddPlugin(new TestPlugin());
+                newEnv.AddPlugin(new TestPlugin1());
             });
-        }
-    }
-
-    public class TestPlugin : IFunctionPlugin {
-        public Dictionary<string, Type> GetFunctions() {
-            return new Dictionary<string, Type>() {
-                {"test", typeof (TestFunction)}
-            };
-        }
-    }
-
-    public class TestFunction : Function {
-        protected override Node Evaluate(Env env) {
-            return new Quoted("test", true);
         }
     }
 }
