@@ -1,3 +1,5 @@
+using System.IO;
+
 namespace dotless.Core.Cache
 {
     using System.Collections.Generic;
@@ -27,9 +29,17 @@ namespace dotless.Core.Cache
             {
                 var fullPaths = fileDependancies.Select(f => PathResolver.GetFullPath(f)).ToArray();
 
-                _http.Context.Response.AddFileDependencies(fullPaths);
+                var existingFullPaths = fullPaths.Select(Path.GetDirectoryName).Where(directory => directory != null && Directory.Exists(directory)).ToArray();
+                if (existingFullPaths.Any())
+                {
+                    _http.Context.Response.AddFileDependencies(existingFullPaths);
 
-                cache.Insert(cacheKey, css, new CacheDependency(fullPaths));
+                    cache.Insert(cacheKey, css, new CacheDependency(fullPaths));
+                }
+                else
+                {
+                    cache.Insert(cacheKey, css);
+                }
             }
             else
             {
