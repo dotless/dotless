@@ -1855,6 +1855,14 @@ namespace dotless.Core.Parser
             return operation;
         }
 
+        public Node UnicodeRange(Parser parser)
+        {
+            const string rangeRegex = "(U\\+[0-9a-f]+(-[0-9a-f]+))";
+            const string valueOrWildcard = "(U\\+[0-9a-f?]+)";
+            return parser.Tokenizer.Match(rangeRegex, true)
+                   ?? parser.Tokenizer.Match(valueOrWildcard, true);
+        }
+
         public Node Operation(Parser parser)
         {
             if (parser.StrictMath) {
@@ -1941,7 +1949,7 @@ namespace dotless.Core.Parser
 #if CSS3EXPERIMENTAL
             while (e = RepeatPattern(parser) || Operation(parser) || Entity(parser))
 #else 
-            while (e = Operation(parser) || parser.Tokenizer.Match(@"[-+*/]") || Entity(parser))
+            while (e = UnicodeRange(parser) || Operation(parser) || parser.Tokenizer.Match(@"[-+*/]") || Entity(parser))
 #endif
             {
                 e.PostComments = PullComments();
