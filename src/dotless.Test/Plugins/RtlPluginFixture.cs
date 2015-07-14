@@ -318,5 +318,24 @@
             AssertLess(input, expected);
         }
 
+        [Test]
+        public void FloatWithImportantIsReversed()
+        {
+            var input = @"
+.test {
+  float: left !important;
+}
+";
+
+            var expected = @"
+.test {
+  float: right !important;
+}
+";
+
+            OnlyReversePrefixedRules = false;
+            SetCultureTextDirection(true);
+            AssertLess(input, expected);
+        }
     }
 }

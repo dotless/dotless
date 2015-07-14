@@ -215,6 +215,14 @@
 
                 // we have the values.. now we can reverse it
                 string content = _textContent.ToString();
+                string important = "";
+
+                var value = rule.Value as Value;
+                if (value != null)
+                {
+                    important = value.Important;
+                }
+
                 bool valueChanged = false;
 
                 if (_nodeContent.Count > 1)
@@ -231,12 +239,12 @@
                 {
                     if (content == "left")
                     {
-                        content = "right";
+                        content = ("right " + important).TrimEnd();
                         valueChanged = true;
                     }
                     else if (content == "right")
                     {
-                        content = "left";
+                        content = ("left " + important).TrimEnd();
                         valueChanged = true;
                     }
                     else
