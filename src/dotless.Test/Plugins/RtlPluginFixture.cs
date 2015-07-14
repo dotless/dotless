@@ -337,5 +337,25 @@
             SetCultureTextDirection(true);
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void TextAlignIsReversed()
+        {
+            var input = @"
+.test {
+  text-align: left;
+}
+";
+
+            var expected = @"
+.test {
+  text-align: right;
+}
+";
+
+            OnlyReversePrefixedRules = false;
+            SetCultureTextDirection(true);
+            AssertLess(input, expected);
+        }
     }
 }

@@ -30,7 +30,8 @@
                 "padding",
                 "float",
                 "right",
-                "left"
+                "left",
+                "text-align"
             };
         }
 
