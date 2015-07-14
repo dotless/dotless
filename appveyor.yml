@@ -1,16 +1,23 @@
-version: '{build}'
-init:
-  - git config --global core.autocrlf true
-build_script:
-- ps: .\src\packages\psake.4.4.1\tools\psake.ps1 .\default.ps1 build
-test:
-  assemblies: '**\dotless.Test.dll'
-after_test:
-- ps: .\src\packages\psake.4.4.1\tools\psake.ps1 .\default.ps1 release-notest
-artifacts:
-- path: release\*.nupkg
-deploy:
-  provider: NuGet
-  api_key:
-    secure: feaZhwWZx/Din7m6hadxDNQDT7Jv7Kcx4vLMXecUNIjNj7f3FAPLCBM6uY81C1ZS
-  artifact: /.*\.nupkg/
+# All branches
+-
+  version: '{build}'
+  init:
+    - git config --global core.autocrlf true
+  build_script:
+  - ps: .\src\packages\psake.4.4.1\tools\psake.ps1 .\default.ps1 build
+  test:
+    assemblies: '**\dotless.Test.dll'
+  after_test:
+  - ps: .\src\packages\psake.4.4.1\tools\psake.ps1 .\default.ps1 release-notest
+  artifacts:
+  - path: release\*.nupkg
+  
+-
+  branches:
+    only:
+      - master
+  deploy:
+    provider: NuGet
+    api_key:
+      secure: feaZhwWZx/Din7m6hadxDNQDT7Jv7Kcx4vLMXecUNIjNj7f3FAPLCBM6uY81C1ZS
+    artifact: /.*\.nupkg/
