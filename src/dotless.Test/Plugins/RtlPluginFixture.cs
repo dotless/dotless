@@ -357,5 +357,31 @@
             SetCultureTextDirection(true);
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void BorderRadiusIsReversed()
+        {
+            var input = @"
+.test {
+  border-top-left-radius: 1px;
+  border-top-right-radius: 2px;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 4px;
+}
+";
+
+            var expected = @"
+.test {
+  border-top-right-radius: 1px;
+  border-top-left-radius: 2px;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 4px;
+}
+";
+
+            OnlyReversePrefixedRules = false;
+            SetCultureTextDirection(true);
+            AssertLess(input, expected);
+        }
     }
 }

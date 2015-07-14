@@ -25,6 +25,10 @@
             {
                 "border-left",
                 "border-right",
+                "border-top-left-radius",
+                "border-top-right-radius",
+                "border-bottom-left-radius",
+                "border-bottom-right-radius",
                 "border-width",
                 "margin",
                 "padding",
