@@ -138,7 +138,7 @@
             {
                 visitDeeper = false;
 
-                string ruleName = rule.Name.ToLowerInvariant();
+                string ruleName = (rule.Name ?? "").ToLowerInvariant();
 
                 foreach (Prefix prefix in PrefixesToProcess)
                 {

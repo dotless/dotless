@@ -383,5 +383,17 @@
             SetCultureTextDirection(true);
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void PatternMatchingMixinDoesNotCauseException() {
+            var input = @"
+.theme(""black"") { }
+.theme(""black"");
+";
+
+            OnlyReversePrefixedRules = false;
+            SetCultureTextDirection(true);
+            AssertLess(input, "");
+        }
     }
 }
