@@ -432,7 +432,13 @@ namespace dotless.Core.Importers
         }
 
         private static bool IsDynamicAssembly(Assembly assembly) {
-            return assembly.ManifestModule is System.Reflection.Emit.ModuleBuilder;
+            try {
+                string loc = assembly.Location;
+                return false;
+            } catch (NotSupportedException) {
+                // Location is not supported for dynamic assemblies, so it will throw a NotSupportedException
+                return true;
+            }
         }
 
         private static void LoadFromNewAppDomain(ResourceLoader loader, IFileReader fileReader, String assemblyName)
