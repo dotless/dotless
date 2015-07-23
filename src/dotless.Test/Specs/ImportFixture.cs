@@ -329,6 +329,18 @@ body { margin-right: @a; }";
 .float-grid-columns(xs);
 ";
 
+            imports["import-in-mixin/mixin-definition.less"] = @"
+.import() {
+  @import ""relative-import.less"";
+}
+";
+
+            imports["import-in-mixin/relative-import.less"] = @"
+.rule {
+  color: black;
+}
+";
+
             return new Parser { 
                 Importer = new Importer(new DictionaryReader(imports)) { 
                     IsUrlRewritingDisabled = isUrlRewritingDisabled,
@@ -1710,6 +1722,21 @@ unrecognized @import option 'invalid-option' on line 1 in file 'test.less':
 }";
 
             AssertLess(input, expected);
+        }
+
+        [Test]
+        public void RelativeImportInMixinDefinition() {
+            var input = @"
+@import ""import-in-mixin/mixin-definition.less"";
+.import();
+";
+
+            var expected = @"
+.rule {
+  color: black;
+}";
+
+            AssertLess(input, expected, GetParser());
         }
     }
 }

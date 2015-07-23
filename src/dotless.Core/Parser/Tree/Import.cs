@@ -13,6 +13,7 @@ namespace dotless.Core.Parser.Tree
 
     public class Import : Directive
     {
+        private readonly ReferenceVisitor referenceVisitor = new ReferenceVisitor();
         /// <summary>
         ///  The original path node
         /// </summary>
@@ -169,42 +170,9 @@ namespace dotless.Core.Parser.Tree
                     // Walk the parse tree and mark all nodes as references.
                     IsReference = true;
 
-                    IVisitor referenceImporter = null;
-                    referenceImporter = DelegateVisitor.For<Node>(node => {
-                        var ruleset = node as Ruleset;
-                        if (ruleset != null)
-                        {
-                            if (ruleset.Selectors != null)
-                            {
-                                ruleset.Selectors.Accept(referenceImporter);
-                                ruleset.Selectors.IsReference = true;
-                            }
-
-                            if (ruleset.Rules != null)
-                            {
-                                ruleset.Rules.Accept(referenceImporter);
-                                ruleset.Rules.IsReference = true;
-                            }
-                        }
-
-                        var media = node as Media;
-                        if (media != null)
-                        {
-                            media.Ruleset.Accept(referenceImporter);
-                        }
-
-                        var nodeList = node as NodeList;
-                        if (nodeList != null)
-                        {
-                            nodeList.Accept(referenceImporter);
-                        }
-                        node.IsReference = true;
-
-                        return node;
-                    });
-                    Accept(referenceImporter);
+                    Accept(referenceVisitor);
                 }
-                NodeHelper.ExpandNodes<Import>(env, InnerRoot.Rules);
+                NodeHelper.RecursiveExpandNodes<Import>(env, InnerRoot.Rules);
             }
 
             var rulesList = new NodeList(InnerRoot.Rules).ReducedFrom<NodeList>(this);
@@ -218,6 +186,36 @@ namespace dotless.Core.Parser.Tree
         private bool IsOptionSet(ImportOptions options, ImportOptions test)
         {
             return (options & test) == test;
+        }
+    }
+
+    public class ReferenceVisitor : IVisitor {
+        public Node Visit(Node node) {
+            var ruleset = node as Ruleset;
+            if (ruleset != null) {
+                if (ruleset.Selectors != null) {
+                    ruleset.Selectors.Accept(this);
+                    ruleset.Selectors.IsReference = true;
+                }
+
+                if (ruleset.Rules != null) {
+                    ruleset.Rules.Accept(this);
+                    ruleset.Rules.IsReference = true;
+                }
+            }
+
+            var media = node as Media;
+            if (media != null) {
+                media.Ruleset.Accept(this);
+            }
+
+            var nodeList = node as NodeList;
+            if (nodeList != null) {
+                nodeList.Accept(this);
+            }
+            node.IsReference = true;
+
+            return node;
         }
     }
 
