@@ -736,5 +736,50 @@ img[imgType=""sort""] {
 
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void ParentSelectorWithVariableInterpolation() {
+            var input = @"
+.test {
+  @var: 1;
+  &-@{var} {
+    color: black;
+  }
+}
+";
+
+            var expected = @"
+.test-1 {
+  color: black;
+}";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void ParentSelectorWithVariableInterpolationIsCallable() {
+            var input = @"
+.test {
+  @var: 1;
+  &-@{var} {
+    color: black;
+  }
+}
+
+.call {
+  .test-1;
+}
+";
+
+            var expected = @"
+.test-1 {
+  color: black;
+}
+.call {
+  color: black;
+}";
+
+            AssertLess(input, expected);
+        }
     }
 }
