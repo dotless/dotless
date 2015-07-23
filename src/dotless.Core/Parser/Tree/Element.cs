@@ -59,10 +59,7 @@
             }
             else
             {
-                if (Value != "&")
-                {
-                    env.Output.Append(Value);
-                }
+                env.Output.Append(Value);
             }
             
             env.Output

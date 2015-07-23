@@ -149,6 +149,9 @@ namespace dotless.Core.Parser.Tree
                 env.Frames.Push(EvaluateParams(env, arguments));
 
                 bool isPassingConditions = Condition.Passes(env);
+                if (Condition.IsDefault) {
+                    return MixinMatch.Default;
+                }
 
                 env.Frames.Pop();
 

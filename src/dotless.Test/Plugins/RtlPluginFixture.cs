@@ -318,5 +318,82 @@
             AssertLess(input, expected);
         }
 
+        [Test]
+        public void FloatWithImportantIsReversed()
+        {
+            var input = @"
+.test {
+  float: left !important;
+}
+";
+
+            var expected = @"
+.test {
+  float: right !important;
+}
+";
+
+            OnlyReversePrefixedRules = false;
+            SetCultureTextDirection(true);
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void TextAlignIsReversed()
+        {
+            var input = @"
+.test {
+  text-align: left;
+}
+";
+
+            var expected = @"
+.test {
+  text-align: right;
+}
+";
+
+            OnlyReversePrefixedRules = false;
+            SetCultureTextDirection(true);
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void BorderRadiusIsReversed()
+        {
+            var input = @"
+.test {
+  border-top-left-radius: 1px;
+  border-top-right-radius: 2px;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 4px;
+}
+";
+
+            var expected = @"
+.test {
+  border-top-right-radius: 1px;
+  border-top-left-radius: 2px;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 4px;
+}
+";
+
+            OnlyReversePrefixedRules = false;
+            SetCultureTextDirection(true);
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void PatternMatchingMixinDoesNotCauseException() {
+            var input = @"
+.theme(""black"") { }
+.theme(""black"");
+";
+
+            OnlyReversePrefixedRules = false;
+            SetCultureTextDirection(true);
+            AssertLess(input, "");
+        }
     }
 }

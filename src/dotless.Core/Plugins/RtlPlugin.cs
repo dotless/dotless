@@ -25,12 +25,17 @@
             {
                 "border-left",
                 "border-right",
+                "border-top-left-radius",
+                "border-top-right-radius",
+                "border-bottom-left-radius",
+                "border-bottom-right-radius",
                 "border-width",
                 "margin",
                 "padding",
                 "float",
                 "right",
-                "left"
+                "left",
+                "text-align"
             };
         }
 
@@ -133,7 +138,7 @@
             {
                 visitDeeper = false;
 
-                string ruleName = rule.Name.ToLowerInvariant();
+                string ruleName = (rule.Name ?? "").ToLowerInvariant();
 
                 foreach (Prefix prefix in PrefixesToProcess)
                 {
@@ -215,6 +220,14 @@
 
                 // we have the values.. now we can reverse it
                 string content = _textContent.ToString();
+                string important = "";
+
+                var value = rule.Value as Value;
+                if (value != null)
+                {
+                    important = value.Important;
+                }
+
                 bool valueChanged = false;
 
                 if (_nodeContent.Count > 1)
@@ -231,12 +244,12 @@
                 {
                     if (content == "left")
                     {
-                        content = "right";
+                        content = ("right " + important).TrimEnd();
                         valueChanged = true;
                     }
                     else if (content == "right")
                     {
-                        content = "left";
+                        content = ("left " + important).TrimEnd();
                         valueChanged = true;
                     }
                     else

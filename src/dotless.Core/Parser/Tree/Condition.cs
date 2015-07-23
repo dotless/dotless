@@ -1,4 +1,6 @@
-﻿namespace dotless.Core.Parser.Tree
+﻿using System.Linq;
+
+namespace dotless.Core.Parser.Tree
 {
     using Infrastructure;
     using Infrastructure.Nodes;
@@ -12,6 +14,8 @@
         public Node Right { get; set; }
         public string Operation { get; set; }
         public bool Negate { get; set; }
+
+        public bool IsDefault { get; private set; }
 
         public Condition(Node left, string operation, Node right, bool negate)
         {
@@ -27,6 +31,11 @@
 
         public override Node Evaluate(Env env)
         {
+            var leftCall = Left as Call;
+            if (leftCall != null && leftCall.Name == "default") {
+                IsDefault = true;
+            }
+
             var lValue = Left.Evaluate(env);
             var rValue = Right.Evaluate(env);
 

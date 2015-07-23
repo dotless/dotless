@@ -518,6 +518,48 @@ audio:not([controls]) {
             AssertLess("filter: blur(10px + 5);", "filter: blur(15px);");
         }
 
+        [Test]
+        public void FontFaceWithRangedUnicodeRangeValue()
+        {
+            var input = @"
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: url('OpenSans400.eot');
+  unicode-range: U+0460-052F;
+}";
+            AssertLessUnchanged(input);
+        }
+
+        [Test]
+        public void FontFaceWithSingleUnicodeRangeValue()
+        {
+            var input = @"
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: url('OpenSans400.eot');
+  unicode-range: U+20B4;
+}";
+            AssertLessUnchanged(input);
+        }
+
+        [Test]
+        public void FontFaceWithWildcardUnicodeRangeValue()
+        {
+            var input = @"
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: url('OpenSans400.eot');
+  unicode-range: U+20??;
+}";
+            AssertLessUnchanged(input);
+        }
+
 #if CSS3EXPERIMENTAL
         [Test]
         public void GridRepeatingPatternSupported()

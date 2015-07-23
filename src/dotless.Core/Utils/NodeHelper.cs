@@ -1,3 +1,5 @@
+using dotless.Core.Parser.Tree;
+
 namespace dotless.Core.Utils
 {
     using System.Collections.Generic;
@@ -26,6 +28,39 @@ namespace dotless.Core.Utils
                     else
                     {
                         rules[i] = evaluated;
+                    }
+                }
+            }
+        }
+
+        public static void RecursiveExpandNodes<TNode>(Env env, NodeList rules)
+        where TNode : Node
+        {
+            for (var i = 0; i < rules.Count; i++)
+            {
+                var node = rules[i];
+
+                if (node is TNode)
+                {
+                    var evaluated = node.Evaluate(env);
+                    var nodes = evaluated as IEnumerable<Node>;
+                    if (nodes != null)
+                    {
+                        rules.InsertRange(i + 1, nodes);
+                        rules.RemoveAt(i);
+                        i--;
+                    }
+                    else
+                    {
+                        rules[i] = evaluated;
+                    }
+                }
+                else
+                {
+                    var ruleset = node as Ruleset;
+                    if (ruleset != null && ruleset.Rules != null)
+                    {
+                        RecursiveExpandNodes<TNode>(env, ruleset.Rules);
                     }
                 }
             }

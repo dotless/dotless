@@ -24,8 +24,6 @@ namespace dotless.Core.Parser.Tree
 
         public override Node Evaluate(Env env)
         {
-            var found = false;
-
             var closures = env.FindRulesets(Selector);
             if (closures == null)
                 throw new ParsingException(Selector.ToCSS(env).Trim() + " is undefined", Location);
@@ -48,6 +46,9 @@ namespace dotless.Core.Parser.Tree
 
             var mixins = rulesetList.Where(c => c.Ruleset is MixinDefinition).ToList();
 
+            var defaults = new List<Closure>();
+
+            bool foundMatches = false, foundExactMatches = false, foundDefaultMatches = false;
             foreach (var closure in mixins)
             {
                 var ruleset = (MixinDefinition)closure.Ruleset;
@@ -57,12 +58,21 @@ namespace dotless.Core.Parser.Tree
                     continue;
                 }
 
-                found = true;
+                if (matchType == MixinMatch.Default) {
+                    defaults.Add(closure);
+                    foundDefaultMatches = true;
+
+                    continue;
+                }
+
+                foundMatches = true;
 
                 if (matchType == MixinMatch.GuardFail)
                 {
                     continue;
                 }
+
+                foundExactMatches = true;
 
                 try
                 {
@@ -75,7 +85,20 @@ namespace dotless.Core.Parser.Tree
                 }
             }
 
-            if (!found)
+            if (!foundExactMatches && foundDefaultMatches) {
+                foreach (var closure in defaults) {
+                    try {
+                        var closureEnvironment = env.CreateChildEnvWithClosure(closure);
+                        var ruleset = (MixinDefinition) closure.Ruleset;
+                        rules.AddRange(ruleset.Evaluate(Arguments, closureEnvironment).Rules);
+                    } catch (ParsingException e) {
+                        throw new ParsingException(e.Message, e.Location, Location);
+                    }
+                }
+                foundMatches = true;
+            }
+
+            if (!foundMatches)
             {
                 var regularRulesets = rulesetList.Except(mixins);
 
@@ -89,7 +112,7 @@ namespace dotless.Core.Parser.Tree
                         rules.AddRange(nodes);
                     }
 
-                    found = true;
+                    foundMatches = true;
                 }
             }
 
@@ -98,7 +121,7 @@ namespace dotless.Core.Parser.Tree
 
             env.Rule = null;
 
-            if (!found)
+            if (!foundMatches)
             {
                 var message = String.Format("No matching definition was found for `{0}({1})`",
                                             Selector.ToCSS(env).Trim(),

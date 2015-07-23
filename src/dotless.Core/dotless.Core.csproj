@@ -85,6 +85,7 @@
     <Compile Include="Parser\Functions\ArgbFunction.cs" />
     <Compile Include="Parser\Functions\ColorFunction.cs" />
     <Compile Include="Parser\Functions\DataUriFunction.cs" />
+    <Compile Include="Parser\Functions\DefaultFunction.cs" />
     <Compile Include="Parser\Functions\ListFunctionBase.cs" />
     <Compile Include="Parser\Functions\ExtractFunction.cs" />
     <Compile Include="Parser\Functions\LengthFunction.cs" />
