@@ -768,5 +768,107 @@ namespace dotless.Test.Specs
 
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void DefaultFunctionInGuard() {
+            var input = @"
+.mix(@i) when (@i > 0) {
+  color: blue;
+}
+
+.mix(@i) when (default()) {
+  color: black;
+}
+
+.test {
+  .mix(0);
+}
+";
+
+            var expected = @"
+.test {
+  color: black;
+}";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void DefaultFunctionMatchesIfNothingElseDoes() {
+            var input = @"
+// ............................................................
+// .for
+
+.for(@i, @n) {.-each(@i)}
+.for(@n)     when (isnumber(@n)) {.for(1, @n)}
+.for(@i, @n) when not (@i = @n)  {
+    .for((@i + (@n - @i) / abs(@n - @i)), @n);
+}
+
+// ............................................................
+// .for-each
+
+.for(@array)   when (default()) {.for-impl_(length(@array))}
+.for-impl_(@i) when (@i > 1)    {.for-impl_((@i - 1))}
+.for-impl_(@i) when (@i > 0)    {.-each(extract(@array, @i))}
+
+#icon {
+  .for(home ok); .-each(@name) {
+    &-@{name} {
+      background-image: url(""../images/@{name}.png"");
+    }
+  }
+}";
+
+            var expected = @"
+#icon-home {
+  background-image: url(""../images/home.png"");
+}
+#icon-ok {
+  background-image: url(""../images/ok.png"");
+}";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void DefaultFunctionDoesNotMatchIfSomethingElseDoes() {
+            var input = @"
+// ............................................................
+// .for
+
+.for(@i, @n) {.-each(@i)}
+.for(@n)     when (isnumber(@n)) {.for(1, @n)}
+.for(@i, @n) when not (@i = @n)  {
+    .for((@i + (@n - @i) / abs(@n - @i)), @n);
+}
+
+// ............................................................
+// .for-each
+
+.for(@array)   when (default()) {.for-impl_(length(@array))}
+.for-impl_(@i) when (@i > 1)    {.for-impl_((@i - 1))}
+.for-impl_(@i) when (@i > 0)    {.-each(extract(@array, @i))}
+
+.for(3); .-each(@i) {
+  .xxx {
+    color: red;
+  }
+}
+";
+
+            var expected = @"
+.xxx {
+  color: red;
+}
+.xxx {
+  color: red;
+}
+.xxx {
+  color: red;
+}";
+
+            AssertLess(input, expected);
+        }
     }
 }

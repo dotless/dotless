@@ -95,6 +95,7 @@
     <Compile Include="Specs\Functions\ArgbFixture.cs" />
     <Compile Include="Specs\Functions\BlendModesFixture.cs" />
     <Compile Include="Specs\Functions\DataUriFixture.cs" />
+    <Compile Include="Specs\Functions\DefaultFixture.cs" />
     <Compile Include="Specs\Functions\GradientImageFixture.cs" />
     <Compile Include="Specs\Functions\PowFixture.cs" />
     <Compile Include="Specs\Functions\LengthFixture.cs" />
