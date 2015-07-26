@@ -214,7 +214,7 @@ namespace dotless.Core.Parser
         {
             var index = parser.Tokenizer.Location.Index;
 
-            var k = parser.Tokenizer.Match(@"[A-Za-z0-9-]+");
+            var k = parser.Tokenizer.Match(@"[A-Za-z0-9_-]+");
             if (k)
                 return NodeProvider.Keyword(k.Value, parser.Tokenizer.GetNodeLocation(index));
 

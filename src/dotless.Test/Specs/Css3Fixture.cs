@@ -560,6 +560,15 @@ audio:not([controls]) {
             AssertLessUnchanged(input);
         }
 
+        [Test]
+        public void AnimationNameWithUnderscore() {
+            var input = @"
+.test {
+  animation-name: bounce_loadingProgress;
+}";
+            AssertLessUnchanged(input);
+        }
+
 #if CSS3EXPERIMENTAL
         [Test]
         public void GridRepeatingPatternSupported()
