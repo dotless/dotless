@@ -117,8 +117,7 @@ namespace dotless.Core.Parser.Infrastructure
         public virtual Env CreateChildEnvWithClosure(Closure closure) {
             var env = CreateChildEnv();
             env.Rule = Rule;
-            env.ClosureEnvironment = CreateChildEnv();
-            env.ClosureEnvironment.Frames = new Stack<Ruleset>(closure.Context);
+            env.ClosureEnvironment = new Env(new Stack<Ruleset>(closure.Context), this._functionTypes);
             return env;
         }
 

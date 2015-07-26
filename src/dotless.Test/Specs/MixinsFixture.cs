@@ -1875,5 +1875,51 @@ fieldset[disabled] .test {
 
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void MixinScopesAreIsolated() {
+            var input = @"
+// ............................................................
+// .for
+
+.for(@i, @n) {.-each(@i)}
+.for(@n)     when (isnumber(@n)) {.for(1, @n)}
+.for(@i, @n) when not (@i = @n)  {
+    .for((@i + (@n - @i) / abs(@n - @i)), @n);
+}
+
+// ............................................................
+// .for-each
+
+.for(@array)   when (default()) {.for-impl_(length(@array))}
+.for-impl_(@i) when (@i > 1)    {.for-impl_((@i - 1))}
+.for-impl_(@i) when (@i > 0)    {.-each(extract(@array, @i))}
+
+.abc {
+  .for(1); .-each(@i) {
+    &-@{i} {
+      color: red;
+    }
+  }
+}
+.xyz {
+  .for(1); .-each(@i) {
+    &-@{i} {
+      color: blue;
+    }
+  }
+}
+";
+
+            var expected = @"
+.abc-1 {
+  color: red;
+}
+.xyz-1 {
+  color: blue;
+}";
+
+            AssertLess(input, expected);
+        }
     }
 }

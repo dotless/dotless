@@ -129,7 +129,12 @@ namespace dotless.Core.Parser.Tree
             context.Frames.Push(this);
             context.Frames.Push(frame);
 
-            return EvaluateRulesForFrame(frame, context);
+            var result = EvaluateRulesForFrame(frame, context);
+
+            context.Frames.Pop();
+            context.Frames.Pop();
+
+            return result;
         }
 
         public override MixinMatch MatchArguments(List<NamedArgument> arguments, Env env)
@@ -149,11 +154,12 @@ namespace dotless.Core.Parser.Tree
                 env.Frames.Push(EvaluateParams(env, arguments));
 
                 bool isPassingConditions = Condition.Passes(env);
+
+                env.Frames.Pop();
                 if (Condition.IsDefault) {
                     return MixinMatch.Default;
                 }
 
-                env.Frames.Pop();
 
                 if (!isPassingConditions)
                     return MixinMatch.GuardFail;
