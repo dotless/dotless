@@ -14,7 +14,20 @@
             Guard.ExpectNumArguments(1, Arguments.Count, this, Location);
             Guard.ExpectNode<TextNode>(Arguments[0], this, Location);
 
-            var rgb = ((TextNode) Arguments[0]).Value.TrimStart('#');
+            var argument = ((TextNode) Arguments[0]);
+
+            string rgb;
+            if (!argument.Value.StartsWith("#")) {
+                var color = Color.GetColorFromKeyword(argument.Value);
+                if (color != null) {
+                    return color;
+                }
+
+                rgb = argument.Value;
+            } else {
+                rgb = argument.Value.TrimStart('#');
+            }
+
             try
             {
                 return new Color(rgb);
