@@ -48,5 +48,26 @@ namespace dotless.Test.Specs
             AssertLessUnchanged("margin-left: -1000px;", parser);
         }
 
+        [Test]
+        public void ComplexStrictMathExpression()
+        {
+            var input = @"
+@formInputTextDefaultWidth: 300px;
+@formElementHorizontalPadding: 20px;
+@formTextAreaDefaultWidth: ceil((((@formInputTextDefaultWidth + @formElementHorizontalPadding) + 13px) * 2));
+.test {
+  width: @formTextAreaDefaultWidth;
+}";
+
+            var expected = @"
+.test {
+  width: 666px;
+}";
+
+            var parser = DefaultParser();
+            parser.StrictMath = true;
+
+            AssertLess(input, expected, parser);
+        }
     }
 }
