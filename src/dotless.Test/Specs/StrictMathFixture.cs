@@ -38,5 +38,15 @@ namespace dotless.Test.Specs
             AssertLess("border-radius: 12px / 10px;", "border-radius: 1.2px;", parser);
             AssertLess("border-radius: (12px / 10px) / (8px / 4px);", "border-radius: 0.6px;", parser);
         }
+
+        [Test]
+        public void StrictMathKeepsNegativeValuesIntact()
+        {
+            var parser = DefaultParser();
+            parser.StrictMath = true;
+
+            AssertLessUnchanged("margin-left: -1000px;", parser);
+        }
+
     }
 }

@@ -1949,7 +1949,7 @@ namespace dotless.Core.Parser
 #if CSS3EXPERIMENTAL
             while (e = RepeatPattern(parser) || Operation(parser) || Entity(parser))
 #else 
-            while (e = UnicodeRange(parser) || Operation(parser) || parser.Tokenizer.Match(@"[-+*/]") || Entity(parser))
+            while (e = UnicodeRange(parser) || Operation(parser) || Entity(parser) || parser.Tokenizer.Match(@"[-+*/]"))
 #endif
             {
                 e.PostComments = PullComments();
