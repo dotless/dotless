@@ -641,7 +641,7 @@ namespace dotless.Core.Parser
             var args = new List<NamedArgument>();
             if (parser.Tokenizer.Match('('))
             {
-                bool argumentListIsSemicolonSeparated = parser.Tokenizer.Peek(@".*;.*\)");
+                bool argumentListIsSemicolonSeparated = parser.Tokenizer.Peek(@"[^)]*;.*\)");
                 char expectedSeparator = argumentListIsSemicolonSeparated ? ';' : ',';
 
                 Expression arg;
@@ -1865,39 +1865,53 @@ namespace dotless.Core.Parser
 
         public Node Operation(Parser parser)
         {
-            if (parser.StrictMath) {
-                var beginParen = parser.Tokenizer.Match('(');
-                if (beginParen == null) {
-                    return null;
-                }
-            }
-
-            var m = Multiplication(parser);
-            if (!m)
-                return null;
-
-            Operation operation = null;
-            while (true)
+            bool isStrictMathMode = parser.StrictMath;
+            try
             {
-                GatherComments(parser);
+                // Set Strict Math to false so as not to require extra parens in nested expressions
+                parser.StrictMath = false;
+                if (isStrictMathMode)
+                {
+                    var beginParen = parser.Tokenizer.Match('(');
+                    if (beginParen == null)
+                    {
+                        return null;
+                    }
+                }
 
-                var index = parser.Tokenizer.Location.Index;
-                var op = parser.Tokenizer.Match(@"[-+]\s+");
-                if (!op && !char.IsWhiteSpace(parser.Tokenizer.GetPreviousCharIgnoringComments()))
-                    op = parser.Tokenizer.Match(@"[-+]");
+                var m = Multiplication(parser);
+                if (!m)
+                    return null;
 
-                Node a = null;
-                if (op && (a = Multiplication(parser)))
-                    operation = NodeProvider.Operation(op.Value, operation ?? m, a, parser.Tokenizer.GetNodeLocation(index));
-                else
-                    break;
+                Operation operation = null;
+                while (true)
+                {
+                    GatherComments(parser);
+
+                    var index = parser.Tokenizer.Location.Index;
+                    var op = parser.Tokenizer.Match(@"[-+]\s+");
+                    if (!op && !char.IsWhiteSpace(parser.Tokenizer.GetPreviousCharIgnoringComments()))
+                        op = parser.Tokenizer.Match(@"[-+]");
+
+                    Node a = null;
+                    if (op && (a = Multiplication(parser)))
+                        operation = NodeProvider.Operation(op.Value, operation ?? m, a,
+                            parser.Tokenizer.GetNodeLocation(index));
+                    else
+                        break;
+                }
+
+                if (isStrictMathMode)
+                {
+                    Expect(parser, ')', "Missing closing paren.");
+                }
+
+                return operation ?? m;
             }
-
-            if (parser.StrictMath) {
-                Expect(parser, ')', "Missing closing paren.");
+            finally
+            {
+                parser.StrictMath = isStrictMathMode;
             }
-
-            return operation ?? m;
         }
 
         //
@@ -1949,7 +1963,7 @@ namespace dotless.Core.Parser
 #if CSS3EXPERIMENTAL
             while (e = RepeatPattern(parser) || Operation(parser) || Entity(parser))
 #else 
-            while (e = UnicodeRange(parser) || Operation(parser) || parser.Tokenizer.Match(@"[-+*/]") || Entity(parser))
+            while (e = UnicodeRange(parser) || Operation(parser) || Entity(parser) || parser.Tokenizer.Match(@"[-+*/]"))
 #endif
             {
                 e.PostComments = PullComments();
