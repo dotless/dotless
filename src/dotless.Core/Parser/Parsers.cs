@@ -641,7 +641,7 @@ namespace dotless.Core.Parser
             var args = new List<NamedArgument>();
             if (parser.Tokenizer.Match('('))
             {
-                bool argumentListIsSemicolonSeparated = parser.Tokenizer.Peek(@".*;.*\)");
+                bool argumentListIsSemicolonSeparated = parser.Tokenizer.Peek(@"[^)]*;.*\)");
                 char expectedSeparator = argumentListIsSemicolonSeparated ? ';' : ',';
 
                 Expression arg;

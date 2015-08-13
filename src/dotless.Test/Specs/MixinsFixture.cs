@@ -1921,5 +1921,27 @@ fieldset[disabled] .test {
 
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void MixinCallWithContentAfterSemicolonOnSameLine()
+        {
+            var input = @"
+.mixin(@color1, @color2) {
+  background-color: @color1;
+}
+.test {
+  .mixin(black, white); /* ) */
+}
+";
+
+            var expected = @"
+.test {
+  background-color: black;
+  /* ) */
+
+}";
+
+            AssertLess(input, expected);
+        }
     }
 }
