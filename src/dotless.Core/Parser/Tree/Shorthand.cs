@@ -15,6 +15,10 @@
             Second = second;
         }
 
+        public override Node Evaluate(Env env) {
+            return new Shorthand(First.Evaluate(env), Second.Evaluate(env));
+        }
+
         public override void AppendCSS(Env env)
         {
             env.Output
