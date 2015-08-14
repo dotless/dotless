@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace dotless.Core.Parser
 {
     using System.Collections.Generic;
@@ -8,6 +10,7 @@ namespace dotless.Core.Parser
     using Infrastructure.Nodes;
     using Utils;
 
+    [DebuggerDisplay("{Remaining}")]
     public class Tokenizer
     {
         public int Optimization { get; set; }
@@ -543,6 +546,11 @@ namespace dotless.Core.Parser
                 }
                 return all.ToString();
             }
+        }
+
+        private string Remaining
+        {
+            get { return _input.Substring(_i); }
         }
     }
 

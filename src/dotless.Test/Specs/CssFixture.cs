@@ -211,6 +211,24 @@ p {
         }
 
         [Test]
+        public void ShorthandsWithVariables() {
+            var input = @"
+@fa-font-size-base: 10px;
+@fa-line-height-base: 16px;
+
+.test {
+  font: normal normal normal @fa-font-size-base/@fa-line-height-base FontAwesome;
+}";
+
+            var expected = @"
+.test {
+  font: normal normal normal 10px/16px FontAwesome;
+}";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
         public void Misc()
         {
             var input =
