@@ -16,6 +16,16 @@ namespace dotless.CompatibilityTests
 
         static readonly string LessJsTestDir = Path.Combine(LessJsProjectDir, @"test\less\");
 
+        [TestFixtureSetUp]
+        public void FixtureSetUp()
+        {
+            try
+            {
+                Directory.Delete(TestDebugDir, recursive: true);
+            }
+            catch (DirectoryNotFoundException) { /* That's okay! */ }
+        }
+
         [Test, TestCaseSource("LoadTestCases")]
         public void TestCompatiblity(string lessPath, string cssPaths)
         {
