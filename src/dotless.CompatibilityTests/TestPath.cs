@@ -8,28 +8,30 @@ namespace dotless.CompatibilityTests
     {
         public const string DifferencesDir = "differences";
 
-        // TODO(yln): Less.js project dir should be configurable with a sensible defaults?
-        private const string ProjectDir = @"..\..\..\..\..\less.js\";
-        private const string LessDir = ProjectDir + @"test\less\";
-        private const string CssDir = ProjectDir + @"test\css\";
+        private const string LessDir = @"test\less\";
+        private const string CssDir = @"test\css\";
 
-        public static IEnumerable<TestPath> LoadAll()
+        public static IEnumerable<TestPath> LoadAll(string projectDir)
         {
-            var fullPaths = System.IO.Directory.EnumerateFiles(LessDir, "*.less", SearchOption.AllDirectories);
-            var paths = fullPaths.Select(p => p.Replace(LessDir, "").Replace(".less", ""));
-            return paths.Select(p => new TestPath(p));
+            var fullLessDir = Path.Combine(projectDir, LessDir);
+            var fullPaths = System.IO.Directory.EnumerateFiles(fullLessDir, "*.less", SearchOption.AllDirectories);
+            var testPaths = fullPaths.Select(p => p.Replace(fullLessDir, "").Replace(".less", ""));
+
+            return testPaths.Select(p => new TestPath(projectDir, p));
         }
 
-        private readonly string _path;
+        private readonly string _projectDir;
+        private readonly string _testPath;
 
-        public TestPath(string path)
+        public TestPath(string projectDir, string testPath)
         {
-            _path = path;
+            _projectDir = projectDir;
+            _testPath = testPath;
         }
 
         public string TestName
         {
-            get { return _path; }
+            get { return _testPath; }
         }
 
         public string FileName
@@ -44,27 +46,27 @@ namespace dotless.CompatibilityTests
 
         public string Less
         {
-            get { return Path.Combine(LessDir, _path + ".less"); }
+            get { return Path.Combine(_projectDir, LessDir, _testPath + ".less"); }
         }
 
         public string Css
         {
-            get { return Path.Combine(CssDir, _path + ".css"); }
+            get { return Path.Combine(_projectDir, CssDir, _testPath + ".css"); }
         }
 
         public string Ignore
         {
-            get { return _path + ".less"; }
+            get { return _testPath + ".less"; }
         }
 
         public string ActualCss
         {
-            get { return Path.Combine(DifferencesDir, _path + ".actual"); }
+            get { return Path.Combine(DifferencesDir, _testPath + ".actual"); }
         }
 
         public string ExpectedCss
         {
-            get { return Path.Combine(DifferencesDir, _path + ".expected"); }
+            get { return Path.Combine(DifferencesDir, _testPath + ".expected"); }
         }
     }
 }

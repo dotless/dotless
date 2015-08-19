@@ -50,7 +50,7 @@ namespace dotless.CompatibilityTests
 
         private IEnumerable<ITestCaseData> LoadTestCases()
         {
-            var testPaths = TestPath.LoadAll();
+            var testPaths = TestPath.LoadAll(@"..\..\..\..\..\less.js\"); // TODO(yln): Less.js project dir should be configurable with a sensible defaults?
             var ignores = Ignore.Load("ignore.txt");
 
             return testPaths.Select(t => CreateTestCase(t, ignores));
