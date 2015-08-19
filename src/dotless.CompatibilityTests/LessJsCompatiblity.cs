@@ -32,15 +32,11 @@ namespace dotless.CompatibilityTests
             var less = File.ReadAllText(lessPath);
             var expectedCss = File.ReadAllText(cssPaths);
 
-            var engine = new EngineFactory().GetEngine();
-            engine.CurrentDirectory = Path.GetDirectoryName(lessPath);
-
-            var lessFileName = Path.GetFileName(lessPath);
-            var css = engine.TransformToCss(less, lessFileName);
+            var css = Transform(lessPath, less);
 
             if (CompareOutput(css, expectedCss) != 0)
             {
-                var testPath = GetNicePath(lessPath);
+                var testPath = GetTestPath(lessPath);
                 Dump(testPath + ".actual", css);
                 Dump(testPath + ".expected", expectedCss);
             }
@@ -55,6 +51,15 @@ namespace dotless.CompatibilityTests
             return string.Compare(actual, expected, StringComparison.Ordinal);
         }
 
+        private string Transform(string lessPath, string less)
+        {
+            var engine = new EngineFactory().GetEngine();
+            engine.CurrentDirectory = Path.GetDirectoryName(lessPath);
+
+            var fileName = Path.GetFileName(lessPath);
+            return engine.TransformToCss(less, fileName);
+        }
+
         private IEnumerable<ITestCaseData> LoadTestCases()
         {
             var lessPaths = Directory.EnumerateFiles(LessJsTestDir, "*.less", SearchOption.AllDirectories);
@@ -67,19 +72,21 @@ namespace dotless.CompatibilityTests
         {
             var tmp = lessPath.Replace(@"\test\less\", @"\test\css\");
             var cssPath = Path.ChangeExtension(tmp, ".css");
+            var testPath = GetTestPath(lessPath);
 
             var testCase = new TestCaseData(lessPath, cssPath);
-            testCase.SetName(GetNicePath(lessPath));
+            testCase.SetName(testPath);
 
-            if (ignores.ContainsKey(lessPath))
+            var ignorePath = testPath + ".less";
+            if (ignores.ContainsKey(ignorePath))
             {
-                testCase.Ignore(ignores[lessPath]);
+                testCase.Ignore(ignores[ignorePath]);
             }
 
             return testCase;
         }
 
-        private string GetNicePath(string fullLessPath)
+        private string GetTestPath(string fullLessPath)
         {
             return fullLessPath.Replace(LessJsTestDir, "").Replace(".less", "");
         }
