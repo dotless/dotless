@@ -59,14 +59,19 @@ namespace dotless.CompatibilityTests
             get { return _testPath + ".less"; }
         }
 
+        public string DebugLess
+        {
+            get { return Path.Combine(DifferencesDir, _testPath + ".less"); }
+        }
+
         public string ActualCss
         {
-            get { return Path.Combine(DifferencesDir, _testPath + ".actual"); }
+            get { return Path.Combine(DifferencesDir, _testPath + ".actual.css"); }
         }
 
         public string ExpectedCss
         {
-            get { return Path.Combine(DifferencesDir, _testPath + ".expected"); }
+            get { return Path.Combine(DifferencesDir, _testPath + ".expected.css"); }
         }
     }
 }

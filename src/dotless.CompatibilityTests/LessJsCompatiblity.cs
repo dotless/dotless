@@ -19,11 +19,14 @@ namespace dotless.CompatibilityTests
         [Test, TestCaseSource("LoadTestCases")]
         public void TestCompatiblity(TestPath path)
         {
-            var css = Transform(path);
+            var less = File.ReadAllText(path.Less);
             var expectedCss = File.ReadAllText(path.Css);
+
+            var css = Transform(less, path);
 
             if (CompareOutput(css, expectedCss) != 0)
             {
+                Dump(path.DebugLess, less);
                 Dump(path.ActualCss, css);
                 Dump(path.ExpectedCss, expectedCss);
             }
@@ -38,14 +41,12 @@ namespace dotless.CompatibilityTests
             return string.Compare(actual, expected, StringComparison.Ordinal);
         }
 
-        private string Transform(TestPath path)
+        private string Transform(string less, TestPath path)
         {
             var engine = new EngineFactory().GetEngine();
             engine.CurrentDirectory = path.Directory;
 
-            var input = File.ReadAllText(path.Less);
-
-            return engine.TransformToCss(input, path.FileName);
+            return engine.TransformToCss(less, path.FileName);
         }
 
         private IEnumerable<ITestCaseData> LoadTestCases()
@@ -75,7 +76,7 @@ namespace dotless.CompatibilityTests
             File.WriteAllText(path, content);
         }
 
-        private static void DeleteDirectory(string directory)
+        private void DeleteDirectory(string directory)
         {
             try
             {
