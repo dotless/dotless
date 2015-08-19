@@ -42,6 +42,7 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Ignore.cs" />
     <Compile Include="LessJsCompatiblity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestPath.cs" />

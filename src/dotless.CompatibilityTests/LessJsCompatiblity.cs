@@ -13,11 +13,7 @@ namespace dotless.CompatibilityTests
         [TestFixtureSetUp]
         public void FixtureSetUp()
         {
-            try
-            {
-                Directory.Delete(TestPath.DifferencesDir, recursive: true);
-            }
-            catch (DirectoryNotFoundException) { /* That's okay! */ }
+            DeleteDirectory(TestPath.DifferencesDir);
         }
 
         [Test, TestCaseSource("LoadTestCases")]
@@ -55,7 +51,7 @@ namespace dotless.CompatibilityTests
         private IEnumerable<ITestCaseData> LoadTestCases()
         {
             var testPaths = TestPath.LoadAll();
-            var ignores = LoadIgnores("ignore.txt");
+            var ignores = Ignore.Load("ignore.txt");
 
             return testPaths.Select(t => CreateTestCase(t, ignores));
         }
@@ -79,21 +75,16 @@ namespace dotless.CompatibilityTests
             File.WriteAllText(path, content);
         }
 
-        private IDictionary<string, string> LoadIgnores(string ignoreFile)
+        private static void DeleteDirectory(string directory)
         {
-            var ignores = new Dictionary<string, string>();
-            foreach (var line in File.ReadLines(ignoreFile))
+            try
             {
-                var parts = line.Split(';');
-                if (parts.Length == 0) continue;
-
-                var file = parts[0].Trim();
-                if (file.Length == 0) continue;
-                var reason = parts.Length > 1 ? parts[1] : null;
-
-                ignores.Add(file, reason);
+                Directory.Delete(directory, recursive: true);
             }
-            return ignores;
+            catch (DirectoryNotFoundException)
+            {
+                // That's okay!
+            }
         }
     }
 }
