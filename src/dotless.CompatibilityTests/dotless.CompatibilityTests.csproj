@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="LessJsCompatiblity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestPath.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\dotless.Core\dotless.Core.csproj">

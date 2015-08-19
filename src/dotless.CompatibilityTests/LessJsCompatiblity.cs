@@ -10,35 +10,26 @@ namespace dotless.CompatibilityTests
     [TestFixture]
     public class LessJsCompatiblity
     {
-        // TODO(yln): this should be configurable with sensible defaults, how?
-        const string LessJsProjectDir = @"..\..\..\..\..\less.js\";
-        const string TestDebugDir = "test-debug";
-
-        static readonly string LessJsTestDir = Path.Combine(LessJsProjectDir, @"test\less\");
-
         [TestFixtureSetUp]
         public void FixtureSetUp()
         {
             try
             {
-                Directory.Delete(TestDebugDir, recursive: true);
+                Directory.Delete(TestPath.DifferencesDir, recursive: true);
             }
             catch (DirectoryNotFoundException) { /* That's okay! */ }
         }
 
         [Test, TestCaseSource("LoadTestCases")]
-        public void TestCompatiblity(string lessPath, string cssPaths)
+        public void TestCompatiblity(TestPath path)
         {
-            var less = File.ReadAllText(lessPath);
-            var expectedCss = File.ReadAllText(cssPaths);
-
-            var css = Transform(lessPath, less);
+            var css = Transform(path);
+            var expectedCss = File.ReadAllText(path.Css);
 
             if (CompareOutput(css, expectedCss) != 0)
             {
-                var testPath = GetTestPath(lessPath);
-                Dump(testPath + ".actual", css);
-                Dump(testPath + ".expected", expectedCss);
+                Dump(path.ActualCss, css);
+                Dump(path.ExpectedCss, expectedCss);
             }
 
             Assert.That(css, Is.EqualTo(expectedCss).Using<string>(CompareOutput));
@@ -51,49 +42,38 @@ namespace dotless.CompatibilityTests
             return string.Compare(actual, expected, StringComparison.Ordinal);
         }
 
-        private string Transform(string lessPath, string less)
+        private string Transform(TestPath path)
         {
             var engine = new EngineFactory().GetEngine();
-            engine.CurrentDirectory = Path.GetDirectoryName(lessPath);
+            engine.CurrentDirectory = path.Directory;
 
-            var fileName = Path.GetFileName(lessPath);
-            return engine.TransformToCss(less, fileName);
+            var input = File.ReadAllText(path.Less);
+
+            return engine.TransformToCss(input, path.FileName);
         }
 
         private IEnumerable<ITestCaseData> LoadTestCases()
         {
-            var lessPaths = Directory.EnumerateFiles(LessJsTestDir, "*.less", SearchOption.AllDirectories);
+            var testPaths = TestPath.LoadAll();
             var ignores = LoadIgnores("ignore.txt");
 
-            return lessPaths.Select(file => CreateTestCase(file, ignores));
+            return testPaths.Select(t => CreateTestCase(t, ignores));
         }
 
-        private ITestCaseData CreateTestCase(string lessPath, IDictionary<string, string> ignores)
+        private ITestCaseData CreateTestCase(TestPath path, IDictionary<string, string> ignores)
         {
-            var tmp = lessPath.Replace(@"\test\less\", @"\test\css\");
-            var cssPath = Path.ChangeExtension(tmp, ".css");
-            var testPath = GetTestPath(lessPath);
+            var testCase = new TestCaseData(path).SetName(path.TestName);
 
-            var testCase = new TestCaseData(lessPath, cssPath);
-            testCase.SetName(testPath);
-
-            var ignorePath = testPath + ".less";
-            if (ignores.ContainsKey(ignorePath))
+            if (ignores.ContainsKey(path.Ignore))
             {
-                testCase.Ignore(ignores[ignorePath]);
+                testCase.Ignore(ignores[path.Ignore]);
             }
 
             return testCase;
         }
 
-        private string GetTestPath(string fullLessPath)
+        private void Dump(string path, string content)
         {
-            return fullLessPath.Replace(LessJsTestDir, "").Replace(".less", "");
-        }
-
-        private void Dump(string testPath, string content)
-        {
-            var path = Path.Combine(TestDebugDir, testPath);
             var directory = Path.GetDirectoryName(path);
             Directory.CreateDirectory(directory);
             File.WriteAllText(path, content);
