@@ -3,8 +3,8 @@
 ; e.g: charsets.less; Charsets are tricky to support, see PR #777; bla bla bla
 
 charsets.less; Charsets are tricky to support: TODO fix
-colors.less; some comment for testing
-comments.less
+; colors.less; some comment for testing; comment out this ignore to showcase a failure
+comments.less; comments don't work :(
 comments2.less
 compression\compression.less
 css.less

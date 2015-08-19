@@ -84,7 +84,7 @@ namespace dotless.CompatibilityTests
             var ignores = new Dictionary<string, string>();
             foreach (var line in File.ReadLines(ignoreFile))
             {
-                var parts = line.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries);
+                var parts = line.Split(';');
                 if (parts.Length == 0) continue;
 
                 var file = parts[0].Trim();
