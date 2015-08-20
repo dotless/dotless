@@ -6,27 +6,27 @@ namespace dotless.CompatibilityTests
 {
     public class TestPath
     {
-        public const string DifferencesDir = "differences";
-
         private const string LessDir = @"test\less\";
         private const string CssDir = @"test\css\";
 
-        public static IEnumerable<TestPath> LoadAll(string projectDir)
+        public static IEnumerable<TestPath> LoadAll(string projectDir, string differencesDir)
         {
             var fullLessDir = Path.Combine(projectDir, LessDir);
             var fullPaths = System.IO.Directory.EnumerateFiles(fullLessDir, "*.less", SearchOption.AllDirectories);
             var testPaths = fullPaths.Select(p => p.Replace(fullLessDir, "").Replace(".less", ""));
 
-            return testPaths.Select(p => new TestPath(projectDir, p));
+            return testPaths.Select(p => new TestPath(projectDir, p, differencesDir));
         }
 
         private readonly string _projectDir;
         private readonly string _testPath;
+        private readonly string _differencesDir;
 
-        public TestPath(string projectDir, string testPath)
+        public TestPath(string projectDir, string testPath, string differencesDir)
         {
             _projectDir = projectDir;
             _testPath = testPath;
+            _differencesDir = differencesDir;
         }
 
         public string TestName
@@ -61,17 +61,17 @@ namespace dotless.CompatibilityTests
 
         public string DebugLess
         {
-            get { return Path.Combine(DifferencesDir, _testPath + ".less"); }
+            get { return Path.Combine(_differencesDir, _testPath + ".less"); }
         }
 
         public string ActualCss
         {
-            get { return Path.Combine(DifferencesDir, _testPath + ".actual.css"); }
+            get { return Path.Combine(_differencesDir, _testPath + ".actual.css"); }
         }
 
         public string ExpectedCss
         {
-            get { return Path.Combine(DifferencesDir, _testPath + ".expected.css"); }
+            get { return Path.Combine(_differencesDir, _testPath + ".expected.css"); }
         }
     }
 }

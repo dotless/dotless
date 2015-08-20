@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using dotless.Core;
@@ -13,7 +14,7 @@ namespace dotless.CompatibilityTests
         [TestFixtureSetUp]
         public void FixtureSetUp()
         {
-            DeleteDirectory(TestPath.DifferencesDir);
+            DeleteDifferencesDirectory();
         }
 
         [Test, TestCaseSource("LoadTestCases")]
@@ -51,8 +52,12 @@ namespace dotless.CompatibilityTests
 
         private IEnumerable<ITestCaseData> LoadTestCases()
         {
-            var testPaths = TestPath.LoadAll(@"..\..\..\..\..\less.js\"); // TODO(yln): Less.js project dir should be configurable with a sensible defaults?
-            var ignores = Ignore.Load("ignore.txt");
+            var projectDir = ConfigurationManager.AppSettings["lessJsProjectDirectory"];
+            var differencesDir = ConfigurationManager.AppSettings["differencesDirectory"];
+            var ignoreFile = ConfigurationManager.AppSettings["ignoreFile"];
+
+            var testPaths = TestPath.LoadAll(projectDir, differencesDir);
+            var ignores = Ignore.Load(ignoreFile);
 
             return testPaths.Select(t => CreateTestCase(t, ignores));
         }
@@ -71,16 +76,17 @@ namespace dotless.CompatibilityTests
 
         private void Dump(string path, string content)
         {
-            var directory = Path.GetDirectoryName(path);
-            Directory.CreateDirectory(directory);
+            var dir = Path.GetDirectoryName(path);
+            Directory.CreateDirectory(dir);
             File.WriteAllText(path, content);
         }
 
-        private void DeleteDirectory(string directory)
+        private void DeleteDifferencesDirectory()
         {
+            var dir = ConfigurationManager.AppSettings["differencesDirectory"];
             try
             {
-                Directory.Delete(directory, recursive: true);
+                Directory.Delete(dir, recursive: true);
             }
             catch (DirectoryNotFoundException)
             {
