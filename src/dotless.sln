@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotless.SampleWeb", "dotles
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotless.Test.EmbeddedResource", "dotless.Test.EmbeddedResource\dotless.Test.EmbeddedResource.csproj", "{EE1C5FC5-60DF-4127-82D7-72C3C25664E1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotless.CompatibilityTests", "dotless.CompatibilityTests\dotless.CompatibilityTests.csproj", "{0301D14F-005B-4A90-B97A-11D52F85BCAE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,6 +58,10 @@ Global
 		{EE1C5FC5-60DF-4127-82D7-72C3C25664E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE1C5FC5-60DF-4127-82D7-72C3C25664E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE1C5FC5-60DF-4127-82D7-72C3C25664E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0301D14F-005B-4A90-B97A-11D52F85BCAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0301D14F-005B-4A90-B97A-11D52F85BCAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0301D14F-005B-4A90-B97A-11D52F85BCAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0301D14F-005B-4A90-B97A-11D52F85BCAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
