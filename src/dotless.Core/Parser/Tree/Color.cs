@@ -184,6 +184,67 @@ namespace dotless.Core.Parser.Tree
             }
         }
 
+        public static Color From(string keywordOrHex)
+        {
+            return FromKeyword(keywordOrHex) ?? FromHex(keywordOrHex);
+        }
+
+        // TODO(yln): Dictionary should be instance of Color, color should be immutable!
+        public static Color FromKeyword(string keyword)
+        {
+            if (keyword == "transparent")
+            {
+                return new Color(0, 0, 0, 0);
+            }
+
+            int color;
+            if (Html4Colors.TryGetValue(keyword, out color))
+            {
+                var b = color & 0xff;
+                color >>= 8;
+                var g = color & 0xff;
+                color >>= 8;
+                var r = color & 0xff;
+
+                return new Color(r, g, b);
+            }
+
+            return null;
+        }
+
+        public static Color FromHex(string hex)
+        {
+            hex = hex.TrimStart('#');
+            var isArgb = false;
+            var alpha = 1.0;
+            double[] rgb;
+            
+            if (hex.Length == 8)
+            {
+                isArgb = true;
+                rgb = Enumerable.Range(1, 3)
+                    .Select(i => hex.Substring(i * 2, 2))
+                    .Select(s => (double)int.Parse(s, NumberStyles.HexNumber))
+                    .ToArray();
+                alpha = (double)int.Parse(hex.Substring(0, 2), NumberStyles.HexNumber) / 255d;
+            }
+            else if (hex.Length == 6)
+            {
+                rgb = Enumerable.Range(0, 3)
+                    .Select(i => hex.Substring(i * 2, 2))
+                    .Select(s => (double)int.Parse(s, NumberStyles.HexNumber))
+                    .ToArray();
+            }
+            else
+            {
+                rgb = hex.ToCharArray()
+                    .Select(c => (double)int.Parse("" + c + c, NumberStyles.HexNumber))
+                    .ToArray();
+            }
+
+            return new Color(rgb, alpha) {isArgb = isArgb};
+        }
+
         private bool isArgb = false;
 
         public readonly double[] RGB;
