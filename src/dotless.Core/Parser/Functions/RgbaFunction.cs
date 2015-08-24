@@ -21,9 +21,8 @@ namespace dotless.Core.Parser.Functions
             Guard.ExpectNumArguments(4, Arguments.Count, this, Location);
             var args = Guard.ExpectAllNodes<Number>(Arguments, this, Location);
 
-            var values = args.Select(n => n.Value).ToList();
-            var rgb = values.Take(3).ToArray();
-            var alpha = values[3];
+            var rgb = args.Take(3).Select(n => n.ToNumber(255.0)).ToArray();
+            var alpha = args[3].ToNumber(1.0);
 
             return new Color(rgb, alpha);
         }
