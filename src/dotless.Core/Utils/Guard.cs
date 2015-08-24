@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace dotless.Core.Utils
 {
@@ -53,12 +54,9 @@ namespace dotless.Core.Utils
             throw new ParsingException(message, location);
         }
 
-        public static void ExpectAllNodes<TExpected>(IEnumerable<Node> actual, object @in, NodeLocation location) where TExpected : Node
+        public static IEnumerable<TExpected> ExpectAllNodes<TExpected>(IEnumerable<Node> actual, object @in, NodeLocation location) where TExpected : Node
         {
-            foreach (var node in actual)
-            {
-                ExpectNode<TExpected>(node, @in, location);
-            }
+            return actual.Select(node => ExpectNode<TExpected>(node, @in, location));
         }
 
 
