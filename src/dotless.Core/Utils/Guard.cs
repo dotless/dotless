@@ -28,10 +28,10 @@ namespace dotless.Core.Utils
             throw new ParsingException(message, location);
         }
 
-        public static void ExpectNode<TExpected>(Node actual, object @in, NodeLocation location) where TExpected : Node
+        public static TExpected ExpectNode<TExpected>(Node actual, object @in, NodeLocation location) where TExpected : Node
         {
             if (actual is TExpected)
-                return;
+                return (TExpected) actual;
 
             var expected = typeof (TExpected).Name.ToLowerInvariant();
 
