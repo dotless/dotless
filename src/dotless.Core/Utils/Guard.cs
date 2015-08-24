@@ -20,9 +20,9 @@ namespace dotless.Core.Utils
             throw new ParsingException(message, location);
         }
 
-        public static void Expect(Func<bool> condition, string message, NodeLocation location)
+        public static void Expect(bool condition, string message, NodeLocation location)
         {
-            if (condition())
+            if (condition)
                 return;
 
             throw new ParsingException(message, location);
