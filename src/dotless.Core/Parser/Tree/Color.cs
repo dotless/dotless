@@ -191,8 +191,8 @@ namespace dotless.Core.Parser.Tree
 
         public Color(double[] rgb, double alpha = 1.0)
         {
-            RGB = rgb;
-            Alpha = alpha;
+            RGB = rgb.Select(c => NumberExtensions.Normalize(c, 255.0)).ToArray();
+            Alpha = NumberExtensions.Normalize(alpha, 1.0);
         }
 
         public Color(double red, double green, double blue, double alpha = 1.0)
