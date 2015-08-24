@@ -561,29 +561,6 @@ namespace dotless.Core.Parser.Tree
             return null;
         }
 
-        public static Color GetColorFromKeyword(string keyword)
-        {
-            int color;
-
-            if (keyword == "transparent")
-            {
-                return new Color(0, 0, 0, 0);
-            }
-
-            if (Html4Colors.TryGetValue(keyword, out color))
-            {
-                var b = color & 0xff;
-                color >>= 8;
-                var g = color & 0xff;
-                color >>= 8;
-                var r = color & 0xff;
-
-                return new Color(r, g, b);
-            }
-
-            return null;
-        }
-
         /// <summary>
         ///  Returns in the IE ARGB format e.g ##FF001122 = rgba(0x00, 0x11, 0x22, 1)
         /// </summary>
