@@ -261,34 +261,6 @@ namespace dotless.Core.Parser.Tree
         {
         }
 
-        public Color(string hex)
-        {
-            Alpha = 1;
-
-            if (hex.Length == 8)
-            {
-                isArgb = true;
-                RGB = Enumerable.Range(1, 3)
-                    .Select(i => hex.Substring(i * 2, 2))
-                    .Select(s => (double) int.Parse(s, NumberStyles.HexNumber))
-                    .ToArray();
-                Alpha = (double) int.Parse(hex.Substring(0, 2), NumberStyles.HexNumber) / 255d;
-            }
-            else if (hex.Length == 6)
-            {
-                RGB = Enumerable.Range(0, 3)
-                    .Select(i => hex.Substring(i*2, 2))
-                    .Select(s => (double) int.Parse(s, NumberStyles.HexNumber))
-                    .ToArray();
-            }
-            else
-            {
-                RGB = hex.ToCharArray()
-                    .Select(c => (double) int.Parse("" + c + c, NumberStyles.HexNumber))
-                    .ToArray();
-            }
-        }
-
         public double R
         {
             get { return RGB[0]; }
