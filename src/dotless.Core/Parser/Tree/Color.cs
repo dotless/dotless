@@ -250,14 +250,16 @@ namespace dotless.Core.Parser.Tree
         public readonly double[] RGB;
         public readonly double Alpha;
 
-        public Color(double[] rgb, double alpha = 1.0)
+        private readonly string text;
+
+        public Color(double[] rgb, double alpha = 1.0, string text = null)
         {
             RGB = rgb.Select(c => NumberExtensions.Normalize(c, 255.0)).ToArray();
             Alpha = NumberExtensions.Normalize(alpha, 1.0);
         }
 
-        public Color(double red, double green, double blue, double alpha = 1.0)
-            : this(new[] {red, green, blue}, alpha)
+        public Color(double red, double green, double blue, double alpha = 1.0, string text = null)
+            : this(new[] {red, green, blue}, alpha, text)
         {
         }
 
@@ -313,6 +315,12 @@ namespace dotless.Core.Parser.Tree
 
         public override void AppendCSS(Env env)
         {
+            if (text != null)
+            {
+                env.Output.Append(text);
+                return;
+            }
+
             var rgb = RGB
                 .Select(d => (int) Math.Round(d, MidpointRounding.AwayFromZero))
                 .Select(i => i > 255 ? 255 : (i < 0 ? 0 : i))
