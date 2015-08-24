@@ -196,21 +196,8 @@ namespace dotless.Core.Parser.Tree
         }
 
         public Color(double red, double green, double blue, double alpha = 1.0)
+            : this(new[] {red, green, blue}, alpha)
         {
-            RGB = new[]
-                      {
-                          NumberExtensions.Normalize(red, 255d),
-                          NumberExtensions.Normalize(green, 255d),
-                          NumberExtensions.Normalize(blue, 255d)
-                      };
-
-            Alpha = NumberExtensions.Normalize(alpha);
-        }
-
-        public Color(IEnumerable<Number> rgb, Number alpha)
-        {
-            RGB = rgb.Select(d => d.Normalize(255d)).ToArray();
-            Alpha = alpha.Normalize();
         }
 
         public Color(string hex)
@@ -239,18 +226,6 @@ namespace dotless.Core.Parser.Tree
                     .Select(c => (double) int.Parse("" + c + c, NumberStyles.HexNumber))
                     .ToArray();
             }
-        }
-
-        public Color(int color)
-        {
-            RGB = new double[3];
-
-            B = color & 0xff;
-            color >>= 8;
-            G = color & 0xff;
-            color >>= 8;
-            R = color & 0xff;
-            Alpha = 1;
         }
 
         public double R
@@ -396,7 +371,15 @@ namespace dotless.Core.Parser.Tree
             }
 
             if (Html4Colors.TryGetValue(keyword, out color))
-                return new Color(color);
+            {
+                var b = color & 0xff;
+                color >>= 8;
+                var g = color & 0xff;
+                color >>= 8;
+                var r = color & 0xff;
+
+                return new Color(r, g, b);
+            }
 
             return null;
         }
