@@ -14,7 +14,7 @@ namespace dotless.Core.Parser.Tree
     {
         private static readonly Dictionary<string, Color> Html4Colors2 = new Dictionary<string, Color>
         {
-            {"transparent", new Color(0x000000, 0.0, "transparent")}, // Note that transparent is not a color
+            {"transparent", new Color(0x000000, 0.0, "transparent")}, // Note that transparent is not a HTML color.
             {"aliceblue", new Color(0xf0f8ff, 1.0, "aliceblue")},
             {"antiquewhite", new Color(0xfaebd7, 1.0, "antiquewhite")},
             {"aqua", new Color(0x00ffff, 1.0, "aqua")},
@@ -408,6 +408,11 @@ namespace dotless.Core.Parser.Tree
         public Color(int rgb, double alpha = 1.0, string text = null)
         {
             _rgb = rgb;
+            RGB = new double[3];
+            RGB[0] = rgb >> 16 & 0xFF;
+            RGB[1] = rgb >> 8 & 0xFF;
+            RGB[2] = rgb & 0xFF;
+
             Alpha = alpha;
             _text = text;
         }
