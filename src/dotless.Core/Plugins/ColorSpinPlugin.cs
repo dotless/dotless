@@ -1,6 +1,5 @@
 ﻿namespace dotless.Core.Plugins
 {
-    using System;
     using Parser.Infrastructure.Nodes;
     using Parser.Tree;
     using Utils;
@@ -25,21 +24,14 @@
         {
             visitDeeper = true;
 
-            if(node is Color)
-            {
-                var color = node as Color;
+            var color = node as Color;
+            if (color == null) return node;
 
-                var hslColor = HslColor.FromRgbColor(color);
-                hslColor.Hue += Spin/360.0d;
-                var newColor = hslColor.ToRgbColor();
+            var hslColor = HslColor.FromRgbColor(color);
+            hslColor.Hue += Spin/360.0d;
+            var newColor = hslColor.ToRgbColor();
 
-                //node = new Color(newColor.R, newColor.G, newColor.B);
-                color.R = newColor.R;
-                color.G = newColor.G;
-                color.B = newColor.B;
-            }
-
-            return node;
+            return newColor.ReducedFrom<Color>(color);
         }
     }
 }
