@@ -264,19 +264,16 @@ namespace dotless.Core.Parser.Tree
         public double R
         {
             get { return RGB[0]; }
-            set { RGB[0] = value; }
         }
 
         public double G
         {
             get { return RGB[1]; }
-            set { RGB[1] = value; }
         }
 
         public double B
         {
             get { return RGB[2]; }
-            set { RGB[2] = value; }
         }
 
         /// <summary>
