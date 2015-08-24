@@ -245,7 +245,7 @@ namespace dotless.Core.Parser.Tree
         private readonly int _rgb;
         private readonly string _text;
 
-        public Color(int rgb, double alpha = 1.0, string text = null)
+        public Color(int rgb, double alpha, string text)
         {
             _rgb = rgb;
             RGB = new double[3];
@@ -258,7 +258,7 @@ namespace dotless.Core.Parser.Tree
         }
 
         public Color(double[] rgb, double alpha = 1.0, string text = null)
-            : this (((int) rgb[0] << 16) & ((int) rgb[1] << 8) & ((int) rgb[2]), alpha)
+            : this (((int) rgb[0] << 16) & ((int) rgb[1] << 8) & ((int) rgb[2]), alpha, text)
         {
             RGB = rgb.Select(c => NumberExtensions.Normalize(c, 255.0)).ToArray();
             Alpha = NumberExtensions.Normalize(alpha, 1.0);
