@@ -239,9 +239,6 @@ namespace dotless.Core.Parser.Tree
 
         private bool isArgb = false;
 
-        public readonly double[] RGB;
-        public readonly double Alpha;
-
         private readonly int _rgb;
         private readonly string _text;
 
@@ -269,6 +266,10 @@ namespace dotless.Core.Parser.Tree
             : this(new[] {red, green, blue}, alpha, text)
         {
         }
+
+        public double[] RGB { get; private set; }
+
+        public double Alpha { get; private set; }
 
         public double R
         {
