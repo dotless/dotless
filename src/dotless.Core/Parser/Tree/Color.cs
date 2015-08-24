@@ -189,22 +189,27 @@ namespace dotless.Core.Parser.Tree
         public readonly double[] RGB;
         public readonly double Alpha;
 
-        public Color(double[] rgb) : this(rgb, 1)
-        {
-        }
-
-        public Color(double[] rgb, double alpha)
+        public Color(double[] rgb, double alpha = 1.0)
         {
             RGB = rgb;
             Alpha = alpha;
         }
 
+        public Color(double red, double green, double blue, double alpha = 1.0)
+        {
+            RGB = new[]
+                      {
+                          NumberExtensions.Normalize(red, 255d),
+                          NumberExtensions.Normalize(green, 255d),
+                          NumberExtensions.Normalize(blue, 255d)
+                      };
+
+            Alpha = NumberExtensions.Normalize(alpha);
+        }
+
         public Color(IEnumerable<Number> rgb, Number alpha)
         {
-            RGB = rgb
-                .Select(d => d.Normalize(255d))
-                .ToArray<double>();
-
+            RGB = rgb.Select(d => d.Normalize(255d)).ToArray();
             Alpha = alpha.Normalize();
         }
 
@@ -234,23 +239,6 @@ namespace dotless.Core.Parser.Tree
                     .Select(c => (double) int.Parse("" + c + c, NumberStyles.HexNumber))
                     .ToArray();
             }
-        }
-
-        public Color(double red, double green, double blue, double alpha)
-        {
-            RGB = new[]
-                      {
-                          NumberExtensions.Normalize(red, 255d),
-                          NumberExtensions.Normalize(green, 255d),
-                          NumberExtensions.Normalize(blue, 255d)
-                      };
-
-            Alpha = NumberExtensions.Normalize(alpha);
-        }
-
-        public Color(double red, double green, double blue)
-            : this(red, green, blue, 1d)
-        {
         }
 
         public Color(int color)
