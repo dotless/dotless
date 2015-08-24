@@ -322,11 +322,11 @@ namespace dotless.Core.Parser.Tree
 
         public override void AppendCSS(Env env)
         {
-            //if (_text != null)
-            //{
-            //    env.Output.Append(_text);
-            //    return;
-            //}
+            if (_text != null)
+            {
+                env.Output.AppendFormat(CultureInfo.InvariantCulture, _text);
+                return;
+            }
 
             var rgb = RGB
                 .Select(d => (int) Math.Round(d, MidpointRounding.AwayFromZero))
