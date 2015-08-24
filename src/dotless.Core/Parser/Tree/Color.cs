@@ -237,12 +237,25 @@ namespace dotless.Core.Parser.Tree
             return new Color(rgb, alpha) {isArgb = isArgb};
         }
 
+        private static int ComputeRgb(double[] rgb)
+        {
+            var c = rgb.Select(x => NumberExtensions.Normalize(x, 255.0))
+                .Select(x => (int) Math.Round(x, MidpointRounding.AwayFromZero))
+                .ToList();
+            return (c[0] << 16) | (c[1] << 8) | c[2];
+        }
+
+        private static double ComputeAlpha(double alpha)
+        {
+            return NumberExtensions.Normalize(alpha, 1.0);
+        }
+
         private bool isArgb = false;
 
         private readonly int _rgb;
         private readonly string _text;
 
-        public Color(int rgb, double alpha, string text)
+        private Color(int rgb, double alpha, string text)
         {
             _rgb = rgb;
             RGB = new double[3];
@@ -255,11 +268,9 @@ namespace dotless.Core.Parser.Tree
         }
 
         public Color(double[] rgb, double alpha = 1.0, string text = null)
-            : this (((int) rgb[0] << 16) & ((int) rgb[1] << 8) & ((int) rgb[2]), alpha, text)
+            : this (ComputeRgb(rgb), ComputeAlpha(alpha), text)
         {
             RGB = rgb.Select(c => NumberExtensions.Normalize(c, 255.0)).ToArray();
-            Alpha = NumberExtensions.Normalize(alpha, 1.0);
-            _text = text;
         }
 
         public Color(double red, double green, double blue, double alpha = 1.0, string text = null)
