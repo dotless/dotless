@@ -188,24 +188,17 @@ namespace dotless.Core.Parser.Tree
             return FromKeyword(keywordOrHex) ?? FromHex(keywordOrHex);
         }
 
-        // TODO(yln): Dictionary should be instance of Color, color should be immutable!
         public static Color FromKeyword(string keyword)
         {
             if (keyword == "transparent")
             {
-                return new Color(0, 0, 0, 0);
+                return new Color(0x000, 0.0, keyword);
             }
 
-            int color;
-            if (Html4Colors.TryGetValue(keyword, out color))
+            int hex;
+            if (Html4Colors.TryGetValue(keyword, out hex))
             {
-                var b = color & 0xff;
-                color >>= 8;
-                var g = color & 0xff;
-                color >>= 8;
-                var r = color & 0xff;
-
-                return new Color(r, g, b);
+                return new Color(hex, 1.0, keyword);
             }
 
             return null;
