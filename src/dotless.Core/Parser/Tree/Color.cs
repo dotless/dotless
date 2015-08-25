@@ -367,8 +367,6 @@ namespace dotless.Core.Parser.Tree
                 return;
             }
 
-            var keyword = GetKeyword(rgb);
-
             var hexString = '#' + rgb
                              .Select(i => i.ToString("X2"))
                              .JoinStrings("")
@@ -377,11 +375,11 @@ namespace dotless.Core.Parser.Tree
             if (env.Compress)
             {
                 hexString = Regex.Replace(hexString, @"#(.)\1(.)\2(.)\3", "#$1$2$3");
-                env.Output.Append(string.IsNullOrEmpty(keyword) || hexString.Length < keyword.Length ? hexString : keyword);
+                env.Output.Append(hexString);
                 return;
             }
 
-            env.Output.Append(!string.IsNullOrEmpty(keyword) ? keyword : hexString);
+            env.Output.Append(hexString);
         }
 
         public Node Operate(Operation op, Node other)
