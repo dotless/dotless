@@ -206,17 +206,17 @@ namespace dotless.Core.Parser.Tree
 
         public static Color FromHex(string hex)
         {
-            var value = hex.TrimStart('#');
+            hex = hex.TrimStart('#');
             double[] rgb;
             var alpha = 1.0;
-            var text = '#' + value;
+            var text = '#' + hex;
 
-            if (value.Length == 8)
+            if (hex.Length == 8)
             {
                 rgb = ParseRgb(hex.Substring(2));
                 alpha = Parse(hex.Substring(0, 2))/255.0;
             }
-            else if (value.Length == 6)
+            else if (hex.Length == 6)
             {
                 rgb = ParseRgb(hex);
             }
@@ -225,7 +225,7 @@ namespace dotless.Core.Parser.Tree
                 rgb = hex.ToCharArray().Select(c => Parse("" + c + c)).ToArray();
             }
 
-            return new Color(rgb, alpha, text) {isArgb = value.Length == 8};
+            return new Color(rgb, alpha, text) {isArgb = hex.Length == 8};
         }
 
         private static double[] ParseRgb(string hex)
