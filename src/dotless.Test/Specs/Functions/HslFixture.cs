@@ -14,7 +14,7 @@ namespace dotless.Test.Specs.Functions
         public void TestHslOverflows()
         {
             AssertExpression("#1f1f1f", "hsl(10, -114, 12)");
-            AssertExpression("white", "hsl(10, 10, 256%)");
+            AssertExpression("#ffffff", "hsl(10, 10, 256%)");
 
             AssertExpression("350deg", "hue(hsl(-10, 10, 10))");
             AssertExpression("40deg", "hue(hsl(400, 10, 10))");

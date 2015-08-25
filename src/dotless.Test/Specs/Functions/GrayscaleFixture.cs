@@ -8,20 +8,20 @@ namespace dotless.Test.Specs.Functions
         public void TestGrayscale()
         {
             AssertExpression("#bbbbbb", "grayscale(#abc)");
-            AssertExpression("gray", "grayscale(#f00)");
-            AssertExpression("gray", "grayscale(#00f)");
-            AssertExpression("white", "grayscale(#fff)");
-            AssertExpression("black", "grayscale(#000)");
+            AssertExpression("#808080", "grayscale(#f00)");
+            AssertExpression("#808080", "grayscale(#00f)");
+            AssertExpression("#ffffff", "grayscale(#fff)");
+            AssertExpression("#000000", "grayscale(#000)");
         }
 
         [Test]
         public void TestGreyscale()
         {
             AssertExpression("#bbbbbb", "greyscale(#abc)");
-            AssertExpression("gray", "greyscale(#f00)");
-            AssertExpression("gray", "greyscale(#00f)");
-            AssertExpression("white", "greyscale(#fff)");
-            AssertExpression("black", "greyscale(#000)");
+            AssertExpression("#808080", "greyscale(#f00)");
+            AssertExpression("#808080", "greyscale(#00f)");
+            AssertExpression("#ffffff", "greyscale(#fff)");
+            AssertExpression("#000000", "greyscale(#000)");
         }
 
         [Test]

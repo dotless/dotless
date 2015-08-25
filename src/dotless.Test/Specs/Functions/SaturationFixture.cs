@@ -33,8 +33,8 @@ namespace dotless.Test.Specs.Functions
             //Saturate
             AssertExpression("#d9f2d9", "saturation(hsl(120, 30, 90), 20%)");
             AssertExpression("#9e3f3f", "saturation(#855, 20%)");
-            AssertExpression("black", "saturation(#000, 20%)");
-            AssertExpression("white", "saturation(#fff, 20%)");
+            AssertExpression("#000000", "saturation(#000, 20%)");
+            AssertExpression("#ffffff", "saturation(#fff, 20%)");
             AssertExpression("#33ff33", "saturation(#8a8, 100%)");
             AssertExpression("#88aa88", "saturation(#8a8, 0%)");
             AssertExpression("rgba(158, 63, 63, 0.5)", "saturation(rgba(136, 85, 85, 0.5), 20%)");
@@ -42,8 +42,8 @@ namespace dotless.Test.Specs.Functions
             // Desaturate
             AssertExpression("#e3e8e3", "saturation(hsl(120, 30, 90), -20%)");
             AssertExpression("#726b6b", "saturation(#855, -20%)");
-            AssertExpression("black", "saturation(#000, -20%)");
-            AssertExpression("white", "saturation(#fff, -20%)");
+            AssertExpression("#000000", "saturation(#000, -20%)");
+            AssertExpression("#ffffff", "saturation(#fff, -20%)");
             AssertExpression("#999999", "saturation(#8a8, -100%)");
             AssertExpression("#88aa88", "saturation(#8a8, 0%)");
             AssertExpression("rgba(114, 107, 107, 0.5)", "saturation(rgba(136, 85, 85, .5), -20%)");
@@ -55,8 +55,8 @@ namespace dotless.Test.Specs.Functions
             //Saturate
             AssertExpression("#d9f2d9", "saturate(hsl(120, 30, 90), 20%)");
             AssertExpression("#9e3f3f", "saturate(#855, 20%)");
-            AssertExpression("black", "saturate(#000, 20%)");
-            AssertExpression("white", "saturate(#fff, 20%)");
+            AssertExpression("#000000", "saturate(#000, 20%)");
+            AssertExpression("#ffffff", "saturate(#fff, 20%)");
             AssertExpression("#33ff33", "saturate(#8a8, 100%)");
             AssertExpression("#88aa88", "saturate(#8a8, 0%)");
             AssertExpression("rgba(158, 63, 63, 0.5)", "saturate(rgba(136, 85, 85, 0.5), 20%)");
@@ -64,8 +64,8 @@ namespace dotless.Test.Specs.Functions
             // Desaturate
             AssertExpression("#e3e8e3", "desaturate(hsl(120, 30, 90), 20%)");
             AssertExpression("#726b6b", "desaturate(#855, 20%)");
-            AssertExpression("black", "desaturate(#000, 20%)");
-            AssertExpression("white", "desaturate(#fff, 20%)");
+            AssertExpression("#000000", "desaturate(#000, 20%)");
+            AssertExpression("#ffffff", "desaturate(#fff, 20%)");
             AssertExpression("#999999", "desaturate(#8a8, 100%)");
             AssertExpression("#88aa88", "desaturate(#8a8, 0%)");
             AssertExpression("rgba(114, 107, 107, 0.5)", "desaturate(rgba(136, 85, 85, .5), 20%)");

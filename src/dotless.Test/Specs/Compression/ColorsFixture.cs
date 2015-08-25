@@ -29,15 +29,15 @@ namespace dotless.Test.Specs.Compression
             AssertExpression("#000", "#111111 - #444444");
             AssertExpression("#fff", "#eee + #fff");
             AssertExpression("#fff", "#aaa * 3");
-            AssertExpression("lime", "#00ee00 + #009900");
-            AssertExpression("red", "#ee0000 + #990000");
+            AssertExpression("#0f0", "#00ee00 + #009900");
+            AssertExpression("#f00", "#ee0000 + #990000");
         }
 
         [Test]
         public void Gray()
         {
             AssertExpression("#888", "rgb(136, 136, 136)");
-            AssertExpression("gray", "hsl(50, 0, 50)");
+            AssertExpression("#808080", "hsl(50, 0, 50)");
         }
     }
 }

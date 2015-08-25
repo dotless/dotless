@@ -45,30 +45,30 @@ namespace dotless.Test.Specs
         public void RgbaOpaqueColors()
         {
             AssertExpression("#ffeeaa", "rgba(255, 238, 170, 1)");
-            AssertExpression("blue", "rgba(0, 0, 255, 1)");
+            AssertExpression("#0000ff", "rgba(0, 0, 255, 1)");
         }
 
         [Test]
         public void Overflow()
         {
-            AssertExpression("black", "#111111 - #444444");
-            AssertExpression("white", "#eee + #fff");
-            AssertExpression("white", "#aaa * 3");
-            AssertExpression("lime", "#00ee00 + #009900");
+            AssertExpression("#000000", "#111111 - #444444");
+            AssertExpression("#ffffff", "#eee + #fff");
+            AssertExpression("#ffffff", "#aaa * 3");
+            AssertExpression("#00ff00", "#00ee00 + #009900");
         }
 
         [Test]
         public void Gray()
         {
             AssertExpression("#c8c8c8", "rgb(200, 200, 200)");
-            AssertExpression("gray", "hsl(50, 0, 50)");
-            AssertExpression("gray", "hsl(50, 0%, 50%)");
+            AssertExpression("#808080", "hsl(50, 0, 50)");
+            AssertExpression("#808080", "hsl(50, 0%, 50%)");
         }
 
         [Test]
         public void Green()
         {
-            AssertExpression("lime", "hsl(120, 100%, 50%)");
+            AssertExpression("#00ff00", "hsl(120, 100%, 50%)");
         }
     }
 }
