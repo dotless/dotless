@@ -206,35 +206,39 @@ namespace dotless.Core.Parser.Tree
 
         public static Color FromHex(string hex)
         {
-            hex = hex.TrimStart('#');
-            var isArgb = false;
-            var alpha = 1.0;
+            var value = hex.TrimStart('#');
             double[] rgb;
-            
-            if (hex.Length == 8)
+            var alpha = 1.0;
+            var text = '#' + value;
+
+            if (value.Length == 8)
             {
-                isArgb = true;
-                rgb = Enumerable.Range(1, 3)
-                    .Select(i => hex.Substring(i * 2, 2))
-                    .Select(s => (double)int.Parse(s, NumberStyles.HexNumber))
-                    .ToArray();
-                alpha = (double)int.Parse(hex.Substring(0, 2), NumberStyles.HexNumber) / 255d;
+                rgb = ParseRgb(hex.Substring(2));
+                alpha = Parse(hex.Substring(0, 2))/255.0;
             }
-            else if (hex.Length == 6)
+            else if (value.Length == 6)
             {
-                rgb = Enumerable.Range(0, 3)
-                    .Select(i => hex.Substring(i * 2, 2))
-                    .Select(s => (double)int.Parse(s, NumberStyles.HexNumber))
-                    .ToArray();
+                rgb = ParseRgb(hex);
             }
             else
             {
-                rgb = hex.ToCharArray()
-                    .Select(c => (double)int.Parse("" + c + c, NumberStyles.HexNumber))
-                    .ToArray();
+                rgb = hex.ToCharArray().Select(c => Parse("" + c + c)).ToArray();
             }
 
-            return new Color(rgb, alpha) {isArgb = isArgb};
+            return new Color(rgb, alpha, text) {isArgb = value.Length == 8};
+        }
+
+        private static double[] ParseRgb(string hex)
+        {
+            return Enumerable.Range(0, 3)
+                .Select(i => hex.Substring(i*2, 2))
+                .Select(Parse)
+                .ToArray();
+        }
+
+        private static double Parse(string hex)
+        {
+            return int.Parse(hex, NumberStyles.HexNumber);
         }
 
         private static int ComputeRgb(double[] rgb)
