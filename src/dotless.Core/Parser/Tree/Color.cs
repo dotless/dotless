@@ -205,7 +205,7 @@ namespace dotless.Core.Parser.Tree
                 rgb = hex.ToCharArray().Select(c => Parse("" + c + c)).ToArray();
             }
 
-            return new Color(rgb, alpha, text) {isArgb = hex.Length == 8};
+            return new Color(rgb, alpha, text);
         }
 
         private static double[] ParseRgb(string hex)
@@ -233,8 +233,6 @@ namespace dotless.Core.Parser.Tree
         {
             return NumberExtensions.Normalize(alpha, 1.0);
         }
-
-        private bool isArgb = false;
 
         private readonly int _rgb;
         private readonly string _text;
@@ -332,12 +330,6 @@ namespace dotless.Core.Parser.Tree
             if (Alpha == 0 && rgb[0] == 0 && rgb[1] == 0 && rgb[2] == 0)
             {
                 env.Output.AppendFormat(CultureInfo.InvariantCulture, "transparent");
-                return;
-            }
-
-            if (isArgb)
-            {
-                env.Output.Append(ToArgb());
                 return;
             }
 
