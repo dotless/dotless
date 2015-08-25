@@ -4,7 +4,6 @@ namespace dotless.Core.Parser.Tree
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
-    using System.Text.RegularExpressions;
     using Exceptions;
     using Infrastructure;
     using Infrastructure.Nodes;
@@ -172,13 +171,16 @@ namespace dotless.Core.Parser.Tree
         {
             if (keyword == "transparent")
             {
-                return new Color(0x000, 0.0, keyword);
+                return new Color(0, 0, 0, 0.0, keyword);
             }
 
-            int hex;
-            if (Html4Colors.TryGetValue(keyword, out hex))
+            int rgb;
+            if (Html4Colors.TryGetValue(keyword, out rgb))
             {
-                return new Color(hex, 1.0, keyword);
+                var r = (rgb >> 16) & 0xFF;
+                var g = (rgb >> 8) & 0xFF;
+                var b = rgb & 0xFF;
+                return new Color(r, g, b, 1.0, keyword);
             }
 
             return null;
@@ -221,38 +223,13 @@ namespace dotless.Core.Parser.Tree
             return int.Parse(hex, NumberStyles.HexNumber);
         }
 
-        private static int ComputeRgb(double[] rgb)
-        {
-            var c = rgb.Select(x => NumberExtensions.Normalize(x, 255.0))
-                .Select(x => (int) Math.Round(x, MidpointRounding.AwayFromZero))
-                .ToList();
-            return (c[0] << 16) | (c[1] << 8) | c[2];
-        }
-
-        private static double ComputeAlpha(double alpha)
-        {
-            return NumberExtensions.Normalize(alpha, 1.0);
-        }
-
-        private readonly int _rgb;
         private readonly string _text;
 
-        private Color(int rgb, double alpha, string text)
+        public Color(double[] rgb, double alpha = 1.0, string text = null)
         {
-            _rgb = rgb;
-            RGB = new double[3];
-            RGB[0] = rgb >> 16 & 0xFF;
-            RGB[1] = rgb >> 8 & 0xFF;
-            RGB[2] = rgb & 0xFF;
-
+            RGB = rgb;
             Alpha = alpha;
             _text = text;
-        }
-
-        public Color(double[] rgb, double alpha = 1.0, string text = null)
-            : this (ComputeRgb(rgb), ComputeAlpha(alpha), text)
-        {
-            RGB = rgb.Select(c => NumberExtensions.Normalize(c, 255.0)).ToArray();
         }
 
         public Color(double red, double green, double blue, double alpha = 1.0, string text = null)
@@ -260,8 +237,8 @@ namespace dotless.Core.Parser.Tree
         {
         }
 
+        // TODO: A RGB color should really be represented by int[], or better: a compressed int.
         public double[] RGB { get; private set; }
-
         public double Alpha { get; private set; }
 
         public double R
