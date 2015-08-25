@@ -374,7 +374,7 @@ namespace dotless.Core.Parser.Tree
                              .JoinStrings("")
                              .ToLowerInvariant();
 
-            if (env.Compress && !env.DisableColorCompression)
+            if (env.Compress)
             {
                 hexString = Regex.Replace(hexString, @"#(.)\1(.)\2(.)\3", "#$1$2$3");
                 env.Output.Append(string.IsNullOrEmpty(keyword) || hexString.Length < keyword.Length ? hexString : keyword);

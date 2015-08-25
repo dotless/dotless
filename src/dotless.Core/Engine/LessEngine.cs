@@ -18,7 +18,6 @@ namespace dotless.Core
         public bool Compress { get; set; }
         public bool Debug { get; set; }
         public bool DisableVariableRedefines { get; set; }
-        public bool DisableColorCompression { get; set; }
         public bool KeepFirstSpecialComment { get; set; }
         public bool StrictMath { get; set; }
         public Env Env { get; set; }
@@ -31,7 +30,7 @@ namespace dotless.Core
             set { Parser.CurrentDirectory = value; }
         }
 
-        public LessEngine(Parser.Parser parser, ILogger logger, bool compress, bool debug, bool disableVariableRedefines, bool disableColorCompression, bool keepFirstSpecialComment, bool strictMath, IEnumerable<IPluginConfigurator> plugins)
+        public LessEngine(Parser.Parser parser, ILogger logger, bool compress, bool debug, bool disableVariableRedefines, bool keepFirstSpecialComment, bool strictMath, IEnumerable<IPluginConfigurator> plugins)
         {
             Parser = parser;
             Logger = logger;
@@ -40,12 +39,11 @@ namespace dotless.Core
             DisableVariableRedefines = disableVariableRedefines;
             Plugins = plugins;
             KeepFirstSpecialComment = keepFirstSpecialComment;
-            DisableColorCompression = disableColorCompression;
             StrictMath = strictMath;
         }
 
-        public LessEngine(Parser.Parser parser, ILogger logger, bool compress, bool debug, bool disableVariableRedefines, bool disableColorCompression, bool keepFirstSpecialComment, IEnumerable<IPluginConfigurator> plugins)
-            :this(parser, logger, compress, debug, disableVariableRedefines, disableColorCompression, keepFirstSpecialComment, false, plugins)
+        public LessEngine(Parser.Parser parser, ILogger logger, bool compress, bool debug, bool disableVariableRedefines, bool keepFirstSpecialComment, IEnumerable<IPluginConfigurator> plugins)
+            :this(parser, logger, compress, debug, disableVariableRedefines, keepFirstSpecialComment, false, plugins)
         {
         }
 
@@ -83,7 +81,6 @@ namespace dotless.Core
                                   Debug = Debug,
                                   KeepFirstSpecialComment = KeepFirstSpecialComment,
                                   DisableVariableRedefines = DisableVariableRedefines,
-                                  DisableColorCompression = DisableColorCompression
                               };
 
                 if (Plugins != null)

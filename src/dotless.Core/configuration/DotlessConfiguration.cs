@@ -60,7 +60,6 @@ namespace dotless.Core.configuration
             MapPathsToWeb = true;
             HandleWebCompression = true;
             DisableVariableRedefines = false;
-            DisableColorCompression = false;
             KeepFirstSpecialComment = false;
             RootPath = "";
             StrictMath = false;
@@ -87,7 +86,6 @@ namespace dotless.Core.configuration
             HandleWebCompression = config.HandleWebCompression;
             DisableParameters = config.DisableParameters;
             DisableVariableRedefines = config.DisableVariableRedefines;
-            DisableColorCompression = config.DisableColorCompression;
             KeepFirstSpecialComment = config.KeepFirstSpecialComment;
             RootPath = config.RootPath;
             StrictMath = config.StrictMath;
@@ -132,11 +130,6 @@ namespace dotless.Core.configuration
         ///  Makes dotless behave like less.js with regard variables
         /// </summary>
         public bool DisableVariableRedefines { get; set; }
-
-        /// <summary>
-        ///  Disables hex color shortening
-        /// </summary>
-        public bool DisableColorCompression { get; set; }
 
         /// <summary>
         ///  Inlines css files into the less output

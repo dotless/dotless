@@ -348,7 +348,8 @@ namespace dotless.Compiler
                     }
                     else if (arg.StartsWith("-x") || arg.StartsWith("--disable-color-compression"))
                     {
-                        configuration.DisableColorCompression = true;
+                        // TODO(yln): adapt help output.
+                        //configuration.DisableColorCompression = true;
                     }
                     else if (arg.StartsWith("-s") || arg.StartsWith("--strict-math"))
                     {
