@@ -12,8 +12,6 @@ namespace dotless.Core.Parser.Tree
 
     public class Color : Node, IOperable, IComparable
     {
-        private static readonly Dictionary<int, string> Html4ColorsReverse;
-
         private static readonly Dictionary<string, int> Html4Colors = new Dictionary<string, int>
         {
             {"aliceblue", 0xf0f8ff},
@@ -164,24 +162,6 @@ namespace dotless.Core.Parser.Tree
             {"yellow", 0xffff00},
             {"yellowgreen", 0x9acd32}
         };
-
-        static Color()
-        {
-            Html4ColorsReverse = new Dictionary<int, string>();
-
-            foreach (KeyValuePair<string, int> color in Html4Colors)
-            {
-                if (Html4ColorsReverse.ContainsKey(color.Value))
-                {
-                    if (Html4ColorsReverse[color.Value].Length <= color.Key.Length)
-                    {
-                        continue;
-                    }
-                }
-
-                Html4ColorsReverse[color.Value] = color.Key;
-            }
-        }
 
         public static Color From(string keywordOrHex)
         {
@@ -407,17 +387,6 @@ namespace dotless.Core.Parser.Tree
         public Color ToColor()
         {
             return this;
-        }
-
-        public string GetKeyword(int[] rgb)
-        {
-            var color = (rgb[0] << 16) + (rgb[1] << 8) + rgb[2];
-            string keyword;
-
-            if (Html4ColorsReverse.TryGetValue(color, out keyword))
-                return keyword;
-
-            return null;
         }
 
         /// <summary>
