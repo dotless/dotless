@@ -39,27 +39,5 @@ namespace dotless.Test.Specs.Compression
             AssertExpression("#888", "rgb(136, 136, 136)");
             AssertExpression("gray", "hsl(50, 0, 50)");
         }
-
-        [Test]
-        public void DisableColorCompression()
-        {
-            var oldEnv = DefaultEnv();
-
-            DefaultEnv = () => new Env(null)
-                {
-                    Compress = true,
-                    DisableColorCompression = false
-                };
-            AssertExpression("#111", "#111111");
-
-            DefaultEnv = () => new Env(null)
-            {
-                Compress = true,
-                DisableColorCompression = true
-            };
-            AssertExpression("#111111", "#111111");
-
-            DefaultEnv = () => oldEnv;
-        }
     }
 }
