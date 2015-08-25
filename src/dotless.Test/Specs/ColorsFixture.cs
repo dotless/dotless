@@ -27,9 +27,7 @@ namespace dotless.Test.Specs
             //Test that transparent can be used as a name colour input
             AssertExpression("rgba(255, 255, 255, 0.5)", "mix(white, transparent)");
 
-            // transparent has better browser support and is shorter, so until we record the original format of colours
-            // and treat that as significant, we should do the below conversion
-            AssertExpression("transparent", "rgba(0, 0, 0, 0)");
+            AssertExpressionUnchanged("rgba(0, 0, 0, 0)");
 
             AssertExpressionUnchanged("transparent url('file.gif') 32px 1px no-repeat");
         }
