@@ -322,10 +322,7 @@ namespace dotless.Core.Parser.Tree
                 return;
             }
 
-            var rgb = RGB
-                .Select(d => (int) Math.Round(d, MidpointRounding.AwayFromZero))
-                .Select(i => i > 255 ? 255 : (i < 0 ? 0 : i))
-                .ToArray();
+            var rgb = ConvertToInt(RGB);
 
             if (Alpha <= 0.0 && rgb.All(c => c == 0))
             {
@@ -339,12 +336,19 @@ namespace dotless.Core.Parser.Tree
                 return;
             }
 
-            var hexString = '#' + rgb
-                             .Select(i => i.ToString("X2"))
-                             .JoinStrings("")
-                             .ToLowerInvariant();
+            env.Output.Append(ToHexString(rgb));
+        }
 
-            env.Output.Append(hexString);
+        private List<int> ConvertToInt(IEnumerable<double> rgb)
+        {
+            return rgb.Select(d => (int) Math.Round(d, MidpointRounding.AwayFromZero))
+                .Select(i => i > 255 ? 255 : (i < 0 ? 0 : i))
+                .ToList();
+        }
+
+        private string ToHexString(IEnumerable<int> rgb)
+        {
+            return '#' + rgb.Select(i => i.ToString("x2")).JoinStrings("");
         }
 
         public Node Operate(Operation op, Node other)
@@ -380,17 +384,9 @@ namespace dotless.Core.Parser.Tree
         /// <returns></returns>
         public string ToArgb()
         {
-            var argb = 
-                new double[] { Alpha * 255 }
-                .Concat(RGB)
-                .Select(d => (int)Math.Round(d, MidpointRounding.AwayFromZero))
-                .Select(i => i > 255 ? 255 : (i < 0 ? 0 : i))
-                .ToArray();
-
-            return '#' + argb
-                 .Select(i => i.ToString("X2"))
-                 .JoinStrings("")
-                 .ToLowerInvariant();
+            var values = new[] {Alpha*255}.Concat(RGB);
+            var argb = ConvertToInt(values);
+            return ToHexString(argb);
         }
 
         public int CompareTo(object obj)
