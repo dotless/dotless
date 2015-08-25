@@ -327,7 +327,7 @@ namespace dotless.Core.Parser.Tree
                 .Select(i => i > 255 ? 255 : (i < 0 ? 0 : i))
                 .ToArray();
 
-            if (Alpha == 0 && rgb[0] == 0 && rgb[1] == 0 && rgb[2] == 0)
+            if (Alpha <= 0.0 && rgb.All(c => c == 0))
             {
                 env.Output.AppendFormat(CultureInfo.InvariantCulture, "transparent");
                 return;
@@ -343,13 +343,6 @@ namespace dotless.Core.Parser.Tree
                              .Select(i => i.ToString("X2"))
                              .JoinStrings("")
                              .ToLowerInvariant();
-
-            if (env.Compress)
-            {
-                hexString = Regex.Replace(hexString, @"#(.)\1(.)\2(.)\3", "#$1$2$3");
-                env.Output.Append(hexString);
-                return;
-            }
 
             env.Output.Append(hexString);
         }
