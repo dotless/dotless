@@ -318,7 +318,7 @@ namespace dotless.Core.Parser.Tree
         {
             if (_text != null)
             {
-                env.Output.AppendFormat(CultureInfo.InvariantCulture, _text);
+                env.Output.Append(_text);
                 return;
             }
 
@@ -326,11 +326,12 @@ namespace dotless.Core.Parser.Tree
 
             if (Alpha < 1.0)
             {
-                env.Output.AppendFormat(CultureInfo.InvariantCulture, "rgba({0}, {1}, {2}, {3})", rgb[0], rgb[1], rgb[2], Alpha);
+                env.Output.AppendFormat("rgba({0}, {1}, {2}, {3})", rgb[0], rgb[1], rgb[2], Alpha);
                 return;
             }
 
-            env.Output.Append(ToHexString(rgb));
+            var hex = GetHexString(rgb);
+            env.Output.Append(hex);
         }
 
         private List<int> ConvertToInt(IEnumerable<double> rgb)
@@ -338,7 +339,7 @@ namespace dotless.Core.Parser.Tree
             return rgb.Select(d => (int) Math.Round(d, MidpointRounding.AwayFromZero)).ToList();
         }
 
-        private string ToHexString(IEnumerable<int> rgb)
+        private string GetHexString(IEnumerable<int> rgb)
         {
             return '#' + rgb.Select(i => i.ToString("x2")).JoinStrings("");
         }
@@ -378,7 +379,7 @@ namespace dotless.Core.Parser.Tree
         {
             var values = new[] {Alpha*255}.Concat(RGB);
             var argb = ConvertToInt(values);
-            return ToHexString(argb);
+            return GetHexString(argb);
         }
 
         public int CompareTo(object obj)
