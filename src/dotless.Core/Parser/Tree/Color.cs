@@ -341,9 +341,7 @@ namespace dotless.Core.Parser.Tree
 
         private List<int> ConvertToInt(IEnumerable<double> rgb)
         {
-            return rgb.Select(d => (int) Math.Round(d, MidpointRounding.AwayFromZero))
-                .Select(i => i > 255 ? 255 : (i < 0 ? 0 : i))
-                .ToList();
+            return rgb.Select(d => (int) Math.Round(d, MidpointRounding.AwayFromZero)).ToList();
         }
 
         private string ToHexString(IEnumerable<int> rgb)
