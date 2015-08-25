@@ -324,12 +324,6 @@ namespace dotless.Core.Parser.Tree
 
             var rgb = ConvertToInt(RGB);
 
-            if (Alpha <= 0.0 && rgb.All(c => c == 0))
-            {
-                env.Output.AppendFormat(CultureInfo.InvariantCulture, "transparent");
-                return;
-            }
-
             if (Alpha < 1.0)
             {
                 env.Output.AppendFormat(CultureInfo.InvariantCulture, "rgba({0}, {1}, {2}, {3})", rgb[0], rgb[1], rgb[2], Alpha);
