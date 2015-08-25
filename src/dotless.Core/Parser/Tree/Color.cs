@@ -225,7 +225,7 @@ namespace dotless.Core.Parser.Tree
 
         private readonly string _text;
 
-        public Color(double[] rgb, double alpha = 1.0, string text = null)
+        public Color(double[] rgb, double alpha, string text = null)
         {
             RGB = rgb;
             Alpha = alpha;
@@ -323,24 +323,22 @@ namespace dotless.Core.Parser.Tree
 
         public Node Operate(Operation op, Node other)
         {
-            var otherColor = other as Color;
+            var color = other as Color;
+            var operable = other as IOperable;
 
-            if (otherColor == null)
+            if (color == null && operable == null)
             {
-                var operable = other as IOperable;
-                if(operable == null)
-                    throw new ParsingException(string.Format("Unable to convert right hand side of {0} to a color", op.Operator), op.Location);
-
-                otherColor = operable.ToColor();
+                var msg = string.Format("Unable to convert right hand side of {0} to a color", op.Operator);
+                throw new ParsingException(msg, op.Location);
             }
 
-            var result = new double[3];
-            for (var c = 0; c < 3; c++)
-            {
-                result[c] = Operation.Operate(op.Operator, RGB[c], otherColor.RGB[c]);
-            }
-            return new Color(result)
-                .ReducedFrom<Node>(this, other);
+            color = color ?? operable.ToColor();
+
+            var rgb = Enumerable.Range(0, 3)
+                .Select(i => Operation.Operate(op.Operator, RGB[i], color.RGB[i]))
+                .ToArray();
+
+            return new Color(rgb, 1.0).ReducedFrom<Node>(this, other);
         }
 
         public Color ToColor()
