@@ -11,8 +11,9 @@ namespace dotless.Test.Specs.Compression
         [Test]
         public void Colors()
         {
-            AssertExpression("#fea", "#ffeeaa");
-            AssertExpression("blue", "#0000ff");
+            AssertExpression("#fea", "#fea");
+            AssertExpression("#0000ff", "#0000ff");
+            AssertExpression("blue", "blue");
         }
 
         [Test]

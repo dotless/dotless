@@ -18,7 +18,7 @@ namespace dotless.Test.Specs.Functions
         [Test]
         public void TestPercentageChecksTypes()
         {
-            AssertExpressionError("Expected number in function 'percentage', found #cccccc", 11, "percentage(#ccc)");
+            AssertExpressionError("Expected number in function 'percentage', found #ccc", 11, "percentage(#ccc)");
             AssertExpressionError("Expected number in function 'percentage', found 'string'", 11, "percentage('string')");
         }
     }

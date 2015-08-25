@@ -5,7 +5,6 @@ namespace dotless.Test.Specs
     public class ColorsFixture : SpecFixtureBase
     {
         [Test]
-        [Ignore]
         public void ColorLiteralsUnchanged()
         {
             AssertExpressionUnchanged("#fea");
@@ -17,10 +16,9 @@ namespace dotless.Test.Specs
         [Test]
         public void ColorLiterals()
         {
-            AssertExpression("#ffeeaa", "#fea");
+            AssertExpression("#fea", "#fea");
             AssertExpression("#ffeeaa", "#ffeeaa");
-            AssertExpression("blue", "#00f");
-            AssertExpression("blue", "#0000ff");
+            AssertExpression("blue", "blue");
         }
 
         [Test]

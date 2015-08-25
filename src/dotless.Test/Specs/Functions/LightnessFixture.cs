@@ -100,7 +100,7 @@ namespace dotless.Test.Specs.Functions
         [Test]
         public void TestDarknessInsideGradient()
         {
-            AssertExpression("-webkit-linear-gradient(top, white 0%, #ededed 100%)", "-webkit-linear-gradient(top, #fff 0%, darken(#fff, 7%) 100%)");
+            AssertExpression("-webkit-linear-gradient(top, white 0%, #ededed 100%)", "-webkit-linear-gradient(top, white 0%, darken(#fff, 7%) 100%)");
         }
 
         [Test]
@@ -116,7 +116,7 @@ namespace dotless.Test.Specs.Functions
 ";
             var expected = @"
 .test {
-  background: -webkit-linear-gradient(top, white 0%, #ededed 100%);
+  background: -webkit-linear-gradient(top, #fff 0%, #ededed 100%);
 }
 ";
             AssertLess(input, expected);
