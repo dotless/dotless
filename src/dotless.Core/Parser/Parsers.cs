@@ -639,10 +639,17 @@ namespace dotless.Core.Parser
             }
 
             var args = new List<NamedArgument>();
-            if (parser.Tokenizer.Match('('))
-            {
-                bool argumentListIsSemicolonSeparated = parser.Tokenizer.Peek(@"[^)]*;.*\)");
+            if (parser.Tokenizer.Peek('(')) {
+                var location = Remember(parser);
+                const string balancedParenthesesRegex = @"\([^()]*(?>(?>(?'open'\()[^()]*)*(?>(?'-open'\))[^()]*)*)+(?(open)(?!))\)";
+
+                var argumentList = parser.Tokenizer.Match(balancedParenthesesRegex);
+                bool argumentListIsSemicolonSeparated = argumentList != null && argumentList.Value.Contains(';');
+
                 char expectedSeparator = argumentListIsSemicolonSeparated ? ';' : ',';
+
+                Recall(parser, location);
+                parser.Tokenizer.Match('(');
 
                 Expression arg;
                 while (arg = Expression(parser, argumentListIsSemicolonSeparated))

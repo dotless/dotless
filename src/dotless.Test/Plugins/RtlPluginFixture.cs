@@ -395,5 +395,21 @@
             SetCultureTextDirection(true);
             AssertLess(input, "");
         }
+
+        [Test]
+        public void DoesNotLoseImportant() {
+            var input = @"
+.selector { border-width: 1px 2px 3px 4px !important; }
+";
+
+            var expected = @"
+.selector {
+  border-width: 1px 4px 3px 2px !important;
+}";
+
+            OnlyReversePrefixedRules = false;
+            SetCultureTextDirection(true);
+            AssertLess(input, expected);
+        }
     }
 }

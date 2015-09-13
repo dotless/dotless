@@ -237,7 +237,8 @@
                         Node tmp = _nodeContent[1];
                         _nodeContent[1] = _nodeContent[3];
                         _nodeContent[3] = tmp;
-                        return new Rule(rule.Name, new Expression(_nodeContent)).ReducedFrom<Rule>(rule);
+
+                        return new Rule(rule.Name, new Value(new[] { new Expression(_nodeContent)}, important)).ReducedFrom<Rule>(rule);
                     }
                 }
                 else
