@@ -816,5 +816,29 @@ body {
             AssertLess(input, expected);
         }
         #endregion
+
+        [Test]
+        public void NamedArguments() {
+            var input = @"
+#gradient {
+  .horizontal(@start-color, @end-color) {
+    color: @start-color;
+    background-color: @end-color;
+  }
+}
+
+.test {
+  #gradient > .horizontal(@start-color: rgba(0,0,0,.5); @end-color: rgba(0,0,0,.0001));
+}
+";
+
+            var expected = @"
+.test {
+  color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.0001);
+}";
+
+            AssertLess(input, expected);
+        }
     }
 }
