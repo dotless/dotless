@@ -19,6 +19,10 @@
             return new Shorthand(First.Evaluate(env), Second.Evaluate(env));
         }
 
+        protected override Node CloneCore() {
+            return new Shorthand(First.Clone(), Second.Clone());
+        }
+
         public override void AppendCSS(Env env)
         {
             env.Output

@@ -49,6 +49,10 @@
             return 9;
         }
 
+        protected override Node CloneCore() {
+            return new Number(Value, Unit);
+        }
+
         public override void AppendCSS(Env env)
         {
             env.Output

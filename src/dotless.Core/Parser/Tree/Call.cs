@@ -22,6 +22,10 @@ namespace dotless.Core.Parser.Tree
         {
         }
 
+        protected override Node CloneCore() {
+            return new Call(Name, (NodeList<Node>) Arguments.Clone());
+        }
+
         public override Node Evaluate(Env env)
         {
             if (env == null)

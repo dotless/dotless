@@ -44,6 +44,10 @@ namespace dotless.Core.Parser.Tree
             return new Extend(newExact,newPartial) { IsReference = IsReference, Location = Location };
         }
 
+        protected override Node CloneCore() {
+            return new Extend(Exact.Select(e => (Selector)e.Clone()).ToList(), Partial.Select(e => (Selector)e.Clone()).ToList());
+        }
+
         public override void AppendCSS(Env env)
         {
             

@@ -206,6 +206,17 @@ namespace dotless.Core.Parser.Tree
             };
         }
 
+        protected override Node CloneCore() {
+            return new Ruleset(
+                new NodeList<Selector>(Selectors), 
+                new NodeList(Rules),
+                OriginalRuleset) {
+                    Evaluated = Evaluated,
+                    IsRoot = IsRoot,
+                    MultiMedia = MultiMedia
+                };
+        }
+
         public override void Accept(IVisitor visitor)
         {
             Selectors = VisitAndReplace(Selectors, visitor);

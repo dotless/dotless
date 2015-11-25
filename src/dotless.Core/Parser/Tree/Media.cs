@@ -26,6 +26,10 @@ namespace dotless.Core.Parser.Tree
 			Extensions = extensions ?? new List<Extender>();
         }
 
+        protected override Node CloneCore() {
+            return new Media(Features.Clone(), (Ruleset)Ruleset.Clone(), Extensions);
+        }
+
         public static NodeList<Selector> GetEmptySelector()
         {
             return new NodeList<Selector>() { new Selector(new NodeList<Element>() { new Element(new Combinator(""), "&") }) };

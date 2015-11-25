@@ -341,6 +341,20 @@ body { margin-right: @a; }";
 }
 ";
 
+            imports["reference-mixin-issue.less"] = @"
+.mix-me
+{
+    color: red;
+    @media (min-width: 100px)
+    {
+        color: blue;
+    }
+    .mix-me-child
+    {
+        background-color: black;
+    }
+}";
+
             return new Parser { 
                 Importer = new Importer(new DictionaryReader(imports)) { 
                     IsUrlRewritingDisabled = isUrlRewritingDisabled,
@@ -1734,6 +1748,59 @@ unrecognized @import option 'invalid-option' on line 1 in file 'test.less':
             var expected = @"
 .rule {
   color: black;
+}";
+
+            AssertLess(input, expected, GetParser());
+        }
+
+        [Test]
+        public void ReferenceImportDoesNotOutputUnreferencedStyles() {
+            var input = @"
+@import (reference) ""reference-mixin-issue.less"";
+
+/* Styles */
+.my-class
+{
+    .mix-me();
+}";
+
+            var expected = @"
+/* Styles */
+
+.my-class {
+  color: red;
+}
+@media (min-width: 100px) {
+  .my-class {
+    color: blue;
+  }
+}
+.my-class .mix-me-child {
+  background-color: black;
+}";
+
+            AssertLess(input, expected, GetParser());
+        }
+
+        [Test]
+        public void MixinWithMediaBlock() {
+            var input = @"
+.mixin() {
+  @media (min-width: 100px) {
+    color: blue;
+  }
+}
+
+.test {
+  .mixin();
+}
+";
+
+            var expected = @"
+@media (min-width: 100px) {
+  .test {
+    color: blue;
+  }
 }";
 
             AssertLess(input, expected, GetParser());

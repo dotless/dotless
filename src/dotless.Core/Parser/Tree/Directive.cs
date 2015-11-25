@@ -28,6 +28,13 @@
         {
         }
 
+        protected override Node CloneCore() {
+            if (Rules != null) {
+                return new Directive(Name, Identifier, (NodeList) Rules.Clone());
+            }
+            return new Directive(Name, Value.Clone());
+        }
+
         public override void Accept(Plugins.IVisitor visitor)
         {
             Rules = VisitAndReplace(Rules, visitor);

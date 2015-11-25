@@ -46,6 +46,13 @@ namespace dotless.Core.Parser.Tree
             return rule;
         }
 
+        protected override Node CloneCore() {
+            return new Rule(Name, Value.Clone(), Variadic) {
+                IsSemiColonRequired = IsSemiColonRequired,
+                Variable = Variable
+            };
+        }
+
         public override void AppendCSS(Env env)
         {
             if (Variable)

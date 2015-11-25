@@ -25,6 +25,10 @@ namespace dotless.Core.Parser.Tree
             Negate = negate;
         }
 
+        protected override Node CloneCore() {
+            return new Condition(Left.Clone(), Operation, Right.Clone(), Negate);
+        }
+
         public override void AppendCSS(Env env)
         {
         }

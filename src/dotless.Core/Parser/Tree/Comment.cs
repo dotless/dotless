@@ -19,6 +19,10 @@
             IsCSSHack = value == "/**/" || value == "/*\\*/";
         }
 
+        protected override Node CloneCore() {
+            return new Comment(Value);
+        }
+
         public override void AppendCSS(Env env)
         {
             if (IsReference || env.IsCommentSilent(IsValidCss, IsCSSHack, IsSpecialCss)) {

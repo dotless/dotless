@@ -19,6 +19,10 @@
             Operator = op.Trim();
         }
 
+        protected override Node CloneCore() {
+            return new Operation(Operator, First.Clone(), Second.Clone());
+        }
+
         public override Node Evaluate(Env env)
         {
             var a = First.Evaluate(env);

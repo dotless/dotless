@@ -1,4 +1,6 @@
-﻿namespace dotless.Core.Parser.Infrastructure.Nodes
+﻿using System.Linq;
+
+namespace dotless.Core.Parser.Infrastructure.Nodes
 {
     using System.Collections;
     using System.Collections.Generic;
@@ -44,6 +46,10 @@
         public NodeList(IEnumerable<TNode> nodes)
         {
             Inner = new List<TNode>(nodes);
+        }
+
+        protected override Node CloneCore() {
+            return new NodeList(Inner.Select(i => i.Clone()));
         }
 
         public override void AppendCSS(Env env)

@@ -18,6 +18,10 @@
             return ((Node) Color.GetColorFromKeyword(Value) ?? this).ReducedFrom<Node>(this);
         }
 
+        protected override Node CloneCore() {
+            return new Keyword(Value);
+        }
+
         public override void AppendCSS(Env env)
         {
             env.Output.Append(Value);

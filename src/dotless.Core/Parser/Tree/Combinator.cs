@@ -18,6 +18,10 @@
                 Value = value.Trim();
         }
 
+        protected override Node CloneCore() {
+            return new Combinator(Value);
+        }
+
         public override void AppendCSS(Env env)
         {
             env.Output.Append(GetValue(env));

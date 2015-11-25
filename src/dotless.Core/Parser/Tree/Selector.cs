@@ -98,6 +98,10 @@ namespace dotless.Core.Parser.Tree
             return result;
         }
 
+        protected override Node CloneCore() {
+            return new Selector(Elements.Select(e => e.Clone()));
+        }
+
         public override void AppendCSS(Env env)
         {
             env.Output.Push();

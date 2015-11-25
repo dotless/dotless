@@ -46,6 +46,14 @@
                 return this;
         }
 
+        protected override Node CloneCore() {
+            if (NodeValue != null) {
+                return new Element((Combinator) Combinator.Clone(), NodeValue.Clone());
+            }
+
+            return new Element((Combinator) Combinator.Clone(), Value);
+        }
+
         public override void AppendCSS(Env env)
         {
             env.Output
