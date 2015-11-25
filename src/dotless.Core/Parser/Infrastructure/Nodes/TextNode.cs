@@ -20,6 +20,10 @@ namespace dotless.Core.Parser.Infrastructure.Nodes
             return n1 ?? n2;
         }
 
+        protected override Node CloneCore() {
+            return new TextNode(Value);
+        }
+
         public override void AppendCSS(Env env)
         {
             env.Output.Append(env.Compress ? Value.Trim() : Value);

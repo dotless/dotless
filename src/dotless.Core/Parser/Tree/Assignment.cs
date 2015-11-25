@@ -19,6 +19,10 @@
             return new Assignment(Key, Value.Evaluate(env)) {Location = Location};
         }
 
+        protected override Node CloneCore() {
+            return new Assignment(Key, Value.Clone());
+        }
+
         public override void AppendCSS(Env env)
         {
             env.Output

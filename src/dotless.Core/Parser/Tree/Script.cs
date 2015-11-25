@@ -12,6 +12,10 @@ namespace dotless.Core.Parser.Tree
             Expression = script;
         }
 
+        protected override Node CloneCore() {
+            return new Script(Expression);
+        }
+
         public override Node Evaluate(Env env)
         {
             return new TextNode("[script unsupported]");

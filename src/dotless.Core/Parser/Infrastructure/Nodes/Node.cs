@@ -6,10 +6,15 @@ namespace dotless.Core.Parser.Infrastructure.Nodes
 
     public abstract class Node
     {
+        private bool isReference;
         // Should this node be treated as a reference node
         // i.e. has this been added to the parse tree via 
         // @import (reference)
-        public bool IsReference { get; set; }
+        public bool IsReference {
+            get { return isReference; }
+            set { isReference = value; }
+        }
+
         public NodeLocation Location { get; set; }
 
         public NodeList PreComments { get; set; }
@@ -95,6 +100,11 @@ namespace dotless.Core.Parser.Infrastructure.Nodes
             
             return (T)this;
         }
+
+        public virtual Node Clone() {
+            return CloneCore().ReducedFrom<Node>(this);
+        }
+        protected abstract Node CloneCore();
 
         public virtual void AppendCSS(Env env)
         {

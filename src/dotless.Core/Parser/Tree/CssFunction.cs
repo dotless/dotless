@@ -9,6 +9,10 @@ namespace dotless.Core.Parser.Tree
 
         public Node Value { get; set; }
 
+        protected override Node CloneCore() {
+            return new CssFunction() {Name = Name, Value = Value.Clone()};
+        }
+
         public override void AppendCSS(Env env)
         {
             env.Output.Append(string.Format("{0}({1})", Name, Value.ToCSS(env)));

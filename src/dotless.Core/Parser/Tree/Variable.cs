@@ -13,6 +13,10 @@ namespace dotless.Core.Parser.Tree
             Name = name;
         }
 
+        protected override Node CloneCore() {
+            return new Variable(Name);
+        }
+
         public override Node Evaluate(Env env)
         {
             var name = Name;

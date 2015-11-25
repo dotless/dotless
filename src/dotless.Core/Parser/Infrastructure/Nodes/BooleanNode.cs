@@ -14,6 +14,10 @@
             Value = value;
         }
 
+        protected override Node CloneCore() {
+            return new BooleanNode(Value);
+        }
+
         public override string ToString() {
             return Value.ToString().ToLowerInvariant();
         }

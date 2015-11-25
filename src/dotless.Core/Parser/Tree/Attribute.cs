@@ -19,6 +19,10 @@ namespace dotless.Core.Parser.Tree {
             Value = value;
         }
 
+        protected override Node CloneCore() {
+            return new Attribute(Name.Clone(), Op.Clone(), Value.Clone());
+        }
+
         public override Node Evaluate(Env env)
         {
             return new TextNode(string.Format("[{0}{1}{2}]", 

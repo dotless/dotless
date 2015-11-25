@@ -13,7 +13,7 @@ namespace dotless.Core.Parser.Tree
 
     public class Import : Directive
     {
-        private readonly ReferenceVisitor referenceVisitor = new ReferenceVisitor();
+        private readonly ReferenceVisitor referenceVisitor = new ReferenceVisitor(true);
         /// <summary>
         ///  The original path node
         /// </summary>
@@ -190,30 +190,37 @@ namespace dotless.Core.Parser.Tree
     }
 
     public class ReferenceVisitor : IVisitor {
+        private readonly bool isReference;
+
+        public ReferenceVisitor(bool isReference) {
+            this.isReference = isReference;
+        }
+
         public Node Visit(Node node) {
             var ruleset = node as Ruleset;
             if (ruleset != null) {
                 if (ruleset.Selectors != null) {
                     ruleset.Selectors.Accept(this);
-                    ruleset.Selectors.IsReference = true;
+                    ruleset.Selectors.IsReference = isReference;
                 }
 
                 if (ruleset.Rules != null) {
                     ruleset.Rules.Accept(this);
-                    ruleset.Rules.IsReference = true;
+                    ruleset.Rules.IsReference = isReference;
                 }
             }
 
             var media = node as Media;
             if (media != null) {
                 media.Ruleset.Accept(this);
+                media.Ruleset.IsReference = isReference;
             }
 
             var nodeList = node as NodeList;
             if (nodeList != null) {
                 nodeList.Accept(this);
             }
-            node.IsReference = true;
+            node.IsReference = isReference;
 
             return node;
         }

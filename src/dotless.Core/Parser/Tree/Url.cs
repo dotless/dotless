@@ -67,6 +67,10 @@
             return new Url(AdjustUrlPath(Value.Evaluate(env)));
         }
 
+        protected override Node CloneCore() {
+            return new Url(Value.Clone(), Importer);
+        }
+
         public override void AppendCSS(Env env)
         {
             env.Output

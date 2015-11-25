@@ -318,6 +318,10 @@ namespace dotless.Core.Parser.Tree
             }
         }
 
+        protected override Node CloneCore() {
+            return new Color(RGB.ToArray(), Alpha);
+        }
+
         public override void AppendCSS(Env env)
         {
             var rgb = RGB

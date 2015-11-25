@@ -22,6 +22,13 @@ namespace dotless.Core.Parser.Tree
             Arguments = arguments;
         }
 
+        protected override Node CloneCore() {
+            return new MixinCall(
+                new NodeList<Element>(Selector.Elements.Select(e => e.Clone())),
+                Arguments,
+                Important);
+        }
+
         public override Node Evaluate(Env env)
         {
             var closures = env.FindRulesets(Selector);
@@ -104,9 +111,8 @@ namespace dotless.Core.Parser.Tree
 
                 foreach (var closure in regularRulesets)
                 {
-                    if (closure.Ruleset.Rules != null)
-                    {
-                        var nodes = new NodeList(closure.Ruleset.Rules);
+                    if (closure.Ruleset.Rules != null) {
+                        var nodes = (NodeList)closure.Ruleset.Rules.Clone();
                         NodeHelper.ExpandNodes<MixinCall>(env, nodes);
 
                         rules.AddRange(nodes);
@@ -129,10 +135,7 @@ namespace dotless.Core.Parser.Tree
                 throw new ParsingException(message, Location);
             }
 
-            rules.IsReference = IsReference;
-            foreach (var rule in rules) {
-                rule.IsReference = IsReference;
-            }
+            rules.Accept(new ReferenceVisitor(IsReference));
 
             if (Important)
             {

@@ -36,6 +36,10 @@
             return this;
         }
 
+        protected override Node CloneCore() {
+            return new Expression((NodeList)Value.Clone(), IsExpressionList);
+        }
+
         public override void AppendCSS(Env env)
         {
             env.Output.AppendMany(Value, IsExpressionList ? ", " : " ");

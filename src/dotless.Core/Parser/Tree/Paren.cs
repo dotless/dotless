@@ -13,6 +13,10 @@
             Value = value;
         }
 
+        protected override Node CloneCore() {
+            return new Paren(Value.Clone());
+        }
+
         public override void AppendCSS(Env env)
         {
             env.Output

@@ -19,6 +19,10 @@
             Important = important;
         }
 
+        protected override Node CloneCore() {
+            return new Value((NodeList)Values.Clone(), Important);
+        }
+
         public override void AppendCSS(Env env)
         {
             env.Output.AppendMany(Values, env.Compress ? "," : ", ");
