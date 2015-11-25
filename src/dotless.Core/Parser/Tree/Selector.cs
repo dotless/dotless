@@ -1,4 +1,6 @@
-﻿namespace dotless.Core.Parser.Tree
+﻿using System;
+
+namespace dotless.Core.Parser.Tree
 {
     using Infrastructure;
     using Infrastructure.Nodes;
@@ -25,9 +27,34 @@
                 Elements[0].Value == other.Elements[0].Value;
         }
 
-        private static readonly Parser parser = new Parser();
-        private static readonly Parsers parsers = new Parsers(parser.NodeProvider);
 
+        [ThreadStatic]
+        private static Parser parser;
+
+        [ThreadStatic]
+        private static Parsers parsers;
+
+
+        private Parser Parser {
+            get {
+                if (parser == null) {
+                    parser = new Parser();
+                }
+
+                return parser;
+            }
+        }
+
+
+        private Parsers Parsers {
+            get {
+                if (parsers == null) {
+                    parsers = new Parsers(Parser.NodeProvider);
+                }
+
+                return parsers;
+            }
+        }
 
         public override Node Evaluate(Env env)
         {
@@ -55,15 +82,15 @@
                 return evaluatedSelector;
             }
 
-            parser.Tokenizer.SetupInput(evaluatedSelector.ToCSS(env), "");
+            Parser.Tokenizer.SetupInput(evaluatedSelector.ToCSS(env), "");
 
             var result = new NodeList<Selector>();
             Selector selector;
-            while (selector = parsers.Selector(parser)) {
+            while (selector = Parsers.Selector(Parser)) {
                 selector.IsReference = IsReference;
                 result.Add(selector.Evaluate(env) as Selector);
 
-                if (!parser.Tokenizer.Match(',')) {
+                if (!Parser.Tokenizer.Match(',')) {
                     break;
                 }
             }
