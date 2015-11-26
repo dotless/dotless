@@ -172,7 +172,7 @@ namespace dotless.Core.Parser.Tree
 
                     Accept(referenceVisitor);
                 }
-                NodeHelper.RecursiveExpandNodes<Import>(env, InnerRoot.Rules);
+                NodeHelper.RecursiveExpandNodes<Import>(env, InnerRoot);
             }
 
             var rulesList = new NodeList(InnerRoot.Rules).ReducedFrom<NodeList>(this);

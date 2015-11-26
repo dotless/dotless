@@ -33,12 +33,15 @@ namespace dotless.Core.Utils
             }
         }
 
-        public static void RecursiveExpandNodes<TNode>(Env env, NodeList rules)
+        public static void RecursiveExpandNodes<TNode>(Env env, Ruleset parentRuleset)
         where TNode : Node
         {
-            for (var i = 0; i < rules.Count; i++)
+            
+            env.Frames.Push(parentRuleset);
+
+            for (var i = 0; i < parentRuleset.Rules.Count; i++)
             {
-                var node = rules[i];
+                var node = parentRuleset.Rules[i];
 
                 if (node is TNode)
                 {
@@ -46,13 +49,13 @@ namespace dotless.Core.Utils
                     var nodes = evaluated as IEnumerable<Node>;
                     if (nodes != null)
                     {
-                        rules.InsertRange(i + 1, nodes);
-                        rules.RemoveAt(i);
+                        parentRuleset.Rules.InsertRange(i + 1, nodes);
+                        parentRuleset.Rules.RemoveAt(i);
                         i--;
                     }
                     else
                     {
-                        rules[i] = evaluated;
+                        parentRuleset.Rules[i] = evaluated;
                     }
                 }
                 else
@@ -60,10 +63,12 @@ namespace dotless.Core.Utils
                     var ruleset = node as Ruleset;
                     if (ruleset != null && ruleset.Rules != null)
                     {
-                        RecursiveExpandNodes<TNode>(env, ruleset.Rules);
+                        RecursiveExpandNodes<TNode>(env, ruleset);
                     }
                 }
             }
+
+            env.Frames.Pop();
         }
 
         public static IEnumerable<Node> NonDestructiveExpandNodes<TNode>(Env env, NodeList rules)
