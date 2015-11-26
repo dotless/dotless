@@ -355,6 +355,15 @@ body { margin-right: @a; }";
     }
 }";
 
+            imports["nested-import-interpolation-1.less"] = @"
+@var: ""2"";
+@import ""nested-import-interpolation-@{var}.less"";
+";
+
+            imports["nested-import-interpolation-2.less"] = @"
+body { background-color: blue; }
+";
+
             return new Parser { 
                 Importer = new Importer(new DictionaryReader(imports)) { 
                     IsUrlRewritingDisabled = isUrlRewritingDisabled,
@@ -1065,7 +1074,23 @@ body {
 
             AssertLess(input, expected, GetParser());
         }
-		
+
+        [Test]
+        public void VariableInterpolationInNestedLessImport()
+        {
+            var input =
+                @"
+@import ""nested-import-interpolation-1.less"";
+";
+
+            var expected =
+                @"
+body {
+  background-color: blue;
+}";
+
+            AssertLess(input, expected, GetParser());
+        }
 
         [Test]
         public void ImportMultipleImportsMoreThanOnce()
