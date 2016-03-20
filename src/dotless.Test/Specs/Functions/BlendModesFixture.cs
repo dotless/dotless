@@ -10,7 +10,7 @@
             AssertExpression("#ed0000", "multiply(#f60000, #f60000)");
             AssertExpression("#f600f6", "screen(#f60000, #0000f6)");
             AssertExpression("#ed0000", "overlay(#f60000, #0000f6)");
-            AssertExpression("red", "softlight(#f60000, #ffffff)");
+            AssertExpression("#ff0000", "softlight(#f60000, #ffffff)");
             AssertExpression("#0000ed", "hardlight(#f60000, #0000f6)");
             AssertExpression("#f600f6", "difference(#f60000, #0000f6)");
             AssertExpression("#f600f6", "exclusion(#f60000, #0000f6)");

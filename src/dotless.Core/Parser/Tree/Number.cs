@@ -11,6 +11,8 @@
         public double Value { get; set; }
         public string Unit { get; set; }
 
+        private bool preferUnitFromSecondOperand;
+
         public Number(string value, string unit)
         {
             Value = double.Parse(value, CultureInfo.InvariantCulture);
@@ -76,21 +78,25 @@
             var unit = Unit;
             var otherUnit = dim.Unit;
 
-            if (string.IsNullOrEmpty(unit))
+            if (preferUnitFromSecondOperand && !string.IsNullOrEmpty(otherUnit)) {
                 unit = otherUnit;
-
-            else if (!string.IsNullOrEmpty(otherUnit))
-            {
+            } else if (string.IsNullOrEmpty(unit)) {
+                unit = otherUnit;
+            } else if (!string.IsNullOrEmpty(otherUnit)) {
                 // convert units
             }
 
-            return new Number(Operation.Operate(op.Operator, Value, dim.Value), unit)
-                .ReducedFrom<Node>(this, other);
+            return new Number(Operation.Operate(op.Operator, Value, dim.Value), unit) {
+                // less.js treats division as a special case: if it's the only operation,
+                // units are kept. However, if the result is then operated on again, and 
+                // the second operand has a unit, it gets the unit from that operand.
+                preferUnitFromSecondOperand = unit == otherUnit && op.Operator == "/"
+            }.ReducedFrom<Node>(this, other);
         }
 
         public Color ToColor()
         {
-            return new Color(new[] {Value, Value, Value});
+            return new Color(Value, Value, Value);
         }
 
         public double ToNumber()

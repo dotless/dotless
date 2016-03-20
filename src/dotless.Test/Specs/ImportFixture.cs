@@ -415,7 +415,7 @@ body { background-color: blue; }
 }
 #import-test {
   height: 10px;
-  color: red;
+  color: #ff0000;
   width: 10px;
   height: 30%;
 }
@@ -995,7 +995,7 @@ body {
   color: black;
 }
 .test {
-  color: black;
+  color: #000000;
 }
 ";
             var parser = GetParser();
@@ -1324,7 +1324,7 @@ body { background-color: foo; invalid ""; }
 
             var expected = @"
 .caller {
-  background-color: black;
+  background-color: #000000;
 }
 ";
             var parser = GetParser();
@@ -1381,7 +1381,7 @@ body { background-color: foo; invalid ""; }
 
             var expected = @"
 .test {
-  background-color: blue;
+  background-color: #0000ff;
 }
 ";
             var parser = GetParser();
@@ -1422,7 +1422,7 @@ body { background-color: foo; invalid ""; }
 
             var expected = @"
 .test {
-  background-color: black;
+  background-color: #000000;
 }
 ";
             var parser = GetParser();
@@ -1673,7 +1673,7 @@ unrecognized @import option 'invalid-option' on line 1 in file 'test.less':
 }
 .namespace #import-test {
   height: 10px;
-  color: red;
+  color: #ff0000;
   width: 10px;
   height: 30%;
 }
@@ -1793,7 +1793,7 @@ unrecognized @import option 'invalid-option' on line 1 in file 'test.less':
 /* Styles */
 
 .my-class {
-  color: red;
+  color: #ff0000;
 }
 @media (min-width: 100px) {
   .my-class {

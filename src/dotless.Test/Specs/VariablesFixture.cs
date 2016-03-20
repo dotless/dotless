@@ -107,7 +107,7 @@ namespace dotless.Test.Specs
             var expected =
                 @"
 .variables {
-  color: #888888;
+  color: #888;
 }
 ";
 
@@ -365,7 +365,7 @@ namespace dotless.Test.Specs
 }";
             var expected = @"
 .values {
-  color: #888888 !important;
+  color: #888 !important;
 }";
             AssertLess(input, expected);
         }

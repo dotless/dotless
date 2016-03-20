@@ -31,7 +31,7 @@
             Guard.ExpectNode<Quoted>(filenameNode, this, Location);
             var filename = ((Quoted)filenameNode).Value;
 
-            Guard.Expect(() => !(filename.StartsWith("http://") || filename.StartsWith("https://")),
+            Guard.Expect(!(filename.StartsWith("http://") || filename.StartsWith("https://")),
                 string.Format("Invalid filename passed to data-uri '{0}'. Filename must be a local file", filename), Location);
 
             return filename;

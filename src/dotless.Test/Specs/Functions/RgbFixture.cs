@@ -9,7 +9,7 @@ namespace dotless.Test.Specs.Functions
         {
             AssertExpression("#123456", "rgb(18, 52, 86)");
             AssertExpression("#beaded", "rgb(190, 173, 237)");
-            AssertExpression("springgreen", "rgb(0, 255, 127)");
+            AssertExpression("#00ff7f", "rgb(0, 255, 127)");
         }
 
         [Test]
@@ -34,9 +34,9 @@ namespace dotless.Test.Specs.Functions
         [Test]
         public void TestRgbTestPercentBounds()
         {
-            AssertExpression("red", "rgb(100.1%, 0, 0)");
-            AssertExpression("black", "rgb(0, -0.1%, 0)");
-            AssertExpression("blue", "rgb(0, 0, 101%)");
+            AssertExpression("#ff0000", "rgb(100.1%, 0, 0)");
+            AssertExpression("#000000", "rgb(0, -0.1%, 0)");
+            AssertExpression("#0000ff", "rgb(0, 0, 101%)");
         }
 
         [Test]

@@ -9,8 +9,8 @@
         [Test]
         public void TestColor()
         {
-            AssertExpression("red", @"color(""#ff0000"")");
-            AssertExpression("aqua", @"color(""#0ff"")");
+            AssertExpression("#ff0000", @"color(""#ff0000"")");
+            AssertExpression("#0ff", @"color(""#0ff"")");
         }
 
         [Test]

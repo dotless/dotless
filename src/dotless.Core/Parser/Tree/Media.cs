@@ -51,11 +51,10 @@ namespace dotless.Core.Parser.Tree
             env.Frames.Push(Ruleset);
             NodeHelper.ExpandNodes<Import>(env, Ruleset.Rules);
             env.Frames.Pop();
-
-            var features = Features.Evaluate(env);
+            Features = Features.Evaluate(env);
             var ruleset = Ruleset.Evaluate(env) as Ruleset;
 
-            var media = new Media(features, ruleset,Extensions).ReducedFrom<Media>(this);
+            var media = new Media(Features, ruleset,Extensions).ReducedFrom<Media>(this);
 
             env.MediaPath.Pop();
             env.MediaBlocks[blockIndex] = media;
@@ -66,7 +65,7 @@ namespace dotless.Core.Parser.Tree
             }
             else
             {
-                return media.EvalNested(env, features, ruleset);
+                return media.EvalNested(env, Features, ruleset);
             }
         }
 
