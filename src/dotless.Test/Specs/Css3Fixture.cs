@@ -498,6 +498,22 @@ audio:not([controls]) {
             AssertLessUnchanged("filter: sepia(100%);");
         }
 
+        [Test] public void VariablesInCss3Filters() {
+
+            var input = @"
+@brand-primary: #800080;
+.hover-element.select {
+  filter: drop-shadow( -15px -15px 15px @brand-primary );
+}";
+
+            var expected = @"
+.hover-element.select {
+  filter: drop-shadow(-15px -15px 15px #800080);
+}";
+
+            AssertLess(input, expected);
+        }
+
         [Test]
         public void Css3FilterVendorPrefixes()
         {
