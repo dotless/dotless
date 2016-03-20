@@ -31,7 +31,6 @@ namespace dotless.Core.Parser.Infrastructure
         public Stack<Media> MediaPath { get; private set; }
         public List<Media> MediaBlocks { get; private set; }
         public bool DisableVariableRedefines { get; set; }
-        public bool DisableColorCompression { get; set; }
         public bool KeepFirstSpecialComment { get; set; }
         public bool IsFirstSpecialCommentOutput { get; set; }
         public Parser Parser { get; set; }
@@ -84,7 +83,6 @@ namespace dotless.Core.Parser.Infrastructure
                 Parent = this,
                 Debug = Debug,
                 Compress = Compress,
-                DisableColorCompression = DisableColorCompression,
                 DisableVariableRedefines = DisableVariableRedefines
             };
         }

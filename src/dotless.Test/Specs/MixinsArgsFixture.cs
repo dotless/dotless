@@ -326,7 +326,7 @@ body {
                 @"
 body {
   padding: 30px;
-  color: red;
+  color: #f00;
 }
 ";
 

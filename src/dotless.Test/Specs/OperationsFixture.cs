@@ -76,7 +76,7 @@ namespace dotless.Test.Specs
         {
             AssertExpression("#123456", "#123456");
             AssertExpression("#334455", "#234 + #111111");
-            AssertExpression("black", "#222222 - #fff");
+            AssertExpression("#000000", "#222222 - #fff");
             AssertExpression("#222222", "2 * #111");
             AssertExpression("#222222", "#333333 / 3 + #111");
         }
@@ -108,7 +108,7 @@ namespace dotless.Test.Specs
         public void CanUseColorKeywordsInOperations()
         {
             AssertExpression("#ff1111", "red + 17");
-            AssertExpression("gray", "white / 2");
+            AssertExpression("#808080", "white / 2");
             AssertExpression("#ff80ff", "red + green + blue");
         }
 

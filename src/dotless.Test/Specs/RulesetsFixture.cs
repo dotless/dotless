@@ -117,7 +117,7 @@ a:hover {
 }
 ";
             var expected = @"li {
-  color: red \9;
+  color: #f00 \9;
 }
 ";
             AssertLess(input, expected);

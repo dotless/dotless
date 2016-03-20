@@ -7,10 +7,10 @@
     [Test]
     public void TestContrast()
     {
-      AssertExpression("white", "contrast(#000000)");
-      AssertExpression("white", "contrast(#6D6D6D)");
-      AssertExpression("white", "contrast(#6E6E6E)");
-      AssertExpression("black", "contrast(#FFFFFF)");
+      AssertExpression("#ffffff", "contrast(#000000)");
+      AssertExpression("#ffffff", "contrast(#6D6D6D)");
+      AssertExpression("#ffffff", "contrast(#6E6E6E)");
+      AssertExpression("#000000", "contrast(#FFFFFF)");
     }
 
     [Test]
@@ -25,7 +25,7 @@
       AssertExpression("yellow", "contrast(#000000, yellow)");
       AssertExpression("yellow", "contrast(#6D6D6D, yellow)");
       AssertExpression("yellow", "contrast(#6E6E6E, yellow)");
-      AssertExpression("black", "contrast(#FFFFFF, yellow)");
+      AssertExpression("#000000", "contrast(#FFFFFF, yellow)");
     }
 
     [Test]

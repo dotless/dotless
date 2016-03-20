@@ -1,6 +1,7 @@
 ﻿namespace dotless.Core.Parser.Infrastructure
 {
     using System;
+    using System.Globalization;
     using System.Collections.Generic;
     using System.Text;
     using Nodes;
@@ -144,9 +145,9 @@
             return AppendMany(buildersToAppend, (b, output) => output.Append(b), join);
         }
 
-        public Output AppendFormat(IFormatProvider formatProvider, string format, params object[] values)
+        public Output AppendFormat(string format, params object[] values)
         {
-            Builder.AppendFormat(formatProvider, format, values);
+            Builder.AppendFormat(CultureInfo.InvariantCulture, format, values);
 
             return this;
         }

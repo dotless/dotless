@@ -93,7 +93,7 @@ namespace dotless.Test.Specs
 ";
             var expected = @"
 #interpolation {
-  url3: ""http://lesscss.org#445566"";
+  url3: ""http://lesscss.org#456"";
 }";
 
             AssertLess(input, expected);

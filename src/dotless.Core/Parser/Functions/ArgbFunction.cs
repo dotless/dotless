@@ -1,6 +1,5 @@
 namespace dotless.Core.Parser.Functions
 {
-    using System.Linq;
     using Infrastructure;
     using Infrastructure.Nodes;
     using Tree;
@@ -11,9 +10,7 @@ namespace dotless.Core.Parser.Functions
         protected override Node Evaluate(Env env)
         {
             Guard.ExpectNumArguments(1, Arguments.Count, this, Location);
-            Guard.ExpectAllNodes<Color>(Arguments, this, Location);
-
-            var color = Arguments[0] as Color;
+            var color = Guard.ExpectNode<Color>(Arguments[0], this, Location);
 
             return new TextNode(color.ToArgb());
         }

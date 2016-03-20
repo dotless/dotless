@@ -90,7 +90,7 @@
 
         public Color ToColor()
         {
-            return new Color(new[] {Value, Value, Value});
+            return new Color(Value, Value, Value);
         }
 
         public double ToNumber()
