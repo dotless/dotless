@@ -174,5 +174,22 @@ namespace dotless.Test.Specs
         { 
             AssertExpression("1px", "+1px");
         }
+
+        [Test]
+        public void DivisionWithIdenticalUnitsChangesUnitPrecedence() {
+            var input = @"
+.test {
+  width: (10px / 5px) + 100;
+  height: (5px / 10px) * 100%;
+}";
+
+            var expected = @"
+.test {
+  width: 102px;
+  height: 50%;
+}";
+
+            AssertLess(input, expected);
+        }
     }
 }
