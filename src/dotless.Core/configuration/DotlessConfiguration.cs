@@ -59,7 +59,6 @@ namespace dotless.Core.configuration
             Plugins = new List<IPluginConfigurator>();
             MapPathsToWeb = true;
             HandleWebCompression = true;
-            DisableVariableRedefines = false;
             KeepFirstSpecialComment = false;
             RootPath = "";
             StrictMath = false;
@@ -85,7 +84,6 @@ namespace dotless.Core.configuration
             ImportAllFilesAsLess = config.ImportAllFilesAsLess;
             HandleWebCompression = config.HandleWebCompression;
             DisableParameters = config.DisableParameters;
-            DisableVariableRedefines = config.DisableVariableRedefines;
             KeepFirstSpecialComment = config.KeepFirstSpecialComment;
             RootPath = config.RootPath;
             StrictMath = config.StrictMath;
@@ -129,7 +127,14 @@ namespace dotless.Core.configuration
         ///  Disables variables being redefined, so less will search from the bottom of the input up.
         ///  Makes dotless behave like less.js with regard variables
         /// </summary>
+        [Obsolete("The Variable Redefines feature has been removed to align with less.js")]
         public bool DisableVariableRedefines { get; set; }
+
+        /// <summary>
+        /// Disables hex color shortening
+        /// </summary>
+        [Obsolete("The Color Compression feature has been removed to align with less.js")]
+        public bool DisableColorCompression { get; set; }
 
         /// <summary>
         ///  Inlines css files into the less output

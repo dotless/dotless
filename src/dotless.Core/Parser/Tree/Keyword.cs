@@ -15,7 +15,7 @@
 
         public override Node Evaluate(Env env)
         {
-            return ((Node) Color.FromKeyword(Value) ?? this).ReducedFrom<Node>(this);
+            return ((Node) Color.GetColorFromKeyword(Value) ?? this).ReducedFrom<Node>(this);
         }
 
         protected override Node CloneCore() {

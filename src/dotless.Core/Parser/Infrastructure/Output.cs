@@ -145,9 +145,13 @@
             return AppendMany(buildersToAppend, (b, output) => output.Append(b), join);
         }
 
-        public Output AppendFormat(string format, params object[] values)
+        public Output AppendFormat(string format, params object[] values) {
+            return AppendFormat(CultureInfo.InvariantCulture, format, values);
+        }
+
+        public Output AppendFormat(IFormatProvider formatProvider, string format, params object[] values)
         {
-            Builder.AppendFormat(CultureInfo.InvariantCulture, format, values);
+            Builder.AppendFormat(formatProvider, format, values);
 
             return this;
         }

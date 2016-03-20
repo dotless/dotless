@@ -1,3 +1,4 @@
+using System;
 using dotless.Core.Parser;
 using dotless.Core.Parser.Tree;
 using dotless.Core.Plugins;
@@ -17,7 +18,10 @@ namespace dotless.Core
         public ILogger Logger { get; set; }
         public bool Compress { get; set; }
         public bool Debug { get; set; }
+        [Obsolete("The Variable Redefines feature has been removed to align with less.js")]
         public bool DisableVariableRedefines { get; set; }
+        [Obsolete("The Color Compression feature has been removed to align with less.js")]
+        public bool DisableColorCompression { get; set; }
         public bool KeepFirstSpecialComment { get; set; }
         public bool StrictMath { get; set; }
         public Env Env { get; set; }
@@ -30,20 +34,19 @@ namespace dotless.Core
             set { Parser.CurrentDirectory = value; }
         }
 
-        public LessEngine(Parser.Parser parser, ILogger logger, bool compress, bool debug, bool disableVariableRedefines, bool keepFirstSpecialComment, bool strictMath, IEnumerable<IPluginConfigurator> plugins)
+        public LessEngine(Parser.Parser parser, ILogger logger, bool compress, bool debug, bool disableVariableRedefines, bool disableColorCompression, bool keepFirstSpecialComment, bool strictMath, IEnumerable<IPluginConfigurator> plugins)
         {
             Parser = parser;
             Logger = logger;
             Compress = compress;
             Debug = debug;
-            DisableVariableRedefines = disableVariableRedefines;
             Plugins = plugins;
             KeepFirstSpecialComment = keepFirstSpecialComment;
             StrictMath = strictMath;
         }
 
-        public LessEngine(Parser.Parser parser, ILogger logger, bool compress, bool debug, bool disableVariableRedefines, bool keepFirstSpecialComment, IEnumerable<IPluginConfigurator> plugins)
-            :this(parser, logger, compress, debug, disableVariableRedefines, keepFirstSpecialComment, false, plugins)
+        public LessEngine(Parser.Parser parser, ILogger logger, bool compress, bool debug, bool disableVariableRedefines, bool disableColorCompression, bool keepFirstSpecialComment, IEnumerable<IPluginConfigurator> plugins)
+            :this(parser, logger, compress, debug, disableVariableRedefines, disableColorCompression, keepFirstSpecialComment, false, plugins)
         {
         }
 
@@ -80,7 +83,6 @@ namespace dotless.Core
                                   Compress = Compress,
                                   Debug = Debug,
                                   KeepFirstSpecialComment = KeepFirstSpecialComment,
-                                  DisableVariableRedefines = DisableVariableRedefines,
                               };
 
                 if (Plugins != null)

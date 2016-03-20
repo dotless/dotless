@@ -30,7 +30,10 @@ namespace dotless.Core.Parser.Infrastructure
         public Output Output { get; private set; }
         public Stack<Media> MediaPath { get; private set; }
         public List<Media> MediaBlocks { get; private set; }
+        [Obsolete("The Variable Redefines feature has been removed to align with less.js")]
         public bool DisableVariableRedefines { get; set; }
+        [Obsolete("The Color Compression feature has been removed to align with less.js")]
+        public bool DisableColorCompression { get; set; }
         public bool KeepFirstSpecialComment { get; set; }
         public bool IsFirstSpecialCommentOutput { get; set; }
         public Parser Parser { get; set; }

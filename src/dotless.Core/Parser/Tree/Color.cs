@@ -162,12 +162,15 @@ namespace dotless.Core.Parser.Tree
             {"yellowgreen", 0x9acd32}
         };
 
+        private static readonly Dictionary<int, string> Html4ColorsReverse =
+            Html4Colors.GroupBy(kvp => kvp.Value).ToDictionary(g => g.Key, g => g.First().Key);
+
         public static Color From(string keywordOrHex)
         {
-            return FromKeyword(keywordOrHex) ?? FromHex(keywordOrHex);
+            return GetColorFromKeyword(keywordOrHex) ?? FromHex(keywordOrHex);
         }
 
-        public static Color FromKeyword(string keyword)
+        public static Color GetColorFromKeyword(string keyword)
         {
             if (keyword == "transparent")
             {
@@ -181,6 +184,17 @@ namespace dotless.Core.Parser.Tree
                 var g = (rgb >> 8) & 0xFF;
                 var b = rgb & 0xFF;
                 return new Color(r, g, b, 1.0, keyword);
+            }
+
+            return null;
+        }
+
+        public static string GetKeyword(int[] rgb) {
+            var color = (rgb[0] << 16) + (rgb[1] << 8) + rgb[2];
+
+            string keyword;
+            if (Html4ColorsReverse.TryGetValue(color, out keyword)) {
+                return keyword;
             }
 
             return null;
@@ -225,7 +239,68 @@ namespace dotless.Core.Parser.Tree
 
         private readonly string _text;
 
-        public Color(double[] rgb, double alpha, string text = null)
+        public Color(int color) {
+            RGB = new double[3];
+
+            B = color & 0xff;
+            color >>= 8;
+            G = color & 0xff;
+            color >>= 8;
+            R = color & 0xff;
+            Alpha = 1;
+        }
+
+        public Color(string hex) {
+            hex = hex.TrimStart('#');
+            double[] rgb;
+            var alpha = 1.0;
+            var text = '#' + hex;
+
+            if (hex.Length == 8)
+            {
+                rgb = ParseRgb(hex.Substring(2));
+                alpha = Parse(hex.Substring(0, 2))/255.0;
+            }
+            else if (hex.Length == 6)
+            {
+                rgb = ParseRgb(hex);
+            }
+            else
+            {
+                rgb = hex.ToCharArray().Select(c => Parse("" + c + c)).ToArray();
+            }
+
+            R = rgb[0];
+            G = rgb[1];
+            B = rgb[2];
+            Alpha = alpha;
+
+            _text = text;
+        }
+
+        public Color(IEnumerable<Number> rgb, Number alpha) {
+            RGB = rgb.Select(d => d.Normalize()).ToArray();
+
+            Alpha = alpha.Normalize();
+        }
+
+        public Color(double r, double g, double b) : this(r, g, b, 1) {
+            
+        }
+
+        public Color(double r, double g, double b, double alpha) : this(new[] {r, g, b}, alpha) {
+            
+        }
+
+        public Color(double[] rgb) : this(rgb, 1) {
+            
+        }
+
+        public Color(double[] rgb, double alpha) : this(rgb, alpha, null) {
+            
+        }
+
+        public Color(double[] rgb, double alpha, string text)
         {
             RGB = rgb.Select(c => NumberExtensions.Normalize(c, 255.0)).ToArray();
             Alpha = NumberExtensions.Normalize(alpha, 1.0);
@@ -238,22 +313,25 @@ namespace dotless.Core.Parser.Tree
         }
 
         // TODO: A RGB color should really be represented by int[], or better: a compressed int.
-        public double[] RGB { get; private set; }
-        public double Alpha { get; private set; }
+        public readonly double[] RGB;
+        public readonly double Alpha;
 
         public double R
         {
             get { return RGB[0]; }
+            set { RGB[0] = value; }
         }
 
         public double G
         {
             get { return RGB[1]; }
+            set { RGB[1] = value; }
         }
 
         public double B
         {
             get { return RGB[2]; }
+            set { RGB[2] = value; }
         }
 
         /// <summary>

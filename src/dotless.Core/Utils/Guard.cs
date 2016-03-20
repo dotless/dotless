@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 
 namespace dotless.Core.Utils
@@ -16,6 +17,15 @@ namespace dotless.Core.Utils
                 return;
 
             var message = string.Format("Expected '{0}' in {1}, found '{2}'", expected, @in, actual);
+
+            throw new ParsingException(message, location);
+        }
+
+        [Obsolete("Use Expect(bool, string, NodeLocation) instead")]
+        public static void Expect(Func<bool> condition, string message, NodeLocation location)
+        {
+            if (condition())
+                return;
 
             throw new ParsingException(message, location);
         }
