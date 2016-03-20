@@ -623,5 +623,38 @@ body {
 ";
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void VariableInMediaQueryWithNestedMediaBlock() {
+            var input = @"
+@screen-sm-max: 979px;
+
+@media (max-width: @screen-sm-max) { 
+    .text { font-size: 14px; }
+
+    .item
+    {
+        @media (min-width: 600px) { 
+            top: 0;
+        }
+    }
+}";
+
+
+            var expected = @"
+@media (max-width: 979px) {
+  .text {
+    font-size: 14px;
+  }
+}
+@media (max-width: 979px) and (min-width: 600px) {
+  .item {
+    top: 0;
+  }
+}
+";
+
+            AssertLess(input, expected);
+        }
     }
 }
