@@ -1943,5 +1943,30 @@ fieldset[disabled] .test {
 
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void MixinWithBackgroundUrl() {
+
+            var input = @"
+.cssClass {
+  background-image:url('image.png');
+}
+
+.newCssClass {
+  .cssClass;
+  color:#000;
+}";
+            var expected = @"
+.cssClass {
+  background-image: url('image.png');
+}
+.newCssClass {
+  background-image: url(image.png);
+  color: #000;
+}
+";
+
+            AssertLess(input, expected);
+        }
     }
 }
