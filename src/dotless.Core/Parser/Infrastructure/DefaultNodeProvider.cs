@@ -54,7 +54,9 @@ namespace dotless.Core.Parser.Infrastructure
 
         public Color Color(string rgb, NodeLocation location)
         {
-            return new Color(rgb) { Location = location };
+            var color = Tree.Color.FromHex(rgb);
+            color.Location = location;
+            return color;
         }
 
         public Keyword Keyword(string value, NodeLocation location)

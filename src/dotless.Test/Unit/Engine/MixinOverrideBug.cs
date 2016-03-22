@@ -33,8 +33,8 @@ namespace dotless.Test.Unit.Engine
   color: white;
 }
 .red-skin .button {
-  background-color: black;
-  color: white;
+  background-color: #000000;
+  color: #ffffff;
   background-color: red;
 }
 ";

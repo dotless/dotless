@@ -88,14 +88,14 @@ namespace dotless.Test.Specs {
 }
 #container {
   color: black;
-  border: 1px solid black;
-  border-color: orange;
-  background-color: gray;
+  border: 1px solid #000000;
+  border-color: #ffa500;
+  background-color: #808080;
 }
 #header .milk {
   color: white;
-  border: 1px solid black;
-  background-color: gray;
+  border: 1px solid #000000;
+  background-color: #808080;
 }
 #header #cookie {
   border-style: dashed;
@@ -104,13 +104,13 @@ namespace dotless.Test.Specs {
   border-style: dotted;
 }
 #header #cookie .chips .calories {
-  color: black;
-  border: 1px solid black;
-  border-color: orange;
-  background-color: gray;
+  color: #000000;
+  border: 1px solid #000000;
+  border-color: #ffa500;
+  background-color: #808080;
 }
 .secure-zone {
-  color: transparent;
+  color: rgba(0, 0, 0, 0);
 }
 .direct {
   border-style: dotted;
@@ -172,7 +172,7 @@ namespace dotless.Test.Specs {
 }
 #header {
   padding: 20px;
-  color: purple;
+  color: #800080;
 }
 ";
 
@@ -232,8 +232,8 @@ namespace dotless.Test.Specs {
   color: blue;
 }
 .mix-me-in {
-  border: solid 1px red;
-  color: blue;
+  border: solid 1px #ff0000;
+  color: #0000ff;
 }
 ";
 
@@ -1790,7 +1790,7 @@ input[type=""submit""].lefticon.icon24-tick.extralarge.fancy:hover {
   color: blue;
 }
 .test {
-  color: blue;
+  color: #0000ff;
 }";
 
             AssertLess(input, expected);
@@ -1940,6 +1940,31 @@ fieldset[disabled] .test {
   /* ) */
 
 }";
+
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void MixinWithBackgroundUrl() {
+
+            var input = @"
+.cssClass {
+  background-image:url('image.png');
+}
+
+.newCssClass {
+  .cssClass;
+  color:#000;
+}";
+            var expected = @"
+.cssClass {
+  background-image: url('image.png');
+}
+.newCssClass {
+  background-image: url(image.png);
+  color: #000;
+}
+";
 
             AssertLess(input, expected);
         }

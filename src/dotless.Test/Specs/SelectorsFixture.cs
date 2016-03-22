@@ -776,7 +776,7 @@ img[imgType=""sort""] {
   color: black;
 }
 .call {
-  color: black;
+  color: #000000;
 }";
 
             AssertLess(input, expected);

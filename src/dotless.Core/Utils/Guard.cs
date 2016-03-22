@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace dotless.Core.Utils
 {
@@ -6,7 +7,7 @@ namespace dotless.Core.Utils
     using Exceptions;
     using Parser.Infrastructure;
     using Parser.Infrastructure.Nodes;
-    using dotless.Core.Parser;
+    using Parser;
 
     public static class Guard
     {
@@ -20,6 +21,7 @@ namespace dotless.Core.Utils
             throw new ParsingException(message, location);
         }
 
+        [Obsolete("Use Expect(bool, string, NodeLocation) instead")]
         public static void Expect(Func<bool> condition, string message, NodeLocation location)
         {
             if (condition())
@@ -28,10 +30,18 @@ namespace dotless.Core.Utils
             throw new ParsingException(message, location);
         }
 
-        public static void ExpectNode<TExpected>(Node actual, object @in, NodeLocation location) where TExpected : Node
+        public static void Expect(bool condition, string message, NodeLocation location)
+        {
+            if (condition)
+                return;
+
+            throw new ParsingException(message, location);
+        }
+
+        public static TExpected ExpectNode<TExpected>(Node actual, object @in, NodeLocation location) where TExpected : Node
         {
             if (actual is TExpected)
-                return;
+                return (TExpected) actual;
 
             var expected = typeof (TExpected).Name.ToLowerInvariant();
 
@@ -53,14 +63,10 @@ namespace dotless.Core.Utils
             throw new ParsingException(message, location);
         }
 
-        public static void ExpectAllNodes<TExpected>(IEnumerable<Node> actual, object @in, NodeLocation location) where TExpected : Node
+        public static List<TExpected> ExpectAllNodes<TExpected>(IEnumerable<Node> actual, object @in, NodeLocation location) where TExpected : Node
         {
-            foreach (var node in actual)
-            {
-                ExpectNode<TExpected>(node, @in, location);
-            }
+            return actual.Select(node => ExpectNode<TExpected>(node, @in, location)).ToList();
         }
-
 
         public static void ExpectNumArguments(int expected, int actual, object @in, NodeLocation location)
         {

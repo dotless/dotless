@@ -28,6 +28,7 @@
         private void RegisterWebServices(FluentRegistration pandora, DotlessConfiguration configuration)
         {
 
+            pandora.Service<IClock>().Implementor<Clock>().Lifestyle.Transient();
             pandora.Service<IHttp>().Implementor<Http>().Lifestyle.Transient();
             pandora.Service<HandlerImpl>().Implementor<HandlerImpl>().Lifestyle.Transient();
 

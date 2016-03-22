@@ -36,9 +36,9 @@ namespace dotless.Test.Specs.Functions
             {
                 Assert.AreEqual(1, img.Width);
                 Assert.AreEqual(pos + 1, img.Height);
-                var fromColor = new Color(from.TrimStart('#'));
+                var fromColor = Color.From(from);
                 Assert.AreEqual((DrawingColor) fromColor, img.GetPixel(0, 0));
-                var toColor = new Color(to.TrimStart('#'));
+                var toColor = Color.From(to);
                 Assert.AreEqual((DrawingColor) toColor, img.GetPixel(0, pos));
             }
         }

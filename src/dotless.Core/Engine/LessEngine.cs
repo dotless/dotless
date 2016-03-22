@@ -1,3 +1,4 @@
+using System;
 using dotless.Core.Parser;
 using dotless.Core.Parser.Tree;
 using dotless.Core.Plugins;
@@ -17,7 +18,9 @@ namespace dotless.Core
         public ILogger Logger { get; set; }
         public bool Compress { get; set; }
         public bool Debug { get; set; }
+        [Obsolete("The Variable Redefines feature has been removed to align with less.js")]
         public bool DisableVariableRedefines { get; set; }
+        [Obsolete("The Color Compression feature has been removed to align with less.js")]
         public bool DisableColorCompression { get; set; }
         public bool KeepFirstSpecialComment { get; set; }
         public bool StrictMath { get; set; }
@@ -37,10 +40,8 @@ namespace dotless.Core
             Logger = logger;
             Compress = compress;
             Debug = debug;
-            DisableVariableRedefines = disableVariableRedefines;
             Plugins = plugins;
             KeepFirstSpecialComment = keepFirstSpecialComment;
-            DisableColorCompression = disableColorCompression;
             StrictMath = strictMath;
         }
 
@@ -82,8 +83,6 @@ namespace dotless.Core
                                   Compress = Compress,
                                   Debug = Debug,
                                   KeepFirstSpecialComment = KeepFirstSpecialComment,
-                                  DisableVariableRedefines = DisableVariableRedefines,
-                                  DisableColorCompression = DisableColorCompression
                               };
 
                 if (Plugins != null)

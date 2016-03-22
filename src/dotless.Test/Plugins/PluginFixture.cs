@@ -252,7 +252,7 @@ namespace dotless.Test.Plugins
 }
 .clb:nth-of-type(4):hover {
   /* comment 2*/
-  propf: red #ffdd00, keyword;
+  propf: red #fd0, keyword;
   propg: 6;
 }
 @-webkit-keyframes fontbulger {

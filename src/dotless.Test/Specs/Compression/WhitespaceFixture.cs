@@ -23,7 +23,7 @@ white;
 .whitespace { color : white; }
 ";
 
-            var expected = ".whitespace{color:#fff}.whitespace{color:#fff}.whitespace{color:#fff}.whitespace{color:#fff}.whitespace{color:#fff}";
+            var expected = ".whitespace{color:white}.whitespace{color:white}.whitespace{color:white}.whitespace{color:white}.whitespace{color:white}";
 
             AssertLess(input, expected);
         }
@@ -41,7 +41,7 @@ white;
         white;
 }";
 
-            var expected = ".white,.space,.mania{color:#fff}";
+            var expected = ".white,.space,.mania{color:white}";
 
             AssertLess(input, expected);
         }
@@ -51,7 +51,7 @@ white;
         {
             var input = ".no-semi-colon { color: white }";
 
-            var expected = ".no-semi-colon{color:#fff}";
+            var expected = ".no-semi-colon{color:white}";
 
             AssertLess(input, expected);
         }
@@ -65,7 +65,7 @@ white;
   white-space: pre
 }";
 
-            var expected = ".no-semi-colon{color:#fff;white-space:pre}";
+            var expected = ".no-semi-colon{color:white;white-space:pre}";
 
             AssertLess(input, expected);
         }
@@ -75,7 +75,7 @@ white;
         {
             var input = ".no-semi-colon { border: 2px solid white }";
 
-            var expected = ".no-semi-colon{border:2px solid #fff}";
+            var expected = ".no-semi-colon{border:2px solid white}";
 
             AssertLess(input, expected);
         }
@@ -95,7 +95,7 @@ great,
           black;
 }";
 
-            var expected = ".newlines{background:the,great,wall;border:2px solid #000}";
+            var expected = ".newlines{background:the,great,wall;border:2px solid black}";
 
             AssertLess(input, expected);
         }

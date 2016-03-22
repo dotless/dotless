@@ -16,7 +16,7 @@ namespace dotless.Test.Specs.Functions
         public void TestHslaOverflows()
         {
             AssertExpression("#1f1f1f", "hsla(10, -114, 12, 1)");
-            AssertExpression("white", "hsla(10, 10, 256%, 1)");
+            AssertExpression("#ffffff", "hsla(10, 10, 256%, 1)");
             AssertExpression("rgba(28, 24, 23, 0)", "hsla(10, 10, 10, -0.1)");
             AssertExpression("#1c1817", "hsla(10, 10, 10, 1.1)");
 

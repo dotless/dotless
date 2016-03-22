@@ -64,7 +64,7 @@
 
         public override Node Evaluate(Env env)
         {
-            return new Url(AdjustUrlPath(Value.Evaluate(env)));
+            return new Url(AdjustUrlPath(Value.Evaluate(env)), Importer);
         }
 
         protected override Node CloneCore() {

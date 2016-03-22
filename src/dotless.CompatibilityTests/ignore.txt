@@ -3,8 +3,7 @@
 ; e.g: charsets.less; Charsets are tricky to support, see PR #777; bla bla bla
 
 charsets.less; Charsets are tricky to support: TODO fix
-; colors.less; some comment for testing; comment out this ignore to showcase a failure
-comments.less; comments don't work :(
+comments.less; additional comments for test runner go here
 comments2.less
 compression\compression.less
 css.less
@@ -85,7 +84,6 @@ extend.less
 extend-chaining.less
 extend-exact.less
 extend-media.less
-extend-nest.less
 extend-selector.less
 extract-and-length.less
 filemanagerPlugin\filemanager.less
@@ -123,7 +121,6 @@ include-path\include-path.less
 javascript.less
 media.less
 merge.less
-mixins.less
 mixins-args.less
 mixins-closure.less
 mixins-guards.less
@@ -135,7 +132,6 @@ modifyVars\extended.less
 nested-gradient-with-svg-gradient\mixin-consumer.less
 nested-gradient-with-svg-gradient\svg-gradient-mixin.less
 no-js-errors\no-js-errors.less
-operations.less
 parens.less
 plugin.less
 plugin\plugin-transitive.less

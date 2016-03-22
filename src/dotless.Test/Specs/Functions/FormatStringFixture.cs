@@ -86,10 +86,10 @@ namespace dotless.Test.Specs.Functions
             var expected =
                 @"
 #gradients {
-  background-image: -moz-linear-gradient(top, #444444, #999999);
-  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #444444),color-stop(1, #999999));
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#444444', endColorstr='#999999');
-  -ms-filter: ""progid:DXImageTransform.Microsoft.gradient(startColorstr='#444444', endColorstr='#999999')"";
+  background-image: -moz-linear-gradient(top, #444, #999);
+  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #444),color-stop(1, #999));
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#444', endColorstr='#999');
+  -ms-filter: ""progid:DXImageTransform.Microsoft.gradient(startColorstr='#444', endColorstr='#999')"";
 }";
 
             AssertLess(input, expected);
