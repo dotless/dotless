@@ -258,7 +258,11 @@ namespace dotless.Core.Importers
             else
             {
                 string fullName = lessPath;
-                if (!string.IsNullOrEmpty(CurrentDirectory)) {
+                if (Path.IsPathRooted(lessPath))
+                {
+                    fullName = lessPath;
+                }
+                else if (!string.IsNullOrEmpty(CurrentDirectory)) {
                     fullName = CurrentDirectory.Replace(@"\", "/").TrimEnd('/') + '/' + lessPath;
                 }
 

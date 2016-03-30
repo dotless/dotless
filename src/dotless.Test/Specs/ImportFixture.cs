@@ -1742,6 +1742,22 @@ unrecognized @import option 'invalid-option' on line 1 in file 'test.less':
         }
 
         [Test]
+        public void AbsolutePathImportsHonorsCurrentDirectory()
+        {
+            var input = @"
+@import 'c:/absolute/file.less';";
+            var expected = @"
+.windowz .dos {
+  border: none;
+}
+";
+            var parser = GetParser();
+            parser.CurrentDirectory = "import";
+
+            AssertLess(input, expected, parser);
+        }
+
+        [Test]
         public void CssImportsAreHoistedToBeginningOfFile() {
             var input = @"
 @font-face {
