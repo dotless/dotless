@@ -190,8 +190,8 @@
             }
 
             while (trimLLength < length && 
-                    c.HasValue ? Builder[trimLLength] == c.Value : 
-                                char.IsWhiteSpace(Builder[trimLLength]))
+                    (c.HasValue ? Builder[trimLLength] == c.Value : 
+                                char.IsWhiteSpace(Builder[trimLLength])))
             {
                 trimLLength++;
             }
@@ -218,8 +218,8 @@
             }
 
             while (trimRLength < length && 
-                   c.HasValue ? Builder[length - (trimRLength + 1)] == c.Value :
-                        char.IsWhiteSpace(Builder[length - (trimRLength + 1)]))
+                   (c.HasValue ? Builder[length - (trimRLength + 1)] == c.Value :
+                        char.IsWhiteSpace(Builder[length - (trimRLength + 1)])))
             {
                 trimRLength++;
             }
