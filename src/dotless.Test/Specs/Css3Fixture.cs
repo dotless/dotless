@@ -260,6 +260,26 @@ namespace dotless.Test.Specs
         }
 
         [Test]
+        public void KeyFrameDirective5()
+        {
+            var input = @"
+@keyframes rotate-this {
+  0%, 1%, 10%, 80%, to {
+  }
+  50% {
+  }
+}
+";
+
+            var expected = @"
+@keyframes rotate-this {
+  
+}
+";
+            AssertLess(input, expected);
+        }
+
+        [Test]
         public void MozTransform()
         {
             var input = @"
