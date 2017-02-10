@@ -260,6 +260,26 @@ namespace dotless.Test.Specs
         }
 
         [Test]
+        public void KeyFrameDirective5()
+        {
+            var input = @"
+@keyframes rotate-this {
+  0%, 1%, 10%, 80%, to {
+  }
+  50% {
+  }
+}
+";
+
+            var expected = @"
+@keyframes rotate-this {
+  
+}
+";
+            AssertLess(input, expected);
+        }
+
+        [Test]
         public void MozTransform()
         {
             var input = @"
@@ -422,7 +442,7 @@ a ~ p {
         {
             // see http://dev.w3.org/csswg/css3-values/
 
-            List<string> units = new List<string>() { "em", "ex", "ch", "rem", "vw", "vh", "vmin", "vm", "cm", "mm", "%", "in", "pt", "px", "pc", "deg", "grad", "rad", "s", "ms", "fr", "gr", "Hz", "kHz", "dpcm", "dppx" };
+            List<string> units = new List<string>() { "em", "ex", "ch", "rem", "vw", "vh", "vmin", "vm", "vmax", "cm", "mm", "%", "in", "pt", "px", "pc", "deg", "grad", "rad", "s", "ms", "fr", "gr", "Hz", "kHz", "dpcm", "dppx" };
 
             foreach (string unit in units)
             {
