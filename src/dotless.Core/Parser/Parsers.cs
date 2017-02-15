@@ -1798,7 +1798,7 @@ namespace dotless.Core.Parser
                 }.Where(x => x != "").ToArray()
             );
 
-            if (expressions.Count > 0 || parser.Tokenizer.Match(';'))
+            if (expressions.Count > 0 || parser.Tokenizer.Peek(';'))
             {
                 var value = NodeProvider.Value(expressions, important, parser.Tokenizer.GetNodeLocation(index));
 
