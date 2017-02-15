@@ -265,5 +265,21 @@ a {
             var expected = @"";
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void TrailingSemicolonAfterBlock()
+        {
+            var input = @"
+a {
+  margin: 2px;
+};";
+            var expected = @"
+a {
+  margin: 2px;
+}";
+            AssertLess(input, expected);
+        }
+
+
     }
 }

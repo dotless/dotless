@@ -104,6 +104,7 @@ namespace dotless.Core.Parser
                 }
 
                 GatherComments(parser);
+                parser.Tokenizer.Match(';');
             }
             return root;
         }
