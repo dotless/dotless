@@ -531,7 +531,7 @@ Recursive variable definition for @var on line 2 in file 'test.less':
   zoom: 1;
 }";
 
-            AssertError("Expected ']' but found '\"'", "[@{key}-something=\"value\"] {", 2, 17, input);
+            AssertError("Expected ']' but found '='", "[@{key}-something=\"value\"] {", 2, 17, input);
         }
 
         [Test]

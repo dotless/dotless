@@ -135,5 +135,135 @@ a:hover {
             var expected = input;
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void NoMergeWithNoCommaOrSpace()
+        {
+            var input = @"
+.appendPadding() { padding: 20px; }
+a {
+	.appendPadding();
+}";
+            var expected = @"
+a {
+  padding: 20px;
+}";
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void MergeWithComma()
+        {
+            var input = @"
+.appendPadding() { padding+: 20px; }
+a {
+	.appendPadding();
+}";
+            var expected = @"
+a {
+  padding: 20px;
+}";
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void MergeWithCommaMultiple()
+        {
+            var input = @"
+.appendPadding() { padding+: 20px; }
+.appendMarging() { margin+: 20px; }
+a {
+	.appendPadding();
+	.appendPadding();
+    .appendMarging();
+	.appendPadding();
+}";
+            var expected = @"
+a {
+  padding: 20px, 20px, 20px;
+  margin: 20px;
+}";
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void MergeWithCommaMultiple1()
+        {
+            var input = @"
+.appendPadding() { padding: 20px; }
+.appendMarging() { margin: 20px; }
+a {
+	.appendPadding();
+	.appendPadding();
+    .appendMarging();
+	.appendPadding();
+}";
+            var expected = @"
+a {
+  padding: 20px;
+  margin: 20px;
+}";
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void MergeWithSpace()
+        {
+            var input = @"
+.appendPadding() { padding+_: 20px; }
+a {
+	.appendPadding();
+}";
+            var expected = @"
+a {
+  padding: 20px;
+}";
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void MergeWithSpaceMultiple()
+        {
+            var input = @"
+.appendPadding() { padding+_: 20px; }
+a {
+	.appendPadding();
+	.appendPadding();
+}";
+            var expected = @"
+a {
+  padding: 20px 20px;
+}";
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        public void NotSetVariable()
+        {
+            var input = @"
+@test: ;
+a {
+  margin: @test;
+}";
+            var expected = @"
+a {
+  margin: ;
+}";
+            AssertLess(input, expected);
+        }
+
+        [Test]
+        [ExpectedException]
+        public void NotSetVariableWithMultiplcation()
+        {
+            var input = @"
+@test: ;
+
+a {
+  margin: @test * 2px;
+}";
+            var expected = @"";
+            AssertLess(input, expected);
+        }
     }
 }

@@ -93,7 +93,15 @@ namespace dotless.Core.Parser
                     root.AddRange(comments);
                 }
                 else
-                    root.Add(node);
+                {
+                    var rule = node as Rule;
+                    if (rule != null && (rule.Name.EndsWith("+") || rule.Name.EndsWith("+_")))
+                    {
+                        rule.Merge = rule.Name.EndsWith("+") ? ", " : " ";
+                        rule.Name = rule.Name.TrimEnd('+', '_');
+                    }
+                    root.Add(node); //TODO lägg till stöd för merge noder
+                }
 
                 GatherComments(parser);
             }
@@ -1590,7 +1598,7 @@ namespace dotless.Core.Parser
 
                     var entity = Entity(parser);
 
-                    if (!entity || !parser.Tokenizer.Match(')'))
+                    if (!entity || !parser.Tokenizer.Match(')')) 
                     {
                         Recall(parser, memo);
 
@@ -2008,7 +2016,7 @@ namespace dotless.Core.Parser
 
         public string Property(Parser parser)
         {
-            var name = parser.Tokenizer.Match(@"\*?-?[-_a-zA-Z][-_a-z0-9A-Z]*");
+            var name = parser.Tokenizer.Match(@"\*?-?[-_a-zA-Z][-_a-z0-9A-Z]*(?:\+_?)?");
 
             if (name)
                 return name.Value;
