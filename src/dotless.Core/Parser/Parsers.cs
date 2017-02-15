@@ -2036,7 +2036,7 @@ namespace dotless.Core.Parser
 
             message = message ?? "Expected '{0}' but found '{1}'";
 
-            throw new ParsingException(string.Format(message, expectedString, parser.Tokenizer.NextChar), parser.Tokenizer.GetNodeLocation());
+            throw new ParsingException(string.Format(message, expectedString, parser.Tokenizer.CurrentChar), parser.Tokenizer.GetNodeLocation());
         }
 
         public T Expect<T>(T node, string message, Parser parser) where T:Node
