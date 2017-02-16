@@ -248,6 +248,8 @@ namespace dotless.Core.Parser.Tree
             NodeHelper.ExpandNodes<Import>(env, Rules);
             NodeHelper.ExpandNodes<MixinCall>(env, Rules);
 
+            Rules = MergeProperties();
+
             foreach (var r in Rules.OfType<Extend>().ToArray())
             {
                 foreach (var s in this.Selectors)
@@ -277,6 +279,50 @@ namespace dotless.Core.Parser.Tree
             }
 
             env.Frames.Pop();
+        }
+
+        /// <summary>
+        /// Merges properties with merge operators '+' and '+_'
+        /// </summary>
+        /// <returns>New merged ruleset</returns>
+        private NodeList MergeProperties()
+        {
+            var groups = new Dictionary<string, List<Rule>>();
+            var sorted = new List<Node>();
+            foreach (var node in Rules)
+            {
+                var rule = node as Rule;
+                if (rule == null || rule.Merge == "")
+                {
+                    sorted.Add(node);
+                    continue;
+                }
+                var key = $"{rule.Name},{rule.Important},{rule.Merge}";
+                if (!groups.ContainsKey(key))
+                {
+                    groups[key] = new List<Rule> {rule};
+                    sorted.Add(node);
+                }
+                else
+                {
+                    if (rule.Merge == "")
+                        sorted.Add(rule);
+                    else
+                        groups[key].Add(rule);
+                }
+            }
+            foreach (var group in groups.Values)
+            {
+                var rule = @group[0];
+                var value = rule.Value as Value;
+                if (value == null)
+                    value = (Value) (rule.Value = new Value(new[] {rule.Value}, "", rule.Merge));
+                foreach (var extra in @group.Skip(1))
+                {
+                    value.AppendValues(new[] {extra.Value});
+                }
+            }
+            return new NodeList(sorted);
         }
 
         protected Ruleset EvaluateRulesForFrame(Ruleset frame, Env context)

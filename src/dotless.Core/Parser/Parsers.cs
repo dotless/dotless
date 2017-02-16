@@ -93,9 +93,18 @@ namespace dotless.Core.Parser
                     root.AddRange(comments);
                 }
                 else
-                    root.Add(node);
+                {
+                    var rule = node as Rule;
+                    if (rule != null && (rule.Name.EndsWith("+") || rule.Name.EndsWith("+_")))
+                    {
+                        rule.Merge = rule.Name.EndsWith("+") ? ", " : " ";
+                        rule.Name = rule.Name.TrimEnd('+', '_');
+                    }
+                    root.Add(node); 
+                }
 
                 GatherComments(parser);
+                parser.Tokenizer.Match(';'); 
             }
             return root;
         }
@@ -1590,7 +1599,7 @@ namespace dotless.Core.Parser
 
                     var entity = Entity(parser);
 
-                    if (!entity || !parser.Tokenizer.Match(')'))
+                    if (!entity || !parser.Tokenizer.Match(')')) 
                     {
                         Recall(parser, memo);
 
@@ -1790,7 +1799,7 @@ namespace dotless.Core.Parser
                 }.Where(x => x != "").ToArray()
             );
 
-            if (expressions.Count > 0 || parser.Tokenizer.Match(';'))
+            if (expressions.Count > 0 || parser.Tokenizer.Peek(';'))
             {
                 var value = NodeProvider.Value(expressions, important, parser.Tokenizer.GetNodeLocation(index));
 
@@ -2008,7 +2017,7 @@ namespace dotless.Core.Parser
 
         public string Property(Parser parser)
         {
-            var name = parser.Tokenizer.Match(@"\*?-?[-_a-zA-Z][-_a-z0-9A-Z]*");
+            var name = parser.Tokenizer.Match(@"\*?-?[-_a-zA-Z][-_a-z0-9A-Z]*(?:\+_?)?");
 
             if (name)
                 return name.Value;
@@ -2028,7 +2037,7 @@ namespace dotless.Core.Parser
 
             message = message ?? "Expected '{0}' but found '{1}'";
 
-            throw new ParsingException(string.Format(message, expectedString, parser.Tokenizer.NextChar), parser.Tokenizer.GetNodeLocation());
+            throw new ParsingException(string.Format(message, expectedString, parser.Tokenizer.CurrentChar), parser.Tokenizer.GetNodeLocation());
         }
 
         public T Expect<T>(T node, string message, Parser parser) where T:Node
