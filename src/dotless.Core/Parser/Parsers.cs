@@ -100,11 +100,11 @@ namespace dotless.Core.Parser
                         rule.Merge = rule.Name.EndsWith("+") ? ", " : " ";
                         rule.Name = rule.Name.TrimEnd('+', '_');
                     }
-                    root.Add(node); //TODO lägg till stöd för merge noder
+                    root.Add(node); 
                 }
 
                 GatherComments(parser);
-                parser.Tokenizer.Match(';');
+                parser.Tokenizer.Match(';'); 
             }
             return root;
         }
