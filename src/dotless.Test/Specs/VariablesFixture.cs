@@ -541,5 +541,21 @@ Recursive variable definition for @var on line 2 in file 'test.less':
 ";
             AssertLess(input, "");
         }
+
+        [Test]
+        public void VariableInterpolationInPropertyName() {
+            var input = @"
+.test {
+  @var: color;
+  @{var}: red;
+}
+";
+
+            var expected = @"
+.test {
+  color: red;
+}";
+            AssertLess(input, expected);
+        }
     }
 }
