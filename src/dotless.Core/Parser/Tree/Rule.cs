@@ -53,7 +53,12 @@ namespace dotless.Core.Parser.Tree
             }
 
             var evaluatedVariable = env.FindVariable(Name).Evaluate(env) as Rule;
-            var evaluatedValue = evaluatedVariable?.Value as Keyword;
+            if (evaluatedVariable == null) {
+                throw new ParsingException("Invalid variable value for property name", Location);
+            }
+
+            var evaluatedValue = evaluatedVariable.Value as Keyword;
+
             if (evaluatedValue == null) {
                 throw new ParsingException("Invalid variable value for property name", Location);
             }
