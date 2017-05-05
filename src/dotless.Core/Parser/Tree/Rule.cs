@@ -14,6 +14,7 @@ namespace dotless.Core.Parser.Tree
         public NodeList PostNameComments { get; set; }
         public bool IsSemiColonRequired { get; set; }
         public bool Variadic { get; set; }
+        public bool InterpolatedName { get; set; }
 
         public Rule(string name, Node value) : this(name, value, false)
         { 
@@ -37,13 +38,27 @@ namespace dotless.Core.Parser.Tree
                 throw new ParsingException("No value found for rule " + Name, Location);
             }
 
-            var rule = new Rule(Name, Value.Evaluate(env)).ReducedFrom<Rule>(this);
+            var rule = new Rule(EvaluateName(env), Value.Evaluate(env)).ReducedFrom<Rule>(this);
             rule.IsSemiColonRequired = this.IsSemiColonRequired;
             rule.PostNameComments = this.PostNameComments;
 
             env.Rule = null;
 
             return rule;
+        }
+
+        private string EvaluateName(Env env) {
+            if (!InterpolatedName) {
+                return Name;
+            }
+
+            var evaluatedVariable = env.FindVariable(Name).Evaluate(env) as Rule;
+            var evaluatedValue = evaluatedVariable?.Value as Keyword;
+            if (evaluatedValue == null) {
+                throw new ParsingException("Invalid variable value for property name", Location);
+            }
+
+            return evaluatedValue.ToCSS(env);
         }
 
         protected override Node CloneCore() {

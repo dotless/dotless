@@ -1202,11 +1202,18 @@ namespace dotless.Core.Parser
 
             Variable variable = null;
             string name = Property(parser);
+            bool interpolatedName = false;
 
             if (string.IsNullOrEmpty(name)) {
                 variable = Variable(parser);
                 if (variable != null) {
                     name = variable.Name;
+                } else {
+                    var interpolation = InterpolatedVariable(parser);
+                    if (interpolation != null) {
+                        interpolatedName = true;
+                        name = interpolation.Name;
+                    }
                 }
             }
 
@@ -1251,6 +1258,10 @@ namespace dotless.Core.Parser
 
                     var rule = NodeProvider.Rule(name, value,
                         parser.Tokenizer.GetNodeLocation(memo.TokenizerLocation.Index));
+                    if (interpolatedName) {
+                        rule.InterpolatedName = true;
+                        rule.Variable = false;
+                    }
                     rule.PostNameComments = postNameComments;
                     PopComments();
                     return rule;
