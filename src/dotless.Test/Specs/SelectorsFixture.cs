@@ -270,6 +270,29 @@ h3 + * {
         }
 
         [Test]
+        public void ParentSelector10()
+        {
+            // https://github.com/dotless/dotless/issues/466
+
+            var input = @"
+.mixin(@suffix) {
+  &-@{suffix} {
+    color: red;
+  }
+}
+.abc {
+  .mixin(xyz);
+}
+";
+            var expected = @"
+.abc-xyz {
+  color: red;
+}
+";
+            AssertLess(input, expected);
+        }
+
+        [Test]
         public void ParentSelectorCombinators()
         {
             // Note: https://github.com/dotless/dotless/issues/171
