@@ -1,6 +1,7 @@
 namespace dotless.Core
 {
     using configuration;
+    using Microsoft.Extensions.DependencyInjection;
 
     public class EngineFactory
     {
@@ -22,7 +23,7 @@ namespace dotless.Core
         public ILessEngine GetEngine(ContainerFactory containerFactory)
         {
             var container = containerFactory.GetContainer(Configuration);
-            return container.GetInstance<ILessEngine>();
+            return container.GetRequiredService<ILessEngine>();
         }
     }
 }
