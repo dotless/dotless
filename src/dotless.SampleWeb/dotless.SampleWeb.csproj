@@ -23,6 +23,7 @@
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
     <UseGlobalApplicationHostFile />
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -230,10 +231,6 @@
     <ProjectReference Include="..\dotless.AspNet\dotless.AspNet.csproj">
       <Project>{27fde40f-e671-4c5c-bc24-fd04ea6ea2b2}</Project>
       <Name>dotless.AspNet</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\dotless.Core\dotless.Core.csproj">
-      <Project>{d7a24e58-68d0-4b10-a324-ea33c822fa56}</Project>
-      <Name>dotless.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

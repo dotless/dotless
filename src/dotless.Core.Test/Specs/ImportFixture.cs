@@ -1038,22 +1038,22 @@ body {
             AssertLess(input, expected, GetParser());
         }
 
-        [Test]
-        public void VariableInterpolationInQuotedCssImport()
-        {
-            var input =
-                @"
-@var: ""foo"";
+//        [Test]
+//        public void VariableInterpolationInQuotedCssImport()
+//        {
+//            var input =
+//                @"
+//@var: ""foo"";
 
-@import ""@{var}/bar.css"";
-";
+//@import ""@{var}/bar.css"";
+//";
 
-            var expected =
-                @"
-@import ""foo/bar.css"";
-";
+//            var expected =
+//                @"
+//@import ""foo/bar.css"";
+//";
 
-        }
+//        }
 
         [Test]
         public void VariableInterpolationInQuotedLessImport()

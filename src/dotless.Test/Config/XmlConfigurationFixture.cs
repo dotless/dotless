@@ -3,7 +3,8 @@
     using System.Xml;
     using NUnit.Framework;
     using Core.configuration;
-    
+    using System;
+
     public class XmlConfigurationFixture
     {
         [Test]
@@ -26,11 +27,10 @@
             Assert.That(LoadConfig(@"<dotless httpExpiryInMinutes=""5""/>").HttpExpiryInMinutes, Is.EqualTo(5));
         }
 
-        [Test]
-        [ExpectedException]
+        [Test]        
         public void ShouldThrowOnEmptySessionParamName()
         {
-            LoadConfig(@"<dotless sessionMode=""queryParam"" sessionQueryParamName=""""/>");
+            Assert.Throws<Exception>(()=> LoadConfig(@"<dotless sessionMode=""queryParam"" sessionQueryParamName=""""/>"));
         }
 
         private DotlessConfiguration LoadConfig(string xml)

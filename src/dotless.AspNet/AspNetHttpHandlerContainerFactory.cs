@@ -3,16 +3,17 @@ using dotless.Core.Abstractions;
 using dotless.Core.configuration;
 using dotless.Core.Parameters;
 using dotless.Core.Response;
-using Pandora.Fluent;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace dotless.Core {
+namespace dotless.Core
+{
     public class AspNetHttpHandlerContainerFactory : AspNetContainerFactory
     {
-        protected override void RegisterParameterSource(FluentRegistration pandora, DotlessConfiguration configuration)
+        protected override void RegisterParameterSource(IServiceCollection services, DotlessConfiguration configuration)
         {
             if (!configuration.DisableParameters)
             {
-                pandora.Service<IParameterSource>().Implementor<QueryStringParameterSource>().Lifestyle.Transient();
+                services.AddTransient<IParameterSource, QueryStringParameterSource>();
             }
         }
     }

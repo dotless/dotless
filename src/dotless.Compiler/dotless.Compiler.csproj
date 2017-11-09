@@ -79,13 +79,7 @@
     <Compile Include="FixImportPathDecorator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Watcher.cs" />
-	<Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\dotless.Core\dotless.Core.csproj">
-      <Project>{D7A24E58-68D0-4B10-A324-EA33C822FA56}</Project>
-      <Name>dotless.Core</Name>
-    </ProjectReference>
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

@@ -48,12 +48,6 @@
     <Compile Include="TestPath.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\dotless.Core\dotless.Core.csproj">
-      <Project>{D7A24E58-68D0-4B10-A324-EA33C822FA56}</Project>
-      <Name>dotless.Core</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>

@@ -4,6 +4,7 @@
     using System.Web;
     using Abstractions;
     using configuration;
+    using Microsoft.Extensions.DependencyInjection;
     
     public class LessCssHttpHandlerFactory : LessCssHttpHandlerBase, IHttpHandlerFactory
     {
@@ -16,7 +17,7 @@
                     sessionRequired = true;
                     break;
                 case DotlessSessionStateMode.QueryParam:
-                    var http = Container.GetInstance<IHttp>();
+                    var http = Container.GetRequiredService<IHttp>();
                     var paramValue = http.Context.Request.QueryString[Config.SessionQueryParamName];
                     sessionRequired = !string.IsNullOrEmpty(paramValue) &&
                                       paramValue != "0" && !paramValue.Equals("false", StringComparison.OrdinalIgnoreCase);
