@@ -27,12 +27,12 @@ namespace dotless.Test.Config
             var response1 = serviceLocator.GetRequiredService<IResponse>();
             var response2 = serviceLocator.GetRequiredService<IResponse>();
 
-            Assert.That(response1, Is.Not.SameAs(response2));
+            Assert.That(response1, Is.Not.EqualTo(response2));
 
             var http1 = (response1 as CachedCssResponse).Http;
             var http2 = (response2 as CachedCssResponse).Http;
 
-            Assert.That(http1, Is.Not.SameAs(http2));
+            Assert.That(http1, Is.Not.EqualTo(http2));
         }
 
         [Test]
@@ -45,12 +45,12 @@ namespace dotless.Test.Config
             var response1 = serviceLocator.GetService<IResponse>();
             var response2 = serviceLocator.GetService<IResponse>();
 
-            Assert.That(response1, Is.Not.SameAs(response2));
+            Assert.That(response1, Is.Not.EqualTo(response2));
 
             var http1 = (response1 as CssResponse).Http;
             var http2 = (response2 as CssResponse).Http;
 
-            Assert.That(http1, Is.Not.SameAs(http2));
+            Assert.That(http1, Is.Not.EqualTo(http2));
         }
 
         [Test]
@@ -62,23 +62,23 @@ namespace dotless.Test.Config
 
             var handler1 = serviceLocator.GetService<HandlerImpl>();
             var handler2 = serviceLocator.GetService<HandlerImpl>();
-
-            Assert.That(handler1, Is.Not.SameAs(handler2));
+          
+            Assert.That(handler1, Is.Not.EqualTo(handler2));
 
             var http1 = handler1.Http;
             var http2 = handler2.Http;
 
-            Assert.That(http1, Is.Not.SameAs(http2));
+            Assert.That(http1, Is.Not.EqualTo(http2));
 
             var response1 = handler1.Response;
             var response2 = handler2.Response;
 
-            Assert.That(response1, Is.Not.SameAs(response2));
+            Assert.That(response1, Is.Not.EqualTo(response2));
 
             var engine1 = handler1.Engine;
             var engine2 = handler2.Engine;
 
-            Assert.That(engine1, Is.Not.SameAs(engine2));
+            Assert.That(engine1, Is.Not.EqualTo(engine2));
         }
 
         [Test]
@@ -91,7 +91,7 @@ namespace dotless.Test.Config
             var http1 = serviceLocator.GetRequiredService<IHttp>();
             var http2 = serviceLocator.GetRequiredService<IHttp>();
 
-            Assert.That(http1, Is.Not.SameAs(http2));
+            Assert.That(http1, Is.Not.EqualTo(http2));
         }
 
         [Test]

@@ -4,6 +4,7 @@
     using NUnit.Framework;
     using Core.configuration;
     using System;
+    using System.Configuration;
 
     public class XmlConfigurationFixture
     {
@@ -30,7 +31,7 @@
         [Test]        
         public void ShouldThrowOnEmptySessionParamName()
         {
-            Assert.Throws<Exception>(()=> LoadConfig(@"<dotless sessionMode=""queryParam"" sessionQueryParamName=""""/>"));
+            Assert.Throws<ConfigurationErrorsException>(()=> LoadConfig(@"<dotless sessionMode=""queryParam"" sessionQueryParamName=""""/>"));
         }
 
         private DotlessConfiguration LoadConfig(string xml)

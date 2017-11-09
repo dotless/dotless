@@ -33,9 +33,9 @@
             services.AddTransient<HandlerImpl>();
 
             if (configuration.CacheEnabled)
-                services.AddSingleton<IResponse, CachedCssResponse>();
+                services.AddTransient<IResponse, CachedCssResponse>();
             else
-                services.AddSingleton<IResponse, CssResponse>();
+                services.AddTransient<IResponse, CssResponse>();
 
 
             services.AddTransient<ICache, HttpCache>();
