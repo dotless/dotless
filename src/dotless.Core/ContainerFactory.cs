@@ -16,23 +16,21 @@ namespace dotless.Core
         protected IServiceCollection Container { get; set; }
 
         public System.IServiceProvider GetContainer(DotlessConfiguration configuration)
-        {  
-            var factory = new DefaultServiceProviderFactory();
-            var builder = factory.CreateBuilder(null);
-            
+        {              
+            var builder = new ServiceCollection();
             RegisterServices(builder, configuration);
 
-            return factory.CreateServiceProvider(builder);
+            return builder.BuildServiceProvider();
         }
 
         protected virtual void RegisterServices(IServiceCollection services, DotlessConfiguration configuration)
-        {
-            OverrideServices(services, configuration);
-
+        {            
             if (!configuration.Web)
                 RegisterLocalServices(services);
 
             RegisterCoreServices(services, configuration);
+
+            OverrideServices(services, configuration);
         }
 
         protected virtual void OverrideServices(IServiceCollection services, DotlessConfiguration configuration)
@@ -55,15 +53,16 @@ namespace dotless.Core
             services.AddSingleton<IStylizer, PlainStylizer>();
 
             services.AddSingleton<IImporter, Importer>();
-            services.AddSingleton<Parser.Parser>();
+            services.AddSingleton<Parser.Parser>();          
 
-            if (!configuration.DisableParameters)
-                services.AddTransient<ILessEngine, ParameterDecorator>();
+            services.AddTransient<ILessEngine, LessEngine>();           
 
             if (configuration.CacheEnabled)
-                services.AddTransient<ILessEngine, CacheDecorator>();
+                services.Decorate<ILessEngine, CacheDecorator>();
 
-            services.AddTransient<ILessEngine, LessEngine>();
+            if (!configuration.DisableParameters)
+                services.Decorate<ILessEngine, ParameterDecorator>();
+
             services.AddSingleton<IEnumerable<IPluginConfigurator>>(configuration.Plugins);
             services.AddSingleton(typeof(IFileReader), configuration.LessSource);
         }
