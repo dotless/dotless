@@ -5,13 +5,14 @@ using System.IO;
 using System.Linq;
 using dotless.Core;
 using NUnit.Framework;
+using NUnit.Framework.Interfaces;
 
 namespace dotless.CompatibilityTests
 {
     [TestFixture]
     public class LessJsCompatiblity
     {
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void FixtureSetUp()
         {
             DeleteDifferencesDirectory();
@@ -50,7 +51,7 @@ namespace dotless.CompatibilityTests
             return engine.TransformToCss(less, path.FileName);
         }
 
-        private IEnumerable<ITestCaseData> LoadTestCases()
+        private static IEnumerable<ITestCaseData> LoadTestCases()
         {
             var projectDir = ConfigurationManager.AppSettings["lessJsProjectDirectory"];
             var differencesDir = ConfigurationManager.AppSettings["differencesDirectory"];
@@ -62,7 +63,7 @@ namespace dotless.CompatibilityTests
             return testPaths.Select(t => CreateTestCase(t, ignores));
         }
 
-        private ITestCaseData CreateTestCase(TestPath path, IDictionary<string, string> ignores)
+        private static ITestCaseData CreateTestCase(TestPath path, IDictionary<string, string> ignores)
         {
             var testCase = new TestCaseData(path).SetName(path.TestName);
 
