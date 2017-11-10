@@ -390,8 +390,10 @@ namespace dotless.Core.Importers
             var match = Importer.EmbeddedResourceRegex.Match(file);
             if (!match.Success) return null;
 
-            var loader = new ResourceLoader();
-            loader._resourceName = match.Groups["Resource"].Value;
+            var loader = new ResourceLoader
+            {
+                _resourceName = match.Groups["Resource"].Value
+            };
 
             try
             {
