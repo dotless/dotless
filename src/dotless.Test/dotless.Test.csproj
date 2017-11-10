@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>dotless.Test</RootNamespace>
     <AssemblyName>dotless.Test</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -33,6 +33,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -43,6 +44,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -52,21 +54,30 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.4.2.1\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.2.0.0\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.2.0.0\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\Pandora\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
-    <Reference Include="Moq, Version=4.2.1502.911, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Moq.4.2.1502.0911\lib\net35\Moq.dll</HintPath>
+    <Reference Include="Moq, Version=4.7.145.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <HintPath>..\packages\Moq.4.7.145\lib\net45\Moq.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+    <Reference Include="nunit.framework, Version=3.8.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.3.8.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -80,93 +91,10 @@
   <ItemGroup>
     <Compile Include="Config\AspNetConfigurationFixture.cs" />
     <Compile Include="Config\XmlConfigurationFixture.cs" />
-    <Compile Include="Plugins\ColorSpinPluginFixture.cs" />
-    <Compile Include="Plugins\PluginFixture.cs" />
-    <Compile Include="Plugins\RtlPluginFixture.cs" />
-    <Compile Include="Specs\Compression\ColorsFixture.cs" />
-    <Compile Include="Specs\Compression\CommentsFixture.cs" />
-    <Compile Include="CompressedSpecFixtureBase.cs" />
-    <Compile Include="Specs\Compression\KeepFirstCommentFixture.cs" />
-    <Compile Include="Specs\Compression\Css3Fixture.cs" />
-    <Compile Include="Specs\Compression\ImportFixture.cs" />
-    <Compile Include="Specs\Compression\SelectorsFixture.cs" />
-    <Compile Include="Specs\Compression\WhitespaceFixture.cs" />
-    <Compile Include="Specs\ExtendFixture.cs" />
-    <Compile Include="Specs\Functions\ArgbFixture.cs" />
-    <Compile Include="Specs\Functions\BlendModesFixture.cs" />
-    <Compile Include="Specs\Functions\DataUriFixture.cs" />
-    <Compile Include="Specs\Functions\DefaultFixture.cs" />
-    <Compile Include="Specs\Functions\GradientImageFixture.cs" />
-    <Compile Include="Specs\Functions\PowFixture.cs" />
-    <Compile Include="Specs\Functions\LengthFixture.cs" />
-    <Compile Include="Specs\Functions\ExtractFixture.cs" />
-    <Compile Include="Specs\Functions\UnitFixture.cs" />
-    <Compile Include="Specs\GuardedRulesetsFixture.cs" />
-    <Compile Include="Specs\LineNumbersFixture.cs" />
-    <Compile Include="Specs\MediaFixture.cs" />
-    <Compile Include="Specs\Functions\ColorFixture.cs" />
-    <Compile Include="Specs\Functions\IsFunctionsFixture.cs" />
-    <Compile Include="Specs\Functions\HexFixture.cs" />
-    <Compile Include="Specs\Functions\ContrastFixture.cs" />
-    <Compile Include="Specs\Functions\StringFunctionsFixture.cs" />
-    <Compile Include="Specs\MixinGuardsFixture.cs" />
-    <Compile Include="Specs\ScriptFixture.cs" />
-    <Compile Include="Specs\StrictMathFixture.cs" />
-    <Compile Include="TestLogger.cs" />
-    <Compile Include="TestStylizer.cs" />
-    <Compile Include="Unit\EnvFixture.cs" />
     <Compile Include="Unit\HttpHandlerFixture.cs" />
-    <Compile Include="Unit\Parser\ParserFixture.cs" />
-    <Compile Include="Unit\Tokenizer\TokenizerFixture.cs" />
-    <Compile Include="Unit\Engine\CacheDecoratorFixture.cs" />
-    <Compile Include="Unit\Engine\CommentBug.cs" />
-    <Compile Include="Unit\Engine\MixinOverrideBug.cs" />
-    <Compile Include="Unit\Engine\NullVariableValueBug.cs" />
-    <Compile Include="Unit\Engine\ParameterDecoratorFixture.cs" />
-    <Compile Include="Unit\Engine\PathAggregatorBug.cs" />
     <Compile Include="Unit\Parameters\ParameterSourceFixture.cs" />
     <Compile Include="Unit\Response\CachedCssResponseFixture.cs" />
-    <Compile Include="Specs\OptimizationsFixture.cs" />
-    <Compile Include="SpecFixtureBase.cs" />
-    <Compile Include="Specs\CommentsFixture.cs" />
-    <Compile Include="Specs\ColorsFixture.cs" />
-    <Compile Include="Specs\AccessorsFixture.cs" />
-    <Compile Include="DictionaryReader.cs" />
-    <Compile Include="Specs\Functions\AbsFixture.cs" />
-    <Compile Include="Specs\Functions\AlphaFixture.cs" />
-    <Compile Include="Specs\Functions\BlueFixture.cs" />
-    <Compile Include="Specs\Functions\CielFixture.cs" />
-    <Compile Include="Specs\Functions\ComplementFixture.cs" />
-    <Compile Include="Specs\Functions\FloorFixture.cs" />
-    <Compile Include="Specs\Functions\FormatStringFixture.cs" />
-    <Compile Include="Specs\Functions\GrayscaleFixture.cs" />
-    <Compile Include="Specs\Functions\GreenFixture.cs" />
-    <Compile Include="Specs\Functions\HslaFixture.cs" />
-    <Compile Include="Specs\Functions\HslFixture.cs" />
-    <Compile Include="Specs\Functions\HueFixture.cs" />
-    <Compile Include="Specs\Functions\LightnessFixture.cs" />
-    <Compile Include="Specs\Functions\MixFixture.cs" />
-    <Compile Include="Specs\Functions\PercentageFixture.cs" />
-    <Compile Include="Specs\Functions\RedFixture.cs" />
-    <Compile Include="Specs\Functions\RgbaFixture.cs" />
-    <Compile Include="Specs\Functions\RgbFixture.cs" />
-    <Compile Include="Specs\Functions\RoundFixture.cs" />
-    <Compile Include="Specs\Functions\SaturationFixture.cs" />
-    <Compile Include="Specs\ImportFixture.cs" />
-    <Compile Include="Specs\MixinsArgsFixture.cs" />
-    <Compile Include="Specs\ScopeFixture.cs" />
-    <Compile Include="Specs\MixinsFixture.cs" />
-    <Compile Include="Specs\ParensFixture.cs" />
-    <Compile Include="Specs\OperationsFixture.cs" />
-    <Compile Include="Specs\VariablesFixture.cs" />
-    <Compile Include="Specs\SelectorsFixture.cs" />
-    <Compile Include="Specs\Css3Fixture.cs" />
-    <Compile Include="Specs\CssFixture.cs" />
-    <Compile Include="Specs\StringsFixture.cs" />
-    <Compile Include="Specs\RulesetsFixture.cs" />
-    <Compile Include="Specs\WhitespaceFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Config\ConfigurationFixture.cs" />
     <Compile Include="HttpFixtureBase.cs" />
     <Compile Include="Unit\Response\CssResponseFixture.cs" />
   </ItemGroup>
@@ -200,25 +128,6 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resource\Embedded.css" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resource\Embedded.less" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resource\Embedded2.less" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Resource\data-uri\unicorn.gif">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Resource\data-uri\lobster.woff">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

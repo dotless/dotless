@@ -1,13 +1,13 @@
 namespace dotless.Core
 {
     using System;
-    using Microsoft.Practices.ServiceLocation;
+ 
     using configuration;
 
     public abstract class LessCssHttpHandlerBase
     {
         private DotlessConfiguration _config;
-        private IServiceLocator _container;
+        private IServiceProvider _container;
 
         public DotlessConfiguration Config
         {
@@ -20,7 +20,7 @@ namespace dotless.Core
             }
         }
 
-        public IServiceLocator Container
+        public IServiceProvider Container
         {
             get { return _container ?? (_container = GetContainerFactory().GetContainer(Config)); }
             set

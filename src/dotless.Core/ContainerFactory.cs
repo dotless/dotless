@@ -4,9 +4,7 @@ namespace dotless.Core
     using configuration;
     using Input;
     using Loggers;
-    using Microsoft.Practices.ServiceLocation;
-    using Pandora;
-    using Pandora.Fluent;
+    using Microsoft.Extensions.DependencyInjection;
     using Parameters;
     using Stylizers;
     using dotless.Core.Plugins;
@@ -15,84 +13,58 @@ namespace dotless.Core
 
     public class ContainerFactory
     {
-        protected PandoraContainer Container { get; set; }
+        protected IServiceCollection Container { get; set; }
 
-        public IServiceLocator GetContainer(DotlessConfiguration configuration)
-        {
-            Container = new PandoraContainer();
+        public System.IServiceProvider GetContainer(DotlessConfiguration configuration)
+        {              
+            var builder = new ServiceCollection();
+            RegisterServices(builder, configuration);
 
-            Container.Register(pandora => RegisterServices(pandora, configuration));
-
-            return new CommonServiceLocatorAdapter(Container);
+            return builder.BuildServiceProvider();
         }
 
-        protected virtual void RegisterServices(FluentRegistration pandora, DotlessConfiguration configuration)
-        {
-            OverrideServices(pandora, configuration);
-
+        protected virtual void RegisterServices(IServiceCollection services, DotlessConfiguration configuration)
+        {            
             if (!configuration.Web)
-                RegisterLocalServices(pandora);
+                RegisterLocalServices(services);
 
-            RegisterCoreServices(pandora, configuration);
+            RegisterCoreServices(services, configuration);
+
+            OverrideServices(services, configuration);
         }
 
-        protected virtual void OverrideServices(FluentRegistration pandora, DotlessConfiguration configuration)
+        protected virtual void OverrideServices(IServiceCollection services, DotlessConfiguration configuration)
         {
             if (configuration.Logger != null)
-                pandora.Service<ILogger>().Implementor(configuration.Logger);
+                services.AddSingleton(typeof(ILogger), configuration.Logger);
         }
 
-        protected virtual void RegisterLocalServices(FluentRegistration pandora)
+        protected virtual void RegisterLocalServices(IServiceCollection services)
         {
-            pandora.Service<ICache>().Implementor<InMemoryCache>();
-            pandora.Service<IParameterSource>().Implementor<ConsoleArgumentParameterSource>();
-            pandora.Service<ILogger>().Implementor<ConsoleLogger>().Parameters("level").Set("error-level");
-            pandora.Service<IPathResolver>().Implementor<RelativePathResolver>();
+            services.AddSingleton<ICache, InMemoryCache>();
+            services.AddSingleton<IParameterSource, ConsoleArgumentParameterSource>();
+            services.AddSingleton<ILogger, ConsoleLogger>();
+            services.AddSingleton<IPathResolver, RelativePathResolver>();
         }
 
-        protected virtual void RegisterCoreServices(FluentRegistration pandora, DotlessConfiguration configuration)
+        protected virtual void RegisterCoreServices(IServiceCollection services, DotlessConfiguration configuration)
         {
-            pandora.Service<LogLevel>("error-level").Instance(configuration.LogLevel);
-            pandora.Service<IStylizer>().Implementor<PlainStylizer>();
+            services.AddSingleton(configuration);
+            services.AddSingleton<IStylizer, PlainStylizer>();
 
-            var importer = pandora.Service<IImporter>().Implementor<Importer>();
+            services.AddSingleton<IImporter, Importer>();
+            services.AddSingleton<Parser.Parser>();          
 
-            importer.Parameters("inlineCssFiles").Set("default-inline-css-files").Lifestyle.Transient();
-            importer.Parameters("disableUrlRewriting").Set("default-disable-url-rewriting").Lifestyle.Transient();
-            importer.Parameters("rootPath").Set("default-root-path").Lifestyle.Transient();
-            importer.Parameters("importAllFilesAsLess").Set("default-import-all-files-as-less").Lifestyle.Transient();
-
-            pandora.Service<bool>("default-disable-url-rewriting").Instance(configuration.DisableUrlRewriting);
-            pandora.Service<string>("default-root-path").Instance(configuration.RootPath);
-            pandora.Service<bool>("default-inline-css-files").Instance(configuration.InlineCssFiles);
-            pandora.Service<bool>("default-import-all-files-as-less").Instance(configuration.ImportAllFilesAsLess);
-
-            pandora.Service<Parser.Parser>().Implementor<Parser.Parser>().Parameters("optimization").Set("default-optimization").Lifestyle.Transient();
-            pandora.Service<int>("default-optimization").Instance(configuration.Optimization);
-
-            if (!configuration.DisableParameters)
-                pandora.Service<ILessEngine>().Implementor<ParameterDecorator>().Lifestyle.Transient();
+            services.AddTransient<ILessEngine, LessEngine>();           
 
             if (configuration.CacheEnabled)
-                pandora.Service<ILessEngine>().Implementor<CacheDecorator>().Lifestyle.Transient();
+                services.Decorate<ILessEngine, CacheDecorator>();
 
-            pandora.Service<ILessEngine>().Implementor<LessEngine>()
-                .Parameters("compress").Set("minify-output")
-                .Parameters("keepFirstSpecialComment").Set("keepFirstSpecialComment")
-                .Parameters("debug").Set("debug")
-                .Parameters("disableVariableRedefines").Set("disableVariableRedefines")
-                .Parameters("strictMath").Set("strictMath")
-                .Lifestyle.Transient();
-            pandora.Service<bool>("minify-output").Instance(configuration.MinifyOutput);
-            pandora.Service<bool>("debug").Instance(configuration.Debug);
-            pandora.Service<bool>("disableVariableRedefines").Instance(configuration.DisableVariableRedefines);
-            pandora.Service<bool>("strictMath").Instance(configuration.StrictMath);
-            pandora.Service<bool>("keepFirstSpecialComment").Instance(configuration.KeepFirstSpecialComment);
+            if (!configuration.DisableParameters)
+                services.Decorate<ILessEngine, ParameterDecorator>();
 
-            pandora.Service<ILessEngine>().Implementor<LessEngine>().Parameters("plugins").Set("default-plugins").Lifestyle.Transient();
-            pandora.Service<IEnumerable<IPluginConfigurator>>("default-plugins").Instance(configuration.Plugins);
-
-            pandora.Service<IFileReader>().Implementor(configuration.LessSource);
+            services.AddSingleton<IEnumerable<IPluginConfigurator>>(configuration.Plugins);
+            services.AddSingleton(typeof(IFileReader), configuration.LessSource);
         }
     }
 }

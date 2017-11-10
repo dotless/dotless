@@ -5,6 +5,7 @@ namespace dotless.Core.configuration
     using Loggers;
     using Plugins;
     using System.Collections.Generic;
+    using Microsoft.Extensions.Configuration;
 
     public enum DotlessSessionStateMode
     {
@@ -28,7 +29,6 @@ namespace dotless.Core.configuration
     {
         public const string DEFAULT_SESSION_QUERY_PARAM_NAME = "sstate";
         public const int DefaultHttpExpiryInMinutes = 10080; //7 days
-        internal static IConfigurationManager _configurationManager;
 
         public static DotlessConfiguration GetDefault()
         {
@@ -87,20 +87,7 @@ namespace dotless.Core.configuration
             KeepFirstSpecialComment = config.KeepFirstSpecialComment;
             RootPath = config.RootPath;
             StrictMath = config.StrictMath;
-        }
-
-        public static IConfigurationManager ConfigurationManager
-        {
-            get { return _configurationManager ?? (_configurationManager = new ConfigurationManagerWrapper()); }
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException("value");
-                }
-                _configurationManager = value;
-            }
-        }
+        }       
 
         /// <summary>
         /// Keep first comment begining /**

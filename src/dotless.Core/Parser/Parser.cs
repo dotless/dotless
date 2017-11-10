@@ -71,12 +71,12 @@ namespace dotless.Core.Parser
             {
                 _importer = value;
                 _importer.Parser = () => new Parser(Tokenizer.Optimization, Stylizer, _importer)
-                                             {
-                                                 NodeProvider = NodeProvider,
-                                                 Debug = Debug,
-                                                 CurrentDirectory = CurrentDirectory,
-                                                 StrictMath = StrictMath
-                                             };
+                {
+                    NodeProvider = NodeProvider,
+                    Debug = Debug,
+                    CurrentDirectory = CurrentDirectory,
+                    StrictMath = StrictMath
+                };
             }
         }
 
@@ -126,6 +126,12 @@ namespace dotless.Core.Parser
             Importer = importer;
             Debug = debug;
             Tokenizer = new Tokenizer(optimization);
+        }
+
+        public Parser(dotless.Core.configuration.DotlessConfiguration config, IStylizer stylizer, IImporter importer)
+            : this(config.Optimization, stylizer, importer, config.Debug)
+        {
+
         }
 
         public Ruleset Parse(string input, string fileName)

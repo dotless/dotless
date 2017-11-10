@@ -453,23 +453,17 @@ namespace dotless.Core.Importers
             }
 
             loader._fileContents = fileReader.GetBinaryFileContents(assemblyName);
+            
+            var domain = AppDomain.CreateDomain("LoaderDomain");
+            var assembly = domain.Load(loader._fileContents);
 
-            var domainSetup = new AppDomainSetup();
-            domainSetup.ApplicationBase = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var domain = AppDomain.CreateDomain("LoaderDomain", null, domainSetup);
-            domain.DoCallBack(loader.LoadResource);
-            AppDomain.Unload(domain);
-        }
-
-        // Runs in the separate app domain
-        private void LoadResource()
-        {
-            var assembly = Assembly.Load(_fileContents);
-            using (var stream = assembly.GetManifestResourceStream(_resourceName))
+            using (var stream = assembly.GetManifestResourceStream(loader._resourceName))
             using (var reader = new StreamReader(stream))
             {
-                _resourceContent = reader.ReadToEnd();
+                loader._resourceContent = reader.ReadToEnd();
             }
-        }
+
+            AppDomain.Unload(domain);
+        }  
     }
 }
