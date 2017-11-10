@@ -14,9 +14,7 @@ namespace dotless.Core
             get { return _config ?? (_config = new WebConfigConfigurationLoader().GetConfiguration()); }
             set
             {
-                if (value == null)
-                    throw new ArgumentNullException("value");
-                _config = value;
+                _config = value ?? throw new ArgumentNullException("value");
             }
         }
 
@@ -25,9 +23,7 @@ namespace dotless.Core
             get { return _container ?? (_container = GetContainerFactory().GetContainer(Config)); }
             set
             {
-                if (value == null)
-                    throw new ArgumentNullException("value");
-                _container = value;
+                _container = value ?? throw new ArgumentNullException("value");
             }
         }
 
