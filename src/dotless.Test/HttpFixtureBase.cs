@@ -48,7 +48,7 @@ namespace dotless.Test
             Http.SetupGet(h => h.Context).Returns(HttpContext.Object);
 
             ConfigManager.Setup(c => c.GetSection<DotlessConfiguration>(It.IsRegex("^dotless$"))).Returns(Config);
-            DotlessConfiguration.ConfigurationManager = ConfigManager.Object;
+            WebConfigConfigurationLoader.ConfigurationManager = ConfigManager.Object;
 
             Now = DateTime.Now;
             Clock.Setup(c => c.GetUtcNow()).Returns(Now);

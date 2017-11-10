@@ -5,6 +5,7 @@ using dotless.Core.Cache;
 using dotless.Core.Response;
 using dotless.Core.configuration;
 using dotless.Core.Parameters;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace dotless.Test.Config
 {
@@ -13,7 +14,7 @@ namespace dotless.Test.Config
         private ILessEngine GetEngine(DotlessConfiguration config)
         {
             var container = new AspNetContainerFactory().GetContainer(config);
-            return ((ParameterDecorator)container.GetInstance<ILessEngine>()).Underlying;
+            return ((ParameterDecorator)container.GetRequiredService<ILessEngine>()).Underlying;
         }
 
         [Test]
@@ -23,15 +24,15 @@ namespace dotless.Test.Config
 
             var serviceLocator = new AspNetContainerFactory().GetContainer(config);
 
-            var response1 = serviceLocator.GetInstance<IResponse>();
-            var response2 = serviceLocator.GetInstance<IResponse>();
+            var response1 = serviceLocator.GetRequiredService<IResponse>();
+            var response2 = serviceLocator.GetRequiredService<IResponse>();
 
-            Assert.That(response1, Is.Not.SameAs(response2));
+            Assert.That(response1, Is.Not.EqualTo(response2));
 
             var http1 = (response1 as CachedCssResponse).Http;
             var http2 = (response2 as CachedCssResponse).Http;
 
-            Assert.That(http1, Is.Not.SameAs(http2));
+            Assert.That(http1, Is.Not.EqualTo(http2));
         }
 
         [Test]
@@ -41,15 +42,15 @@ namespace dotless.Test.Config
 
             var serviceLocator = new AspNetContainerFactory().GetContainer(config);
 
-            var response1 = serviceLocator.GetInstance<IResponse>();
-            var response2 = serviceLocator.GetInstance<IResponse>();
+            var response1 = serviceLocator.GetService<IResponse>();
+            var response2 = serviceLocator.GetService<IResponse>();
 
-            Assert.That(response1, Is.Not.SameAs(response2));
+            Assert.That(response1, Is.Not.EqualTo(response2));
 
             var http1 = (response1 as CssResponse).Http;
             var http2 = (response2 as CssResponse).Http;
 
-            Assert.That(http1, Is.Not.SameAs(http2));
+            Assert.That(http1, Is.Not.EqualTo(http2));
         }
 
         [Test]
@@ -59,25 +60,25 @@ namespace dotless.Test.Config
 
             var serviceLocator = new AspNetContainerFactory().GetContainer(config);
 
-            var handler1 = serviceLocator.GetInstance<HandlerImpl>();
-            var handler2 = serviceLocator.GetInstance<HandlerImpl>();
-
-            Assert.That(handler1, Is.Not.SameAs(handler2));
+            var handler1 = serviceLocator.GetService<HandlerImpl>();
+            var handler2 = serviceLocator.GetService<HandlerImpl>();
+          
+            Assert.That(handler1, Is.Not.EqualTo(handler2));
 
             var http1 = handler1.Http;
             var http2 = handler2.Http;
 
-            Assert.That(http1, Is.Not.SameAs(http2));
+            Assert.That(http1, Is.Not.EqualTo(http2));
 
             var response1 = handler1.Response;
             var response2 = handler2.Response;
 
-            Assert.That(response1, Is.Not.SameAs(response2));
+            Assert.That(response1, Is.Not.EqualTo(response2));
 
             var engine1 = handler1.Engine;
             var engine2 = handler2.Engine;
 
-            Assert.That(engine1, Is.Not.SameAs(engine2));
+            Assert.That(engine1, Is.Not.EqualTo(engine2));
         }
 
         [Test]
@@ -87,10 +88,10 @@ namespace dotless.Test.Config
 
             var serviceLocator = new AspNetContainerFactory().GetContainer(config);
 
-            var http1 = serviceLocator.GetInstance<IHttp>();
-            var http2 = serviceLocator.GetInstance<IHttp>();
+            var http1 = serviceLocator.GetRequiredService<IHttp>();
+            var http2 = serviceLocator.GetRequiredService<IHttp>();
 
-            Assert.That(http1, Is.Not.SameAs(http2));
+            Assert.That(http1, Is.Not.EqualTo(http2));
         }
 
         [Test]
@@ -135,7 +136,7 @@ namespace dotless.Test.Config
 
             var serviceLocator = new AspNetContainerFactory().GetContainer(config);
 
-            var cache = serviceLocator.GetInstance<ICache>();
+            var cache = serviceLocator.GetRequiredService<ICache>();
 
             Assert.That(cache, Is.TypeOf<HttpCache>());
         }
@@ -147,7 +148,7 @@ namespace dotless.Test.Config
 
             var serviceLocator = new AspNetHttpHandlerContainerFactory().GetContainer(config);
 
-            var cache = serviceLocator.GetInstance<IParameterSource>();
+            var cache = serviceLocator.GetRequiredService<IParameterSource>();
 
             Assert.That(cache, Is.TypeOf<QueryStringParameterSource>());
         }

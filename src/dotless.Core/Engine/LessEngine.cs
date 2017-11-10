@@ -34,7 +34,12 @@ namespace dotless.Core
             set { Parser.CurrentDirectory = value; }
         }
 
-        public LessEngine(Parser.Parser parser, ILogger logger, bool compress, bool debug, bool disableVariableRedefines, bool disableColorCompression, bool keepFirstSpecialComment, bool strictMath, IEnumerable<IPluginConfigurator> plugins)
+        public LessEngine(Parser.Parser parser, ILogger logger, dotless.Core.configuration.DotlessConfiguration config)
+            :this(parser, logger, config.MinifyOutput, config.Debug, config.DisableVariableRedefines, config.DisableColorCompression, config.KeepFirstSpecialComment, config.Plugins)
+        {
+        }
+
+            public LessEngine(Parser.Parser parser, ILogger logger, bool compress, bool debug, bool disableVariableRedefines, bool disableColorCompression, bool keepFirstSpecialComment, bool strictMath, IEnumerable<IPluginConfigurator> plugins)
         {
             Parser = parser;
             Logger = logger;

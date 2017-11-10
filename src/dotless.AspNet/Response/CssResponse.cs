@@ -7,6 +7,11 @@ namespace dotless.Core.Response
     {
         public readonly IHttp Http;
 
+        public CssResponse(IHttp http, dotless.Core.configuration.DotlessConfiguration config)
+            : this(http, config.HandleWebCompression)
+        {
+        }
+
         public CssResponse(IHttp http, bool isCompressionHandledByResponse)
         {
             Http = http;
