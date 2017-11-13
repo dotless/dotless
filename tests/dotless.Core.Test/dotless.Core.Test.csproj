@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resource\data-uri\lobster.woff" />
+    <None Remove="Resource\data-uri\unicorn.gif" />
+    <None Remove="Resource\Embedded.css" />
+    <None Remove="Resource\Embedded.less" />
+    <None Remove="Resource\Embedded2.less" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resource\data-uri\lobster.woff">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\data-uri\unicorn.gif">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resource\Embedded.css" />
+    <EmbeddedResource Include="Resource\Embedded.less" />
+    <EmbeddedResource Include="Resource\Embedded2.less" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.DotNet.Analyzers.Compatibility" Version="0.1.2-alpha" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
+    <PackageReference Include="Moq" Version="4.7.145" />
+    <PackageReference Include="NUnit" Version="3.9.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.9.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\dotless.Core\dotless.Core.csproj" />
+  </ItemGroup>
+
+</Project>

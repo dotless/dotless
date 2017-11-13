@@ -3,15 +3,36 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{27FDE40F-E671-4C5C-BC24-FD04EA6EA2B2}</ProjectGuid>
+    <ProjectGuid>{E18BD1BD-68E2-4D7F-B6D6-C100BDDE27E8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>dotless.Core</RootNamespace>
-    <AssemblyName>dotless.AspNet</AssemblyName>
+    <RootNamespace>dotless.Test</RootNamespace>
+    <AssemblyName>dotless.Test</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
     <TargetFrameworkProfile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -24,6 +45,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -33,69 +55,67 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>..\dotless-open-source.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.4.2.1\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Extensions.DependencyInjection, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.2.0.0\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.2.0.0\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
     </Reference>
+    <Reference Include="Moq, Version=4.7.145.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <HintPath>..\packages\Moq.4.7.145\lib\net45\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=3.9.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NUnit.3.9.0\lib\net45\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Net" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Abstractions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Abstractions\Clock.cs" />
-    <Compile Include="Abstractions\Http.cs" />
-    <Compile Include="Abstractions\IClock.cs" />
-    <Compile Include="Abstractions\IHttp.cs" />
-    <Compile Include="AspNetContainerFactory.cs" />
-    <Compile Include="AspNetHttpHandlerContainerFactory.cs" />
-    <Compile Include="Cache\HttpCache.cs" />
-    <Compile Include="configuration\DotlessConfigurationSectionHandler.cs" />
-    <Compile Include="configuration\IConfigurationManager.cs" />
-    <Compile Include="configuration\WebConfigConfigurationLoader.cs" />
-    <Compile Include="configuration\XmlConfigurationInterpreter.cs" />
-    <Compile Include="HandlerImpl.cs" />
-    <Compile Include="Input\AspRelativePathResolver.cs" />
-    <Compile Include="Input\AspServerPathResolver.cs" />
-    <Compile Include="Input\VirtualFileReader.cs" />
-    <Compile Include="LessWeb.cs" />
-    <Compile Include="LessCssHttpHandler.cs" />
-    <Compile Include="LessCssHttpHandlerBase.cs" />
-    <Compile Include="LessCssHttpHandlerFactory.cs" />
-    <Compile Include="Loggers\AspNetTraceLogger.cs" />
-    <Compile Include="Loggers\AspResponseLogger.cs" />
-    <Compile Include="Parameters\QueryStringParameterSource.cs" />
+    <Compile Include="Config\AspNetConfigurationFixture.cs" />
+    <Compile Include="Config\XmlConfigurationFixture.cs" />
+    <Compile Include="Unit\HttpHandlerFixture.cs" />
+    <Compile Include="Unit\Parameters\ParameterSourceFixture.cs" />
+    <Compile Include="Unit\Response\CachedCssResponseFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Response\CachedCssResponse.cs" />
-    <Compile Include="Response\CssResponse.cs" />
-    <Compile Include="Response\IResponse.cs" />
-    <Compile Include="Response\QValue.cs" />
-    <Compile Include="Response\QValueList.cs" />
+    <Compile Include="HttpFixtureBase.cs" />
+    <Compile Include="Unit\Response\CssResponseFixture.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\dotless.Core\dotless.Core.csproj">
+    <ProjectReference Include="..\..\src\dotless.AspNet\dotless.AspNet.csproj">
+      <Project>{27fde40f-e671-4c5c-bc24-fd04ea6ea2b2}</Project>
+      <Name>dotless.AspNet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\dotless.Core\dotless.Core.csproj">
       <Project>{2faead09-eff5-4395-bf47-465bb8119877}</Project>
       <Name>dotless.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\dotless.Test.EmbeddedResource\dotless.Test.EmbeddedResource.csproj">
+      <Project>{ee1c5fc5-60df-4127-82d7-72c3c25664e1}</Project>
+      <Name>dotless.Test.EmbeddedResource</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\packages\Microsoft.DotNet.Analyzers.Compatibility.0.1.2-alpha\build\Microsoft.DotNet.Analyzers.Compatibility.targets" Condition="Exists('..\..\packages\Microsoft.DotNet.Analyzers.Compatibility.0.1.2-alpha\build\Microsoft.DotNet.Analyzers.Compatibility.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
