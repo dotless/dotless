@@ -6,6 +6,7 @@ using System.Linq;
 using dotless.Core;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
+using System.Reflection;
 
 namespace dotless.CompatibilityTests
 {
@@ -57,6 +58,12 @@ namespace dotless.CompatibilityTests
             var differencesDir = ConfigurationManager.AppSettings["differencesDirectory"];
             var ignoreFile = ConfigurationManager.AppSettings["ignoreFile"];
 
+            if (!Path.IsPathRooted(projectDir))
+                projectDir = Path.GetFullPath(projectDir);
+
+            if (!Path.IsPathRooted(ignoreFile))
+                ignoreFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), ignoreFile);
+
             var testPaths = TestPath.LoadAll(projectDir, differencesDir);
             var ignores = Ignore.Load(ignoreFile);
 
@@ -69,7 +76,7 @@ namespace dotless.CompatibilityTests
 
             if (ignores.ContainsKey(path.Ignore))
             {
-                testCase.Ignore(ignores[path.Ignore]);
+                testCase.Ignore(ignores[path.Ignore] ?? "From ignore.txt");
             }
 
             return testCase;
