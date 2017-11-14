@@ -1,1 +1,0 @@
-user+mailbox/department=shipping@example.com
