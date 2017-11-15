@@ -1,17 +1,11 @@
 #tool nuget:?package=NUnit.ConsoleRunner
 #tool nuget:?package=vswhere
 
-//////////////////////////////////////////////////////////////////////
 // ARGUMENTS
-//////////////////////////////////////////////////////////////////////
-
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
 
-//////////////////////////////////////////////////////////////////////
 // PREPARATION
-//////////////////////////////////////////////////////////////////////
-
 // Define directories.
 var buildDir = Directory("./BuildArtifacts") + Directory(configuration);
 var outputDir = Directory("./BuildArtifacts/output");
@@ -23,7 +17,7 @@ var outputDir = Directory("./BuildArtifacts/output");
 Task("Clean")
     .Does(() =>
 {
-    CleanDirectory(buildDir);
+    //CleanDirectory(buildDir);
 });
 
 Task("Restore")
@@ -37,8 +31,7 @@ Task("Build")
     .IsDependentOn("Restore")
     .Does(() =>
 {    
-
-
+	// get MSBuild 15 location
 	var vsLatest  = VSWhereLatest(new VSWhereLatestSettings { Requires = "Microsoft.Component.MSBuild" });
 	FilePath msBuildPath = (vsLatest==null)
                             ? null
@@ -58,9 +51,17 @@ Task("Test")
     .IsDependentOn("Build")
     .Does(() =>
 {
-    NUnit3("./tests/**/bin/" + configuration + "/**/*.Test.dll", new NUnit3Settings {
-        NoResults = true
-        });
+	// run tests for .NET core projects
+	DotNetCoreTest("./tests/dotless.Core.Test/dotless.Core.Test.csproj");
+	
+	// run other tests
+    NUnit3("./tests/dotless.AspNet.Test/bin/" + configuration + "/*.Test.dll", 
+		new NUnit3Settings { NoResults = true }
+		);
+		
+	NUnit3("./tests/dotless.CompatibilityTests/bin/" + configuration + "/*.Test.dll", 
+		new NUnit3Settings { NoResults = true }
+		);
 });
 
 Task("Publish")
@@ -76,15 +77,9 @@ Task("Publish")
 	 // DotNetCorePack(projJson, settings);
 });
 
-//////////////////////////////////////////////////////////////////////
 // TASK TARGETS
-//////////////////////////////////////////////////////////////////////
-
 Task("Default")
     .IsDependentOn("Test");
 
-//////////////////////////////////////////////////////////////////////
 // EXECUTION
-//////////////////////////////////////////////////////////////////////
-
 RunTarget(target);

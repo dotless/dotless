@@ -10,7 +10,7 @@ Possible build targets:
 * Clean = Removes all build artefacts
 * Build = Builds the main dotless solution
 * Test = (Default) Builds the solution and runs Unit tests using NUnit
-* Publish = Executes Build, Test and publishes the Nuget packages.
+* Publish = Executes Build, Test and create the Nuget packages.
 
 To run another build targert simply run:
 PS> .\build.ps1 -Target <target>

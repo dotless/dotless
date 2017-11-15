@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("dotless project")]
 [assembly: AssemblyProduct("dotless")]
-[assembly: AssemblyCopyright("Copyright © $product 2010-2012")]
+[assembly: AssemblyCopyright("Copyright © dotless 2010-2012")]
 [assembly: ComVisible(false)]
 [assembly: AssemblyVersion("1.5.3.0")]
 [assembly: AssemblyFileVersion("1.5.3.0")]
