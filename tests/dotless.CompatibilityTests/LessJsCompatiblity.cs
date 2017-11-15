@@ -7,6 +7,8 @@ using dotless.Core;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using System.Reflection;
+using System.Net;
+using System.IO.Compression;
 
 namespace dotless.CompatibilityTests
 {
@@ -54,7 +56,10 @@ namespace dotless.CompatibilityTests
 
         private static IEnumerable<ITestCaseData> LoadTestCases()
         {
-            var projectDir = ConfigurationManager.AppSettings["lessJsProjectDirectory"];
+            var currentFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+            var projectDir = GetLessJsArchiveDirectory(currentFolder);
+
             var differencesDir = ConfigurationManager.AppSettings["differencesDirectory"];
             var ignoreFile = ConfigurationManager.AppSettings["ignoreFile"];
 
@@ -62,12 +67,56 @@ namespace dotless.CompatibilityTests
                 projectDir = Path.GetFullPath(projectDir);
 
             if (!Path.IsPathRooted(ignoreFile))
-                ignoreFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), ignoreFile);
+                ignoreFile = Path.Combine(currentFolder, ignoreFile);
+
+            if (!Path.IsPathRooted(differencesDir))
+                differencesDir = Path.Combine(currentFolder, differencesDir);
 
             var testPaths = TestPath.LoadAll(projectDir, differencesDir);
             var ignores = Ignore.Load(ignoreFile);
 
             return testPaths.Select(t => CreateTestCase(t, ignores));
+        }
+
+        private static string GetLessJsArchiveDirectory(string currentFolder)
+        {
+            var rootFolder = Path.Combine(currentFolder, "less.js");
+            var archiveUri = ConfigurationManager.AppSettings["lessJsArchive"];
+            var archiveFileName = Path.GetFileName(archiveUri);
+            var archiveName = Path.GetFileNameWithoutExtension(archiveUri);
+            var lessJsArchiveFile = Path.Combine(rootFolder, archiveFileName);
+            var lessJsArchiveFolder = Path.Combine(rootFolder, archiveName);
+
+            if (!Directory.Exists(rootFolder))
+                Directory.CreateDirectory(rootFolder);
+
+            if (!File.Exists(lessJsArchiveFile))
+            {
+                var client = new WebClient();
+                client.UseDefaultCredentials = true;
+
+                IWebProxy defaultProxy = WebRequest.DefaultWebProxy;
+                if (defaultProxy != null)
+                {
+                    defaultProxy.Credentials = CredentialCache.DefaultCredentials;
+                    client.Proxy = defaultProxy;
+                }
+             
+                client.DownloadFile(archiveUri, lessJsArchiveFile);
+            }
+
+            if (!Directory.Exists(lessJsArchiveFolder))
+            {
+                ZipFile.ExtractToDirectory(lessJsArchiveFile, lessJsArchiveFolder);
+            }
+
+            // return first folder in the extracted folder
+            var directories = Directory.GetDirectories(lessJsArchiveFolder);
+
+            if (directories.Length == 1)
+                return directories[0];
+
+            return lessJsArchiveFolder;
         }
 
         private static ITestCaseData CreateTestCase(TestPath path, IDictionary<string, string> ignores)
