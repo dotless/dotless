@@ -21,6 +21,8 @@ errors\bad-variable-declaration1.less
 errors\color-func-invalid-color.less
 errors\color-invalid-hex-code.less
 errors\color-invalid-hex-code2.less
+errors\color-operation-error.less
+errors\comment-in-selector.less
 errors\css-guard-default-func.less
 errors\detached-ruleset-1.less
 errors\detached-ruleset-2.less
@@ -121,6 +123,7 @@ include-path\include-path.less
 javascript.less
 media.less
 merge.less
+mixins.less
 mixins-args.less
 mixins-closure.less
 mixins-guards.less
