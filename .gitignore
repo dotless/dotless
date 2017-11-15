@@ -2,6 +2,7 @@
 [Bb]in/
 [Rr]elease/
 [Bb]uild/
+[Pp]ackages/
 AssemblyInfo.cs
 Portal.4.1.resharper
 _ReSharper.*
@@ -12,16 +13,16 @@ Log/
 Uploads/
 *.user
 Thumbs.db
-gems/lib/*
-gems/*.gem
-gems/VERSION
 _site/
 src/_UpgradeReport_Files
 src/UpgradeLog.*
 *~
 *.userprefs
 *.pidb
-src/packages/
+
+# Build related
+tools/**
+!tools/packages.config
 
 
 ## Ignore Visual Studio temporary files, build results, and

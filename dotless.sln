@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2008
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotless.Compiler", "src\dotless.Compiler\dotless.Compiler.csproj", "{D0CE2A3A-5086-494A-A967-5D54B41BBC64}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotless.Compiler", "src\dotless.Compiler\dotless.Compiler.csproj", "{D0CE2A3A-5086-494A-A967-5D54B41BBC64}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotless.Benchmark", "src\dotless.Benchmark\dotless.Benchmark.csproj", "{2F21B126-9BB2-47F5-915D-C1F9EB0BBD7C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotless.Benchmark", "src\dotless.Benchmark\dotless.Benchmark.csproj", "{2F21B126-9BB2-47F5-915D-C1F9EB0BBD7C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotless.AspNet", "src\dotless.AspNet\dotless.AspNet.csproj", "{27FDE40F-E671-4C5C-BC24-FD04EA6EA2B2}"
 EndProject
@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotless.SampleWeb", "sample
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotless.Test.EmbeddedResource", "tests\dotless.Test.EmbeddedResource\dotless.Test.EmbeddedResource.csproj", "{EE1C5FC5-60DF-4127-82D7-72C3C25664E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotless.CompatibilityTests", "tests\dotless.CompatibilityTests\dotless.CompatibilityTests.csproj", "{0301D14F-005B-4A90-B97A-11D52F85BCAE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotless.Compatibility.Test", "tests\dotless.CompatibilityTests\dotless.Compatibility.Test.csproj", "{0301D14F-005B-4A90-B97A-11D52F85BCAE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotless.Core", "src\dotless.Core\dotless.Core.csproj", "{2FAEAD09-EFF5-4395-BF47-465BB8119877}"
 EndProject
