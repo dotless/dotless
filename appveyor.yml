@@ -32,3 +32,7 @@
   - ps: .\src\packages\psake.4.4.1\tools\psake.ps1 .\default.ps1 release-notest
   artifacts:
   - path: release\*.nupkg
+
+  cache:
+  - packages -> **\packages.config      
+  - tools -> build.cake
