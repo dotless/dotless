@@ -2,21 +2,20 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <Description>Dynamic CSS for .net</Description>
     <Company>dotless project</Company>
     <Product>dotless 1.5.3-beta1-7-g5db1b5d</Product>
     <Copyright>Copyright © dotless 2010-2012</Copyright>
     <Version>1.5.3.0</Version>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>dotless-open-source.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-
+    <AssemblyOriginatorKeyFile>dotless-open-source.snk</AssemblyOriginatorKeyFile>    
+  </PropertyGroup>        
+  
   <ItemGroup>
-    <PackageReference Include="CoreCompat.System.Drawing.v2" Version="5.2.0-preview1-r131" />
-    <PackageReference Include="Microsoft.DotNet.Analyzers.Compatibility" Version="0.1.2-alpha" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.0.0" />
+    <PackageReference Include="CoreCompat.System.Drawing.v2" Version="5.2.0-preview1-r131" Condition="'$(TargetFramework)' != 'net461'" />
+    <PackageReference Include="Microsoft.DotNet.Analyzers.Compatibility" Version="0.1.2-alpha" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.0.0" />    
   </ItemGroup>
 
 </Project>

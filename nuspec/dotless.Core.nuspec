@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>dotless.Core</id>
+    <title>Dynamic CSS for .net</title>
+    <version>$version$</version>
+    <authors>Daniel Hölbling, James Foster, Luke Page</authors>    
+    <licenseUrl>https://github.com/dotless/dotless/blob/master/license.txt</licenseUrl>
+    <projectUrl>https://github.com/dotless/dotless</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Core features to compile LESS files to CSS.
+	
+	This is a project to port the hugely useful Less libary to the .NET world. It give variables, nested rules and operators to CSS.
+
+For more information about the original Less project see http://lesscss.org/ or http://github.com/dotless/dotless. For more information about how to get started with the .NET version see http://www.dotlesscss.org/.</description>
+	<tags>less css compile dotnet</tags>
+	<repository type="git" url="https://github.com/dotless/dotless" />
+    <dependencies>
+		<group targetFramework=".NETFramework4.6.1">
+			<dependency id="Microsoft.Extensions.DependencyInjection" version="2.0.0" />                
+		</group>
+		<group targetFramework=".NETStandard2.0">
+			<dependency id="Microsoft.Extensions.DependencyInjection" version="2.0.0" />                
+			<dependency id="CoreCompat.System.Drawing.v2" version="5.2.0-preview1-r131" />
+		</group>
+	</dependencies>
+  </metadata>
+  <files>	
+	<file src="netstandard2.0/dotless.Core.dll" target="lib/netstandard2.0"/>	
+	<file src="net461/dotless.Core.dll" target="lib/net461"/>	
+  </files>
+</package>

@@ -5,7 +5,6 @@ namespace dotless.Core.configuration
     using Loggers;
     using Plugins;
     using System.Collections.Generic;
-    using Microsoft.Extensions.Configuration;
 
     public enum DotlessSessionStateMode
     {

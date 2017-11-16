@@ -6,6 +6,7 @@
     <Product>dotless.Compiler</Product>
     <Copyright>Copyright © dotless 2010-2012</Copyright>
     <Version>1.5.3.0</Version>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
