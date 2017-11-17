@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>dotless.CLI</id>
+    <title>LESS compiler for .NET</title>
+    <version>$version$</version>
+    <authors>Daniel Hölbling, James Foster, Luke Page</authors>    
+    <licenseUrl>https://github.com/dotless/dotless/blob/master/license.txt</licenseUrl>
+    <projectUrl>https://github.com/dotless/dotless</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Command line tool to compile LESS files</description>
+	<tags>less css compile dotnet</tags>
+	<repository type="git" url="https://github.com/dotless/dotless" />    
+  </metadata>
+  <files>	
+	<file src="net461\*.dll" target="tools"/>	
+	<file src="net461\*.exe" target="tools"/>		
+  </files>
+</package>

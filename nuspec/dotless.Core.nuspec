@@ -8,6 +8,7 @@
     <licenseUrl>https://github.com/dotless/dotless/blob/master/license.txt</licenseUrl>
     <projectUrl>https://github.com/dotless/dotless</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
+	<summary>Library to compile LESS files to CSS</summary>
     <description>Core features to compile LESS files to CSS.
 	
 	This is a project to port the hugely useful Less libary to the .NET world. It give variables, nested rules and operators to CSS.

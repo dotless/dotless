@@ -8,6 +8,7 @@
     <licenseUrl>https://github.com/dotless/dotless/blob/master/license.txt</licenseUrl>
     <projectUrl>https://github.com/dotless/dotless</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
+	<summary>Library to compile LESS files to CSS including HTTPHandler for ASP.NET to compile LESS files on demand.</summary>
     <description>Adds HTTPHandler for ASP.NET to compile LESS files on demand.
 	This is a project to port the hugely useful Less libary to the .NET world. It give variables, nested rules and operators to CSS.
 
@@ -20,6 +21,6 @@ For more information about the original Less project see http://lesscss.org/ or 
   </metadata>
   <files>		
 	<file src="dotless.AspNet.dll" target="lib/net461"/>	
-	<file src="src/web.config.install.xdt" target="content"/>	
+	<file src="../../web.config.install.xdt" target="content"/>	
   </files>
 </package>

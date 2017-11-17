@@ -4,11 +4,11 @@
 // ARGUMENTS
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
+var version = Argument("BuildVersion", "0.0.1");
 
 // PREPARATION
 // Define directories.
-var buildDir = Directory("./BuildArtifacts") + Directory(configuration);
-var outputDir = Directory("./BuildArtifacts/output");
+var outputDir = Directory("./BuildArtifacts");
 
 //////////////////////////////////////////////////////////////////////
 // TASKS
@@ -17,7 +17,7 @@ var outputDir = Directory("./BuildArtifacts/output");
 Task("Clean")
     .Does(() =>
 {
-    //CleanDirectory(buildDir);
+    CleanDirectory(outputDir);
 });
 
 Task("Restore")
@@ -67,14 +67,24 @@ Task("Test")
 Task("Publish")
     .IsDependentOn("Test")
     .Does(() =>
-{
-   // var packSettings = new DotNetCorePackSettings
-	// {
-		// OutputDirectory = outputDir,
-		// NoBuild = true
-	// };
+{	
+	var nuGetPackSettings   = new NuGetPackSettings {                                    
+                                     Version                 = version,                                     
+                                     NoPackageAnalysis       = false,                                   
+                                     BasePath                = "./src/dotless.Core/bin/"+configuration,
+                                     OutputDirectory         = outputDir
+                                 };
 
-	 // DotNetCorePack(projJson, settings);
+     NuGetPack("./nuspec/dotless.Core.nuspec", nuGetPackSettings);
+	 
+	 nuGetPackSettings.BasePath = "./src/dotless.AspNet/bin/"+configuration;
+	 NuGetPack("./nuspec/dotless.AspNet.nuspec", nuGetPackSettings);
+	 
+	 nuGetPackSettings.BasePath = "./";
+	 NuGetPack("./nuspec/dotless.nuspec", nuGetPackSettings);
+	 
+	 nuGetPackSettings.BasePath = "./src/dotless.Compiler/bin/"+configuration;
+	 NuGetPack("./nuspec/dotless.CLI.nuspec", nuGetPackSettings);
 });
 
 // TASK TARGETS
