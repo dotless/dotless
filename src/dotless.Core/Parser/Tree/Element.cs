@@ -17,8 +17,7 @@
 
         public Element(Combinator combinator, Node value) : this(combinator)
         {
-            TextNode textValue = value as TextNode;
-            if (textValue != null && !(value is Quoted))
+            if (value is TextNode textValue && !(value is Quoted))
             {
                 Value = textValue.Value.Trim();
             }

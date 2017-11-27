@@ -2,6 +2,7 @@
 {
     using System.Web;
     using System.Web.SessionState;
+    using Microsoft.Extensions.DependencyInjection;
     
     public class LessCssWithSessionHttpHandler : LessCssHttpHandler, IRequiresSessionState
     {
@@ -13,7 +14,7 @@
         {
             try
             {
-                var handler = Container.GetInstance<HandlerImpl>();
+                var handler = Container.GetRequiredService<HandlerImpl>();
 
                 handler.Execute();
             }

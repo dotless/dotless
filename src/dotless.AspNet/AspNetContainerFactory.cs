@@ -1,6 +1,6 @@
 ﻿namespace dotless.Core
 {
-    using Pandora.Fluent;
+    using Microsoft.Extensions.DependencyInjection;
     using Abstractions;
     using Cache;
     using Input;
@@ -11,47 +11,40 @@
 
     public class AspNetContainerFactory : ContainerFactory
     {
-        protected override void RegisterServices(FluentRegistration pandora, DotlessConfiguration configuration)
+        protected override void RegisterServices(IServiceCollection services, DotlessConfiguration configuration)
         {
-            base.RegisterServices(pandora, configuration);
+            base.RegisterServices(services, configuration);
 
-            RegisterParameterSource(pandora, configuration);
+            RegisterParameterSource(services, configuration);
 
-            RegisterWebServices(pandora, configuration);
+            RegisterWebServices(services, configuration);
         }
 
-        protected virtual void RegisterParameterSource(FluentRegistration pandora, DotlessConfiguration configuration)
+        protected virtual void RegisterParameterSource(IServiceCollection services, DotlessConfiguration configuration)
         {
-            pandora.Service<IParameterSource>().Implementor<NullParameterSource>().Lifestyle.Transient();
+            services.AddTransient<IParameterSource, NullParameterSource>();
         }
 
-        private void RegisterWebServices(FluentRegistration pandora, DotlessConfiguration configuration)
+        private void RegisterWebServices(IServiceCollection services, DotlessConfiguration configuration)
         {
 
-            pandora.Service<IClock>().Implementor<Clock>().Lifestyle.Transient();
-            pandora.Service<IHttp>().Implementor<Http>().Lifestyle.Transient();
-            pandora.Service<HandlerImpl>().Implementor<HandlerImpl>().Lifestyle.Transient();
-
-            var responseService = configuration.CacheEnabled ?
-                pandora.Service<IResponse>().Implementor<CachedCssResponse>() :
-                pandora.Service<IResponse>().Implementor<CssResponse>();
-
-            responseService.Parameters("isCompressionHandledByResponse").Set("default-is-compression-handled-by-response").Lifestyle.Transient();
-            pandora.Service<bool>("default-is-compression-handled-by-response").Instance(configuration.HandleWebCompression);
+            services.AddTransient<IClock, Clock>();
+            services.AddTransient<IHttp, Http>();
+            services.AddTransient<HandlerImpl>();
 
             if (configuration.CacheEnabled)
-            {
-                responseService.Parameters("httpExpiryInMinutes").Set("http-expiry-in-minutes").Lifestyle.Transient();
-                pandora.Service<int>("http-expiry-in-minutes").Instance(configuration.HttpExpiryInMinutes);
-            }
+                services.AddTransient<IResponse, CachedCssResponse>();
+            else
+                services.AddTransient<IResponse, CssResponse>();
 
-            pandora.Service<ICache>().Implementor<HttpCache>().Lifestyle.Transient();
-            pandora.Service<ILogger>().Implementor<AspResponseLogger>().Parameters("level").Set("error-level").Lifestyle.Transient();
+
+            services.AddTransient<ICache, HttpCache>();
+            services.AddTransient<ILogger, AspResponseLogger>();
 
             if (configuration.MapPathsToWeb)
-                pandora.Service<IPathResolver>().Implementor<AspServerPathResolver>().Lifestyle.Transient();
+                services.AddTransient<IPathResolver, AspServerPathResolver>();
             else
-                pandora.Service<IPathResolver>().Implementor<AspRelativePathResolver>().Lifestyle.Transient();
+                services.AddTransient<IPathResolver, AspRelativePathResolver>();
         }
     }
 }

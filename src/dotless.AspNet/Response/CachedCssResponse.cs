@@ -14,8 +14,13 @@
         {
         }
 
-        public CachedCssResponse(IHttp http, bool isCompressionHandledByResponse, int httpExpiryInMinutes, IClock clock) 
-            : base(http, isCompressionHandledByResponse)
+        public CachedCssResponse(IHttp http, IClock clock, dotless.Core.configuration.DotlessConfiguration config)
+           : this(http, config.HandleWebCompression, config.HttpExpiryInMinutes, clock)
+        {
+        }
+
+        public CachedCssResponse(IHttp http, bool isCompressionHandledByResponse, int httpExpiryInMinutes, IClock clock)
+        : base(http, isCompressionHandledByResponse)
         {
             _httpExpiryInMinutes = httpExpiryInMinutes;
             _clock = clock;
