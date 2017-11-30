@@ -8,9 +8,15 @@ build_script:
 test: off
 artifacts:
 - path: BuildArtifacts\*.nupkg
+  name: NuGet package
 cache:
 - packages -> **\packages.config      
 - tools -> build.cake
+skip_commits:
+  files:
+  - license.txt
+  - readme.md
+  - how-to-build.md
 
 # here we are going to override common configuration
 for:
@@ -26,4 +32,4 @@ for:
     provider: NuGet
     api_key:
       secure: feaZhwWZx/Din7m6hadxDNQDT7Jv7Kcx4vLMXecUNIjNj7f3FAPLCBM6uY81C1ZS
-    artifact: BuildArtifacts\*.nupkg 
+    artifact: /NuGet/
