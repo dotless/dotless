@@ -1,3 +1,5 @@
+image: Visual Studio 2017
+
 -
   branches:
     only:
@@ -21,7 +23,7 @@
   init:
     - git config --global core.autocrlf true
   build_script:
-  - ps: .\build.ps1 -Target Publish
+  - ps: .\build.ps1 -Target Test --BuildVersion=$($env:appveyor_build_version)
   artifacts:
   - path: BuildArtifacts\*.nupkg
 
