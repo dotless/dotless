@@ -1,10 +1,11 @@
 # common configuration for ALL branches
 image: Visual Studio 2017
-version: '{build}'
+version: '1.6.0.{build}'
 init:
 - git config --global core.autocrlf true
 build_script:
 - ps: .\build.ps1 -Target Test --BuildVersion=$($env:appveyor_build_version)
+test: off
 artifacts:
 - path: BuildArtifacts\*.nupkg
 cache:
