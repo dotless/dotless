@@ -1,6 +1,6 @@
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/dotless/dotless?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-[![Build status](https://ci.appveyor.com/api/projects/status/<projectId>?svg=true)](https://ci.appveyor.com/project/<name>/dotless)
+[![Build status](https://ci.appveyor.com/api/projects/status/fx19i667vflulava?svg=true)](https://ci.appveyor.com/project/twenzel/dotless)
 
 [![NuGet](https://img.shields.io/nuget/v/dotless.Core.svg)](https://nuget.org/packages/dotless.Core/)
 [![NuGet](https://img.shields.io/nuget/v/dotless.AspNet.svg)](https://nuget.org/packages/dotless.AspNet/)
