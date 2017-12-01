@@ -29,7 +29,7 @@ for:
   build_script:
   - ps: .\build.ps1 -Target Publish --BuildVersion=$($env:appveyor_build_version) 
   deploy:
-    provider: NuGet
-    api_key:
-      secure: feaZhwWZx/Din7m6hadxDNQDT7Jv7Kcx4vLMXecUNIjNj7f3FAPLCBM6uY81C1ZS
+  - provider: NuGet
     artifact: /NuGet/
+    api_key:
+      secure: c+mL8DX3ln4s/VMJ8jYBuaV/HAwexKKQZLKVBF9w7q+iONNow5WH4gn1AglAS/wX
