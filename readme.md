@@ -3,7 +3,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/fx19i667vflulava?svg=true)](https://ci.appveyor.com/project/twenzel/dotless)
 
 [![NuGet](https://img.shields.io/nuget/v/dotless.Core.svg)](https://nuget.org/packages/dotless.Core/)
-[![NuGet](https://img.shields.io/nuget/v/dotless.AspNet.svg)](https://nuget.org/packages/dotless.AspNet/)
+[![NuGet](https://img.shields.io/nuget/v/dotless.AspNetHandler.svg)](https://nuget.org/packages/dotless.AspNetHandler/)
 [![NuGet](https://img.shields.io/nuget/v/dotless.svg)](https://nuget.org/packages/dotless/)
 [![NuGet](https://img.shields.io/nuget/v/dotless.CLI.svg)](https://nuget.org/packages/dotless.CLI/)
 

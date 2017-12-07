@@ -78,7 +78,7 @@ Task("Publish")
      NuGetPack("./nuspec/dotless.Core.nuspec", nuGetPackSettings);
 	 
 	 nuGetPackSettings.BasePath = "./src/dotless.AspNet/bin/"+configuration;
-	 NuGetPack("./nuspec/dotless.AspNet.nuspec", nuGetPackSettings);
+	 NuGetPack("./nuspec/dotless.AspNetHandler.nuspec", nuGetPackSettings);
 	 
 	 nuGetPackSettings.BasePath = "./";
 	 NuGetPack("./nuspec/dotless.nuspec", nuGetPackSettings);
