@@ -18,7 +18,7 @@ For more information about the original Less project see http://lesscss.org/ or 
 	<repository type="git" url="https://github.com/dotless/dotless" />
     <dependencies>
 		<dependency id="dotless.Core" version="$version$" />
-		<dependency id="dotless.AspNet" version="$version$" />
+		<dependency id="dotless.AspNetHandler" version="$version$" />
 	</dependencies>	
   </metadata>
   <files></files>
