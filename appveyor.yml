@@ -1,6 +1,6 @@
 # common configuration for ALL branches
 image: Visual Studio 2017
-version: '1.6.0.{build}'
+version: '1.6.{build}'
 init:
 - git config --global core.autocrlf true
 build_script:
