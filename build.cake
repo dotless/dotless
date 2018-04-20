@@ -1,6 +1,8 @@
 #tool nuget:?package=NUnit.ConsoleRunner
 #tool nuget:?package=vswhere
 
+#addin "nuget:?package=Cake.FileHelpers"
+
 // ARGUMENTS
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
@@ -27,8 +29,21 @@ Task("Restore")
     NuGetRestore("./dotless.sln");
 });
 
+Task("SetVersion")
+    .IsDependentOn("Clean")
+    .Does(() =>
+{
+	ReplaceRegexInFiles("./src/dotless.AspNet/Properties/AssemblyInfo.cs", "(?<=AssemblyVersion\\(\")(.+?)(?=\"\\))", version);
+	ReplaceRegexInFiles("./src/dotless.AspNet/Properties/AssemblyInfo.cs", "(?<=AssemblyFileVersion\\(\")(.+?)(?=\"\\))", version);
+	
+	ReplaceRegexInFiles("./src/dotless.Compiler/dotless.Compiler.csproj", "<Version>([0-9\\.]*)</Version>", $"<Version>{version}</Version>");
+	ReplaceRegexInFiles("./src/dotless.Core/dotless.Core.csproj", "<Version>([0-9\\.]*)</Version>", $"<Version>{version}</Version>");	
+});
+
+
 Task("Build")	
     .IsDependentOn("Restore")
+	.IsDependentOn("SetVersion")
     .Does(() =>
 {    
 	// get MSBuild 15 location
