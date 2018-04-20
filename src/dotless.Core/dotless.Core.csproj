@@ -4,8 +4,8 @@
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <Description>Dynamic CSS for .net</Description>
     <Company>dotless project</Company>
-    <Product>dotless 1.5.3-beta1-7-g5db1b5d</Product>
-    <Copyright>Copyright © dotless 2010-2012</Copyright>
+    <Product>dotless</Product>
+    <Copyright>Copyright © dotless 2010-2018</Copyright>
     <Version>1.5.3.0</Version>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>dotless-open-source.snk</AssemblyOriginatorKeyFile>    

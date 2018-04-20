@@ -2,13 +2,11 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("dotless 1.5.3.0")]
-[assembly: AssemblyDescription("Dynamic CSS for .net")]
-[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyTitle("dotless ASP.NET Handler")]
+[assembly: AssemblyDescription("ASP.NET Handler to deliver compiled less files")]
+[assembly: ComVisible(false)]
 [assembly: AssemblyCompany("dotless project")]
 [assembly: AssemblyProduct("dotless")]
-[assembly: AssemblyCopyright("Copyright © dotless 2010-2012")]
-[assembly: ComVisible(false)]
+[assembly: AssemblyCopyright("Copyright © dotless 2010-2018")]
 [assembly: AssemblyVersion("1.5.3.0")]
 [assembly: AssemblyFileVersion("1.5.3.0")]
-[assembly: AssemblyInformationalVersionAttribute("1.5.3.0")]

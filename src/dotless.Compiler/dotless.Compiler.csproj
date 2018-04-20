@@ -4,7 +4,7 @@
     <TargetFrameworks>net461</TargetFrameworks> 
     <Company>dotless project</Company>
     <Product>dotless.Compiler</Product>
-    <Copyright>Copyright © dotless 2010-2012</Copyright>
+    <Copyright>Copyright © dotless 2010-2018</Copyright>
     <Version>1.5.3.0</Version>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>    
     <OutputType>Exe</OutputType>    
