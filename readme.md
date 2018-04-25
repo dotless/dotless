@@ -9,6 +9,9 @@ Build status: [![Build status](https://ci.appveyor.com/api/projects/status/fx19i
 |dotless | [![NuGet](https://img.shields.io/nuget/v/dotless.svg)](https://nuget.org/packages/dotless/) | Backward compatible package (containing Core and ASP.NET Handler). Please upgrade to either dotless.AspNetHandler or to dotless.Core if you don't need ASP.NET stuff
 |dotless.CLI | [![NuGet](https://img.shields.io/nuget/v/dotless.CLI.svg)](https://nuget.org/packages/dotless.CLI/) | Command line interface (console application) to compile less files
 
+.NET Framework version support
+================
+Starting with version 1.6 only .NET Standard 2.0 compatible .NET Frameworks (.NET Core 2, .NET Standard 2.0 Libraries and .NET Framework 4.6.1+) are supported. If your application/library don't run on any of these Frameworks you have to stick with version 1.5.3.
 
 Just Want a .dll?
 =================
