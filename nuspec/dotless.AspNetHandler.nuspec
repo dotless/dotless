@@ -21,6 +21,10 @@ For more information about the original Less project see http://lesscss.org/ or 
   </metadata>
   <files>		
 	<file src="dotless.AspNet.dll" target="lib/net461"/>	
-	<file src="../../web.config.install.xdt" target="content"/>	
+	<file src="../../web.config.install.xdt" target="tools"/>	
+	<file src="../../../dotless.Tools.WebTransforms/bin/dotless.Tools.WebTransforms.dll" target="tools"/>	
+	<file src="../../../dotless.Tools.WebTransforms/bin/Microsoft.Web.XmlTransform.dll" target="tools"/>	
+	<file src="../../install.ps1" target="tools"/>	
+	<file src="../../web.config.xdt" target="content/web.config.install.xdt"/>	
   </files>
 </package>

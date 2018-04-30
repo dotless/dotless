@@ -1,20 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform"> 
+	<xdt:Import assembly="dotless.Tools.WebTransforms" namespace="dotless.Tools.WebTransforms"/>
+	 
+	<configSections xdt:Transform="MergeBefore(/configuration/*)" />
+	 
 	<configSections xdt:Transform="InsertIfMissing">
-		<section name="dotless" type="dotless.Core.configuration.DotlessConfigurationSectionHandler, dotless.Core" xdt:Transform="InsertIfMissing" xdt:Locator="Match(name)" />
+		<section name="dotless" type="dotless.Core.configuration.DotlessConfigurationSectionHandler, dotless.AspNet" xdt:Transform="InsertIfMissing" xdt:Locator="Match(name)" />
 	</configSections>
 
 	<dotless minifyCss="false" cache="true" web="false" strictMath="false" xdt:Transform="InsertIfMissing" />
 
 	<system.webServer xdt:Transform="InsertIfMissing">
 		<handlers xdt:Transform="InsertIfMissing">
-			<add name="dotless" path="*.less" verb="GET" type="dotless.Core.LessCssHttpHandler,dotless.Core" resourceType="File" preCondition="" xdt:Transform="InsertIfMissing" xdt:Locator="Match(name)" />
+			<add name="dotless" path="*.less" verb="GET" type="dotless.Core.LessCssHttpHandler,dotless.AspNet" resourceType="File" preCondition="" xdt:Transform="InsertIfMissing" xdt:Locator="Match(name)" />
 		</handlers>
 	</system.webServer>
 
 	<system.web xdt:Transform="InsertIfMissing">
 		<httpHandlers xdt:Transform="InsertIfMissing">
-			<add path="*.less" verb="GET" type="dotless.Core.LessCssHttpHandler, dotless.Core" xdt:Transform="InsertIfMissing" xdt:Locator="Match(path, verb)" />
+			<add path="*.less" verb="GET" type="dotless.Core.LessCssHttpHandler, dotless.AspNet" xdt:Transform="InsertIfMissing" xdt:Locator="Match(path, verb)" />
 		</httpHandlers>
 	</system.web>
 </configuration>
