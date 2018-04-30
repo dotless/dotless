@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform"> 
-	<xdt:Import assembly="dotless.Tools.WebTransforms" namespace="dotless.Tools.WebTransforms"/>
+	<xdt:Import path="dotless.Tools.WebTransforms.dll" namespace="dotless.Tools.WebTransforms"/>
 	 
 	<configSections xdt:Transform="MergeBefore(/configuration/*)" />
 	 

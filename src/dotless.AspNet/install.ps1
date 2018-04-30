@@ -9,7 +9,7 @@ function applyConfigTransformation($config,$xdt)
    try 
    {
       Write-Host 'Applying transformation on ' + $config
-      $doc = New-Object Microsoft.Web.XmlTransform.XmlTransformableDocument
+      $doc = New-Object Microsoft.Web.XmlTransform.XmlTransformableDocument	 
       $doc.PreserveWhiteSpace = $true
       $doc.Load($config)
       $trn = New-Object Microsoft.Web.XmlTransform.XmlTransformation($xdt)
