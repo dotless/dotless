@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
+    <TargetFrameworks>net45;net461;net47;netstandard2.0</TargetFrameworks>
     <Description>Dynamic CSS for .net</Description>
     <Company>dotless project</Company>
     <Product>dotless</Product>
@@ -12,10 +12,15 @@
   </PropertyGroup>        
   
   <ItemGroup>
-    <PackageReference Include="CoreCompat.System.Drawing.v2" Version="5.2.0-preview1-r131" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
-    <PackageReference Include="Microsoft.DotNet.Analyzers.Compatibility" Version="0.1.2-alpha" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.DotNet.Analyzers.Compatibility" Version="0.2.12-alpha" PrivateAssets="All" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.0.0" Condition="'$(TargetFramework)' != 'net45'" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="1.1.1" Condition="'$(TargetFramework)' == 'net45'" />
-  </ItemGroup>
+  </ItemGroup>         
+  
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="System.Drawing.Common">
+      <Version>4.5.0-preview2-26406-04</Version>
+    </PackageReference>
+  </ItemGroup>          
 
 </Project>
