@@ -1,12 +1,12 @@
 namespace dotless.Core.Parser.Tree
 {
-    using Exceptions;
-    using Infrastructure;
-    using Infrastructure.Nodes;
     using System;
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
+    using Exceptions;
+    using Infrastructure;
+    using Infrastructure.Nodes;
     using Utils;
 
     public class Color : Node, IOperable, IComparable
@@ -189,13 +189,11 @@ namespace dotless.Core.Parser.Tree
             return null;
         }
 
-        public static string GetKeyword(int[] rgb)
-        {
+        public static string GetKeyword(int[] rgb) {
             var color = (rgb[0] << 16) + (rgb[1] << 8) + rgb[2];
 
             string keyword;
-            if (Html4ColorsReverse.TryGetValue(color, out keyword))
-            {
+            if (Html4ColorsReverse.TryGetValue(color, out keyword)) {
                 return keyword;
             }
 
@@ -212,7 +210,7 @@ namespace dotless.Core.Parser.Tree
             if (hex.Length == 8)
             {
                 rgb = ParseRgb(hex.Substring(2));
-                alpha = Parse(hex.Substring(0, 2)) / 255.0;
+                alpha = Parse(hex.Substring(0, 2))/255.0;
             }
             else if (hex.Length == 6)
             {
@@ -229,7 +227,7 @@ namespace dotless.Core.Parser.Tree
         private static double[] ParseRgb(string hex)
         {
             return Enumerable.Range(0, 3)
-                .Select(i => hex.Substring(i * 2, 2))
+                .Select(i => hex.Substring(i*2, 2))
                 .Select(Parse)
                 .ToArray();
         }
@@ -241,8 +239,7 @@ namespace dotless.Core.Parser.Tree
 
         private readonly string _text;
 
-        public Color(int color)
-        {
+        public Color(int color) {
             RGB = new double[3];
 
             B = color & 0xff;
@@ -253,8 +250,7 @@ namespace dotless.Core.Parser.Tree
             Alpha = 1;
         }
 
-        public Color(string hex)
-        {
+        public Color(string hex) {
             hex = hex.TrimStart('#');
             double[] rgb;
             var alpha = 1.0;
@@ -263,7 +259,7 @@ namespace dotless.Core.Parser.Tree
             if (hex.Length == 8)
             {
                 rgb = ParseRgb(hex.Substring(2));
-                alpha = Parse(hex.Substring(0, 2)) / 255.0;
+                alpha = Parse(hex.Substring(0, 2))/255.0;
             }
             else if (hex.Length == 6)
             {
@@ -282,31 +278,26 @@ namespace dotless.Core.Parser.Tree
             _text = text;
         }
 
-        public Color(IEnumerable<Number> rgb, Number alpha)
-        {
+        public Color(IEnumerable<Number> rgb, Number alpha) {
             RGB = rgb.Select(d => d.Normalize()).ToArray();
 
             Alpha = alpha.Normalize();
         }
 
-        public Color(double r, double g, double b) : this(r, g, b, 1)
-        {
-
+        public Color(double r, double g, double b) : this(r, g, b, 1) {
+            
         }
 
-        public Color(double r, double g, double b, double alpha) : this(new[] { r, g, b }, alpha)
-        {
-
+        public Color(double r, double g, double b, double alpha) : this(new[] {r, g, b}, alpha) {
+            
         }
 
-        public Color(double[] rgb) : this(rgb, 1)
-        {
-
+        public Color(double[] rgb) : this(rgb, 1) {
+            
         }
 
-        public Color(double[] rgb, double alpha) : this(rgb, alpha, null)
-        {
-
+        public Color(double[] rgb, double alpha) : this(rgb, alpha, null) {
+            
         }
 
         public Color(double[] rgb, double alpha, string text)
@@ -317,7 +308,7 @@ namespace dotless.Core.Parser.Tree
         }
 
         public Color(double red, double green, double blue, double alpha = 1.0, string text = null)
-            : this(new[] { red, green, blue }, alpha, text)
+            : this(new[] {red, green, blue}, alpha, text)
         {
         }
 
@@ -366,20 +357,19 @@ namespace dotless.Core.Parser.Tree
         {
             get
             {
-                var linearR = R / 255;
+                var linearR = R / 255; 
                 var linearG = G / 255;
                 var linearB = B / 255;
 
                 var red = TransformLinearToSrbg(linearR);
                 var green = TransformLinearToSrbg(linearG);
                 var blue = TransformLinearToSrbg(linearB);
-
+                
                 return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
             }
         }
 
-        protected override Node CloneCore()
-        {
+        protected override Node CloneCore() {
             return new Color(RGB.ToArray(), Alpha);
         }
 
@@ -405,7 +395,7 @@ namespace dotless.Core.Parser.Tree
 
         private List<int> ConvertToInt(IEnumerable<double> rgb)
         {
-            return rgb.Select(d => (int)Math.Round(d, MidpointRounding.AwayFromZero)).ToList();
+            return rgb.Select(d => (int) Math.Round(d, MidpointRounding.AwayFromZero)).ToList();
         }
 
         private string GetHexString(IEnumerable<int> rgb)
@@ -444,7 +434,7 @@ namespace dotless.Core.Parser.Tree
         /// <returns></returns>
         public string ToArgb()
         {
-            var values = new[] { Alpha * 255 }.Concat(RGB);
+            var values = new[] {Alpha*255}.Concat(RGB);
             var argb = ConvertToInt(values);
             return GetHexString(argb);
         }
@@ -471,7 +461,7 @@ namespace dotless.Core.Parser.Tree
             if (color == null)
                 throw new ArgumentNullException("color");
 
-            return System.Drawing.Color.FromArgb((int)Math.Round(color.Alpha * 255d), (int)color.R, (int)color.G, (int)color.B);
+            return System.Drawing.Color.FromArgb((int) Math.Round(color.Alpha * 255d), (int) color.R, (int) color.G, (int) color.B);
         }
     }
 }
