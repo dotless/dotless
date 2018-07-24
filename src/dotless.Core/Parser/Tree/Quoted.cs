@@ -1,9 +1,9 @@
 ﻿namespace dotless.Core.Parser.Tree
 {
-    using System.Text.RegularExpressions;
     using Infrastructure;
     using Infrastructure.Nodes;
-using System.Text;
+    using System.Text;
+    using System.Text.RegularExpressions;
 
     public class Quoted : TextNode
     {
@@ -43,6 +43,11 @@ using System.Text;
                 .Append(RenderString());
         }
 
+        protected override Node CloneCore()
+        {
+            return new Quoted(Value, Quote, Escaped);
+        }
+
         public StringBuilder RenderString()
         {
             if (Escaped)
@@ -66,8 +71,8 @@ using System.Text;
             var value = Regex.Replace(Value, @"@\{([\w-]+)\}",
                           m =>
                           {
-                              var v = new Variable('@' + m.Groups[1].Value) 
-                                    { Location = new NodeLocation(Location.Index + m.Index, Location.Source, Location.FileName) }
+                              var v = new Variable('@' + m.Groups[1].Value)
+                              { Location = new NodeLocation(Location.Index + m.Index, Location.Source, Location.FileName) }
                                     .Evaluate(env);
                               return v is TextNode ? (v as TextNode).Value : v.ToCSS(env);
                           });
