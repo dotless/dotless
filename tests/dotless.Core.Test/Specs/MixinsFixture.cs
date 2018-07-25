@@ -1968,5 +1968,33 @@ fieldset[disabled] .test {
 
             AssertLess(input, expected);
         }
+
+        [Test]
+        public void MixinWithEmptyContent_WithoutParantheses_CorrectlyCopiesContent()
+        {
+            var input = @"
+.mixinWithContent {
+  content: '';
+}
+
+.useMixinWithoutParantheses {
+  .mixinWithContent;
+}
+
+.useMixinWithParantheses {
+  .mixinWithContent();
+}";
+            var expected = @"
+.mixinWithContent {
+  content: '';
+}
+.useMixinWithoutParantheses {
+  content: '';
+}
+.useMixinWithParantheses {
+  content: '';
+}";
+            AssertLess (input, expected);
+        }
     }
 }
