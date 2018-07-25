@@ -11,7 +11,14 @@ Build status: [![Build status](https://ci.appveyor.com/api/projects/status/fx19i
 
 .NET Framework version support
 ================
-Starting with version 1.6 only .NET Standard 2.0 compatible .NET Frameworks (.NET Core 2, .NET Standard 2.0 Libraries and .NET Framework 4.6.1+) are supported. If your application/library don't run on any of these Frameworks you have to stick with version 1.5.3.
+Starting with version 1.6 following .NET Framworks are suported:
+
+* .NET Framework 4.5.1
+* .NET Framework 4.6.1
+* .NET Framework 4.7
+* .NET Standard 2.0 (.NET Core 2.0, Mono 5.4, .NET Framework 4.6.1+)
+
+If your application/library don't run on any of these Frameworks you have to stick with version 1.5.3.
 
 Just Want a .dll?
 =================
