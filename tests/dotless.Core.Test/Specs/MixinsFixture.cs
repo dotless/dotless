@@ -1961,7 +1961,7 @@ fieldset[disabled] .test {
   background-image: url('image.png');
 }
 .newCssClass {
-  background-image: url(image.png);
+  background-image: url('image.png');
   color: #000;
 }
 ";

@@ -92,6 +92,7 @@ namespace dotless.CompatibilityTests
 
             if (!File.Exists(lessJsArchiveFile))
             {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
                 var client = new WebClient();
                 client.UseDefaultCredentials = true;
 
