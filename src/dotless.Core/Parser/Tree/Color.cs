@@ -313,7 +313,7 @@ namespace dotless.Core.Parser.Tree
         }
 
         // TODO: A RGB color should really be represented by int[], or better: a compressed int.
-        public readonly double[] RGB;
+        public readonly double[] RGB = new double[3];
         public readonly double Alpha;
 
         public double R
