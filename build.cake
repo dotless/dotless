@@ -36,8 +36,8 @@ Task("SetVersion")
 	ReplaceRegexInFiles("./src/dotless.AspNet/Properties/AssemblyInfo.cs", "(?<=AssemblyVersion\\(\")(.+?)(?=\"\\))", version);
 	ReplaceRegexInFiles("./src/dotless.AspNet/Properties/AssemblyInfo.cs", "(?<=AssemblyFileVersion\\(\")(.+?)(?=\"\\))", version);
 	
-	ReplaceRegexInFiles("./src/dotless.Compiler/dotless.Compiler.csproj", "<Version>([0-9\\.]*)</Version>", $"<Version>{version}</Version>");
-	ReplaceRegexInFiles("./src/dotless.Core/dotless.Core.csproj", "<Version>([0-9\\.]*)</Version>", $"<Version>{version}</Version>");	
+	ReplaceRegexInFiles("./src/dotless.Compiler/dotless.Compiler.csproj", "<Version>0.0.0.1</Version>", $"<Version>{version}</Version>");
+	ReplaceRegexInFiles("./src/dotless.Core/dotless.Core.csproj", "<Version>0.0.0.1</Version>", $"<Version>{version}</Version>");	
 });
 
 
