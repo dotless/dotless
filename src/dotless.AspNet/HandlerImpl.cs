@@ -25,6 +25,9 @@ namespace dotless.Core
 
             var source = FileReader.GetFileContents(localPath);
 
+            // Due to the Importer is a singleton, we should always reset the already imported files (#555)
+            Engine.ResetImports();
+
             Response.WriteHeaders();
             Response.WriteCss(Engine.TransformToCss(source, localPath));
         }
