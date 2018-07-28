@@ -47,9 +47,9 @@ namespace dotless.Benchmark
         private static void RunBenchmark(string[] files, Dictionary<string, string> contents, int rounds, Func<string, ILessEngine, int> runTest)
         {
             var engines = new ILessEngine[]
-                                          {
+                              {
                                   new LessEngine()
-                                          };
+                              };
 
 
             Console.Write("       File        |     Size     |");
@@ -77,7 +77,7 @@ namespace dotless.Benchmark
                     }
                     catch
                     {
-                        Console.Write("Failed                     | ");
+                        Console.Write("Failed                      | ");
                     }
                 }
                 if (times.Count == 2)
