@@ -1,4 +1,4 @@
-namespace dotless.Core
+﻿namespace dotless.Core
 {
     using Abstractions;
     using Input;
@@ -24,9 +24,6 @@ namespace dotless.Core
             var localPath = Http.Context.Request.Url.LocalPath;
 
             var source = FileReader.GetFileContents(localPath);
-
-            // Due to the Importer is a singleton, we should always reset the already imported files (#555)
-            Engine.ResetImports();
 
             Response.WriteHeaders();
             Response.WriteCss(Engine.TransformToCss(source, localPath));

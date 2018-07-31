@@ -1,4 +1,4 @@
-namespace dotless.Core.configuration
+﻿namespace dotless.Core.configuration
 {
     using System;
     using Input;
@@ -31,7 +31,7 @@ namespace dotless.Core.configuration
 
         public static DotlessConfiguration GetDefault()
         {
-            return new DotlessConfiguration();;
+            return new DotlessConfiguration();
         }
 
         public static DotlessConfiguration GetDefaultWeb()

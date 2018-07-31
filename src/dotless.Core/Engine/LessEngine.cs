@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using dotless.Core.Parser;
 using dotless.Core.Parser.Tree;
 using dotless.Core.Plugins;
@@ -35,11 +35,11 @@ namespace dotless.Core
         }
 
         public LessEngine(Parser.Parser parser, ILogger logger, dotless.Core.configuration.DotlessConfiguration config)
-            :this(parser, logger, config.MinifyOutput, config.Debug, config.DisableVariableRedefines, config.DisableColorCompression, config.KeepFirstSpecialComment, config.Plugins)
+            : this(parser, logger, config.MinifyOutput, config.Debug, config.DisableVariableRedefines, config.DisableColorCompression, config.KeepFirstSpecialComment, config.Plugins)
         {
         }
 
-            public LessEngine(Parser.Parser parser, ILogger logger, bool compress, bool debug, bool disableVariableRedefines, bool disableColorCompression, bool keepFirstSpecialComment, bool strictMath, IEnumerable<IPluginConfigurator> plugins)
+        public LessEngine(Parser.Parser parser, ILogger logger, bool compress, bool debug, bool disableVariableRedefines, bool disableColorCompression, bool keepFirstSpecialComment, bool strictMath, IEnumerable<IPluginConfigurator> plugins)
         {
             Parser = parser;
             Logger = logger;
@@ -51,7 +51,7 @@ namespace dotless.Core
         }
 
         public LessEngine(Parser.Parser parser, ILogger logger, bool compress, bool debug, bool disableVariableRedefines, bool disableColorCompression, bool keepFirstSpecialComment, IEnumerable<IPluginConfigurator> plugins)
-            :this(parser, logger, compress, debug, disableVariableRedefines, disableColorCompression, keepFirstSpecialComment, false, plugins)
+            : this(parser, logger, compress, debug, disableVariableRedefines, disableColorCompression, keepFirstSpecialComment, false, plugins)
         {
         }
 

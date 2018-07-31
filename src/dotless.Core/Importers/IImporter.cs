@@ -41,7 +41,7 @@
         void ResetImports();
 
         /// <summary>
-        /// Gets the all already imported files
+        /// Gets the already imported files
         /// </summary>
         /// <returns></returns>
         IEnumerable<string> GetImports();
