@@ -21,11 +21,6 @@
         ImportAction Import(Import import);
 
         /// <summary>
-        ///  A list of imports
-        /// </summary>
-        List<string> Imports { get; }
-
-        /// <summary>
         ///  A method set by the parser implementation in order to get a new parser for use in importing
         /// </summary>
         Func<Parser> Parser { get; set; }
@@ -39,6 +34,17 @@
         string CurrentDirectory { get; set; }
 
         IDisposable BeginScope(Import parent);
+
+        /// <summary>
+        /// Resets the imports.
+        /// </summary>
+        void ResetImports();
+
+        /// <summary>
+        /// Gets the all already imported files
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<string> GetImports();
     }
 
     /// <summary>

@@ -133,12 +133,12 @@ namespace dotless.Core
 
         public IEnumerable<string> GetImports()
         {
-            return Parser.Importer.Imports.Distinct();
+            return Parser.Importer.GetImports();
         }
 
         public void ResetImports()
         {
-            Parser.Importer.Imports.Clear();
+            Parser.Importer.ResetImports();
         }
 
     }

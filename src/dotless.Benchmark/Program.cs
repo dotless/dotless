@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using dotless.Core;
 
-namespace dotlessjs.Compiler
+namespace dotless.Benchmark
 {
     using System.Collections.Generic;
 
@@ -23,12 +23,13 @@ namespace dotlessjs.Compiler
                 (file, engine) => Enumerable
                                       .Range(0, rounds)
                                       .Select(i =>
-                                                  {
-                                                      var starttime = DateTime.Now;
-                                                      engine.TransformToCss(contents[file], file);
-                                                      var duration = (DateTime.Now - starttime);
-                                                      return duration.Milliseconds;
-                                                  })
+                                      {
+                                          engine.ResetImports();
+                                          var starttime = DateTime.Now;
+                                          engine.TransformToCss(contents[file], file);
+                                          var duration = (DateTime.Now - starttime);
+                                          return duration.Milliseconds;
+                                      })
                                       .Sum();
 
             Console.WriteLine("Press Enter to begin benchmark");
@@ -36,6 +37,15 @@ namespace dotlessjs.Compiler
 
             Console.WriteLine("Running each test {0} times\n", rounds);
 
+            RunBenchmark(files, contents, rounds, runTest);
+
+            while(Console.ReadKey().Key == ConsoleKey.R)
+                RunBenchmark(files, contents, rounds, runTest);
+            
+        }
+
+        private static void RunBenchmark(string[] files, Dictionary<string, string> contents, int rounds, Func<string, ILessEngine, int> runTest)
+        {
             var engines = new ILessEngine[]
                               {
                                   new LessEngine()
@@ -49,11 +59,11 @@ namespace dotlessjs.Compiler
                 Console.Write('|');
             }
             Console.WriteLine();
-            Console.WriteLine(new string('-', 35 + 30*engines.Length));
+            Console.WriteLine(new string('-', 35 + 30 * engines.Length));
 
             foreach (var file in files)
             {
-                var size = rounds*contents[file].Length/1024d;
+                var size = rounds * contents[file].Length / 1024d;
                 Console.Write("{0} | {1,8:#,##0.00} Kb  | ", file.PadRight(18), size);
 
                 var times = new List<double>();
@@ -61,13 +71,13 @@ namespace dotlessjs.Compiler
                 {
                     try
                     {
-                        var time = runTest(file, engine)/1000d;
+                        var time = runTest(file, engine) / 1000d;
                         times.Add(time);
-                        Console.Write("{0,8:#.00} s  {1,10:#,##0.00} Kb/s | ", time, size/time);
+                        Console.Write("{0,8:#.00} s  {1,10:#,##0.00} Kb/s | ", time, size / time);
                     }
                     catch
                     {
-                        Console.Write("Failied                     | ");
+                        Console.Write("Failed                      | ");
                     }
                 }
                 if (times.Count == 2)
@@ -75,7 +85,7 @@ namespace dotlessjs.Compiler
                 Console.WriteLine();
             }
 
-            //      Console.Read();
+            Console.WriteLine("Done. Press 'r' to repeat or any key to exit");
         }
     }
 }
