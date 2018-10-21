@@ -44,6 +44,9 @@
         {
             if (configuration.Logger != null)
                 services.AddSingleton(typeof(ILogger), configuration.Logger);
+
+            if (configuration.LoggerInstance != null)
+                services.AddSingleton(typeof(ILogger), configuration.LoggerInstance);
         }
 
         protected virtual void RegisterLocalServices(IServiceCollection services)
