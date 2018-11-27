@@ -11,7 +11,7 @@
 	<summary>Library to compile LESS files to CSS including HTTPHandler for ASP.NET to compile LESS files on demand.</summary>
     <description>Meta package to provide backward compatibility. Please choose either dotless.AspNet or dotless.Core.
 
-	This is a project to port the hugely useful Less libary to the .NET world. It give variables, nested rules and operators to CSS.
+	This is a project to port the hugely useful Less library to the .NET world. It give variables, nested rules and operators to CSS.
 
 For more information about the original Less project see http://lesscss.org/ or http://github.com/dotless/dotless. For more information about how to get started with the .NET version see http://www.dotlesscss.org/.</description>
 	<tags>less css compile dotnet</tags>
