@@ -185,6 +185,11 @@
         public Type Logger { get; set; }
 
         /// <summary>
+        /// An instance of the logger that you wish to use
+        /// </summary>
+        public ILogger LoggerInstance { get; set; }
+
+        /// <summary>
         ///  The Log level
         /// </summary>
         public LogLevel LogLevel { get; set; }
