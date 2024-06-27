@@ -1,7 +1,7 @@
 #tool nuget:?package=NUnit.ConsoleRunner
 #tool nuget:?package=vswhere
 
-#addin "nuget:?package=Cake.FileHelpers"
+#addin "nuget:?package=Cake.FileHelpers?version=3.1.0"
 
 // ARGUMENTS
 var target = Argument("target", "Default");
