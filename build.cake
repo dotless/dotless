@@ -50,7 +50,7 @@ Task("Build")
 	var vsLatest  = VSWhereLatest(new VSWhereLatestSettings { Requires = "Microsoft.Component.MSBuild" });
 	FilePath msBuildPath = (vsLatest==null)
                             ? null
-                            : vsLatest.CombineWithFilePath("./MSBuild/15.0/Bin/MSBuild.exe");
+                            : vsLatest.CombineWithFilePath("./MSBuild/16.0/Bin/MSBuild.exe");
 
 	Information("Using MSBuild "+ msBuildPath);
 
