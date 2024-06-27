@@ -354,6 +354,7 @@ namespace dotless.Core.Importers
         {
             Imports.Clear();
             _rawImports.Clear();
+            _referenceImports.Clear();
         }
 
         public IEnumerable<string> GetImports()
