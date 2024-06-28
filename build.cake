@@ -1,5 +1,6 @@
 #tool nuget:?package=NUnit.ConsoleRunner
 #tool nuget:?package=vswhere
+#tool "nuget:?package=GitVersion.CommandLine&version=5.7.0"
 
 #addin "nuget:?package=Cake.FileHelpers&version=3.1.0"
 
@@ -29,8 +30,26 @@ Task("Restore")
     NuGetRestore("./dotless.sln");
 });
 
+
+Task("Version")
+	.Description("Retrieves the current version from the git repository")
+	.Does(() => {
+		
+    if (version == "0.0.1")
+    {
+        var versionInfo = GitVersion(new GitVersionSettings {
+            UpdateAssemblyInfo = false
+        });
+        
+        version = versionInfo.AssemblySemVer;
+
+        Information("Version: "+ version);        
+    }
+});
+
 Task("SetVersion")
     .IsDependentOn("Clean")
+    .IsDependentOn("Version")
     .Does(() =>
 {
 	ReplaceRegexInFiles("./src/dotless.AspNet/Properties/AssemblyInfo.cs", "(?<=AssemblyVersion\\(\")(.+?)(?=\"\\))", version);
