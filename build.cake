@@ -1,7 +1,7 @@
 #tool nuget:?package=NUnit.ConsoleRunner
 #tool nuget:?package=vswhere
 
-#addin "nuget:?package=Cake.FileHelpers"
+#addin "nuget:?package=Cake.FileHelpers&version=3.1.0"
 
 // ARGUMENTS
 var target = Argument("target", "Default");
@@ -48,9 +48,10 @@ Task("Build")
 {    
 	// get MSBuild 15 location
 	var vsLatest  = VSWhereLatest(new VSWhereLatestSettings { Requires = "Microsoft.Component.MSBuild" });
+    
 	FilePath msBuildPath = (vsLatest==null)
                             ? null
-                            : vsLatest.CombineWithFilePath("./MSBuild/15.0/Bin/MSBuild.exe");
+                            : GetFiles(System.IO.Path.Combine(vsLatest.ToString(), "MSBuild/*/Bin/MSBuild.exe")).Single();
 
 	Information("Using MSBuild "+ msBuildPath);
 
