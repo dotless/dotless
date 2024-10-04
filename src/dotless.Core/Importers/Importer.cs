@@ -350,6 +350,18 @@ namespace dotless.Core.Importers
             return url;
         }
 
+        public void ResetImports()
+        {
+            Imports.Clear();
+            _rawImports.Clear();
+            _referenceImports.Clear();
+        }
+
+        public IEnumerable<string> GetImports()
+        {
+            return Imports.Distinct();
+        }
+
         private class ImportScope : IDisposable {
             private readonly Importer importer;
 

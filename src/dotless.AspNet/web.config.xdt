@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform"> 
+	 
+	<configSections >
+		<section name="dotless" type="dotless.Core.configuration.DotlessConfigurationSectionHandler, dotless.AspNet" xdt:Transform="Replace" xdt:Locator="Match(name)" />
+	</configSections>
+
+	<dotless minifyCss="false" cache="true" web="false" strictMath="false" xdt:Transform="InsertIfMissing" />
+
+	<system.webServer>
+		<handlers>
+			<add name="dotless" path="*.less" verb="GET" type="dotless.Core.LessCssHttpHandler,dotless.AspNet" resourceType="File" preCondition="" xdt:Transform="Replace" xdt:Locator="Match(name)" />
+		</handlers>
+	</system.webServer>
+
+	<system.web>
+		<httpHandlers>
+			<add path="*.less" verb="GET" type="dotless.Core.LessCssHttpHandler, dotless.AspNet" xdt:Transform="Replace" xdt:Locator="Match(path, verb)" />
+		</httpHandlers>
+	</system.web>
+</configuration>

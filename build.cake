@@ -1,6 +1,8 @@
 #tool nuget:?package=NUnit.ConsoleRunner
 #tool nuget:?package=vswhere
 
+#addin "nuget:?package=Cake.FileHelpers&version=3.1.0"
+
 // ARGUMENTS
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
@@ -27,15 +29,29 @@ Task("Restore")
     NuGetRestore("./dotless.sln");
 });
 
+Task("SetVersion")
+    .IsDependentOn("Clean")
+    .Does(() =>
+{
+	ReplaceRegexInFiles("./src/dotless.AspNet/Properties/AssemblyInfo.cs", "(?<=AssemblyVersion\\(\")(.+?)(?=\"\\))", version);
+	ReplaceRegexInFiles("./src/dotless.AspNet/Properties/AssemblyInfo.cs", "(?<=AssemblyFileVersion\\(\")(.+?)(?=\"\\))", version);
+	
+	ReplaceRegexInFiles("./src/dotless.Compiler/dotless.Compiler.csproj", "<Version>0.0.0.1</Version>", $"<Version>{version}</Version>");
+	ReplaceRegexInFiles("./src/dotless.Core/dotless.Core.csproj", "<Version>0.0.0.1</Version>", $"<Version>{version}</Version>");	
+});
+
+
 Task("Build")	
     .IsDependentOn("Restore")
+	.IsDependentOn("SetVersion")
     .Does(() =>
 {    
 	// get MSBuild 15 location
 	var vsLatest  = VSWhereLatest(new VSWhereLatestSettings { Requires = "Microsoft.Component.MSBuild" });
+    
 	FilePath msBuildPath = (vsLatest==null)
                             ? null
-                            : vsLatest.CombineWithFilePath("./MSBuild/15.0/Bin/MSBuild.exe");
+                            : GetFiles(System.IO.Path.Combine(vsLatest.ToString(), "MSBuild/*/Bin/MSBuild.exe")).Single();
 
 	Information("Using MSBuild "+ msBuildPath);
 
@@ -78,7 +94,7 @@ Task("Publish")
      NuGetPack("./nuspec/dotless.Core.nuspec", nuGetPackSettings);
 	 
 	 nuGetPackSettings.BasePath = "./src/dotless.AspNet/bin/"+configuration;
-	 NuGetPack("./nuspec/dotless.AspNet.nuspec", nuGetPackSettings);
+	 NuGetPack("./nuspec/dotless.AspNetHandler.nuspec", nuGetPackSettings);
 	 
 	 nuGetPackSettings.BasePath = "./";
 	 NuGetPack("./nuspec/dotless.nuspec", nuGetPackSettings);

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace dotless.Core.Parser.Tree
 {
     using Exceptions;
@@ -14,6 +16,12 @@ namespace dotless.Core.Parser.Tree
         public NodeList PostNameComments { get; set; }
         public bool IsSemiColonRequired { get; set; }
         public bool Variadic { get; set; }
+        public string Merge { get; set; }
+
+        public bool Important
+        {
+            get { return Value is Value && ((Value) Value).Important == "!important"; }
+        }
         public bool InterpolatedName { get; set; }
 
         public Rule(string name, Node value) : this(name, value, false)
@@ -27,6 +35,7 @@ namespace dotless.Core.Parser.Tree
             Variable = !string.IsNullOrEmpty(name) && name[0] == '@';
             IsSemiColonRequired = true;
             Variadic = variadic;
+            Merge = "";
         }
 
         public override Node Evaluate(Env env)
@@ -39,6 +48,7 @@ namespace dotless.Core.Parser.Tree
             }
 
             var rule = new Rule(EvaluateName(env), Value.Evaluate(env)).ReducedFrom<Rule>(this);
+            rule.Merge = Merge;
             rule.IsSemiColonRequired = this.IsSemiColonRequired;
             rule.PostNameComments = this.PostNameComments;
 

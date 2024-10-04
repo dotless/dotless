@@ -37,6 +37,11 @@ using System.Text;
             Quote = null;
         }
 
+        protected override Node CloneCore()
+        {
+            return new Quoted(Value, Quote, Escaped);
+        }
+
         public override void AppendCSS(Env env)
         {
             env.Output

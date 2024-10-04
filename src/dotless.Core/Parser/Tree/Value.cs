@@ -11,21 +11,31 @@
     {
         public NodeList Values { get; set; }
         public NodeList PreImportantComments { get; set; }
+        public string Merge { get; set; }
         public string Important { get; set; }
 
-        public Value(IEnumerable<Node> values, string important)
+        public void AppendValues(IEnumerable<Node> values)
+        {
+            Values.AddRange(values);
+        }
+
+        public Value(IEnumerable<Node> values, string important, string merge = ", ")
         {
             Values = new NodeList(values);
             Important = important;
+            Merge = merge;
         }
 
         protected override Node CloneCore() {
-            return new Value((NodeList)Values.Clone(), Important);
+            return new Value((NodeList)Values.Clone(), Important, Merge);
         }
 
         public override void AppendCSS(Env env)
         {
-            env.Output.AppendMany(Values, env.Compress ? "," : ", ");
+            var separator = Merge;
+            if(env.Compress && Merge.Length > 1) 
+                separator = separator.Substring(0, 1);
+            env.Output.AppendMany(Values, separator);
  
             if  (!string.IsNullOrEmpty(Important)) 
             {
@@ -54,7 +64,7 @@
                 returnNode = Values[0].Evaluate(env);
             else
             {
-                returnNode = value = new Value(Values.Select(n => n.Evaluate(env)), Important);
+                returnNode = value = new Value(Values.Select(n => n.Evaluate(env)), Important, Merge);
                 value.PreImportantComments = this.PreImportantComments;
             }
 

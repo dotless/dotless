@@ -1961,12 +1961,40 @@ fieldset[disabled] .test {
   background-image: url('image.png');
 }
 .newCssClass {
-  background-image: url(image.png);
+  background-image: url('image.png');
   color: #000;
 }
 ";
 
             AssertLess(input, expected);
+        }
+
+        [Test]
+        public void MixinWithEmptyContent_WithoutParantheses_CorrectlyCopiesContent()
+        {
+            var input = @"
+.mixinWithContent {
+  content: '';
+}
+
+.useMixinWithoutParantheses {
+  .mixinWithContent;
+}
+
+.useMixinWithParantheses {
+  .mixinWithContent();
+}";
+            var expected = @"
+.mixinWithContent {
+  content: '';
+}
+.useMixinWithoutParantheses {
+  content: '';
+}
+.useMixinWithParantheses {
+  content: '';
+}";
+            AssertLess (input, expected);
         }
     }
 }

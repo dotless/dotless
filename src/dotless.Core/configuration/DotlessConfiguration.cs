@@ -1,4 +1,4 @@
-namespace dotless.Core.configuration
+﻿namespace dotless.Core.configuration
 {
     using System;
     using Input;
@@ -31,7 +31,7 @@ namespace dotless.Core.configuration
 
         public static DotlessConfiguration GetDefault()
         {
-            return new DotlessConfiguration();;
+            return new DotlessConfiguration();
         }
 
         public static DotlessConfiguration GetDefaultWeb()
@@ -183,6 +183,11 @@ namespace dotless.Core.configuration
         ///  The ILogger type
         /// </summary>
         public Type Logger { get; set; }
+
+        /// <summary>
+        /// An instance of the logger that you wish to use
+        /// </summary>
+        public ILogger LoggerInstance { get; set; }
 
         /// <summary>
         ///  The Log level

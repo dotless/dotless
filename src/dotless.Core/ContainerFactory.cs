@@ -1,4 +1,4 @@
-namespace dotless.Core
+﻿namespace dotless.Core
 {
     using Cache;
     using configuration;
@@ -16,11 +16,18 @@ namespace dotless.Core
         protected IServiceCollection Container { get; set; }
 
         public System.IServiceProvider GetContainer(DotlessConfiguration configuration)
-        {              
-            var builder = new ServiceCollection();
-            RegisterServices(builder, configuration);
+        {
+            var builder = GetServices(configuration);
 
             return builder.BuildServiceProvider();
+        }
+
+        public ServiceCollection GetServices(DotlessConfiguration configuration)
+        {
+            var services = new ServiceCollection();
+            RegisterServices(services, configuration);
+
+            return services;
         }
 
         protected virtual void RegisterServices(IServiceCollection services, DotlessConfiguration configuration)
@@ -37,6 +44,9 @@ namespace dotless.Core
         {
             if (configuration.Logger != null)
                 services.AddSingleton(typeof(ILogger), configuration.Logger);
+
+            if (configuration.LoggerInstance != null)
+                services.AddSingleton(typeof(ILogger), configuration.LoggerInstance);
         }
 
         protected virtual void RegisterLocalServices(IServiceCollection services)
@@ -52,8 +62,8 @@ namespace dotless.Core
             services.AddSingleton(configuration);
             services.AddSingleton<IStylizer, PlainStylizer>();
 
-            services.AddSingleton<IImporter, Importer>();
-            services.AddSingleton<Parser.Parser>();          
+            services.AddTransient<IImporter, Importer>();
+            services.AddTransient<Parser.Parser>();          
 
             services.AddTransient<ILessEngine, LessEngine>();           
 
