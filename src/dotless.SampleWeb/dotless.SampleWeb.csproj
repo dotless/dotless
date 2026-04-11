@@ -153,7 +153,9 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\ChildrenController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Models\ChildViewModel.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -192,6 +194,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\blueprint\screen.less" />
+    <Content Include="Content\Children.less" />
     <Content Include="Content\Site.less" />
     <Content Include="Content\subfolder\test.less" />
     <Content Include="Content\Web.config" />
@@ -204,6 +207,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\_references.js" />
+    <None Include="Views\Children\Index.cshtml" />
     <None Include="Views\Home\Index.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">

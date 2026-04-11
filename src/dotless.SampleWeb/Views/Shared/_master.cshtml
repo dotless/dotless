@@ -6,6 +6,7 @@
 
 	@Styles.Render("~/Content/Site.less")
 	@Styles.Render("~/Content/subfolder/test.less")
+	@Styles.Render("~/Content/Children.less")
 </head>
 <body>
 	<div id="header" class="container">
@@ -16,7 +17,8 @@
 			LOGIN AND DISPLAY
 		</div>
 		<div id="menucontainer">
-			MENU CONTAINER
+			@Html.ActionLink("Home", "Index", "Home") |
+			@Html.ActionLink("Children", "Index", "Children")
 		</div>
 	</div>
 

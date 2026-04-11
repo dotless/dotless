@@ -1,0 +1,21 @@
+@model dotless.SampleWeb.Models.ChildrenOverviewViewModel
+@{
+    Layout = "~/Views/Shared/_master.cshtml";
+    ViewBag.Title = "Children Overview";
+}
+
+<div class="children-overview">
+    <h2>Children Overview</h2>
+    <p class="parent-label">Parent: <strong>@Model.ParentName</strong></p>
+
+    <div class="stack-layout">
+        @foreach (var child in Model.Children)
+        {
+            <div class="child-view">
+                <div class="child-name">@child.Name</div>
+                <div class="child-age">Age: @child.Age</div>
+                <div class="child-description">@child.Description</div>
+            </div>
+        }
+    </div>
+</div>
